@@ -1,0 +1,1186 @@
+{
+	"scope": "source.autoit",
+	"completions": [{
+		"trigger": "Abs()",
+		"contents": "Abs(${1:expression})"
+	}, {
+		"trigger": "ACos()",
+		"contents": "ACos(${1:expression})"
+	}, {
+		"trigger": "AdlibRegister()",
+		"contents": "AdlibRegister(${1:function}${2:, ${3:[time]}})"
+	}, {
+		"trigger": "AdlibUnRegister()",
+		"contents": "AdlibUnRegister(${1:\"${2:[function]}\"})"
+	}, {
+		"trigger": "Asc()",
+		"contents": "Asc(${1:char})"
+	}, {
+		"trigger": "AscW()",
+		"contents": "AscW(${1:char})"
+	}, {
+		"trigger": "ASin()",
+		"contents": "ASin(${1:expression})"
+	}, {
+		"trigger": "Assign()",
+		"contents": "Assign(${1:varname}, ${2:data}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "ATan()",
+		"contents": "ATan(${1:expression})"
+	}, {
+		"trigger": "AutoItSetOption()",
+		"contents": "AutoItSetOption(${1:option}${2:, ${3:[param]}})"
+	}, {
+		"trigger": "AutoItWinGetTitle()",
+		"contents": "AutoItWinGetTitle()"
+	}, {
+		"trigger": "AutoItWinSetTitle()",
+		"contents": "AutoItWinSetTitle(${1:newtitle})"
+	}, {
+		"trigger": "Beep()",
+		"contents": "Beep(${1:${2:[Frequency]}${3:, ${4:[Duration]}}})"
+	}, {
+		"trigger": "Binary()",
+		"contents": "Binary(${1:expression})"
+	}, {
+		"trigger": "BinaryLen()",
+		"contents": "BinaryLen(${1:binary})"
+	}, {
+		"trigger": "BinaryMid()",
+		"contents": "BinaryMid(${1:binary}, ${2:start}${3:, ${4:[count]}})"
+	}, {
+		"trigger": "BinaryToString()",
+		"contents": "BinaryToString(${1:expression}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "BitAND()",
+		"contents": "BitAND(${1:value1}, ${2:value2}${3:, ${4:[value n]}})"
+	}, {
+		"trigger": "BitNOT()",
+		"contents": "BitNOT(${1:value})"
+	}, {
+		"trigger": "BitOR()",
+		"contents": "BitOR(${1:value1}, ${2:value2}${3:, ${4:[value n]}})"
+	}, {
+		"trigger": "BitRotate()",
+		"contents": "BitRotate(${1:value}${2:, ${3:[shift]}${4:, ${5:[size]}}})"
+	}, {
+		"trigger": "BitShift()",
+		"contents": "BitShift(${1:value}, ${2:shift})"
+	}, {
+		"trigger": "BitXOR()",
+		"contents": "BitXOR(${1:value1}, ${2:value2}${3:, ${4:[value n]}})"
+	}, {
+		"trigger": "BlockInput()",
+		"contents": "BlockInput(${1:flag})"
+	}, {
+		"trigger": "Break()",
+		"contents": "Break(${1:mode})"
+	}, {
+		"trigger": "Call()",
+		"contents": "Call(${1:function}${2:, ${3:[param1]}${4:, ${5:[param2]}${6:, ${7:[param<i>N<\/i>]}}}})"
+	}, {
+		"trigger": "CDTray()",
+		"contents": "CDTray(${1:drive}, ${2:status})"
+	}, {
+		"trigger": "Ceiling()",
+		"contents": "Ceiling(${1:expression})"
+	}, {
+		"trigger": "Chr()",
+		"contents": "Chr(${1:ASCIIcode})"
+	}, {
+		"trigger": "ChrW()",
+		"contents": "ChrW(${1:UNICODEcode})"
+	}, {
+		"trigger": "ClipGet()",
+		"contents": "ClipGet()"
+	}, {
+		"trigger": "ClipPut()",
+		"contents": "ClipPut(${1:value})"
+	}, {
+		"trigger": "ConsoleRead()",
+		"contents": "ConsoleRead(${1:${2:[peek = false]}${3:, ${4:[binary = false]}}})"
+	}, {
+		"trigger": "ConsoleWrite()",
+		"contents": "ConsoleWrite(${1:data})"
+	}, {
+		"trigger": "ConsoleWriteError()",
+		"contents": "ConsoleWriteError(${1:data})"
+	}, {
+		"trigger": "ControlClick()",
+		"contents": "ControlClick(${1:title}, ${2:text}, ${3:controlID}${4:, ${5:[button]}${6:, ${7:[clicks]}${8:, ${9:[x]}${10:, ${11:[y]}}}}})"
+	}, {
+		"trigger": "ControlCommand()",
+		"contents": "ControlCommand(${1:title}, ${2:text}, ${3:controlID}, ${4:command}${5:, \"${6:[option]}\"})"
+	}, {
+		"trigger": "ControlDisable()",
+		"contents": "ControlDisable(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlEnable()",
+		"contents": "ControlEnable(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlFocus()",
+		"contents": "ControlFocus(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlGetFocus()",
+		"contents": "ControlGetFocus(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "ControlGetHandle()",
+		"contents": "ControlGetHandle(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlGetPos()",
+		"contents": "ControlGetPos(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlGetText()",
+		"contents": "ControlGetText(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlHide()",
+		"contents": "ControlHide(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlListView()",
+		"contents": "ControlListView(${1:title}, ${2:text}, ${3:controlID}, ${4:command}${5:, ${6:[option1]}${7:, ${8:[option2]}}})"
+	}, {
+		"trigger": "ControlMove()",
+		"contents": "ControlMove(${1:title}, ${2:text}, ${3:controlID}, ${4:x}, ${5:y}${6:, ${7:[width]}${8:, ${9:[height]}}})"
+	}, {
+		"trigger": "ControlSend()",
+		"contents": "ControlSend(${1:title}, ${2:text}, ${3:controlID}, ${4:string}${5:, ${6:[flag]}})"
+	}, {
+		"trigger": "ControlSetText()",
+		"contents": "ControlSetText(${1:title}, ${2:text}, ${3:controlID}, ${4:new text}${5:, ${6:[flag]}})"
+	}, {
+		"trigger": "ControlShow()",
+		"contents": "ControlShow(${1:title}, ${2:text}, ${3:controlID})"
+	}, {
+		"trigger": "ControlTreeView()",
+		"contents": "ControlTreeView(${1:title}, ${2:text}, ${3:controlID}, ${4:command}${5:, ${6:[option1]}${7:, ${8:[option2]}}})"
+	}, {
+		"trigger": "Cos()",
+		"contents": "Cos(${1:expression})"
+	}, {
+		"trigger": "Dec()",
+		"contents": "Dec(${1:hex}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "DirCopy()",
+		"contents": "DirCopy(${1:source dir}, ${2:dest dir}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "DirCreate()",
+		"contents": "DirCreate(${1:path})"
+	}, {
+		"trigger": "DirGetSize()",
+		"contents": "DirGetSize(${1:path}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "DirMove()",
+		"contents": "DirMove(${1:source dir}, ${2:dest dir}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "DirRemove()",
+		"contents": "DirRemove(${1:path}${2:, ${3:[recurse]}})"
+	}, {
+		"trigger": "DllCall()",
+		"contents": "DllCall(${1:dll}, ${2:return type}, ${3:function}, ${4:param1}, ${5:param n}${6:, ${7:[type1]}${8:, ${9:[type n]}}})"
+	}, {
+		"trigger": "DllCallAddress()",
+		"contents": "DllCallAddress(${1:return type}, ${2:address}, ${3:param1}, ${4:param n}${5:, ${6:[type1]}${7:, ${8:[type n]}}})"
+	}, {
+		"trigger": "DllCallbackFree()",
+		"contents": "DllCallbackFree(${1:handle})"
+	}, {
+		"trigger": "DllCallbackGetPtr()",
+		"contents": "DllCallbackGetPtr(${1:handle})"
+	}, {
+		"trigger": "DllCallbackRegister()",
+		"contents": "DllCallbackRegister(${1:function}, ${2:return type}, ${3:params})"
+	}, {
+		"trigger": "DllClose()",
+		"contents": "DllClose(${1:dllhandle})"
+	}, {
+		"trigger": "DllOpen()",
+		"contents": "DllOpen(${1:filename})"
+	}, {
+		"trigger": "DllStructCreate()",
+		"contents": "DllStructCreate(${1:Struct}, ${2:Pointer})"
+	}, {
+		"trigger": "DllStructGetData()",
+		"contents": "DllStructGetData(${1:Struct}, ${2:Element}${3:, ${4:[index]}})"
+	}, {
+		"trigger": "DllStructGetPtr()",
+		"contents": "DllStructGetPtr(${1:Struct}, ${2:Element})"
+	}, {
+		"trigger": "DllStructGetSize()",
+		"contents": "DllStructGetSize(${1:Struct})"
+	}, {
+		"trigger": "DllStructSetData()",
+		"contents": "DllStructSetData(${1:Struct}, ${2:Element}, ${3:value}${4:, ${5:[index]}})"
+	}, {
+		"trigger": "DriveGetDrive()",
+		"contents": "DriveGetDrive(${1:type})"
+	}, {
+		"trigger": "DriveGetFileSystem()",
+		"contents": "DriveGetFileSystem(${1:path})"
+	}, {
+		"trigger": "DriveGetLabel()",
+		"contents": "DriveGetLabel(${1:path})"
+	}, {
+		"trigger": "DriveGetSerial()",
+		"contents": "DriveGetSerial(${1:path})"
+	}, {
+		"trigger": "DriveGetType()",
+		"contents": "DriveGetType(${1:path})"
+	}, {
+		"trigger": "DriveMapAdd()",
+		"contents": "DriveMapAdd(${1:device}, ${2:remote share}${3:, ${4:[flags]}${5:, \"${6:[user]}\"${7:, \"${8:[password]}\"}}})"
+	}, {
+		"trigger": "DriveMapDel()",
+		"contents": "DriveMapDel(${1:drive})"
+	}, {
+		"trigger": "DriveMapGet()",
+		"contents": "DriveMapGet(${1:device})"
+	}, {
+		"trigger": "DriveSetLabel()",
+		"contents": "DriveSetLabel(${1:path}, ${2:label})"
+	}, {
+		"trigger": "DriveSpaceFree()",
+		"contents": "DriveSpaceFree(${1:path})"
+	}, {
+		"trigger": "DriveSpaceTotal()",
+		"contents": "DriveSpaceTotal(${1:path})"
+	}, {
+		"trigger": "DriveStatus()",
+		"contents": "DriveStatus(${1:path})"
+	}, {
+		"trigger": "EnvGet()",
+		"contents": "EnvGet(${1:envvariable})"
+	}, {
+		"trigger": "EnvSet()",
+		"contents": "EnvSet(${1:envvariable}${2:, \"${3:[value]}\"})"
+	}, {
+		"trigger": "EnvUpdate()",
+		"contents": "EnvUpdate()"
+	}, {
+		"trigger": "Eval()",
+		"contents": "Eval(${1:string})"
+	}, {
+		"trigger": "Execute()",
+		"contents": "Execute(${1:string})"
+	}, {
+		"trigger": "Exp()",
+		"contents": "Exp(${1:expression})"
+	}, {
+		"trigger": "FileChangeDir()",
+		"contents": "FileChangeDir(${1:path})"
+	}, {
+		"trigger": "FileClose()",
+		"contents": "FileClose(${1:filehandle})"
+	}, {
+		"trigger": "FileCopy()",
+		"contents": "FileCopy(${1:source}, ${2:dest}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "FileCreateNTFSLink()",
+		"contents": "FileCreateNTFSLink(${1:source}, ${2:hardlink}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "FileCreateShortcut()",
+		"contents": "FileCreateShortcut(${1:file}, ${2:lnk}${3:, \"${4:[workdir]}\"${5:, \"${6:[args]}\"${7:, \"${8:[desc]}\"${9:, \"${10:[icon]}\"${11:, \"${12:[hotkey]}\"${13:, ${14:[icon number]}${15:, ${16:[state]}}}}}}}})"
+	}, {
+		"trigger": "FileDelete()",
+		"contents": "FileDelete(${1:path})"
+	}, {
+		"trigger": "FileExists()",
+		"contents": "FileExists(${1:path})"
+	}, {
+		"trigger": "FileFindFirstFile()",
+		"contents": "FileFindFirstFile(${1:filename})"
+	}, {
+		"trigger": "FileFindNextFile()",
+		"contents": "FileFindNextFile(${1:search})"
+	}, {
+		"trigger": "FileFlush()",
+		"contents": "FileFlush(${1:filehandle})"
+	}, {
+		"trigger": "FileGetAttrib()",
+		"contents": "FileGetAttrib(${1:filename})"
+	}, {
+		"trigger": "FileGetEncoding()",
+		"contents": "FileGetEncoding(${1:filehandle\/filename}${2:, ${3:[mode]}})"
+	}, {
+		"trigger": "FileGetLongName()",
+		"contents": "FileGetLongName(${1:file}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "FileGetPos()",
+		"contents": "FileGetPos(${1:filehandle})"
+	}, {
+		"trigger": "FileGetShortcut()",
+		"contents": "FileGetShortcut(${1:lnk})"
+	}, {
+		"trigger": "FileGetShortName()",
+		"contents": "FileGetShortName(${1:file}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "FileGetSize()",
+		"contents": "FileGetSize(${1:filename})"
+	}, {
+		"trigger": "FileGetTime()",
+		"contents": "FileGetTime(${1:filename}${2:, ${3:[option]}${4:, ${5:[format]}}})"
+	}, {
+		"trigger": "FileGetVersion()",
+		"contents": "FileGetVersion(${1:filename}, ${2:stringname})"
+	}, {
+		"trigger": "FileInstall()",
+		"contents": "FileInstall(${1:source}, ${2:dest}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "FileMove()",
+		"contents": "FileMove(${1:source}, ${2:dest}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "FileOpen()",
+		"contents": "FileOpen(${1:filename}${2:, ${3:[mode]}})"
+	}, {
+		"trigger": "FileOpenDialog()",
+		"contents": "FileOpenDialog(${1:title}, ${2:init dir}, ${3:filter}${4:, ${5:[options]}${6:, \"${7:[default name]}\"${8:, ${9:[hwnd]}}}})"
+	}, {
+		"trigger": "FileRead()",
+		"contents": "FileRead(${1:filehandle\/filename}${2:, ${3:[count]}})"
+	}, {
+		"trigger": "FileReadLine()",
+		"contents": "FileReadLine(${1:filehandle\/filename}${2:, ${3:[line]}})"
+	}, {
+		"trigger": "FileRecycle()",
+		"contents": "FileRecycle(${1:source})"
+	}, {
+		"trigger": "FileRecycleEmpty()",
+		"contents": "FileRecycleEmpty(${1:\"${2:[source]}\"})"
+	}, {
+		"trigger": "FileSaveDialog()",
+		"contents": "FileSaveDialog(${1:title}, ${2:init dir}, ${3:filter}${4:, ${5:[options]}${6:, \"${7:[default name]}\"${8:, ${9:[hwnd]}}}})"
+	}, {
+		"trigger": "FileSelectFolder()",
+		"contents": "FileSelectFolder(${1:dialog text}, ${2:root dir}${3:, ${4:[flag]}${5:, \"${6:[initial dir]}\"${7:, ${8:[hwnd]}}}})"
+	}, {
+		"trigger": "FileSetAttrib()",
+		"contents": "FileSetAttrib(${1:file pattern}, ${2:+-RASHNOT}${3:, ${4:[recurse]}})"
+	}, {
+		"trigger": "FileSetPos()",
+		"contents": "FileSetPos(${1:filehandle}, ${2:offset}, ${3:origin})"
+	}, {
+		"trigger": "FileSetTime()",
+		"contents": "FileSetTime(${1:file pattern}, ${2:time}${3:, ${4:[type]}${5:, ${6:[recurse]}}})"
+	}, {
+		"trigger": "FileWrite()",
+		"contents": "FileWrite(${1:filehandle\/filename}, ${2:text\/data})"
+	}, {
+		"trigger": "FileWriteLine()",
+		"contents": "FileWriteLine(${1:filehandle\/filename}, ${2:line})"
+	}, {
+		"trigger": "Floor()",
+		"contents": "Floor(${1:expression})"
+	}, {
+		"trigger": "FtpSetProxy()",
+		"contents": "FtpSetProxy(${1:mode}${2:, \"${3:[proxy:port]}\"${4:, \"${5:[username]}\"${6:, \"${7:[password]}\"}}})"
+	}, {
+		"trigger": "GUICreate()",
+		"contents": "GUICreate(${1:title}${2:, ${3:[width]}${4:, ${5:[height]}${6:, ${7:[left]}${8:, ${9:[top]}${10:, ${11:[style]}${12:, ${13:[exStyle]}${14:, ${15:[parent]}}}}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateAvi()",
+		"contents": "GUICtrlCreateAvi(${1:filename}, ${2:subfileid}, ${3:left}, ${4:top}${5:, ${6:[width]}${7:, ${8:[height]}${9:, ${10:[style]}${11:, ${12:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateButton()",
+		"contents": "GUICtrlCreateButton(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateCheckbox()",
+		"contents": "GUICtrlCreateCheckbox(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateCombo()",
+		"contents": "GUICtrlCreateCombo(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateContextMenu()",
+		"contents": "GUICtrlCreateContextMenu(${1:${2:[controlID]}})"
+	}, {
+		"trigger": "GUICtrlCreateDate()",
+		"contents": "GUICtrlCreateDate(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateDummy()",
+		"contents": "GUICtrlCreateDummy()"
+	}, {
+		"trigger": "GUICtrlCreateEdit()",
+		"contents": "GUICtrlCreateEdit(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateGraphic()",
+		"contents": "GUICtrlCreateGraphic(${1:left}, ${2:top}${3:, ${4:[width]}${5:, ${6:[height]}${7:, ${8:[style]}}}})"
+	}, {
+		"trigger": "GUICtrlCreateGroup()",
+		"contents": "GUICtrlCreateGroup(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateIcon()",
+		"contents": "GUICtrlCreateIcon(${1:filename}, ${2:iconName}, ${3:left}, ${4:top}${5:, ${6:[width]}${7:, ${8:[height]}${9:, ${10:[style]}${11:, ${12:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateInput()",
+		"contents": "GUICtrlCreateInput(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateLabel()",
+		"contents": "GUICtrlCreateLabel(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateList()",
+		"contents": "GUICtrlCreateList(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateListView()",
+		"contents": "GUICtrlCreateListView(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateListViewItem()",
+		"contents": "GUICtrlCreateListViewItem(${1:text}, ${2:listviewID})"
+	}, {
+		"trigger": "GUICtrlCreateMenu()",
+		"contents": "GUICtrlCreateMenu(${1:submenutext}${2:, ${3:[menuID]}${4:, ${5:[menuentry]}}})"
+	}, {
+		"trigger": "GUICtrlCreateMenuItem()",
+		"contents": "GUICtrlCreateMenuItem(${1:text}, ${2:menuID}${3:, ${4:[menuentry]}${5:, ${6:[menuradioitem]}}})"
+	}, {
+		"trigger": "GUICtrlCreateMonthCal()",
+		"contents": "GUICtrlCreateMonthCal(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateObj()",
+		"contents": "GUICtrlCreateObj(${1:ObjectVar}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}}})"
+	}, {
+		"trigger": "GUICtrlCreatePic()",
+		"contents": "GUICtrlCreatePic(${1:filename}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateProgress()",
+		"contents": "GUICtrlCreateProgress(${1:left}, ${2:top}${3:, ${4:[width]}${5:, ${6:[height]}${7:, ${8:[style]}${9:, ${10:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateRadio()",
+		"contents": "GUICtrlCreateRadio(${1:text}, ${2:left}, ${3:top}${4:, ${5:[width]}${6:, ${7:[height]}${8:, ${9:[style]}${10:, ${11:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateSlider()",
+		"contents": "GUICtrlCreateSlider(${1:left}, ${2:top}${3:, ${4:[width]}${5:, ${6:[height]}${7:, ${8:[style]}${9:, ${10:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateTab()",
+		"contents": "GUICtrlCreateTab(${1:left}, ${2:top}${3:, ${4:[width]}${5:, ${6:[height]}${7:, ${8:[style]}${9:, ${10:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateTabItem()",
+		"contents": "GUICtrlCreateTabItem(${1:text})"
+	}, {
+		"trigger": "GUICtrlCreateTreeView()",
+		"contents": "GUICtrlCreateTreeView(${1:left}, ${2:top}${3:, ${4:[width]}${5:, ${6:[height]}${7:, ${8:[style]}${9:, ${10:[exStyle]}}}}})"
+	}, {
+		"trigger": "GUICtrlCreateTreeViewItem()",
+		"contents": "GUICtrlCreateTreeViewItem(${1:text}, ${2:treeviewID})"
+	}, {
+		"trigger": "GUICtrlCreateUpdown()",
+		"contents": "GUICtrlCreateUpdown(${1:inputcontrolID}, ${2:style})"
+	}, {
+		"trigger": "GUICtrlDelete()",
+		"contents": "GUICtrlDelete(${1:controlID})"
+	}, {
+		"trigger": "GUICtrlGetHandle()",
+		"contents": "GUICtrlGetHandle(${1:controlID})"
+	}, {
+		"trigger": "GUICtrlGetState()",
+		"contents": "GUICtrlGetState(${1:${2:[controlID]}})"
+	}, {
+		"trigger": "GUICtrlRead()",
+		"contents": "GUICtrlRead(${1:controlID}${2:, ${3:[advanced]}})"
+	}, {
+		"trigger": "GUICtrlRecvMsg()",
+		"contents": "GUICtrlRecvMsg(${1:controlID}, ${2:msg}${3:, ${4:[wParam]}${5:, ${6:[lParamType]}}})"
+	}, {
+		"trigger": "GUICtrlRegisterListViewSort()",
+		"contents": "GUICtrlRegisterListViewSort(${1:controlID}, ${2:function})"
+	}, {
+		"trigger": "GUICtrlSendMsg()",
+		"contents": "GUICtrlSendMsg(${1:controlID}, ${2:msg}, ${3:wParam}, ${4:lParam})"
+	}, {
+		"trigger": "GUICtrlSendToDummy()",
+		"contents": "GUICtrlSendToDummy(${1:controlID}${2:, ${3:[state]}})"
+	}, {
+		"trigger": "GUICtrlSetBkColor()",
+		"contents": "GUICtrlSetBkColor(${1:controlID}, ${2:backgroundcolor})"
+	}, {
+		"trigger": "GUICtrlSetColor()",
+		"contents": "GUICtrlSetColor(${1:controlID}, ${2:textcolor})"
+	}, {
+		"trigger": "GUICtrlSetCursor()",
+		"contents": "GUICtrlSetCursor(${1:controlID}, ${2:cursorID})"
+	}, {
+		"trigger": "GUICtrlSetData()",
+		"contents": "GUICtrlSetData(${1:controlID}, ${2:data}${3:, ${4:[default]}})"
+	}, {
+		"trigger": "GUICtrlSetDefBkColor()",
+		"contents": "GUICtrlSetDefBkColor(${1:defbkcolor}${2:, ${3:[winhandle]}})"
+	}, {
+		"trigger": "GUICtrlSetDefColor()",
+		"contents": "GUICtrlSetDefColor(${1:deftextcolor}${2:, ${3:[winhandle]}})"
+	}, {
+		"trigger": "GUICtrlSetFont()",
+		"contents": "GUICtrlSetFont(${1:controlID}, ${2:size}${3:, ${4:[weight]}${5:, ${6:[attribute]}${7:, ${8:[fontname]}${9:, ${10:[quality]}}}}})"
+	}, {
+		"trigger": "GUICtrlSetGraphic()",
+		"contents": "GUICtrlSetGraphic(${1:controlID}, ${2:type}${3:, ${4:[par1]}${5:, ${6:[... par6]}}})"
+	}, {
+		"trigger": "GUICtrlSetImage()",
+		"contents": "GUICtrlSetImage(${1:controlID}, ${2:filename}${3:, ${4:[iconname]}${5:, ${6:[icontype]}}})"
+	}, {
+		"trigger": "GUICtrlSetLimit()",
+		"contents": "GUICtrlSetLimit(${1:controlID}, ${2:max}${3:, ${4:[min]}})"
+	}, {
+		"trigger": "GUICtrlSetOnEvent()",
+		"contents": "GUICtrlSetOnEvent(${1:controlID}, ${2:function})"
+	}, {
+		"trigger": "GUICtrlSetPos()",
+		"contents": "GUICtrlSetPos(${1:controlID}, ${2:left}${3:, ${4:[top]}${5:, ${6:[width]}${7:, ${8:[height]}}}})"
+	}, {
+		"trigger": "GUICtrlSetResizing()",
+		"contents": "GUICtrlSetResizing(${1:controlID}, ${2:resizing})"
+	}, {
+		"trigger": "GUICtrlSetState()",
+		"contents": "GUICtrlSetState(${1:controlID}, ${2:state})"
+	}, {
+		"trigger": "GUICtrlSetStyle()",
+		"contents": "GUICtrlSetStyle(${1:controlID}, ${2:style}${3:, ${4:[exStyle]}})"
+	}, {
+		"trigger": "GUICtrlSetTip()",
+		"contents": "GUICtrlSetTip(${1:controlID}, ${2:tiptext}${3:, \"${4:[title]}\"${5:, ${6:[icon]}${7:, ${8:[options]}}}})"
+	}, {
+		"trigger": "GUIDelete()",
+		"contents": "GUIDelete(${1:${2:[winhandle]}})"
+	}, {
+		"trigger": "GUIGetCursorInfo()",
+		"contents": "GUIGetCursorInfo(${1:${2:[winhandle]}})"
+	}, {
+		"trigger": "GUIGetMsg()",
+		"contents": "GUIGetMsg(${1:${2:[advanced]}})"
+	}, {
+		"trigger": "GUIGetStyle()",
+		"contents": "GUIGetStyle(${1:${2:[winhandle]}})"
+	}, {
+		"trigger": "GUIRegisterMsg()",
+		"contents": "GUIRegisterMsg(${1:msgID}, ${2:function})"
+	}, {
+		"trigger": "GUISetAccelerators()",
+		"contents": "GUISetAccelerators(${1:accelerators}${2:, ${3:[winhandle]}})"
+	}, {
+		"trigger": "GUISetBkColor()",
+		"contents": "GUISetBkColor(${1:background}${2:, ${3:[winhandle]}})"
+	}, {
+		"trigger": "GUISetCoord()",
+		"contents": "GUISetCoord(${1:left}, ${2:top}${3:, ${4:[width]}${5:, ${6:[height]}${7:, ${8:[winhandle]}}}})"
+	}, {
+		"trigger": "GUISetCursor()",
+		"contents": "GUISetCursor(${1:${2:[cursorID]}${3:, ${4:[override]}${5:, ${6:[winhandle]}}}})"
+	}, {
+		"trigger": "GUISetFont()",
+		"contents": "GUISetFont(${1:size}${2:, ${3:[weight]}${4:, ${5:[attribute]}${6:, ${7:[fontname]}${8:, ${9:[winhandle]}${10:, ${11:[quality]}}}}}})"
+	}, {
+		"trigger": "GUISetHelp()",
+		"contents": "GUISetHelp(${1:helpfile}${2:, ${3:[winhandle]}})"
+	}, {
+		"trigger": "GUISetIcon()",
+		"contents": "GUISetIcon(${1:iconfile}${2:, ${3:[iconID]}${4:, ${5:[winhandle]}}})"
+	}, {
+		"trigger": "GUISetOnEvent()",
+		"contents": "GUISetOnEvent(${1:specialID}, ${2:function}${3:, ${4:[winhandle]}})"
+	}, {
+		"trigger": "GUISetState()",
+		"contents": "GUISetState(${1:${2:[flag]}${3:, ${4:[winhandle]}}})"
+	}, {
+		"trigger": "GUISetStyle()",
+		"contents": "GUISetStyle(${1:Style}, ${2:ExStyle}${3:, ${4:[winhandle]}})"
+	}, {
+		"trigger": "GUIStartGroup()",
+		"contents": "GUIStartGroup(${1:${2:[winhandle]}})"
+	}, {
+		"trigger": "GUISwitch()",
+		"contents": "GUISwitch(${1:winhandle}${2:, ${3:[tabitemID]}})"
+	}, {
+		"trigger": "Hex()",
+		"contents": "Hex(${1:expression}${2:, ${3:[length]}})"
+	}, {
+		"trigger": "HotKeySet()",
+		"contents": "HotKeySet(${1:key}${2:, \"${3:[function]}\"})"
+	}, {
+		"trigger": "HttpSetProxy()",
+		"contents": "HttpSetProxy(${1:mode}${2:, \"${3:[proxy:port]}\"${4:, \"${5:[username]}\"${6:, \"${7:[password]}\"}}})"
+	}, {
+		"trigger": "HttpSetUserAgent()",
+		"contents": "HttpSetUserAgent(${1:user agent})"
+	}, {
+		"trigger": "HWnd()",
+		"contents": "HWnd(${1:expression})"
+	}, {
+		"trigger": "InetClose()",
+		"contents": "InetClose(${1:handle})"
+	}, {
+		"trigger": "InetGet()",
+		"contents": "InetGet(${1:URL}, ${2:filename}${3:, ${4:[options]}${5:, ${6:[background]}}})"
+	}, {
+		"trigger": "InetGetInfo()",
+		"contents": "InetGetInfo(${1:${2:[handle]}${3:, ${4:[index]}}})"
+	}, {
+		"trigger": "InetGetSize()",
+		"contents": "InetGetSize(${1:URL}${2:, ${3:[options]}})"
+	}, {
+		"trigger": "InetRead()",
+		"contents": "InetRead(${1:URL}${2:, ${3:[options]}})"
+	}, {
+		"trigger": "IniDelete()",
+		"contents": "IniDelete(${1:filename}, ${2:section}${3:, \"${4:[key]}\"})"
+	}, {
+		"trigger": "IniRead()",
+		"contents": "IniRead(${1:filename}, ${2:section}, ${3:key}, ${4:default})"
+	}, {
+		"trigger": "IniReadSection()",
+		"contents": "IniReadSection(${1:filename}, ${2:section})"
+	}, {
+		"trigger": "IniReadSectionNames()",
+		"contents": "IniReadSectionNames(${1:filename})"
+	}, {
+		"trigger": "IniRenameSection()",
+		"contents": "IniRenameSection(${1:filename}, ${2:section}, ${3:new section}${4:, ${5:[flag]}})"
+	}, {
+		"trigger": "IniWrite()",
+		"contents": "IniWrite(${1:filename}, ${2:section}, ${3:key}, ${4:value})"
+	}, {
+		"trigger": "IniWriteSection()",
+		"contents": "IniWriteSection(${1:filename}, ${2:section}, ${3:data}${4:, ${5:[index]}})"
+	}, {
+		"trigger": "InputBox()",
+		"contents": "InputBox(${1:title}, ${2:prompt}${3:, \"${4:[default]}\"${5:, \"${6:[password char]}\"${7:, ${8:[width]}${9:, ${10:[height]}${11:, ${12:[left]}${13:, ${14:[top]}${15:, ${16:[timeout]}${17:, ${18:[hwnd]}}}}}}}}})"
+	}, {
+		"trigger": "Int()",
+		"contents": "Int(${1:expression}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "IsAdmin()",
+		"contents": "IsAdmin()"
+	}, {
+		"trigger": "IsArray()",
+		"contents": "IsArray(${1:variable})"
+	}, {
+		"trigger": "IsBinary()",
+		"contents": "IsBinary(${1:expression})"
+	}, {
+		"trigger": "IsBool()",
+		"contents": "IsBool(${1:variable})"
+	}, {
+		"trigger": "IsDeclared()",
+		"contents": "IsDeclared(${1:expression})"
+	}, {
+		"trigger": "IsDllStruct()",
+		"contents": "IsDllStruct(${1:variable})"
+	}, {
+		"trigger": "IsFloat()",
+		"contents": "IsFloat(${1:variable})"
+	}, {
+		"trigger": "IsHWnd()",
+		"contents": "IsHWnd(${1:variable})"
+	}, {
+		"trigger": "IsInt()",
+		"contents": "IsInt(${1:variable})"
+	}, {
+		"trigger": "IsKeyword()",
+		"contents": "IsKeyword(${1:variable})"
+	}, {
+		"trigger": "IsNumber()",
+		"contents": "IsNumber(${1:variable})"
+	}, {
+		"trigger": "IsObj()",
+		"contents": "IsObj(${1:variable})"
+	}, {
+		"trigger": "IsPtr()",
+		"contents": "IsPtr(${1:variable})"
+	}, {
+		"trigger": "IsString()",
+		"contents": "IsString(${1:variable})"
+	}, {
+		"trigger": "Log()",
+		"contents": "Log(${1:expression})"
+	}, {
+		"trigger": "MemGetStats()",
+		"contents": "MemGetStats()"
+	}, {
+		"trigger": "Mod()",
+		"contents": "Mod(${1:value1}, ${2:value2})"
+	}, {
+		"trigger": "MouseClick()",
+		"contents": "MouseClick(${1:button}, ${2:y}${3:, ${4:[x]}${5:, ${6:[clicks]}${7:, ${8:[speed]}}}})"
+	}, {
+		"trigger": "MouseClickDrag()",
+		"contents": "MouseClickDrag(${1:button}, ${2:x1}, ${3:y1}, ${4:x2}, ${5:y2}${6:, ${7:[speed]}})"
+	}, {
+		"trigger": "MouseDown()",
+		"contents": "MouseDown(${1:button})"
+	}, {
+		"trigger": "MouseGetCursor()",
+		"contents": "MouseGetCursor()"
+	}, {
+		"trigger": "MouseGetPos()",
+		"contents": "MouseGetPos(${1:${2:[dimension]}})"
+	}, {
+		"trigger": "MouseMove()",
+		"contents": "MouseMove(${1:x}, ${2:y}${3:, ${4:[speed]}})"
+	}, {
+		"trigger": "MouseUp()",
+		"contents": "MouseUp(${1:button})"
+	}, {
+		"trigger": "MouseWheel()",
+		"contents": "MouseWheel(${1:direction}${2:, ${3:[clicks]}})"
+	}, {
+		"trigger": "MsgBox()",
+		"contents": "MsgBox(${1:flag}, ${2:title}, ${3:text}${4:, ${5:[timeout]}${6:, ${7:[hwnd]}}})"
+	}, {
+		"trigger": "Number()",
+		"contents": "Number(${1:expression}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "ObjCreate()",
+		"contents": "ObjCreate(${1:classname}, ${2:username}${3:, \"${4:[servername]}\"${5:, \"${6:[password]}\"}})"
+	}, {
+		"trigger": "ObjCreateInterface()",
+		"contents": "ObjCreateInterface(${1:CLSID}, ${2:IID}, ${3:interfacedescription}${4:, \"${5:[flag]}\"})"
+	}, {
+		"trigger": "ObjEvent()",
+		"contents": "ObjEvent(${1:\\$ObjectVar}, ${2:functionprefix}${3:, \"${4:[interface name]}\"})"
+	}, {
+		"trigger": "ObjGet()",
+		"contents": "ObjGet(${1:filename}${2:, \"${3:[classname]}\"})"
+	}, {
+		"trigger": "ObjName()",
+		"contents": "ObjName(${1:\\$Objectvariable}, ${2:Flag})"
+	}, {
+		"trigger": "OnAutoItExitRegister()",
+		"contents": "OnAutoItExitRegister(${1:function})"
+	}, {
+		"trigger": "OnAutoItExitUnRegister()",
+		"contents": "OnAutoItExitUnRegister(${1:function})"
+	}, {
+		"trigger": "Ping()",
+		"contents": "Ping(${1:address\/hostname}${2:, ${3:[timeout]}})"
+	}, {
+		"trigger": "PixelChecksum()",
+		"contents": "PixelChecksum(${1:left}, ${2:top}, ${3:right}, ${4:bottom}${5:, ${6:[step]}${7:, ${8:[hwnd]}${9:, ${10:[mode]}}}})"
+	}, {
+		"trigger": "PixelGetColor()",
+		"contents": "PixelGetColor(${1:x}, ${2:y}${3:, ${4:[hwnd]}})"
+	}, {
+		"trigger": "PixelSearch()",
+		"contents": "PixelSearch(${1:left}, ${2:top}, ${3:right}, ${4:bottom}, ${5:color}${6:, ${7:[shade-variation]}${8:, ${9:[step]}${10:, ${11:[hwnd]}}}})"
+	}, {
+		"trigger": "PluginClose()",
+		"contents": "PluginClose(${1:dllhandle})"
+	}, {
+		"trigger": "PluginOpen()",
+		"contents": "PluginOpen(${1:filename})"
+	}, {
+		"trigger": "ProcessClose()",
+		"contents": "ProcessClose(${1:process})"
+	}, {
+		"trigger": "ProcessExists()",
+		"contents": "ProcessExists(${1:process})"
+	}, {
+		"trigger": "ProcessGetStats()",
+		"contents": "ProcessGetStats(${1:\"${2:[process]}\"${3:, ${4:[type]}}})"
+	}, {
+		"trigger": "ProcessList()",
+		"contents": "ProcessList(${1:\"${2:[name]}\"})"
+	}, {
+		"trigger": "ProcessSetPriority()",
+		"contents": "ProcessSetPriority(${1:process}, ${2:priority})"
+	}, {
+		"trigger": "ProcessWait()",
+		"contents": "ProcessWait(${1:process}${2:, ${3:[timeout]}})"
+	}, {
+		"trigger": "ProcessWaitClose()",
+		"contents": "ProcessWaitClose(${1:process}${2:, ${3:[timeout]}})"
+	}, {
+		"trigger": "ProgressOff()",
+		"contents": "ProgressOff()"
+	}, {
+		"trigger": "ProgressOn()",
+		"contents": "ProgressOn(${1:title}, ${2:maintext}${3:, \"${4:[subtext]}\"${5:, ${6:[x pos]}${7:, ${8:[y pos]}${9:, ${10:[opt]}}}}})"
+	}, {
+		"trigger": "ProgressSet()",
+		"contents": "ProgressSet(${1:percent}${2:, \"${3:[subtext]}\"${4:, \"${5:[maintext]}\"}})"
+	}, {
+		"trigger": "Ptr()",
+		"contents": "Ptr(${1:expression})"
+	}, {
+		"trigger": "Random()",
+		"contents": "Random(${1:${2:[Min]}${3:, ${4:[Max]}${5:, ${6:[Flag]}}}})"
+	}, {
+		"trigger": "RegDelete()",
+		"contents": "RegDelete(${1:keyname}${2:, \"${3:[valuename]}\"})"
+	}, {
+		"trigger": "RegEnumKey()",
+		"contents": "RegEnumKey(${1:keyname}, ${2:instance})"
+	}, {
+		"trigger": "RegEnumVal()",
+		"contents": "RegEnumVal(${1:keyname}, ${2:instance})"
+	}, {
+		"trigger": "RegRead()",
+		"contents": "RegRead(${1:keyname}, ${2:valuename})"
+	}, {
+		"trigger": "RegWrite()",
+		"contents": "RegWrite(${1:keyname}, ${2:valuename}${3:, \"${4:[type]}\"${5:, ${6:[value]}}})"
+	}, {
+		"trigger": "Round()",
+		"contents": "Round(${1:expression}${2:, ${3:[decimalplaces]}})"
+	}, {
+		"trigger": "Run()",
+		"contents": "Run(${1:program}${2:, \"${3:[workingdir]}\"${4:, ${5:[showflag]}${6:, ${7:[optflag]}}}})"
+	}, {
+		"trigger": "RunAs()",
+		"contents": "RunAs(${1:username}, ${2:domain}, ${3:password}, ${4:logonflag}, ${5:program}${6:, \"${7:[workingdir]}\"${8:, ${9:[showflag]}${10:, ${11:[optflag]}}}})"
+	}, {
+		"trigger": "RunAsWait()",
+		"contents": "RunAsWait(${1:username}, ${2:domain}, ${3:password}, ${4:logonflag}, ${5:program}${6:, \"${7:[workingdir]}\"${8:, ${9:[showflag]}${10:, ${11:[optflag]}}}})"
+	}, {
+		"trigger": "RunWait()",
+		"contents": "RunWait(${1:program}${2:, \"${3:[workingdir]}\"${4:, ${5:[showflag]}${6:, ${7:[optflag]}}}})"
+	}, {
+		"trigger": "Send()",
+		"contents": "Send(${1:keys}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "SendKeepActive()",
+		"contents": "SendKeepActive(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "SetError()",
+		"contents": "SetError(${1:code}${2:, ${3:[extended]}${4:, ${5:[return value]}}})"
+	}, {
+		"trigger": "SetExtended()",
+		"contents": "SetExtended(${1:code}${2:, ${3:[return value]}})"
+	}, {
+		"trigger": "ShellExecute()",
+		"contents": "ShellExecute(${1:filename}${2:, \"${3:[parameters]}\"${4:, \"${5:[workingdir]}\"${6:, \"${7:[verb]}\"${8:, ${9:[showflag]}}}}})"
+	}, {
+		"trigger": "ShellExecuteWait()",
+		"contents": "ShellExecuteWait(${1:filename}${2:, \"${3:[parameters]}\"${4:, \"${5:[workingdir]}\"${6:, \"${7:[verb]}\"${8:, ${9:[showflag]}}}}})"
+	}, {
+		"trigger": "Shutdown()",
+		"contents": "Shutdown(${1:code}${2:, ${3:[reason]}})"
+	}, {
+		"trigger": "Sin()",
+		"contents": "Sin(${1:expression})"
+	}, {
+		"trigger": "Sleep()",
+		"contents": "Sleep(${1:delay})"
+	}, {
+		"trigger": "SoundPlay()",
+		"contents": "SoundPlay(${1:filename}${2:, ${3:[wait]}})"
+	}, {
+		"trigger": "SoundSetWaveVolume()",
+		"contents": "SoundSetWaveVolume(${1:percent})"
+	}, {
+		"trigger": "SplashImageOn()",
+		"contents": "SplashImageOn(${1:title}, ${2:file}${3:, ${4:[width]}${5:, ${6:[height]}${7:, ${8:[x pos]}${9:, ${10:[y pos]}${11:, ${12:[opt]}}}}}})"
+	}, {
+		"trigger": "SplashOff()",
+		"contents": "SplashOff()"
+	}, {
+		"trigger": "SplashTextOn()",
+		"contents": "SplashTextOn(${1:title}, ${2:text}${3:, ${4:[w]}${5:, ${6:[h]}${7:, ${8:[x pos]}${9:, ${10:[y pos]}${11:, ${12:[opt]}${13:, \"${14:[fontname]}\"${15:, ${16:[fontsz]}${17:, ${18:[fontwt]}}}}}}}}})"
+	}, {
+		"trigger": "Sqrt()",
+		"contents": "Sqrt(${1:expression})"
+	}, {
+		"trigger": "SRandom()",
+		"contents": "SRandom(${1:Seed})"
+	}, {
+		"trigger": "StatusbarGetText()",
+		"contents": "StatusbarGetText(${1:title}${2:, \"${3:[text]}\"${4:, ${5:[part]}}})"
+	}, {
+		"trigger": "StderrRead()",
+		"contents": "StderrRead(${1:processid}${2:, ${3:[peek = false]}${4:, ${5:[binary = false]}}})"
+	}, {
+		"trigger": "StdinWrite()",
+		"contents": "StdinWrite(${1:processid}${2:, ${3:[data]}})"
+	}, {
+		"trigger": "StdioClose()",
+		"contents": "StdioClose(${1:processid})"
+	}, {
+		"trigger": "StdoutRead()",
+		"contents": "StdoutRead(${1:processid}${2:, ${3:[peek = false]}${4:, ${5:[binary = false]}}})"
+	}, {
+		"trigger": "String()",
+		"contents": "String(${1:expression})"
+	}, {
+		"trigger": "StringAddCR()",
+		"contents": "StringAddCR(${1:string})"
+	}, {
+		"trigger": "StringCompare()",
+		"contents": "StringCompare(${1:string1}, ${2:string2}${3:, ${4:[casesense]}})"
+	}, {
+		"trigger": "StringFormat()",
+		"contents": "StringFormat(${1:format control}, ${2:var1}${3:, ${4:[... var32]}})"
+	}, {
+		"trigger": "StringFromASCIIArray()",
+		"contents": "StringFromASCIIArray(${1:array}${2:, ${3:[start]}${4:, ${5:[end]}${6:, ${7:[encoding]}}}})"
+	}, {
+		"trigger": "StringInStr()",
+		"contents": "StringInStr(${1:string}, ${2:substring}${3:, ${4:[casesense]}${5:, ${6:[occurrence]}${7:, ${8:[start]}${9:, ${10:[count]}}}}})"
+	}, {
+		"trigger": "StringIsAlNum()",
+		"contents": "StringIsAlNum(${1:string})"
+	}, {
+		"trigger": "StringIsAlpha()",
+		"contents": "StringIsAlpha(${1:string})"
+	}, {
+		"trigger": "StringIsASCII()",
+		"contents": "StringIsASCII(${1:string})"
+	}, {
+		"trigger": "StringIsDigit()",
+		"contents": "StringIsDigit(${1:string})"
+	}, {
+		"trigger": "StringIsFloat()",
+		"contents": "StringIsFloat(${1:string})"
+	}, {
+		"trigger": "StringIsInt()",
+		"contents": "StringIsInt(${1:string})"
+	}, {
+		"trigger": "StringIsLower()",
+		"contents": "StringIsLower(${1:string})"
+	}, {
+		"trigger": "StringIsSpace()",
+		"contents": "StringIsSpace(${1:string})"
+	}, {
+		"trigger": "StringIsUpper()",
+		"contents": "StringIsUpper(${1:string})"
+	}, {
+		"trigger": "StringIsXDigit()",
+		"contents": "StringIsXDigit(${1:string})"
+	}, {
+		"trigger": "StringLeft()",
+		"contents": "StringLeft(${1:string}, ${2:count})"
+	}, {
+		"trigger": "StringLen()",
+		"contents": "StringLen(${1:string})"
+	}, {
+		"trigger": "StringLower()",
+		"contents": "StringLower(${1:string})"
+	}, {
+		"trigger": "StringMid()",
+		"contents": "StringMid(${1:string}, ${2:start}${3:, ${4:[count]}})"
+	}, {
+		"trigger": "StringRegExp()",
+		"contents": "StringRegExp(${1:test}, ${2:pattern}${3:, ${4:[flag]}${5:, ${6:[offset]}}})"
+	}, {
+		"trigger": "StringRegExpReplace()",
+		"contents": "StringRegExpReplace(${1:test}, ${2:pattern}, ${3:replace}${4:, ${5:[count]}})"
+	}, {
+		"trigger": "StringReplace()",
+		"contents": "StringReplace(${1:string}, ${2:searchstring\/start}, ${3:replacestring}${4:, ${5:[occurrence]}${6:, ${7:[casesense]}}})"
+	}, {
+		"trigger": "StringRight()",
+		"contents": "StringRight(${1:string}, ${2:count})"
+	}, {
+		"trigger": "StringSplit()",
+		"contents": "StringSplit(${1:string}, ${2:delimiters}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "StringStripCR()",
+		"contents": "StringStripCR(${1:string})"
+	}, {
+		"trigger": "StringStripWS()",
+		"contents": "StringStripWS(${1:string}, ${2:flag})"
+	}, {
+		"trigger": "StringToASCIIArray()",
+		"contents": "StringToASCIIArray(${1:string}${2:, ${3:[start]}${4:, ${5:[end]}${6:, ${7:[encoding]}}}})"
+	}, {
+		"trigger": "StringToBinary()",
+		"contents": "StringToBinary(${1:expression}${2:, ${3:[flag]}})"
+	}, {
+		"trigger": "StringTrimLeft()",
+		"contents": "StringTrimLeft(${1:string}, ${2:count})"
+	}, {
+		"trigger": "StringTrimRight()",
+		"contents": "StringTrimRight(${1:string}, ${2:count})"
+	}, {
+		"trigger": "StringUpper()",
+		"contents": "StringUpper(${1:string})"
+	}, {
+		"trigger": "Tan()",
+		"contents": "Tan(${1:expression})"
+	}, {
+		"trigger": "TCPAccept()",
+		"contents": "TCPAccept(${1:mainsocket})"
+	}, {
+		"trigger": "TCPCloseSocket()",
+		"contents": "TCPCloseSocket(${1:socket})"
+	}, {
+		"trigger": "TCPConnect()",
+		"contents": "TCPConnect(${1:IPAddr}, ${2:port})"
+	}, {
+		"trigger": "TCPListen()",
+		"contents": "TCPListen(${1:IPAddr}, ${2:port}${3:, ${4:[MaxPendingConnection]}})"
+	}, {
+		"trigger": "TCPNameToIP()",
+		"contents": "TCPNameToIP(${1:name})"
+	}, {
+		"trigger": "TCPRecv()",
+		"contents": "TCPRecv(${1:mainsocket}, ${2:maxlen}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "TCPSend()",
+		"contents": "TCPSend(${1:mainsocket}, ${2:data})"
+	}, {
+		"trigger": "TCPShutdown()",
+		"contents": "TCPShutdown()"
+	}, {
+		"trigger": "TCPStartup()",
+		"contents": "TCPStartup()"
+	}, {
+		"trigger": "TimerDiff()",
+		"contents": "TimerDiff(${1:handle})"
+	}, {
+		"trigger": "TimerInit()",
+		"contents": "TimerInit()"
+	}, {
+		"trigger": "ToolTip()",
+		"contents": "ToolTip(${1:text}${2:, ${3:[x]}${4:, ${5:[y]}${6:, \"${7:[title]}\"${8:, ${9:[icon]}${10:, ${11:[options]}}}}}})"
+	}, {
+		"trigger": "TrayCreateItem()",
+		"contents": "TrayCreateItem(${1:text}${2:, ${3:[menuID]}${4:, ${5:[menuentry]}${6:, ${7:[menuradioitem]}}}})"
+	}, {
+		"trigger": "TrayCreateMenu()",
+		"contents": "TrayCreateMenu(${1:sub\/menutext}${2:, ${3:[menuID]}${4:, ${5:[menuentry]}}})"
+	}, {
+		"trigger": "TrayGetMsg()",
+		"contents": "TrayGetMsg()"
+	}, {
+		"trigger": "TrayItemDelete()",
+		"contents": "TrayItemDelete(${1:controlID})"
+	}, {
+		"trigger": "TrayItemGetHandle()",
+		"contents": "TrayItemGetHandle(${1:controlID})"
+	}, {
+		"trigger": "TrayItemGetState()",
+		"contents": "TrayItemGetState(${1:${2:[controlID]}})"
+	}, {
+		"trigger": "TrayItemGetText()",
+		"contents": "TrayItemGetText(${1:controlID})"
+	}, {
+		"trigger": "TrayItemSetOnEvent()",
+		"contents": "TrayItemSetOnEvent(${1:itemID}, ${2:function})"
+	}, {
+		"trigger": "TrayItemSetState()",
+		"contents": "TrayItemSetState(${1:controlID}, ${2:state})"
+	}, {
+		"trigger": "TrayItemSetText()",
+		"contents": "TrayItemSetText(${1:controlID}, ${2:text})"
+	}, {
+		"trigger": "TraySetClick()",
+		"contents": "TraySetClick(${1:flag})"
+	}, {
+		"trigger": "TraySetIcon()",
+		"contents": "TraySetIcon(${1:${2:[filename]}${3:, ${4:[iconID]}}})"
+	}, {
+		"trigger": "TraySetOnEvent()",
+		"contents": "TraySetOnEvent(${1:specialID}, ${2:function})"
+	}, {
+		"trigger": "TraySetPauseIcon()",
+		"contents": "TraySetPauseIcon(${1:${2:[filename]}${3:, ${4:[iconID]}}})"
+	}, {
+		"trigger": "TraySetState()",
+		"contents": "TraySetState(${1:${2:[flag]}})"
+	}, {
+		"trigger": "TraySetToolTip()",
+		"contents": "TraySetToolTip(${1:${2:[text]}})"
+	}, {
+		"trigger": "TrayTip()",
+		"contents": "TrayTip(${1:title}, ${2:text}, ${3:timeout}${4:, ${5:[option]}})"
+	}, {
+		"trigger": "UBound()",
+		"contents": "UBound(${1:Array}${2:, ${3:[Dimension]}})"
+	}, {
+		"trigger": "UDPBind()",
+		"contents": "UDPBind(${1:IPAddr}, ${2:port})"
+	}, {
+		"trigger": "UDPCloseSocket()",
+		"contents": "UDPCloseSocket(${1:socketarray})"
+	}, {
+		"trigger": "UDPOpen()",
+		"contents": "UDPOpen(${1:IPAddr}, ${2:port}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "UDPRecv()",
+		"contents": "UDPRecv(${1:socketarray}, ${2:maxlen}${3:, ${4:[flag]}})"
+	}, {
+		"trigger": "UDPSend()",
+		"contents": "UDPSend(${1:socketarray}, ${2:data})"
+	}, {
+		"trigger": "VarGetType()",
+		"contents": "VarGetType(${1:expression})"
+	}, {
+		"trigger": "WinActivate()",
+		"contents": "WinActivate(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinActive()",
+		"contents": "WinActive(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinClose()",
+		"contents": "WinClose(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinExists()",
+		"contents": "WinExists(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinFlash()",
+		"contents": "WinFlash(${1:title}, ${2:text}, ${3:flashes}, ${4:delay})"
+	}, {
+		"trigger": "WinGetCaretPos()",
+		"contents": "WinGetCaretPos()"
+	}, {
+		"trigger": "WinGetClassList()",
+		"contents": "WinGetClassList(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinGetClientSize()",
+		"contents": "WinGetClientSize(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinGetHandle()",
+		"contents": "WinGetHandle(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinGetPos()",
+		"contents": "WinGetPos(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinGetProcess()",
+		"contents": "WinGetProcess(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinGetState()",
+		"contents": "WinGetState(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinGetText()",
+		"contents": "WinGetText(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinGetTitle()",
+		"contents": "WinGetTitle(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinKill()",
+		"contents": "WinKill(${1:title}${2:, \"${3:[text]}\"})"
+	}, {
+		"trigger": "WinList()",
+		"contents": "WinList(${1:\"${2:[title]}\"${3:, \"${4:[text]}\"}})"
+	}, {
+		"trigger": "WinMenuSelectItem()",
+		"contents": "WinMenuSelectItem(${1:title}, ${2:text}, ${3:item}${4:, \"${5:[item]}\"${6:, \"${7:[item]}\"${8:, \"${9:[item]}\"${10:, \"${11:[item]}\"${12:, \"${13:[item]}\"${14:, \"${15:[item]}\"}}}}}})"
+	}, {
+		"trigger": "WinMinimizeAll()",
+		"contents": "WinMinimizeAll()"
+	}, {
+		"trigger": "WinMinimizeAllUndo()",
+		"contents": "WinMinimizeAllUndo()"
+	}, {
+		"trigger": "WinMove()",
+		"contents": "WinMove(${1:title}, ${2:text}, ${3:x}, ${4:y}${5:, ${6:[width]}${7:, ${8:[height]}${9:, ${10:[speed]}}}})"
+	}, {
+		"trigger": "WinSetOnTop()",
+		"contents": "WinSetOnTop(${1:title}, ${2:text}, ${3:flag})"
+	}, {
+		"trigger": "WinSetState()",
+		"contents": "WinSetState(${1:title}, ${2:text}, ${3:flag})"
+	}, {
+		"trigger": "WinSetTitle()",
+		"contents": "WinSetTitle(${1:title}, ${2:text}, ${3:newtitle})"
+	}, {
+		"trigger": "WinSetTrans()",
+		"contents": "WinSetTrans(${1:title}, ${2:text}, ${3:transparency})"
+	}, {
+		"trigger": "WinWait()",
+		"contents": "WinWait(${1:title}${2:, \"${3:[text]}\"${4:, ${5:[timeout]}}})"
+	}, {
+		"trigger": "WinWaitActive()",
+		"contents": "WinWaitActive(${1:title}${2:, \"${3:[text]}\"${4:, ${5:[timeout]}}})"
+	}, {
+		"trigger": "WinWaitClose()",
+		"contents": "WinWaitClose(${1:title}${2:, \"${3:[text]}\"${4:, ${5:[timeout]}}})"
+	}, {
+		"trigger": "WinWaitNotActive()",
+		"contents": "WinWaitNotActive(${1:title}${2:, \"${3:[text]}\"${4:, ${5:[timeout]}}})"
+	}]
+}

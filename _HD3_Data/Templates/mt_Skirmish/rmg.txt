@@ -1,0 +1,15 @@
+Map			Zone																																																																									Connections								
+				Type					Restrictions				Player towns					Neutral towns					Town types									Minimum mines							Mine Density							Terrain									Monsters												Treasure									Zones					Restrictions			
+Name	Minimum Size	Maximum Size	Id	human start	computer start	Treasure	Junction	Base Size	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions	Ownership	Minimum towns	Minimum castles	Town Density	Castle Density	Minimum towns	Minimum castles	Town Density	Castle Density	Towns are of same type	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Elemental	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Match to town	Dirt	Sand	Grass	Snow	Swamp	Rough	Cave	Lava	Strength	Match to town	Neutral	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Forge	Low	High	Density	Low	High	Density	Low	High	Density	Zone 1	Zone 2	Value	Wide	Border Guard	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions
+mirror Skirmish (sc2tv tourney edition)	1	4	1	x				15	1	2	1	2	1		1								x	x	x	x	x	x	x	x	x	1		1												x									strong		x	x	x	x	x	x	x	x	x	x	3300	3500	4	1000	2000	7	330	1000	3	1	2	4500			1	2	1	2
+			2			x		25	1	2	1	2						1									x						1		1	1	1	2									x		x				x	x	strong		x	x	x	x	x	x	x	x	x	x	5000	7000	8	1500	2000	2	330	1500	3	2	5	9000			1	2	1	2
+			3			x		25	1	2	1	2						1					x	x	x	x	x	x	x	x	x																x		x				x	x	avg		x	x	x	x	x	x	x	x	x	x	10000	30000	1	8000	9150	10	350	2000	3	2	3	9000			1	2	1	2
+			4			x		25	1	2	1	2						1					x	x	x	x	x	x	x	x	x																x		x				x	x	avg		x	x	x	x	x	x	x	x	x	x	10000	30000	1	8000	9150	10	350	2000	3	3	5	11000			1	2	1	2
+			5			x		25	1	2	1	2						1					x	x	x	x	x	x	x	x	x																x		x				x	x	avg		x	x	x	x	x	x	x	x	x	x	10000	30000	1	8000	9150	10	350	2000	3	3	4	11000			1	2	1	2
+			6			x		25	1	2	1	2											x	x	x	x	x	x	x	x	x																x		x				x	x	strong		x	x	x	x	x	x	x	x	x	x	10000	30000	1	8000	9150	10	350	2000	3	4	5	11000			1	2	1	2
+			7			x		25	1	2	1	2																			x																	x							strong		x	x	x	x	x	x	x	x	x	x	10000	999999	1	8000	9150	10	350	2000	3	4	6	9000			1	2	1	2
+																																																																												1	-1	9000		x t5 t4	1	2	1	2
+																																																																												3	-1	9000		x t7 t6	1	2	1	2
+																																																																												5	-1	9000		x t6 t7	1	2	1	2
+																																																																												6	-1	9000		x t4 t5	1	2	1	2
+																																																																											

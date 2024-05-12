@@ -1,0 +1,23 @@
+Map			Zone																																																																									Connections								
+				Type					Restrictions				Player towns					Neutral towns					Town types									Minimum mines							Mine Density							Terrain									Monsters												Treasure									Zones					Restrictions			
+Name	Minimum Size	Maximum Size	Id	human start	computer start	Treasure	Junction	Base Size	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions	Ownership	Minimum towns	Minimum castles	Town Density	Castle Density	Minimum towns	Minimum castles	Town Density	Castle Density	Towns are of same type	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Elemental	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Match to town	Dirt	Sand	Grass	Snow	Swamp	Rough	Cave	Lava	Strength	Match to town	Neutral	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Forge	Low	High	Density	Low	High	Density	Low	High	Density	Zone 1	Zone 2	Value	Wide	Border Guard	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions
+Clash of Dragons	16	32	1	x				100	1	2	2	2	1		1			2					x	x	x	x	x	x	x	x	x	1		1				1	1	1	1	1	1	1	1	x									weak		x	x	x	x	x	x	x	x	x	x	2000	5000	4	5000	9000	6	300	1900	15	1	2	4000			1	2	2	2
+			2			x		100	1	2	2	2						1					x	x	x	x	x	x	x	x	x		1		1	1	1	1	1	1	1	1	1	1	1				x						avg		x	x	x	x	x	x	x	x	x	x	5000	12000	2	10000	20000	4	300	1900	15	2	3	12000			1	2	2	2
+			3			x		100	1	2	2	2						1					x	x	x	x	x	x	x	x	x	1	1	1	1	1	1	1	1	1	1	1	1	1	1									x	strong		x	x	x	x	x	x	x	x	x	x	20000	25000	10	10000	15000	8	300	1900	10	2	4	20000			1	2	2	2
+			4			x		100	1	2	2	2							1				x	x	x	x	x	x	x	x	x							2	1	1	1	1	1	1	1		x								strong		x	x	x	x	x	x	x	x	x	x	20000	25000	15	15000	20000	10	300	1900	6	4	5	30000			1	2	2	2
+			5			x		100	1	2	2	2							1						x								1		1	1	1		1	1	1	1	1	1	1					x					strong		x	x	x	x	x	x	x	x	x	x	20000	30000	15							5	6	50000			1	2	2	2
+			6			x		40	1	2	2	2																					1					1	1	1	1	1	1	1	1				x						strong		x		x				x				80000	120000	10							6	7	50000			1	2	2	2
+			7			x		40	1	2	2	2																							1			1	1	1	1	1	1	1	1				x						strong		x		x				x				80000	120000	10							7	8	50000			1	2	2	2
+			8			x		40	1	2	2	2																								1		1	1	1	1	1	1	1	1				x						strong		x		x				x				80000	120000	10							7	9	50000			1	2	2	2
+			9			x		40	1	2	2	2																									1	1	1	1	1	1	1	1	1				x						strong		x		x				x				80000	120000	10							18	9	50000			1	2	2	2
+			10			x		40	1	2	2	2																					1					1	1	1	1	1	1	1	1					x					strong		x		x				x				80000	80000	10							5	10	50000			1	2	2	2
+			11			x		40	1	2	2	2																					1					1	1	1	1	1	1	1	1					x					strong		x		x				x				80000	80000	10							10	11	50000			1	2	2	2
+			12			x		40	1	2	2	2																					1					1	1	1	1	1	1	1	1					x					strong		x		x				x				80000	80000	10							11	12	50000			1	2	2	2
+			13			x		40	1	2	2	2																					1					1	1	1	1	1	1	1	1					x					strong		x		x				x				80000	80000	10							11	13	50000			1	2	2	2
+			14	x				100	1	2	2	2	2		1			2					x	x	x	x	x	x	x	x	x	1		1				1	1	1	1	1	1	1	1	x									weak		x	x	x	x	x	x	x	x	x	x	2000	5000	4	5000	9000	6	300	1900	15	14	15	4000			1	2	2	2
+			15			x		100	1	2	2	2						1					x	x	x	x	x	x	x	x	x		1		1	1	1	1	1	1	1	1	1	1	1				x						avg		x	x	x	x	x	x	x	x	x	x	5000	12000	2	10000	20000	4	300	1900	15	15	16	12000			1	2	2	2
+			16			x		100	1	2	2	2						1					x	x	x	x	x	x	x	x	x	1	1	1	1	1	1	1	1	1	1	1	1	1	1									x	strong		x	x	x	x	x	x	x	x	x	x	20000	25000	10	10000	15000	8	300	1900	10	15	17	20000			1	2	2	2
+			17			x		100	1	2	2	2							1				x	x	x	x	x	x	x	x	x							2	1	1	1	1	1	1	1		x								strong		x	x	x	x	x	x	x	x	x	x	20000	25000	15	15000	20000	10	300	1900	6	17	18	30000			1	2	2	2
+			18			x		100	1	2	2	2							1						x								1		1	1	1		1	1	1	1	1	1	1					x					strong		x	x	x	x	x	x	x	x	x	x	20000	30000	15							18	13	50000			1	2	2	2
+																																																																												18	5	150000			1	2	2	2
+																																																																												3	16	180000			1	2	2	2

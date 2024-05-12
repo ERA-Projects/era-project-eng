@@ -1,0 +1,566 @@
+﻿<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="ie=7">
+<title id=titleid>Debug Creator</title>
+<HTA:APPLICATION ID="DebugCreator" 
+	APPLICATIONNAME="DebugCreator" 
+	BORDER="dialog"
+	CAPTION="yes"
+	SHOWINTASKBAR="yes"
+	SINGLEINSTANCE="yes"
+	SYSMENU="yes"
+	SCROLL="no"
+	MAXIMIZEBUTTON="no"
+	WINDOWSTATE="normal">
+
+<script type="text/javascript" language="javascript">
+	var winWidth = 600, winHeight = 400;
+	window.resizeTo(winWidth, winHeight);
+	window.moveTo((screen.width - winWidth) / 2, (screen.height - winHeight) / 2);
+</script>
+<style>
+* {
+	border: 1px solid black;
+	margin: 0;
+	border: none;
+	cursor: none;
+}
+.main {
+	background-color: #292929;
+	border: 2px solid black;
+	text-align: center;
+}
+.border1 {
+	border: 1px solid #edd672;
+}
+.border2 {
+	border: 1px solid #a58e41;
+}
+.border3 {
+	width: 580px;
+	height: 332px;
+	border: 1px solid black;
+	padding: 15px 0 0;
+	background-image: url(../../_HD3_Data/Common/hd_fr_f.bmp);
+}
+#Dlg {
+	position: absolute;
+}
+#text_block {
+	display: block;
+	color: white;
+	font: 18px bolder;
+	background: black;
+	border: 1px solid #edd672;
+	margin: 50px 0 20px 0;
+	padding-top: 5px;
+	width: 500px;
+	height: 70px;
+}
+.folder_block {
+	display: block;
+	padding: 10px;
+	width: 520px;
+	height: 20px;
+}
+#folder_label {
+	color: white;
+	font: 16px bolder;
+	margin: 0px;
+	padding: 0 5px 0 5px;
+	width: 150px;
+	height: 20px;
+	float: left;
+	text-align: right;
+}
+#folderNameField {
+	background-color: #292929;
+	border: 1px solid #a58e41;
+	color: white;
+	padding: 4px 5px 0 5px;
+	margin: 0 15px 0 10px;
+	text-decoration: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: left;
+	font: 12px bold;
+	width: 280px;
+	height: 20px;
+	float: left;
+}
+#changeFolderButton {
+	background-color: black;
+	border: 1px solid #a58e41;
+	font: 16px;
+	color: #edd672;
+	cursor: pointer;
+	padding-top: 2px;
+	margin-bottom: -1px;
+	width: 34px;
+	height: 22px;
+	float: left;
+}
+#changeFolderButton:hover {
+	font: 15px bold;
+	border: 2px solid #edd672;
+}
+.file_block {
+	display: block;
+	margin-top: 20px;
+	padding: 10px;
+	width: 520px;
+	height: 20px;
+}
+#file_label {
+	display: inline;
+	color: white;
+	font: 16px bolder;
+	margin: 0px;
+	padding: 0 5px 0 5px;
+	width: 150px;
+	height: 40px;
+	float: left;
+	text-align: right;
+}
+#saveNameField {
+	background-color: #292929;
+	border: 1px solid #a58e41;
+	color: white;
+	padding: 4px 5px 0 5px;
+	margin: 0 15px 0 10px;
+	text-decoration: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: left;
+	font: 12px bold;
+	width: 280px;
+	height: 20px;
+	float: left;
+}
+#attachSaveButton {
+	background-color: black;
+	border: 1px solid #a58e41;
+	font: 16px;
+	color: #edd672;
+	cursor: pointer;
+	padding-top: 2px;
+	margin-bottom: -1px;
+	width: 33px;
+	height: 22px;
+	float: left;
+}
+#attachSaveButton:hover {
+	font: 15px bold;
+	border: 2px solid #edd672;
+}
+#createZipID {
+	background-color: black;
+	border: 2px solid #a58e41;
+	color: white;
+	padding: 5px 0;
+	margin: 25px 20px 20px;
+	text-decoration: none;
+	font: 16px bold;
+	color: #edd672;
+	cursor: pointer;
+	width: 180px;
+	height: 36px;
+}
+#createZipID:hover {
+	font: 15px bold;
+	border: 3px solid #edd672;
+}
+#exitbutton {
+	background-color: black;
+	border: 2px solid #a58e41;
+	color: white;
+	padding: 5px 0;
+	margin: 10px 20px 20px;
+	text-decoration: none;
+	font: 16px bold;
+	color: #edd672;
+	cursor: pointer;
+	width: 180px;
+	height: 36px;
+}
+#exitbutton:hover {
+	font: 15px bold;
+	border: 3px solid #edd672;
+}
+</style>
+</head>
+
+<script type="text/JavaScript">
+	function disableselect(e) {
+	return false
+	}
+	
+	function reEnable() {
+	return true
+	}
+	
+	document.onselectstart = new Function ("return false")
+	
+	if (window.sidebar) {
+	document.onmousedown = disableselect
+	document.onclick = reEnable
+	}
+</script>
+
+<script language="vbscript">
+
+
+Sub CreateZipArchive_OnClick
+ 		ScriptFolder = CreateObject("Scripting.FileSystemObject").GetParentFolderName(document.location.pathname) &"\"
+		
+		Set FileSystemObject = CreateObject("Scripting.FileSystemObject")
+		'currentDebugPath = folderNameField.value
+		myIni = ScriptFolder &"debug_settins.ini"
+
+		WriteINIString "paths", "user_debug_folder_selection", folderNameField.innerHTML, myIni
+		n = Now()
+		d = (Day(n))
+		m = (Month(n))
+		y = (Year(n))
+		h = (Hour(n))
+		s = (Second(n))
+		mn = (Minute(n))
+		zipName = "ERA_bugReport_" & h & "." & mn & "." &s & "_" & d &"." & m &"."& y & ".zip"
+		gameFolder = CreateObject("Scripting.FileSystemObject").GetParentFolderName(CreateObject("Scripting.FileSystemObject").GetParentFolderName(ScriptFolder)) &"\"
+		'msgbox gameFolder
+		if not(FileSystemObject.FolderExists(folderNameField.innerHTML)) then
+			FileSystemObject.CreateFolder(folderNameField.innerHTML)
+		end if
+			'GetINIString("paths", "user_debug_folder_selection", "Value", myIni)
+		saveFile = saveNameField.innerHTML
+		if (FileSystemObject.FolderExists(folderNameField.innerHTML) and (FileSystemObject.FolderExists(gameFolder & "Debug"))) then
+			createZipID.style.visibility="hidden"
+			
+			FolderToZip = FileSystemObject.BuildPath(gameFolder & "Debug", "")
+			if FileSystemObject.FileExists(saveFile) then
+				FileSystemObject.CopyFile saveFile, gameFolder & "Debug\"
+			end if
+			'firstSaveFile = FileSystemObject.BuildPath(ParentFolderName, saveFile)
+			'msgbox saveNameField.value &"   " &ParentFolderName
+			Set Zip = New ZipClass
+			DestFilePath = FileSystemObject.BuildPath(folderNameField.innerHTML, zipName)
+			Zip.CreateArchive DestFilePath
+			Zip.CopyFileToArchive FolderToZip
+			Zip.CloseArchive
+			saveName = FileSystemObject.GetFileName(saveFile)
+			
+			if (FileSystemObject.FileExists(gameFolder & "Debug\" & saveName) and not(saveName =""))then
+				FileSystemObject.DeleteFile gameFolder & "Debug\" & saveName
+			end if
+
+			if (GetLocale() = 1049 or GetLocale() = 1058 or GetLocale() = 1059 or GetLocale() = 8192) then
+				txtReady = "Архив с Дебагом создан!"
+				txtGoToFolder = "Открыть папку, где он был сохранён?"
+			else
+				txtReady = "Debug was created!"
+				txtGoToFolder = "Open Folder with debug file?"
+			end if
+			
+			intAnswer = Msgbox(txtGoToFolder, vbYesNo, txtReady)
+			If intAnswer = vbYes Then
+				Set WshShell = CreateObject("WScript.Shell") 
+				FolderToOpen = Chr(34) & folderNameField.innerHTML & Chr(34)
+				'MsgBox  FolderToOpen 
+				WshShell.Run FolderToOpen
+				Set WshShell = Nothing 
+			'Else
+			'	Msgbox "You answered no."
+			End If
+			'MsgBox "zip created", vbYesNo, "ZipClass"
+			createZipID.style.visibility="visible"
+		End If
+End Sub
+
+Class ZipClass
+    Private Shell
+    Private FileSystemObject
+    Private ArchiveFolder
+    Private ItemsCount
+
+    Private Sub Class_Initialize()
+        Set Shell = CreateObject("Shell.Application")
+        Set FileSystemObject = CreateObject("Scripting.FileSystemObject")
+    End Sub 
+
+    Function CreateArchive(ZipArchivePath)
+        If UCase(FileSystemObject.GetExtensionName(ZipArchivePath)) <> "ZIP" Then
+            Exit Function
+        End If
+
+        Dim ZipFileHeader
+        ZipFileHeader = "PK" & Chr(5) & Chr(6) & String(18, 0)
+        FileSystemObject.OpenTextFile(ZipArchivePath, 2, True).Write ZipFileHeader
+        Set ArchiveFolder = Shell.NameSpace(ZipArchivePath)
+        If Not (ArchiveFolder is Nothing) Then CreateArchive = True
+    End Function 
+
+    Function CopyFileToArchive(FilePath)
+        If (ArchiveFolder Is Nothing) Then Exit Function
+        ArchiveFolder.CopyHere FilePath
+        ItemsCount = ItemsCount + 1
+    End Function 
+
+    Function CopyFolderToArchive(FolderPath)
+        If (ArchiveFolder Is Nothing) Then Exit Function
+        ArchiveFolder.CopyHere FolderPath
+        ItemsCount = ItemsCount + 1
+    End Function 
+
+    Function CloseArchive
+        If (ArchiveFolder is Nothing) Then Exit Function
+        Set WsriptShell = CreateObject("Wscript.Shell")
+        If IsObject(Wscript) Then
+            Do
+                Wscript.Sleep 100
+            Loop Until ArchiveFolder.Items.Count => ItemsCount
+        Else
+            ServerSleep
+        End if
+        ItemsCount = 0
+    End Function
+
+    Private Function ServerSleep
+        Set WsriptShell = CreateObject("Wscript.Shell")
+        Do
+         '   WsriptShell.Popup "", 1, ""
+        Loop Until ArchiveFolder.Items.Count => ItemsCount
+    End Function
+
+    Function MoveFileToArchive(FilePath)
+        If (ArchiveFolder is Nothing) Then Exit Function
+        ArchiveFolder.MoveHere FilePath
+    End Function
+End Class
+
+Sub WriteINIString(Section, KeyName, Value, FileName)
+  Dim INIContents, PosSection, PosEndSection
+  
+  'Get contents of the INI file As a string
+  INIContents = GetFile(FileName)
+
+  'Find section
+  PosSection = InStr(1, INIContents, "[" & Section & "]", vbTextCompare)
+  If PosSection>0 Then
+    'Section exists. Find end of section
+    PosEndSection = InStr(PosSection, INIContents, vbCrLf & "[")
+    '?Is this last section?
+    If PosEndSection = 0 Then PosEndSection = Len(INIContents)+1
+    
+    'Separate section contents
+    Dim OldsContents, NewsContents, Line
+    Dim sKeyName, Found
+    OldsContents = Mid(INIContents, PosSection, PosEndSection - PosSection)
+    OldsContents = split(OldsContents, vbCrLf)
+
+    'Temp variable To find a Key
+    sKeyName = LCase(KeyName & "=")
+
+    'Enumerate section lines
+    For Each Line In OldsContents
+      If LCase(Left(Line, Len(sKeyName))) = sKeyName Then
+        Line = KeyName & "=" & Value
+        Found = True
+      End If
+      NewsContents = NewsContents & Line & vbCrLf
+    Next
+
+    If isempty(Found) Then
+      'key Not found - add it at the end of section
+      NewsContents = NewsContents & KeyName & "=" & Value
+    Else
+      'remove last vbCrLf - the vbCrLf is at PosEndSection
+      NewsContents = Left(NewsContents, Len(NewsContents) - 2)
+    End If
+
+    'Combine pre-section, new section And post-section data.
+    INIContents = Left(INIContents, PosSection-1) & _
+      NewsContents & Mid(INIContents, PosEndSection)
+  else'if PosSection>0 Then
+    'Section Not found. Add section data at the end of file contents.
+    If Right(INIContents, 2) <> vbCrLf And Len(INIContents)>0 Then 
+      INIContents = INIContents & vbCrLf 
+    End If
+    INIContents = INIContents & "[" & Section & "]" & vbCrLf & _
+      KeyName & "=" & Value
+  end if'if PosSection>0 Then
+  WriteFile FileName, INIContents
+End Sub
+
+Function GetINIString(Section, KeyName, Default, FileName)
+  Dim INIContents, PosSection, PosEndSection, sContents, Value, Found
+  
+  'Get contents of the INI file As a string
+  INIContents = GetFile(FileName)
+
+  'Find section
+  PosSection = InStr(1, INIContents, "[" & Section & "]", vbTextCompare)
+  If PosSection>0 Then
+    'Section exists. Find end of section
+    PosEndSection = InStr(PosSection, INIContents, vbCrLf & "[")
+    '?Is this last section?
+    If PosEndSection = 0 Then PosEndSection = Len(INIContents)+1
+    
+    'Separate section contents
+    sContents = Mid(INIContents, PosSection, PosEndSection - PosSection)
+
+    If InStr(1, sContents, vbCrLf & KeyName & "=", vbTextCompare)>0 Then
+      Found = True
+      'Separate value of a key.
+      Value = SeparateField(sContents, vbCrLf & KeyName & "=", vbCrLf)
+    End If
+  End If
+  If isempty(Found) Then Value = Default
+  GetINIString = Value
+End Function
+
+'Separates one field between sStart And sEnd
+Function SeparateField(ByVal sFrom, ByVal sStart, ByVal sEnd)
+  Dim PosB: PosB = InStr(1, sFrom, sStart, 1)
+  If PosB > 0 Then
+    PosB = PosB + Len(sStart)
+    Dim PosE: PosE = InStr(PosB, sFrom, sEnd, 1)
+    If PosE = 0 Then PosE = InStr(PosB, sFrom, vbCrLf, 1)
+    If PosE = 0 Then PosE = Len(sFrom) + 1
+    SeparateField = Mid(sFrom, PosB, PosE - PosB)
+  End If
+End Function
+
+Function GetFile(ByVal FileName)
+  Dim FS: Set FS = CreateObject("Scripting.FileSystemObject")
+  'Go To windows folder If full path Not specified.
+  If InStr(FileName, ":\") = 0 And Left (FileName,2)<>"\\" Then 
+    FileName = FS.GetSpecialFolder(0) & "\" & FileName
+  End If
+  On Error Resume Next
+
+  GetFile = FS.OpenTextFile(FileName).ReadAll
+End Function
+
+Function WriteFile(ByVal FileName, ByVal Contents)
+  
+  Dim FS: Set FS = CreateObject("Scripting.FileSystemObject")
+  'On Error Resume Next
+
+  'Go To windows folder If full path Not specified.
+  If InStr(FileName, ":\") = 0 And Left (FileName,2)<>"\\" Then 
+    FileName = FS.GetSpecialFolder(0) & "\" & FileName
+  End If
+
+  Dim OutStream: Set OutStream = FS.OpenTextFile(FileName, 2, True)
+  OutStream.Write Contents
+End Function
+
+Sub Exit_OnClick
+	Self.Close()
+End Sub
+
+Function SelectFolder( myStartFolder )
+    ' Standard housekeeping
+    Dim objFolder, objItem, objShell
+    
+    ' Custom error handling
+    On Error Resume Next
+    SelectFolder = vbNull
+
+    ' Create a dialog object
+    Set objShell  = CreateObject( "Shell.Application" )
+    Set objFolder = objShell.BrowseForFolder( 0, "Select Folder", 0, myStartFolder )
+
+    ' Return the path of the selected folder
+    If IsObject( objfolder ) Then SelectFolder = objFolder.Self.Path
+
+    ' Standard housekeeping
+    Set objFolder = Nothing
+    Set objshell  = Nothing
+    On Error Goto 0
+End Function
+
+Sub Window_Onload()
+  if (GetLocale() = 1049 or GetLocale() = 1058 or GetLocale() = 1059 or GetLocale() = 8192) then
+    document.title = "Debug Creator"
+    folder_label.innerHTML = "Папка для архива"
+    file_label.innerHTML = "Добавить файл сохранения"
+    createZipID.value = "Создать Debug архив"
+    exitbutton.value = "Выйти"
+	saveNameField.innerHTML = "< опционально >"
+	text_block.innerHTML = "Программа для сбора debug информации.<br>" & vbCrLf & "Она упакует все в архив, который нужно приложить к вашему сообщению об ошибке."
+  end if
+  
+  Set FileSystemObject = CreateObject("Scripting.FileSystemObject")
+
+  scriptDir = CreateObject("Scripting.FileSystemObject").GetParentFolderName(document.location.pathname)
+  myIni = scriptDir &"\debug_settins.ini"
+  pathFromIni = GetINIString ("paths", "user_debug_folder_selection", "Value", myIni)
+  
+  if ((FileSystemObject.FileExists(myIni)) and (FileSystemObject.FolderExists(pathFromIni)) and not(pathFromIni ="")) then
+    folderNameField.innerHTML = GetINIString ("paths", "user_debug_folder_selection", "Value", myIni)
+  else
+    Set oShell = CreateObject("WScript.Shell")
+    strHomeFolder = oShell.SpecialFolders("MyDocuments")
+    defaultDebugPath = strHomeFolder & "\Heroes 3 ERA report"
+    folderNameField.innerHTML = defaultDebugPath
+    WriteINIString "paths", "user_debug_folder_selection", defaultDebugPath, myIni
+  end if
+End Sub
+
+sub specifySavePath_OnClick
+     sFileSelected = Dlg.openfiledlg(, , CStr("User files (*.*GM*)|*.*GM*|"), CStr("Choose File"))
+   
+     If (Len(sFileSelected) = 0) Then
+     Else
+         i2 = InStr(sFileSelected, Chr(0))
+         If i2 > 1 Then  sFileSelected = Left(sFileSelected, (i2 - 1))
+     saveNameField.innerHTML = sFileSelected
+  end if
+end Sub
+
+Sub changeFolderButton_OnClick
+  Dim strPath
+  
+  strPath = SelectFolder( "" )
+  If strPath = vbNull Then
+    'MsgBox "Cancelled"
+  Else
+    Set FileSystemObject = CreateObject("Scripting.FileSystemObject")
+
+    scriptDir = CreateObject("Scripting.FileSystemObject").GetParentFolderName(document.location.pathname)
+    myIni = scriptDir &"\debug_settins.ini"
+    WriteINIString "paths", "user_debug_folder_selection", strPath, myIni
+    folderNameField.innerHTML  = strPath     
+  End If
+End Sub
+</script>
+
+<body>
+<div class="main">
+  <div class="border1">
+    <div class="border2">
+      <div class="border3">
+  			<div id="text_block">
+  				<p>A program for collecting debug information.<br>
+  				    It will zip everything up to attach to your bug report.</p>
+  			</div>
+  			<object id="Dlg" classid="CLSID:3050F4E1-98B5-11CF-BB82-00AA00BDCE0B" width="0" height="0"></object>
+  			<div class="folder_block">
+  				<p id="folder_label">Change Output Folder</p>
+  				<p id="folderNameField"></p>
+  				<input id="changeFolderButton" type="button" name="specifyFolderPath" value="&#8226;&#8226;&#8226;">
+  			</div>
+  			<div class="file_block">
+  				<p id="file_label">Attach Save File</p>
+				<p id="saveNameField">< not necessary ></p>
+	          	<input id="attachSaveButton" type="button" name="specifySavePath" value="&#8226;&#8226;&#8226;">
+			</div>
+			<input id="createZipID" type="button" name="CreateZipArchive" value="Create Debug Report">
+			<input id="exitbutton" type="button" name="Exit" value="Cancel">
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

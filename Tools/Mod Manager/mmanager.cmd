@@ -1,0 +1,1 @@
+start AutoIt3.exe mmanager.au3

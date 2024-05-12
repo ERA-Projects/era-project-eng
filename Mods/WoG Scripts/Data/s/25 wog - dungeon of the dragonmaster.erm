@@ -1,0 +1,88 @@
+ZVSE2
+
+** ENHANCED DRAGON UTOPIAS
+** УСИЛЕННЫЕ УТОПИИ ДРАКОНОВ
+
+** Option 053 by Algor
+** Rewritten by igrik (11.10.2020)
+** Updated by Archer30 (Jun 2023)
+
+** All Dragon Utopias now have more diverse and existing guards. Winnings increased by 25...100%.
+
+** Utopia protection can be of 4 types:
+** 1. Common Utopia    (+25%  guard power and gold):  3x Black,     3x Gold,    6x Red,    6x Green.
+** 2. Elite Utopia     (+50%  guard power and gold):  2x Darkness,  2x Diamond, 4x Black,  4x Gold.
+** 3. Inanimate Utopia (+75%  guard power and gold):  2x Dracolich, 4x Blood,  6x Ghost, 8x Bone.
+** 4. Epic Utopia      (+100% guard power and gold):  1x Azure,     2x Crystal, 3x Rust,  4x Faerie.
+
+
+!#DC(WOG_OPT_ENHANCED_DRAGON_UTOPIAS) = 53;
+
+
+; function for passing through all map objects
+!?FU(WOG_OnIterateAllMapObjects);
+!#VA(x:x) (y:x) (z:x);
+!#VA(objType:x);
+!#VA(objSubtype:x);
+!#VA(isYellowSquare:x); boolean.
+!#VA(isPassable:x);     boolean.
+
+; check: is entry to the object
+!!FU&(isYellowSquare)<>(TRUE):E;
+
+; check option is enabled
+!!UN:P(WOG_OPT_ENHANCED_DRAGON_UTOPIAS)/?(wogOption:y);  
+!!FU&(wogOption)<>(TRUE):E;
+
+; check: object type
+!!FU&(objType)<>(OBJ_DRAGON_UTOPIA):E;
+
+; get gold utopia bonus 
+!!CB(x)/(y)/(z):R(RES_GOLD)/?(gold:y);
+
+!!if&(gold)<=20000; 3x Black, 3x Gold, 6x Red, 6x Green. 25k gold (25% more)
+  !!CB(x)/(y)/(z):G0/(MON_BLACK_DRAGON)/3 G2/(MON_RED_DRAGON)/6; 
+  !!CB(x)/(y)/(z):G1/(MON_GOLD_DRAGON)/3 G3/(MON_GREEN_DRAGON)/6; 
+  !!CB(x)/(y)/(z):G4/(NO_MON)/0 G5/(NO_MON)/0 G6/(NO_MON)/0;
+  !!CB(x)/(y)/(z):R(RES_GOLD)/25000; 
+
+!!el&(gold)<=30000; 2x Darkness, 2x Diamond, 4x Black, 4x Gold. 45k gold (50% more)
+  !!CB(x)/(y)/(z):G0/(MON_DARKNESS_DRAGON)/2 G2/(MON_BLACK_DRAGON)/4; 
+  !!CB(x)/(y)/(z):G1/(MON_DIAMOND_DRAGON)/2 G3/(MON_GOLD_DRAGON)/4; 
+  !!CB(x)/(y)/(z):G4/(NO_MON)/0 G5/(NO_MON)/0 G6/(NO_MON)/0; 
+  !!CB(x)/(y)/(z):R(RES_GOLD)/45000; 
+
+!!el&(gold)<=40000; 2x Dracolich, 4x Blood, 6x Ghosts, 8x Bone. 70k gold (75% more)
+  !!CB(x)/(y)/(z):G0/(MON_DRACOLICH)/2 G2/(MON_GHOST_DRAGON)/6; 
+  !!CB(x)/(y)/(z):G1/(MON_BLOOD_DRAGON)/4 G3/(MON_BONE_DRAGON)/8;
+  !!CB(x)/(y)/(z):G4/(NO_MON)/0 G5/(NO_MON)/0 G6/(NO_MON)/0;
+  !!CB(x)/(y)/(z):R(RES_GOLD)/70000; 
+
+!!el;               1x Azure, 2x Crystal, 3x Rust,  4x Faerie. 100k gold (100% more)
+  !!CB(x)/(y)/(z):G0/(MON_AZURE_DRAGON)/1 G2/(MON_RUST_DRAGON)/3;
+  !!CB(x)/(y)/(z):G1/(MON_CRYSTAL_DRAGON)/2 G3/(MON_FAERIE_DRAGON)/4; 
+  !!CB(x)/(y)/(z):G4/(NO_MON)/0 G5/(NO_MON)/0 G6/(NO_MON)/0; 
+  !!CB(x)/(y)/(z):R(RES_GOLD)/100000; 
+!!en;
+
+; Compensate Dragons' morale in Utopia when either Enhanced Uptopia or CB growth is enabled by Archer30
+; Here we use No Morale flag for a quick fix - the dragon won't reach positve morale in usual cases anyway
+!?OB(OBJ_DRAGON_UTOPIA);
+!!UN:P(WOG_OPT_ENHANCED_DRAGON_UTOPIAS)/?(utopia:y) P235/?(cbGrowth:y);  
+
+!!if|(utopia)/(cbGrowth);
+  !!VRi^wog_isVisitingUtopia^:S(TRUE);
+!!en;
+
+!?FU(WOG_BattleStack_InitParams)&i^wog_isVisitingUtopia^;
+!#VA(stack:x) (side:x);
+
+!!BM(stack)&(side)=(BATTLE_RIGHT):Fd|(MON_FLAG_NO_MORALE);
+
+!$OB(OBJ_DRAGON_UTOPIA);
+!!VRi^wog_isVisitingUtopia^:S(FALSE);
+
+!?FU(OnAfterLoadGame);
+!!VRi^wog_isVisitingUtopia^:S(FALSE);
+
+** End of Script **

@@ -1,0 +1,706 @@
+ZVSE2
+
+**   Sorcery Skill Enhancement Script Version 1.2 created by Timothy Pulver
+**   Requires WoG version 3.57 or later using ERM version 2.6 or later.
+**   WoGify Name: script23.erm
+**   Updated: September 15, 2004
+**   Updated: Jul 2022 by Archer30
+
+
+**   Updated: Jul 2022 by daemon_n
+Now all objects are visited natively
+AI can visit too
+
+** This script enhances the Sorcery secondary skill. With Basic Sorcery,
+** a hero with this skill can learn additional information when right-clicking
+** on certain map objects that give resources, artifacts, teach skills or
+** spells, and so forth. Range is calculated as (Level+(Sorcery Skill*2)+2).
+
+** With Advanced Sorcery, resource piles and standard treasure chests will
+** have their value increased. Resources increase by one-quarter of the
+** hero's level for gold, ore and wood, and by one-sixth the hero's level
+** for the precious resources. Expert Sorcery adds plus one to the total.
+** Treasure chests increase by 500 gold/experience for Advanced Sorcery
+** and 1000 gold/experience for Expert.
+
+** With Expert Sorcery, the Star Axis, Garden of Revelation and Learning
+** Stone may be visited from a distance. Also, resources may be collected at
+** a distance from Windmills, Water Wheels and Mystical Gardens. In all
+** cases, range is the same as the right-click range calculation listed above.
+
+** To install this script in a map, simply copy & paste the code into a global
+** (timed) event. Copy the entire code, from ZVSE to the end. Make sure
+** that you disable ALL colours from receiving the event and/or change
+** the event day to something like 500 or later to avoid the ERM script
+** popping up as if it were a regular event message. The title of the event
+** is unimportant, but I would suggest something like "Enhanced Hint Text".
+** Happy Ensorcelling! :-)
+-----------------------------------------------------------------------------------------
+Flags Used in this Script: 1-3,410,872
+Variables Used in this Script: v1-v4,v310-v312,z1-z5
+Functions Used in this Script: 849,5000-5037
+Function Variables Used in this Script: x1-x5,x16,y1-y17
+
+; Note: Behaviour after entering objects can be configured with FU(WOG_23_OnAfterEnterObject)
+
+
+!?FU(WOG_CreateERMHook);
+!#VA(address:x);
+
+!!UN:P23/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!SN:E(address)/1/4383184/(WOG_AI_OnSelectTartgetToMove);
+
+-----------------------------------------------------------------------------------------
+; Initialization
+!?FU(WOG_23_Initialization);
+!#VA(optionId:x);
+
+!!UN:P(optionId)/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+
+!#FU(WOG_23_Initialization):P23;
+-----------------------------------------------------------------------------------------
+[Timer - give AI additional movement points accoridng to Sorcery level]
+; Archer30: Sure this is still needed?
+!?FU(OnEveryDay)&i^timerIsAi^;
+  !!UN:P23/?(wogOption:y);
+  !!FU&(wogOption)<>(TRUE):E;
+
+  !!OW:Hi^timerOwner^/1;
+  !!if&v1;
+
+    !!re i/2/v1/1/1;
+      !!HEvi:S(SKILL_SORCERY)/?(sorceryLevel:y);
+      !!if&(sorceryLevel);
+        !!VR(sorceryLevel):*100;
+        !!HEvi:Wd(sorceryLevel)/1 Gd(sorceryLevel);
+      !!en;
+    !!en;
+  !!en;
+
+!?FU(WOG_23_GetObjectToSetAsVisited);
+!#VA(objType:x) (result:x);
+
+!!VR(result):S(FALSE);
+
+!!if&(objType)=>88/(objType)<=90|(objType)=(OBJ_WITCH_HUT)/(objType)=(OBJ_TREE_OF_KNOWLEDGE)/(objType)=(OBJ_CREATURE_BANK)/(objType)=(OBJ_CRYPT) 
+    /(objType)=(OBJ_DRAGON_UTOPIA)/(objType)=(OBJ_DERELICT_SHIP)/(objType)=(OBJ_SHIPWRECK)/(objType)=(OBJ_UNIVERSITY);
+  !!VR(result):S(TRUE);
+!!en;
+
+!?FU(WOG_AI_OnSelectTartgetToMove);
+  *!FU:E;
+  *!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(hero:y); C(ebp)/-32/4/?(hero:y);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-116/4/?(xyz:y) C(ebp)/-32/4/?(hero:y);
+
+  !!if&(hero);
+    !!UN:C(hero)/26/4/?(heroId:y);
+    !!if&(heroId)>(NO_HERO)/(heroId)<=(HERO_LAST_WOG);
+
+      !!HE(heroId):S(SKILL_SORCERY)/?(sorceryLevel:y);
+
+      !!if&(sorceryLevel);
+        !!UN:C(ebp)/-116/4/?(xyz:y) C(hero)/34/2/?(heroOwner:y);
+        !!FU(WOG_UnPackedCoords):P?(x:y)/?(y:y)/?(z:y)/(xyz);
+        *!IF:M^%(x) %(y) %(z)^;
+
+        !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/?(ebx:y) C(ebx)/30/4/?t;
+        !!FU(WOG_23_GetObjectToSetAsVisited):Pt/?(setAsVisited:y);
+
+        !!if&(setAsVisited);
+          !!HE(heroId):P?(hX:y)/?(hY:y)/?(hZ:y);
+          !!FU&(hZ)<>(z):E;
+          !!FU(WOG_23_CanReachObject):P(x)/(y)/(z)/(heroId)/(sorceryLevel)/?(result:y);
+          !!if&(result);
+            !!FU(WOG_AdvMgr_SetObjectAsVisited):P(x)/(y)/(z)/(heroOwner);
+          !!en;
+
+        !!el|t=(OBJ_MYSTICAL_GARDEN)/t=(OBJ_LEARNING_STONE)/t=(OBJ_STAR_AXIS)/t=(OBJ_WINDMILL)/t=(OBJ_WATER_WHEEL)/t=(OBJ_GARDEN_OF_REVELATION);
+          !!HE(heroId):P?(hX:y)/?(hY:y)/?(hZ:y);
+          !!FU&(hZ)<>(z):E;
+          !!FU(WOG_23_CanReachObject):P(x)/(y)/(z)/(heroId)/(sorceryLevel)/?(result:y);
+          !!if&(result)/(sorceryLevel)>2;
+            !!FU(WOG_AdvMgr_GetMapItem):P(x)/(y)/(z)/?(mapItem:y);
+            !!HE(heroId):Z?(hero:y) Wd1/1;
+            !!UN:C(ADV_MANAGER)/4/?(advMgr:y);
+            !!SN:E4901264/(CALLCONV_THISCALL)/(advMgr)/(mapItem)/(hero)/(xyz);
+            !!FU(WOG_23_OnAfterEnterObject):P(x)/(y)/(z)/t/(heroOwner); [This function would be called by 3rd party scripts]
+          !!en;
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+
+
+-----------------------------------------------------------------------------------------
+
+
+!?FU(OnAdventureMapRightMouseClick_Quit)&i^artefact_helper_p^;
+  !!VRi^artefact_helper^:Si^artefact_helper_p^;
+  !!VRi^artefact_helper_p^:S(FALSE);
+
+ [Start of CM trigger]
+!?FU(OnAdventureMapRightMouseClick)&i^mouse_item^=(ITEM_ADVMAP_ADVENTURE_MAP);
+   [Check if Sorcery script is enabled]
+  !!UN:P23/?(wogOption:y);
+  !!FU&(wogOption)<>(TRUE):E;
+
+  !!OW:C?y99/?(clickedPlayer:y) A(clickedPlayer)/?(activeHero:y);                [added ability for mp]
+
+  !!if&(activeHero)<>(NO_HERO);/(sorceryOn);[If Sorcery script is enabled, call Function 5000]
+    !!CM:P?(x:y)/?(y:y)/?(z:y);
+    !!HE(activeHero):S(SKILL_SORCERY)/?(sorceryLevel:y) P?(hX:y)/?(hY:y)/?(hZ:y);
+    !!FU&(x)=(hX)/(y)=(hY)|(z)<>(hZ)/(sorceryLevel)<1:E;
+
+    !!SN:O?(x:y)/?(y:y)/?(z:y);             [Get the coordinate of the entrance]
+    !!FU(WOG_23_CanReachObject):P(x)/(y)/(z)/(activeHero)/(sorceryLevel)/?(result:y);
+
+    !!if&(result);
+      !!FU(WOG_23_MainProcedure):P(x)/(y)/(z)/(activeHero)/(sorceryLevel);
+    !!en;
+  !!en;
+
+-----------------------------------------------------------------------------------------
+; Warning: Mixing classic z vars and name z vars in the fowlling funciton, could that have a problem?
+!?FU(WOG_23_MainProcedure);  [Start of Function 5000 - get coordinates and object type/subtype] [and control word at the right-click location]
+!#VA(x:x) (y:x) (z:x) (heroId:x) (sorceryLevel:x);
+
+  !!OB(x)/(y)/(z):H?(customHint:y) T?(objType:y) U?(objSubtype:y) C?(cWord:y);   [Get object type, subtype and control word]
+  !!FU&(customHint)/(objType)<>(OBJ_ARTIFACT):E; [Skip control word check for artifact for mod compatibility]
+
+  !!IF:V3/0;[Set Flag 3 to false]
+
+  !!if&(objType)>0/(objType)<>(OBJ_HERO);
+    !!if&999;                                                           [only active player can visit objects]
+      !!FU(WOG_23_GetObjectToSetAsVisited):P(objType)/?(setAsVisited:y);
+    !!en;
+    !!if&(setAsVisited:y);
+      !!HE(heroId):O?(heroOwner:y);
+      !!FU(WOG_AdvMgr_SetObjectAsVisited):P(x)/(y)/(z)/(heroOwner);
+
+    //Guarded Object Section
+    !!el|(objType)=(OBJ_ARTIFACT)/(objType)=(OBJ_RESOURCE)/(objType)=(OBJ_SPELL_SCROLL);
+      !!if&(objType)=(OBJ_ARTIFACT);
+        !!FU5036:P(objSubtype);
+        !!SN:H^art^/(objSubtype)/1/?(desc:z);
+        !!VR(msg:z):S^%(desc)%T(wog.endl)%T(wog.endl){%z2}^;
+        !!VR(pic:y):S(PIC_TYPE_ART);
+        !!VR(value:y):S(objSubtype);
+        !!VRi^artefact_helper_p^:Si^artefact_helper^; [Compatibility with Era Scripts - artefact helper]
+        !!VRi^artefact_helper^:S(FALSE);
+
+      !!el&(objType)=(OBJ_RESOURCE);
+        !!AR(x)/(y)/(z):V?(value:y);      [Store amount of resource in y1]
+        !!FU(WOG_23_CalculateResourceBonus):P(objSubtype)/(heroId)/(sorceryLevel)/?(bonus:y);
+
+        !!if&(objSubtype)=(RES_GOLD);
+          !!VR(value):*100; [If resource is gold, multiply amount by 100]
+          !!VR(bonus):*100;
+        !!en;
+
+        !!FU5020:P(objSubtype)/(value);
+        !!if&(bonus);
+          !!VR(msg:z):S^{%(bonus) + %z2}^;
+        !!el;
+          !!VR(msg:z):S^{%z2}^;
+        !!en;
+        !!VR(pic:y):S(objSubtype);
+
+      !!el;
+        !!AR(x)/(y)/(z):V?(value:y);      [Get scroll spell number (y1)]
+        !!SN:H^art^/(ART_SPELL_SCROLL)/0/?(msg:z) H^spell^/(value)/0/?(spellName:z);
+        !!VR(msg):+^:%T(wog.endl)^+(spellName);
+        !!VR(pic):S(PIC_TYPE_SPELL);
+      !!en;
+
+      !!FU(WOG_23_GuardedObjectMessage):P(x)/(y)/(z)/(msg)/(cWord)/(pic)/(value);
+      !!CM:R0;
+        //Guarded Object Section END
+
+    !!el&(objType)=(OBJ_TREASURE_CHEST);
+      !!UN&(objSubtype):B(objSubtype)/?(isNewChest:y); [Treasure Chest non-standard check]
+      !!if&(objSubtype)>=0/(objSubtype)<7;
+        !!if&(isNewChest)=(FALSE);
+          !!FU5003:P(x)/(y)/(z);                    [Treasure Chest (standard)]
+        !!el&(objSubtype)=1;
+          !!IF:V1/0;                                [Clear flag 1]
+          !!FU849:P;                                [Flag 1 will be set if Chest script in use]
+          !!FU5037&1:P(x)/(y)/(z);                  [ERM Chest - Display "Trapped/Non-Trapped"]
+        !!en;
+      !!en;
+
+    !!el&(objType)=(OBJ_SCHOLAR);
+      !!UN:P783/(scholars:y);           [Compatibility with Era Scripts - Scholars instead of Obelisks]
+
+      !!if&(scholars)<>(TRUE);
+        !!FU5002:P(x)/(y)/(z)/(heroId);
+      !!en;
+    !!el&(objType)=(OBJ_CAMPFIRE);
+      !!FR(x)/(y)/(z):B?(resource:y)/?(value:y); [Store campfire bonus type (y1) and value (y2)]
+      !!FU(WOG_GetObjectName):P(objType)/?(objName:z);
+      !!VR(gold:y):S(value) *100;                    [Multiply bonus value by 100 (gold), store in y3]
+      !!IF:Q1/(RES_GOLD)/(gold)/(resource)/(value)/(MSG_TYPE_POPUP)/(objName); [Display hint text]
+      !!CM:R0;
+
+    !!el&(objType)=63/(objSubtype)=0;
+      !!FU5016:P(x)/(y)/(z)/(heroId);     [Pyramid]
+
+    !!el&(objType)=(OBJ_SHIPWRECK_SURVIVOR);
+      !!FU5036:P(cWord);                  [Lookup artifact class - z2]
+      !!IF:Q1/(PIC_TYPE_ART)/(cWord)/4/z123048; [Display hint text]
+      !!CM:R0;
+
+    !!el&(objType)=(OBJ_FLOTSAM);
+      !!FU5021:P(x)/(y)/(z)/(cWord);      [Flotsam]
+
+    !!el&(objType)=(OBJ_SEA_CHEST);
+      !!FU5022:P(x)/(y)/(z)/(cWord);      [Sea Chest]
+   
+    !!el|(objType)=(OBJ_OCEAN_BOTTLE)/(objType)=(OBJ_SIGN); [Start of [Sign or Bottle] - Display Sign Message]
+      !!SG(x)/(y)/(z):M?z1;               [Store sign message in z1]
+      !!VRz1:H1;                          [Check if sign is default or blank - Flag 1 set to false if empty]
+      !!VRz1&-1:Sz123029;                 [If sign is default or blank, set z1 to this text]
+      !!IF:Q1/-1/-1/4^%Z1^;               [Display hint text]
+      !!CM:R(FALSE);
+
+    !!el&(objType)=(OBJ_WAGON);
+      !!FU5007:P(x)/(y)/(z);              [Wagon]
+
+    !!el&(objType)=(OBJ_CORPSE);
+      !!FU5008:P(x)/(y)/(z);              [Skeleton]
+
+    !!el&(objType)=(OBJ_LEAN_TO);
+      !!FU5006:P(x)/(y)/(z);              [Lean To]
+
+    !!el&(objType)=(OBJ_WARRIORS_TOMB);
+      !!FU5013:P(x)/(y)/(z);              [Warrior's Tomb]
+
+    !!el&999;                             [only active player can visit !]
+        // Section of the ingenious remote visit feature by daemon_n
+      !!VR(pic:y):S(NO_PIC_TYPE);
+      !!VR(value:y):S(NO_PIC_TYPE);
+      !!VR(owner:y):Si^timerOwner^;
+      !!if&(objType)=(OBJ_LEARNING_STONE);
+        !!ST(x)/(y)/(z):N?(cWord);
+        !!HE(heroId):V0/(cWord)/?(isVisited:y);
+        !!if&(isVisited)=(FALSE);
+          !!VR(pic):S(PIC_TYPE_EXPERIENCE);
+          !!FU(WOG_23_HeroGetLearningStoneExperience):P(heroId)/?(value);
+        !!en;
+
+      !!el&(objType)=(OBJ_STAR_AXIS);
+        !!HE(heroId):V4/(cWord)/?(isVisited:y);
+        !!if&(isVisited)=(FALSE);
+          !!VR(pic):S(PIC_TYPE_SKILL_POWER);
+          !!VR(value):S1;
+        !!en;
+
+      !!el&(objType)=(OBJ_GARDEN_OF_REVELATION);
+        !!HE(heroId):V2/(cWord)/?(isVisited:y);
+        !!if&(isVisited)=(FALSE);
+          !!VR(pic):S(PIC_TYPE_SKILL_KNOWLEDGE);
+          !!VR(value):S1;
+        !!en;
+
+      !!el&(objType)=(OBJ_WINDMILL);
+        !!ML(x)/(y)/(z):B?(pic)/?(value);
+        !!PO(x)/(y)/(z):O?(owner:y);
+
+      !!el&(objType)=(OBJ_WATER_WHEEL);
+        !!WM(x)/(y)/(z):B?(value);
+        !!VR(pic):S(RES_GOLD);
+        !!VR(value):*500;
+        !!PO(x)/(y)/(z):O?(owner:y);
+
+      !!el&(objType)=(OBJ_MYSTICAL_GARDEN);
+        !!GD(x)/(y)/(z):T?(hasRes:y) B?(pic) N?(id:y);[Check Garden's bonus type (y1) and resource type (y2)]
+        !!PO(x)/(y)/(z):O?(owner:y);
+
+        !!if&(hasRes);
+          !!VR(value):S5;
+          !!VR(value)&(pic)=(RES_GOLD):*100;
+        !!el;
+          !!GD(x)/(y)/(z):N?(id:y);[Check Garden's bonus type (y1) and resource type (y2)]
+          !!UN:C6933756/4/?(activePlayer:y) C(activePlayer)/184/4/?(visitedGardensBitset:y);
+          !!VR(bit:y):S1 Sd<<(id);
+          !!VR(visitedGardensBitset:y):&(bit);
+          !!if&(visitedGardensBitset)=0;
+            !!UN:C(activePlayer)/184/4/d|(bit:y);
+          !!en;
+        !!en;
+      !!en;
+      !!if&(sorceryLevel)>2/(owner)<>i^timerOwner^|(value)>0;<>(NO_PIC_TYPE);                       [;]
+        !!VR(value:y)&(value)<0:S(NULL);
+        !!CM:R(FALSE);
+        !!FU(WOG_23_VisitObjectRemote):P(x)/(y)/(z)/(heroId)/(pic)/(value)/(sorceryLevel);
+      !!el&(value)<>(NO_PIC_TYPE);
+        !!FU(WOG_AdvMgr_SetObjectAsVisited):P(x)/(y)/(z)/(heroOwner);
+      !!en;
+    !!en;
+  !!en;
+-----------------------------------------------------------------------------------------
+
+
+!?FU(WOG_23_HeroGetLearningStoneExperience);
+!#VA(heroId:x) (result:x);
+  !!UN:C6546672/4/?e2;                            [get stone exp]
+  !!HE(heroId):Z?(hero:y);
+  !!SN:E5130928/(CALLCONV_THISCALL_FLOAT)/(hero); [get hero learning power and store value to e1]
+  !!VRe1:*e2;
+  !!VR(result):Se1;
+
+-----------------------------------------------------------------------------------------
+!?FU(WOG_23_VisitObjectRemote);
+!#VA(x:x) (y:x) (z:x) (heroId:x) (pic:x) (value:x) (sorceryLevel:x);
+  !!OB(x)/(y)/(z):T?(objType:y);
+  
+  !!FU(WOG_GetObjectName):P(objType)/?(objName:z);
+
+  !!if&999/(sorceryLevel)>=3;
+    !!SN:T^wog.23.remote^/?(msg:z)/^objName^/(objName);
+    !!IF:Q2/(PIC_TYPE_SEC_SKILL)/80/(pic)/(value)/(MSG_TYPE_QUESTION)/(msg);
+    !!if&2;
+      !!FU(WOG_AdvMgr_HeroEnterObject):Px1/x2/x3/x4; [visit object with hero]
+      !!FU(WOG_23_OnAfterEnterObject):P(x)/(y)/(z)/(objType)/i^timerOwner^; [This function would be called by 3rd party scripts]
+    !!en;
+  !!el;
+    !!IF:Q2/(pic)/(value)/(MSG_TYPE_POPUP)/^%(objName)%T(wog.endl)%T(wog.endl)%T(wog.notVisited)^;
+  !!en;
+
+-----------------------------------------------------------------------------------------
+ [Start of Function 5002 - Display Scholar details]
+!?FU5002;
+
+   [Check what Scholar teaches (y1): 0=Primary skill, 1=Secondary skill, 2=Spell]
+   [Primary skill # in y2, Secondary skill # in y3, Spell # in y4]
+  !!SCx1/x2/x3:T?y1 P?y2 S?y3 L?y4;
+
+   [Type 0 - Primary skill]
+  !!VRz2:S^^;
+  !!VRy5&y1=0:Sy2 +31;
+  !!VRy6&y1=0:S1;
+  !!VRz1&y1=0/y2<2:Sz123006;
+  !!VRz1&y1=0/y2=2:Sz123007;
+  !!VRz1&y1=0/y2=3:Sz123008;
+
+   [Type 1 - Secondary skill]
+
+   [Check hero's level in skill - store in y7]
+  !!HEx4&y1=1:Sy3/?y7;
+  !!VRy5&y1=1:S20;
+  !!VRy6&y1=1:Sy3 *3 +3;
+  !!VRy6&y1=1/y7=1:+1;
+  !!VRy6&y1=1/y7=2:+2;
+  !!VRz1&y1=1:Sz123009;
+
+   [Type 2 - Spell]
+  !!VRy5&y1=2:S9;
+  !!VRz1&y1=2:Sz123010;
+   [Subtract 1024 to get spell number]
+  !!VRy4&y1=2:-1024;
+  !!VRy6&y1=2:Sy4;
+
+   [Display hint text]
+  !!IF:Q1/y5/y6/4^%Z1^;
+  !!CM:R0;
+
+-----------------------------------------------------------------------------------------
+!?FU5003;                               [Start of Function 5003 - Display Treasure Chest Contents]
+  [Contents - y1 = bonus type (artifact or gold/experience), y2=artifact number,]
+  !!CHx1/x2/x3:S?y1 A?y2 B?y3;          [y3 = bonus amount (if gold/experience)]
+  !!if&y1;                              [Display hint text for artifact]
+    !!IF:Q1/8/y2/4/z123012;
+  !!el;
+    !!VRy5:Sy3*500;                     [Multiply bonus amount by 500 to get gold amount (y5), subtract 500 for experience (y6)]
+    !!VRy6:Sy5-500;
+    !!IF:Q1/6/y5/17/y6/4/z123011;       [Display hint text for gold/experience]
+  !!en;
+  !!CM:R0;
+
+-----------------------------------------------------------------------------------------
+!?FU(WOG_23_ObjHasGuard);
+  !#VA(x:x) (y:x) (z:x) (hasGuard:x) (list:x) (text:z);
+  !!VR(endl:z):S^%T(wog.endl)^;
+  !!VR(hasGuard):S(FALSE);
+  !!re i/0/(ARMY_SLOT_LAST);
+    !!ARx1/x2/x3:Gi/?(monId:y)/?(monCount:y);
+    !!if&(monId)<>(NO_MON);
+      !!VR(hasGuard):+1;
+      !!SN&(monCount)=1:H^monname^/(monId)/0/?(monName:z);
+      !!SN&(monCount)>1:H^monname^/(monId)/1/?(monName:z);
+      !!VR(text):+^%(monCount) %(monName)^+(endl); [%T(wog.endl)^;]
+    !!en;
+  !!en;
+  !!VR(list):Z(text);
+
+!?FU(WOG_23_GuardedObjectMessage);
+!#VA(x:x) (y:x) (z:x) (startText:x) (cWord:x) (pic:x) (value:x);
+  !!VR(msg:z):Sz(startText);
+  !!VR(endl:z):S^%T(wog.endl)^;
+  !!if&(cWord)<0;
+    !!FU(WOG_23_ObjHasGuard):Px1/x2/x3/?(hasGuard:y)/?(guardList:z);
+    !!if&(hasGuard);
+      !!FU(GetTextFileString):P^genrltxt^/203/?(guarded:z);
+      !!VR(msg):+(endl)+(endl)+^%(guarded):^ +(endl) +(guardList);
+    !!en;
+
+  !!en;
+  !!IF:Q1/(pic)/(value)/(MSG_TYPE_POPUP)/(msg); [Display hint text]
+
+-----------------------------------------------------------------------------------------
+!?FU5006;                               [Start of Function 5006 - Display Lean To Contents]
+  !!TRx1/x2/x3:P?y3;                    [If red square is clicked on, add one to x position (x1)]
+  !!VRx1&y3=0:+1;
+  !!LNx1/x2/x3:B?y1/?y2;                [Get resource type (y1) and value (y2)]
+  !!FU5020:Py1/y2;                      [Call Function 5020 to set up appropriate hint text]
+  !!VRz2&y2<1:Sz123016;                 [If Lean To is empty, set z2 to this message]
+  !!VRy1&y2<1:S-1;
+  !!VRz1:Sz123017;                      [Set up new hint text (z1)]
+  !!IF:Q1/y1/y2/4^%Z1^;                 [Display hint text]
+  !!CM:R0;
+-----------------------------------------------------------------------------------------
+!?FU5007;                               [Start of Function 5007 - Display Wagon Contents]
+  !!WGx1/x2/x3:S?y1 B?y2 A?y3 R?y4/?y5; [Check wagon details: y1 (bonus or not), y2 (bonus type: artifact or resource),]
+  [y3 (artifact number), y4 (resource type), y5 (resource amount)]
+  !!FU5020&y1<>0/y2=0:Py4/y5;           [If resource bonus Call Function 5020 to set up appropriate hint text (z2)]
+  !!FU5036&y2<>0:Py3;                   [Lookup artifact class - z2]
+
+  !!VRz1&y1<>0/y2=0:Sz123018;           [Set up hint text in z1 for resources]
+  !!VRz1&y1<>0/y2<>0:Sz123019;          [Set up hint text in z1 for artifact]
+  !!VRy4&y1<>0/y2<>0:S8;
+
+  !!VRz1&y1=0:Sz123020;                 [If wagon is empty, set z1 to "Wagon contains nothing of value."]
+  !!VRy4&y1=0:S-1;                      [and set y4 and y5 to -1]
+  !!VRy5&y1=0:S-1;
+
+  !!IF&y2=0:Q1/y4/y5/4^%Z1^;            [Display hint text for resources]
+  !!IF&y2<>0:Q1/y4/y3/4^%Z1^;           [Display hint text for artifact]
+  !!CM:R0;
+-----------------------------------------------------------------------------------------
+!?FU5008;                 [Start of Function 5008 - Display Skeleton Contents]
+  !!SKx1/x2/x3:S?y1 A?y2; [Get skeleton bonus (y1) and artifact type, if any (y2)]
+  !!VRy3&y1<>0:S8;        [Set y3 to artifact type]                 [Artifact]
+  !!VRz1&y1=0:Sz123021;   [If skeleon has nothing, set z1 to "Skeleton has nothing of value."]
+  !!VRy2&y1=0:S-1;        [Set type (y3) and subtype (y2) to -1]
+  !!VRy3&y1=0:S-1;
+  !!FU5036&y1<>0:Py2;     [Look up class of artifact (z2)]
+  !!VRz1&y1<>0:Sz123022;  [Set up hint text in z1 for artifact]
+  !!IF:Q1/y3/y2/4^%Z1^;   [Display hint text]
+  !!CM:R0;
+-----------------------------------------------------------------------------------------
+!?FU5011;                               [Start of Function 5011 - Display Tree of Knowledge type]
+
+  !!KTx1/x2/x3:S?y1 N?y2;               [Store type in y1 and tree number in y2]
+  !!HEx4:V5/y2/?y4;
+  !!if&y1=2;
+    !!VRy5:S(RES_GEMS);
+    !!VRy6:S10;
+  !!el&y1;
+    !!VRy5:S(RES_GOLD);
+    !!VRy6:S2000;
+  !!el;
+    !!VRy5:S(NO_PIC_TYPE);
+    !!VRy6:S(NO_PIC_TYPE);
+  !!en;
+  !!VRy1:+123030;
+  !!VRz2:Szy1;
+
+  !!VRz3&y4=1:Sz123033;                 [Check if hero has visited this tree - y4=1 if visited]
+  !!VRz3&y4=0:S^^;                      [If hero visited tree, set z3 to (already visited), otherwise set it ^^]
+
+  !!VRz1:Sz123034;
+  !!IF:Q1/y5/y6/4^%Z1^;                 [Display hint text]
+  !!CM:R0;
+-----------------------------------------------------------------------------------------
+!?FU5013; [Start of Function 5013 - Display contents of Warrior's Tomb]
+  !!TRx1/x2/x3:P?y3;                    [If red square is clicked on, add one to x position (x1)]
+  !!VRx1&y3=0:+1;
+  !!WTx1/x2/x3:S?y1 A?y2;               [Store artifact/no artifact in y1, artifact number in y2]
+  !!FU5036:Py2;                         [Lookup artifact class - z2]
+  !!VRy4:S8;                            [Artifact]
+  !!VRz1&y1<>0:Sz123040;
+  !!VRz1&y1=0:Sz123041;                 [If Tomb has nothing, set z1 to "Warrior's Tomb is empty."]
+  !!VRy2&y1=0:S-1;
+  !!VRy4&y1=0:S-1;
+  !!IF:Q1/y4/y2/4^%Z1^;                 [Display hint text]
+  !!CM:R0;
+-----------------------------------------------------------------------------------------
+!?FU5016;                               [Start of Function 5016 - Display Pyramid Spell]
+  !!PMx1/x2/x3:S?y1 V?y2;               [Store pyramid spell number in y1 and visited status in y2]
+  !!UN&y1<>0:N1/2/y1;                   [Determine Spell name - store in z2 - store type/subtype in y5 and y6]
+  !!VRy5:S9;
+  !!VRy6:Sy1;
+  !!OW:A-1/?y3;                         [Get active hero number - store in y3]
+  !!HEy3:My1/?y4;                       [Check if active hero knows this spell already - y4 > 0 if hero knows spell]
+  !!VRz2&y4>0:Sz123044;                 [Add additional (already learned) text (z2) if hero knows spell (y4 > 0)]
+  !!VRz2&y2=0:Sz123045;                 [If Pyramid already visited, set, set z2 to "(visited)"]
+  !!VRz1&y1<>0:Sz123046;
+  !!VRy5&y2=0:S-1;
+  !!VRy6&y2=0:S-1;
+  !!IF:Q1/y5/y6/4^%Z1^;                 [Display hint text]
+  !!CM:R0;
+-----------------------------------------------------------------------------------------
+!?FU5020;           [Start of Function 5020 - Hint text for resources - stored in z2]
+  !!VR(app:y):Sx2 -1 F0/1;
+  !!VR(strInd:y):Sx1*2 +(app) +123049;                     [Set up appropriate hint text]
+  !!VRz2:S^{%X2} ^ +z(strInd);
+-----------------------------------------------------------------------------------------
+!?FU5021; [Start of Function 5021 - Display Flotsam Type]
+  !!VRz2&x4=0:Sz123065;
+  !!VRy1&x4=0:S-1;
+  !!VRy3&x4<2:S-1;
+  !!VRz2&x4=1:Sz123066;
+  !!VRy1&x4>0:S0;
+  !!VRy2&x4>0/x4<3:S5;
+  !!VRz2&x4=2:Sz123067;
+  !!VRy3&x4>1:S6;
+  !!VRy4&x4=2:S200;
+  !!VRz2&x4=3:Sz123068;
+  !!VRy2&x4=3:S10;
+  !!VRy4&x4=3:S500;
+  !!VRz1:Sz123069;   [Set up hint text (z1)]
+  !!CM:R0;
+  !!IF:Q1/y1/y2/y3/y4/4^%Z1^;   [Display hint text]
+-----------------------------------------------------------------------------------------
+!?FU5022; [Start of Function 5022 - Sea Chest Type]
+  !!VRy1:Sx4 &7;                        [For chest type, &7 control word - store in y1]
+  !!VRy2&y1=2:Sx4 :8 &255 -1;           [Determine artifact number - store in y2]
+  !!FU5036&y1=2:Py2;                    [Lookup artifact class - z2]
+  !!FU(WOG_GetObjectName):P(OBJ_SEA_CHEST)/?z1; [Set up z1 to store "Sea Chest"]
+  !!VRz1:+^%T(wog.endl)^;
+  !!IF&y1=0:Q1/-1/-1/4/z123071;         [Display hint text for empty]
+  !!IF&y1=1:Q1/6/1500/4/z123072;        [Display hint text for 1500 gold]
+  !!IF&y1=2:Q1/36/1000/8/y2/4/z123073;  [Display hint text for 1000 gold plus artifact]
+  !!CM:R0;
+-----------------------------------------------------------------------------------------
+!?FU(WOG_23_CalculateResourceBonus);
+!#VA(resType:x) (heroId:x) (sorceryLevel:x) (bonus:x);
+  !!FU&(sorceryLevel)<2:E;
+  !!HE(heroId):Ed0/?(bonus);
+  !!if|(resType)=(RES_WOOD)/(resType)=(RES_ORE)/(resType)=(RES_GOLD); [If resource is wood, ore or gold, divide hero's level (y2) by 4]
+    !!VR(bonus)::4;
+  !!el;
+    !!VR(bonus)::6;                     [If resource is precious, divide hero's level (y2) by 6]
+  !!en;
+  !!VR(bonus):F1/(INT_MAX);
+  !!VR(bonus)&(sorceryLevel)>2:+1;      [If hero has Expert Sorcery skill, add one]
+
+!?OB79&-875; [Resource object trigger - Enhance resource piles]
+  !!UN:P23/?v1; [Check if Sorcery script is enabled]
+  !!if&v1;
+    !!HE-1:S(SKILL_SORCERY)/?v1;   [Store hero's Sorcery level in v1]
+    !!FU(WOG_23_ResourcePickup)&v1>1:Pv1;   [If hero has Advanced or better Sorcery skill, call Function 5025]
+  !!en;
+-----------------------------------------------------------------------------------------
+!?FU(WOG_23_ResourcePickup);                               [Start of Function 5025 - Resource pile Enhancement with Advanced Sorcery skill]
+!#VA(skillLevel:x) (usedY[15]:y);
+  !!ARv998/v999/v1000:V?(resNumber:y);  [Get value of resource pile (y1)]
+  !!OB998:U?(resType:y);                [Get type of resource - store  in y6]
+  !!FU(WOG_23_CalculateResourceBonus):P(resType)/(CURRENT_HERO)/(skillLevel:x)/?(bonus:y);
+  !!VR(newVal:y):S(resNumber) +(bonus);
+  !!ARv998/v999/v1000:Vd(bonus);        [Increase value of resource pile (y1) by y2]
+
+  !!if&(ERM_FLAG_IS_HUMAN);
+    !!VRy10:S1 Sd<<i^timerOwner^;       [+   [Check if Enhanced Sorcery resource bonus display is disabled]
+    !!VRy11:Sv3320;                     [Set y11 to v3320]
+    !!VRy11:&y10;                       [Check if message is disabled for current player: y11]
+    !!FU&y11=y10:E;                     [Exit Function if message is disabled for current player unless Mithril]
+
+    !!HE-1:B0/?z5;                      [Store hero's name in z5]
+    !!VRz1&(skillLevel:x)=2:Sz123075;               [Set z1 to "Advanced" or "Expert" depending on skill level]
+    !!VRz1&(skillLevel:x)=3:Sz123076;
+    !!if&(resType)=(RES_GOLD);
+      !!VR(bonus):*100;       [If resource is gold, multiply by 100 (y1 and y3)]
+      !!VR(resNumber):*100;
+      !!VR(newVal):*100;
+    !!en;
+
+    !!FU5020:P(resType)/(bonus);        [Set z2 string according to type and number of resource bonus]
+    !!UN:B0/?y9;                        [Check if Mithril is being used as Mithril - store in y9]
+     [If resource is mithril, set Flag 410 to True to let the Mithril script know]
+     [it shouldn't display a picking-up-mithril message]
+    !!IF&(resType)=7/y9=1:V410/1;       [Set 410 to True if resource is mithril]
+    !!IF&(resType)<>7:V410/0;           [Set 410 to False if resource isn't mithril]
+
+    !!VRz-1&410/(bonus)=1:Sz123077;     [For mithril, set "bar" or "bars" in z-1 temporary variable]
+
+    !!VRz-1&410/(bonus)>1:Sz123078;
+    !!VRy3:S(bonus);
+    !!VRy1:S(resNumber);
+    !!OW:R-1/7/?y7;                     [Determine player's current mithril and store in y8] [Store current player's previous total mithril in y7]
+    !!VRy8:Sy7 +(newVal);               [Add new mithril to previous mithril - store in y8]
+
+    ; Compatibility with GEM (the place for settings has been moved)
+    !!VRz32:S^wog^;
+    !!VRz32&^%T(gem.wog.disableMsg)^<>^gem.wog.disableMsg^:S^gem.wog^;
+
+    !!if&-410;
+      !!SN:T^%z32.disableMsg^/?z30;
+      !!IF:Q1/(resType)/(newVal)/1/z123079; [Display increase of value message (except Mithril)]
+    !!el;
+      !!SN:T^%z32.checkMithril^/?z31;
+      !!IF:Q1/(resType)/(newVal)/1/z123080; [If resource is mithril, display this instead]
+    !!en;
+  !!en;
+-----------------------------------------------------------------------------------------
+!?OB(OBJ_TREASURE_CHEST)&-875; [Treasure Chest object trigger - Enhance gold/experience value][Hero didn't die from Rogue attack (875 must be false)]
+  !!UN:P23/?v1; [Check if Sorcery script is enabled]
+  !!if&v1;
+    !!HE-1:S(SKILL_SORCERY)/?v1;   [Store hero's Sorcery level in v1]
+    !!if&v1>1;
+      !!OB998:U?v2;                    [Get chest subtype - v2]
+      !!FU&v2>6:E;                                [v2=0 for standard chest, v2>0 for new chest types, v2>6 for Power Stones]
+      !!VRv3:S0;       [Check if chest is custom or standard]
+      !!UN&v2>0:Bv2/?v3;                    [v3=0 if standard operation, v3=1 if advanced (scripted)]
+      !!CH998&v2>0/v3=0:S?v4;       [Check if chest has an artifact or not]
+      !!CH998&v2=0:S?v4;
+      !!FU5026&v3=0/v4=0:Pv1;       [standard type and doesn't contain an artifact, call Function 5026]
+    !!en;
+  !!en;
+-----------------------------------------------------------------------------------------
+!?FU5026;                         [Start of Function 5026 - Treasure Chest Enhancement with Advanced Sorcery skill]
+  !!CHv998/v999/v1000:B?y1;       [Get value of treasure chest (y1)]
+  !!VRy2:Sy1 +x1-1 F0/15 -y1;             [Increase value of chest by 1 for Advanced Sorcery, by 2 for Expert Sorcery]
+  !!VRy3:Sy1 +y2;
+  !!CHv998/v999/v1000:Bdy2;        [Set new value of chest]
+-----------------------------------------------------------------------------------------
+!?FU5036;                               [Start of Function 5036 - Look up artifact class]
+  !!UN:Ax1/3/?y1;  [x1=artifact number. Lookup artifact class (y1) and store text in z2]
+  !!VRz2:Sz123093;
+  !!VRz2&x1=0:Sz123094;
+  !!VRz2&x1=2:Sz123095;
+  !!VRz2&x1>=3/x1<=6:Sz123096;
+  !!VRz2&y1=2:Sz123097;
+  !!VRz2&y1=4:Sz123098;
+  !!VRz2&y1=8:Sz123099;
+  !!VRz2&y1=16:Sz123100;
+  !!VRz2&x1>=146/x1<=155:Sz123101;
+-----------------------------------------------------------------------------------------
+!?FU5037; [Start of Function 5037 - ERM Chest -  Display "Trapped/Non-Trapped" message]
+  !!VRx1:%4;   [Check for trap (x mod 4 = 0, y mod 4 = 0]
+  !!VRx2:%4;
+  !!IF&x1=0/x2=0:Q1/-1/-1/4/z123102;   [Display message if chest trapped]
+  !!IF|x1<>0/x2<>0:Q1/-1/-1/4/z123103;   [Display message if chest is not trapped]
+  !!CM:R0;   [Disable standard right-click Info]
+
+!?FU(WOG_23_CanReachObject);
+!#VA(x:x) (y:x) (z:x) (heroId:x) (sorceryLevel:x) (result:x);
+  !!HE(heroId:x):O?o;
+  !!VR(playerBits:y):S1 Sd<<o;
+  !!TR(x)/(y)/(z):V?(tileBits:y);
+  !!VR(tileBits):&(playerBits);
+  !!if&(tileBits);
+    !!HE(heroId):Ed0/?(maxRange:y);         [P?(hX:y)/?(hY:y)/d;]
+    !!VR(maxRange)::5 +2;
+    !!VR(maxRange):+(sorceryLevel)+(sorceryLevel) *(maxRange); 
+
+    !!FU(WOG_Hero_GetObjectRange):P(heroId)/(x)/(y)/(z)/?(objRange:y);
+    !!if&(maxRange)>(objRange);
+      !!VR(result):S(TRUE);
+    !!en;
+  !!en;
+
+** End of Script **

@@ -1,0 +1,30 @@
+ZVSE2
+
+** UNIVERSAL CREATURE UPGRADES
+** УНИВЕРСАЛЬНОЕ УЛУЧШЕНИЕ СУЩЕСТВ
+
+** Option 174 by Timothy Pulver
+** Rewritten by igrik (01.10.2020)
+** again Rewritten by daemon_n (01.07.2022)
+** and fixed Rewritten by daemon_n (06.07.2022)
+
+** Creatures may be upgraded at any town type if the appropriate level of upgraded dwelling is built.
+
+
+!#DC(WOG_OPT_UNIVERSAL_CREATURE_UPGRADES) = 174;
+!#UN:P(WOG_OPT_UNIVERSAL_CREATURE_UPGRADES)/?i^wog_174_enabled^; [Here we use a global variable so it can be compatible with scripts]
+
+!?FU(OnDetermineMonInfoDlgUpgrade)&i^wog_174_enabled^;
+!#VA(monType:x) (upgType:x) (town:x) (hero:x);
+
+; Exit if there is an existing upgrade or is not in a town
+!!FU|(upgType)>(NO_MON)/(town)=(NO_TOWN):E;
+
+!!MA:L(monType)/?(level:y);
+!!VR(buildingId:y):S(level) +37;        [37-43 upgraded dwellings]
+!!CA0/(town):B3/(buildingId);           [check if built into flag 1]
+
+!!if&1;
+  !!FU(GetUpgradedMonster):P(monType)/?(upgraded:y);
+  !!VR(upgType)&(upgraded)>(NO_MON):S(upgraded);
+!!en;

@@ -1,0 +1,10 @@
+<snippet>
+  <content><![CDATA[
+!!re ${1:i}/${2:0}/(${3:end_value});
+  $0
+!!en;
+]]></content>
+  <description>!!re (repeat X times)</description>
+  <tabTrigger>re</tabTrigger>
+  <scope>source.erm - receiver.erm - trigger.erm</scope>
+</snippet>

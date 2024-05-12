@@ -1,0 +1,14 @@
+{
+"scope": "source.autoit",
+"completions": [
+	{ "trigger": "#include <ColorConstants.au3>", "contents": "#include <ColorConstants.au3>" },
+	{ "trigger": "#include <Constants.au3>", "contents": "#include <Constants.au3>" },
+	{ "trigger": "#include <DirConstants.au3>", "contents": "#include <DirConstants.au3>" },
+	{ "trigger": "#include <FileConstants.au3>", "contents": "#include <FileConstants.au3>" },
+	{ "trigger": "#include <FontConstants.au3>", "contents": "#include <FontConstants.au3>" },
+	{ "trigger": "#include <GUIConstants.au3>", "contents": "#include <GUIConstants.au3>" },
+	{ "trigger": "#include <GUIConstantsEx.au3>", "contents": "#include <GUIConstantsEx.au3>" },
+	{ "trigger": "#include <WindowsConstants.au3>", "contents": "#include <WindowsConstants.au3>" },
+	{ "trigger": "#include-once", "contents": "#include-once" }
+]
+}

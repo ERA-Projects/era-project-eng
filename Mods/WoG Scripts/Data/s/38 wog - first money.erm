@@ -1,0 +1,33 @@
+ZVSE2
+
+** FIRST MONEY
+** ПЕРВЫЕ ДЕНЬГИ
+
+** Option 040 by Alexis Koz
+** Rewritten by igrik (29.09.2020)
+
+* Every player (and computer too) is given:
+* 12000 gold, 20 wood, 20 ore, 10 mercury, 10 sulfur, 
+* 10 crystals and 10 gems once at the beginning of the game.
+
+
+!#DC(WOG_OPT_FIRST_MONEY) = 40;
+
+
+!?FU(OnAfterErmInstructions);
+!!UN:P(WOG_OPT_FIRST_MONEY)/?(wogOption:y);  
+!!FU&(wogOption)<>(TRUE):E;
+
+!!re i/(PLAYER_FIRST)/(PLAYER_LAST)/1;
+  !!OW:Ri/(RES_WOOD)/d20; 
+  !!OW:Ri/(RES_MERCURY)/d10; 
+  !!OW:Ri/(RES_ORE)/d20;
+  !!OW:Ri/(RES_SULFUR)/d10; 
+  !!OW:Ri/(RES_CRYSTAL)/d10; 
+  !!OW:Ri/(RES_GEMS)/d10;
+  !!OW:Ri/(RES_GOLD)/d12000;
+!!en;
+*!UN:R2;  Attention! Not need redraw
+
+
+** End of Script **

@@ -1,0 +1,1749 @@
+ZVSE2
+
+
+************************************************************************
+************************************************************************
+****************************** GAME FIXES ******************************
+************************************************************************
+************************************************************************
+
+// Flexible cheats input
+// by Archer30
+; This script enables good old HoMM 3 cheats for ERA
+; It also allows using cheats when the input is mixing with unrelated characters. The first word of the input would be checked and decide whether it's a cheat code input.
+; Cheats that works for both adventure map and battlefield in SoD now also works the same in ERA
+!?FU(gem_CreateERMHook);
+!#VA(setHook:x);
+
+!!SN:E(setHook)/1/4205107/(gem_OnDecryptInputString); 00402A33
+
+!?FU(gem_OnDecryptInputString);
+!#VA(hook:x);
+
+; Exit if it is not a place to use cheats
+!!FU(H3Dlg_GetCurrentDlgId):P?(dlgId:y);
+!!FU&(dlgId)<>(DLG_ADVMAP)/(dlgId)<>(DLG_BATTLE):E;
+
+; Get the input
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y);
+!!UN:C(ebp)/8/4/?(ptr:y);
+!!SN:B(ptr)/d/?(input:z);
+
+; Get rid of space before the first word
+!!SN:K(input)/?(size:y);
+
+!!re i/0/(size)/1/-1;
+  !!SN:K(input)/i/?(character:z);
+
+  !!br&(character)<>^ ^;
+!!en;
+
+!!FU&i=(size):E;
+
+!!VR(size):-1;
+!!FU(Substr):P(input)/i/(size)/?(input);
+
+; Catch only the first word of the input to check if they match any cheats
+!!VR(firstWord:z):M2/(input)/0;
+; Convert the first word to lower case for the next step
+!!FU(StrToLower):P(firstWord)/?(str:z);
+
+; Make old cheats work by converting them to new ones
+!!VR(newStr:z):S^^;
+
+; Check mappings
+; For adventure map
+!!if&(dlgId)=(DLG_ADVMAP);
+  !!OW:Ai^timerOwner^/?(hero:y);
+
+  !!if&(hero)>(NO_HERO);
+    !!if|(str)=^nwcmuchrejoicing^/(str)=^nwcmorpheus^/(str)=^wogfellowship^; [Full Morale on Hero. No AB]
+      !!VR(newStr):S^wogfellowship^;
+    !!el|(str)=^nwcigotbetter^/(str)=^nwcquigon^/(str)=^nwcneo^/(str)=^woggandalfwhite^; [Gain +1 Level for Hero]
+      !!VR(newStr):S^woggandalfwhite^;
+    !!el|(str)=^nwcantioch^/(str)=^nwcr2d2^/(str)=^nwclotsofguns^/(str)=^wogoliphaunt^; [All War Machines]
+      !!VR(newStr):S^wogoliphaunt^;
+    !!el|(str)=^nwctim^/(str)=^nwcmidichlorians^/(str)=^nwcthereisnospoon^/(str)=^wogsaruman^/(str)=^woggandalf^; [999 Mana and All Spells]
+      !!VR(newStr):S^wogsaruman^;
+    !!el|(str)=^nwcfleshwound^/(str)=^nwcdarthmaul^/(str)=^nwcagents^/(str)=^wogpathofthedead^; [Fill Each Slot with 10 Black Knights]
+      !!VR(newStr):S^wogpathofthedead^;
+    !!el|(str)=^nwcavertingoureyes^/(str)=^nwcpadme^/(str)=^nwctrinity^/(str)=^woggaladriel^; [Fill Your Army with Archangels]
+      !!VR(newStr):S^woggaladriel^;
+    !!el|(str)=^nwccoconuts^/(str)=^nwcpodracer^/(str)=^nwcnebuchadnezzar^/(str)=^wogshadowfax^; [Unlimited Movement for Hero]
+      !!VR(newStr):S^wogshadowfax^;
+    !!el|(str)=^nwccastleanthrax^/(str)=^nwcfollowthewhiterabbit^/(str)=^wogbilbo^; [Full Luck on Your Hero. No AB]
+      !!VR(newStr):S^wogbilbo^;
+    !!en;
+  !!en;
+
+  !!if|(str)=^nwcsirrobin^/(str)=^nwcbluepill^/(str)=^wogdarklord^/(str)=^wogdenethor^; [Instant lose. No AB]
+    !!VR(newStr):S^wogdarklord^;
+  !!el|(str)=^nwcalreadygotone^/(str)=^nwcprophecy^/(str)=^nwcoracle^/(str)=^wogpalantir^; [Show Full Grail Map]
+    !!VR(newStr):S^wogpalantir^;
+  !!el&(str)=^nwcignoranceisbliss^;     [Hide Full Map. No RoE, AB]
+    !!VR(newStr):S^wogmordor^;
+  !!el|(str)=^nwctrojanrabbit^/(str)=^nwcredpill^/(str)=^wogonering^/(str)=^wogfrodo^; [Instant Win. No AB]
+    !!VR(newStr):S^wogonering^;
+  !!el|(str)=^nwcshrubbery^/(str)=^nwcwatto^/(str)=^nwctheconstruct^/(str)=^wogisengard^; [100,000 Gold and 100 of Every Resource]
+    !!VR(newStr):S^wogisengard^;
+  !!el|(str)=^nwconlyamodel^/(str)=^nwccoruscant^/(str)=^nwczion^/(str)=^wogminastirith^; [All Buildings]
+    !!VR(newStr):S^wogminastirith^;
+  !!el|(str)=^nwcgeneraldirection^/(str)=^nwcrevealourselves^/(str)=^nwcwhatisthematrix^/(str)=^wogeyeofsauron^; [Reveal Full Map]
+    !!VR(newStr):S^wogeyeofsauron^;
+  !!el&(str)=^nwcphisherprice^;         [Alternate Color Scheme - not working? Disabled for now. No AB]
+    !!FU:E;
+
+    !!VR(newStr):S^wogsarumanofmanycolors^;
+  !!en;
+
+; For battle
+!!el&(dlgId)=(DLG_BATTLE);
+  !!if&i^battle_hero_%i(battle_current_side)^>(NO_HERO);
+    !!if|(str)=^nwctim^/(str)=^nwcmidichlorians^/(str)=^nwcthereisnospoon^/(str)=^wogsaruman^/(str)=^woggandalf^; [999 Mana and All Spells]
+      !!VR(newStr):S^woggandalf^;
+    !!en;
+  !!en;
+
+  !!if|(str)=^nwcsirrobin^/(str)=^nwcbluepill^/(str)=^wogdarklord^/(str)=^wogdenethor^; [Instant lose. No AB]
+    !!VR(newStr):S^wogdenethor^;
+  !!el|(str)=^nwctrojanrabbit^/(str)=^nwcredpill^/(str)=^wogonering^/(str)=^wogfrodo^; [Instant Win. No AB]
+    !!VR(newStr):S^wogfrodo^;
+  !!en;
+!!en;
+
+!!SN&(newStr)<>^^:B(ptr)/d/(newStr);
+
+
+// Assemble/Disassemble artifacts overhaul
+// by Archer30
+; On hero screen:
+; Assemble artifacts with parts not fully equipped (some in the backpack)
+; Disassemble artifacts in the backpack
+
+; For one slot combination artifact only:
+; Disassemble combination artifacts
+
+!?FU(OnHeroScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED);
+!!VR(slot:y):S(NO_ART_SLOT);
+!!VR(item:y):Si^mouse_item^;
+
+!!if&(item)>=2/(item)<=14|(item)=20;
+  !!VR(slot):S(item) -2;
+!!el&(item)>=40/(item)<=44;
+  !!VR(slot):S(item) -21;
+!!en;
+
+!!FU&(slot)=(NO_ART_SLOT):E;
+
+!!HE(CURRENT_HERO):N?(hero:y);
+!!FU(gem_ManageArtifactMouseAction):P(hero)/(slot);
+
+!?FU(OnHeroesMeetScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED);
+!!VR(hero:y):S(NO_HERO);
+!!VR(item:y):Si^mouse_item^;
+
+!!if&(item)>=27/(item)<=39|(item)=45;
+  !!VR(slot:y):S(item) -27;
+  !!CM:H?(hero)/?(otherHero:y);
+!!el&(item)>=89/(item)<=93;
+  !!VR(slot):S(item) -70;
+  !!CM:H?(hero)/?(otherHero:y);
+!!el&(item)>=46/(item)<=58|(item)=64;
+  !!VR(slot):S(item) -46;
+  !!CM:H?(otherHero)/?(hero);
+!!el&(item)>=94/(item)<=98;
+  !!VR(slot):S(item) -75;
+  !!CM:H?(otherHero)/?(hero);
+!!en;
+
+!!FU&(hero)=(NO_HERO):E;
+
+!!FU(gem_ManageArtifactMouseAction):P(hero)/(slot);
+
+!?FU(gem_ManageArtifactMouseAction);
+!#VA(hero:x) (slot:x);
+
+; Get (art) from the slot clicked, exit if it has no artifact, is a lock or is a spell scroll
+!!HE(hero):A1/?(art:y)/(slot);
+!!FU|(art)<=(NO_ART)/(art)=(ART_ARTIFACT_LOCK)/(art)>=(ART_META_SPELLBOOK):E;
+
+!!FU(gem_AssembleCombiArt):P(hero)/(slot)/(art)/?(result:y);
+; Disassemble artifact only when there is no chance to assemble
+!!FU(gem_DisassembleCombiArt)&(result)=(FALSE):P(hero)/(slot)/(art);
+
+!?FU(gem_AssembleCombiArt);
+!#VA(hero:x) (slot:x) (art:x) (result:x);
+
+!!VR(result):S(FALSE);
+
+; Check if the artifact is a part of a combination
+!!UN:A(art)/5/?(combiPart:y);
+!!FU&(combiPart)<=(NO_ART):E;
+
+; Loop through all the artifacts and get all the parts of the (art) set
+!!FU(NewIntArray):P?(combinationPartsList:y);
+!!FU(Array_Push):P(combinationPartsList)/(art); [Add the clicked artifact to the start of the array]
+!!FU(GetMaxArtifactId):P?(lastArt:y);
+
+!!re i/(ART_FIRST)/(lastArt);
+  !!co&i=(art);                         [skip the clicked artifact]
+
+  ; Check if the artifact is a part of a combination artifact
+  !!UN:Ai/5/?(combiArtPart:y);
+
+  ; Push the artifact ID to the array if it is a part of the (art) set
+  !!FU(Array_Push)&(combiArtPart)=(combiPart):P(combinationPartsList)/i;
+!!en;
+
+; Check if clicked on a slot of equipment
+!!VR(clickedEquipmentSlot:y):S(FALSE);
+!!VR(clickedEquipmentSlot)&(slot)<=(ART_SLOT_EQUIPPED_LAST):S(TRUE);
+
+; Check the conditions of parts
+!!SN:M(combinationPartsList)/?(size:y);
+!!FU(NewIntArray):P?(combinationSlotsList:y);
+!!FU(Array_Push):P(combinationSlotsList)/(slot); [Add the clicked artifact to the start of the array]
+
+!!re i/1/(size)/1/-1;
+  !!SN:M(combinationPartsList)/i/?(artPart:y);
+  !!HE(hero):A2/(artPart)/?(has:y)/?(equipped:y);
+
+  ; Break thw loop if there is one component the hero hasn't got
+  !!br&(has)<=0:E;
+
+  ; Get whether remove the artifact from equipment or backpack
+  !!VR(searchFromEquipped:y):S(FALSE);
+
+  !!if&(clickedEquipmentSlot);
+    !!if&(equipped)>0;
+      !!VR(searchFromEquipped):S(TRUE);
+    !!el;
+      !!VR(searchFromEquipped):S(FALSE);
+    !!en;
+  !!el;
+    !!VR(backpacked:y):S(has) -(equipped);
+
+    !!if&(backpacked)>0;
+      !!VR(searchFromEquipped):S(FALSE);
+    !!el;
+      !!VR(searchFromEquipped):S(TRUE);
+    !!en;
+  !!en;
+
+  ; Loop through equipment or backpack to find the slot to be removed
+  !!if&(searchFromEquipped);
+    !!VR(startInd:y):S(ART_SLOT_EQUIPPED_FIRST);
+    !!VR(endInd:y):S(ART_SLOT_EQUIPPED_LAST);
+  !!el;
+    !!VR(startInd):S(ART_SLOT_BACKPACK_FIRST);
+    !!VR(endInd):S(ART_SLOT_BACKPACK_LAST);
+  !!en;
+
+  !!re j/(startInd)/(endInd);
+    !!HE(hero):A1/?(artOfSlot:y)/j;
+
+    !!FU(Array_Push)&(artOfSlot)=(artPart):P(combinationSlotsList)/j;
+  !!en;
+!!en;
+
+; Exit if the hero hasn't got all the parts
+!!FU&i<(size):E;
+
+!!CM:R0;
+
+; Get the combination artifact ID
+!!UN:A(combiPart)/?(combiArt:y)/d/d;
+
+; Set up extended combination parts description
+!!FU(gem_WorkWithArtifact)&i^Advanced_Classes_Mod_Active^=0:P(hero)/(art);
+!!FU(ACM_WorkWithArtifact)&i^Advanced_Classes_Mod_Active^=1:P(hero)/(art);
+
+!!SN:H^art^/(art)/1/?(desc:z);
+!!SN:H^art^/(combiArt)/0/?(combiArtName:z);
+!!SN:T^gem.hero.assemble^/?(str:z)/^art^/(combiArtName);
+!!VRs^gem_msg^:S^%(desc)%T(gem.endl)%T(gem.endl)%(str)^;
+
+!!if|(combiArt)=(ART_POWER_OF_THE_DRAGON_FATHER)/^Advanced_Classes_Mod_Active^;
+  !!IF:Q2/^%s(gem_msg)^; [Temp change for Dragon Father set as the text is too long and the IF:Q artifact icon overlaps]
+!!el;
+  !!IF:Q2/(PIC_TYPE_ART)/(combiArt)/(MSG_TYPE_QUESTION)/^%s(gem_msg)^;
+!!en;
+
+!!VRs^gem_msg^:S^^;
+
+; Restore extended combination parts description
+!!FU(gem_AfterShowNewArtifactDescription):P;
+
+!!FU&-2:E;
+
+; Remove parts from the hero
+!!re i/0/(size)/1/-1;
+  !!SN:M(combinationSlotsList)/i/?(artSlot:y);
+  !!FU(gem_RemoveArtFromSlot):P(hero)/(artSlot);
+!!en;
+
+; Equip the combination artifact
+; If clicked on an equipment slot
+!!if&(clickedEquipmentSlot);
+  !!HE(hero):A4/(combiArt);
+; If clicked on a backpack slot
+!!el;
+  !!re i/(ART_SLOT_BACKPACK_FIRST)/(ART_SLOT_BACKPACK_LAST);
+    !!HE(hero):A1/?(artOfSlot)/i;
+
+    !!br&(artOfSlot)<=(NO_ART);
+  !!en;
+
+  !!if&i<=(ART_SLOT_BACKPACK_LAST);
+    !!HE(hero):A(combiArt);                  [Generate the artifact in the backpack]
+  !!el;
+    !!HE(hero):A4/(combiArt);                [Generate the artifact in a slot of the body]
+  !!en;
+!!en;
+
+!!VR(result):S(TRUE);
+!!SN:D;
+
+; This function is needed as FU(UnequipArtFromSlot) cannot be used to remove artifact from the backpack. 
+!?FU(gem_RemoveArtFromSlot);
+!#VA(hero:x) (slot:x);
+
+!!FU&(slot)<=(NO_ART_SLOT):E;
+
+; Execute FU(UnequipArtFromSlot) if the artifact is equipped
+!!if&(slot)<=(ART_SLOT_EQUIPPED_LAST);
+  !!FU(UnequipArtFromSlot):P(hero)/(slot);
+; Use HE:A if the artifact is in the backpack
+!!el;
+  !!HE(hero):A1/?(art:y)/(slot);
+  !!HE(hero):A3/(art)/1/0;
+!!en;
+
+!?FU(gem_DisassembleCombiArt);
+!#VA(hero:x) (slot:x) (art:x);
+
+; Loop through all the artifacts and see if (art) is a combination artifact
+!!FU(NewIntArray):P?(combinationPartsList:y);
+!!FU(GetMaxArtifactId):P?(lastArt:y);
+
+!!re i/(ART_FIRST)/(lastArt);
+  ; Check if the artifact is a part of a combination artifact
+  !!UN:Ai/5/?(combiArtPart:y);
+
+  ; If the artifact is a part, get the combination artifact ID
+  !!if&(combiArtPart)>(NO_ART);
+    !!UN:A(combiArtPart)/?(combiArt:y)/d/d;
+
+    ; Push the artifact ID to the array if it is a part of the (art) set
+    !!FU(Array_Push)&(combiArt)=(art):P(combinationPartsList)/i;
+  !!en;
+!!en;
+
+; Exit if (art) is not a combination artifact
+!!SN:M(combinationPartsList)/?(size:y);
+!!FU&(size)=0:E;
+
+; Get the quantity of backpack slots available
+!!VR(availBackpackSlots:y):S1;          [Initialise as 1 because the combination artifact slot can be used for one of the parts]
+
+!!re i/(ART_SLOT_BACKPACK_FIRST)/(ART_SLOT_BACKPACK_LAST);
+  !!HE(hero):A1/?(artOfSlot:y)/i;
+  !!VR(availBackpackSlots)&(artOfSlot)<=(NO_ART):+1;
+!!en;
+
+; Exit if not enough slots for all the parts
+!!FU(gem_CheckIfEnoughSlots):P(hero)/(combinationPartsList)/(availBackpackSlots)/?(result:y);
+!!FU&(result)=0:E;
+
+; Ask if the player wants to disassemble the artifact
+!!CM:R0;
+
+!!SN:H^art^/(art)/1/?(desc:z);
+!!FU(GetTextFileString):P^genrltxt^/734/?(str:z);
+!!VR(msg:z):S^%(desc)%T(gem.endl)%T(gem.endl)%(str)^;
+!!IF:Q2/^%(msg)^;
+
+; Exit if the player choose not to disassemble
+!!FU&-2:E;
+
+; Remove the combination artifact from the hero
+!!FU(gem_RemoveArtFromSlot):P(hero)/(slot);
+
+; Loop through all the parts of the array put them to the hero
+; If the combination artifact is in the backpack, the parts have higher priority to be put in the backpack
+!!re i/0/(size)/1/-1;
+  !!SN:M(combinationPartsList)/i/?(artPart:y);
+
+  ; If the combination is equipped
+  !!if&(slot)<=(ART_SLOT_EQUIPPED_LAST);
+    !!HE(hero):A4/(artPart);
+  ; If the combination is in the backpack
+  !!el;
+    !!if&(availBackpackSlots)>0;
+      !!HE(hero):A(artPart);            [Generate the artifact in the backpack]
+      !!VR(availBackpackSlots):-1;
+    !!el;
+      !!HE(hero):A4/(artPart);          [Generate the artifact in a slot of the body]
+    !!en;
+  !!en;
+!!en;
+
+!!SN:D;
+
+!?FU(gem_CheckIfEnoughSlots);
+!#VA(hero:x);                           [Hero who has the combiniation artifact]
+!#VA(combinationPartsList:x);           [Array of all the parts of the combination artifact]
+!#VA(availBackpackSlots:x);             [number of backpack slots available]
+!#VA(result:x);                         [Out. 0 - not enought slot available. 1 - enought slot available]
+
+; Check if all the parts can be allocated
+; The following script assumes that all the parts have regular slots for equipment (for example, there should never be an art that can be equipped both the head and the misc slots)
+; War Mechines, spell book should never be a part of combination artifacts
+; There should be at least one part uses the same slot with the combination artifact
+!!VR(result):S(TRUE);
+
+; Get the quantity of ring/misc slots available
+!!VR(availRingSlots:y):S0;
+
+!!re i/(ART_SLOT_RIGHT_RING)/(ART_SLOT_LEFT_RING);
+  !!HE(hero):A1/?(artOfSlot:y)/i;
+  !!VR(availRingSlots)&(artOfSlot)<=(NO_ART):+1;
+!!en;
+
+!!VR(availMiscSlots:y):S0;
+!!VR(miscArtSlots[5]:y):C(ART_SLOT_MISC_1)/(ART_SLOT_MISC_2)/(ART_SLOT_MISC_3)/(ART_SLOT_MISC_4)/(ART_SLOT_MISC_5);
+
+!!re i/0/(miscArtSlots[SIZE])/1/-1;
+  !!HE(hero):A1/?(artOfSlot)/(miscArtSlots[i]);
+  !!VR(availMiscSlots)&(artOfSlot)<=(NO_ART):+1;
+!!en;
+
+; Loop through all the parts and calculate how many backpack slots are needed
+!!SN:M(combinationPartsList)/?(size:y);
+
+!!re i/0/(size)/1/-1;
+  !!SN:M(combinationPartsList)/i/?(artPart:y);
+  
+  !!UN:A(artPart)/2/?(artPosUNA:y);     [Note that there is a difference between UN:A slots and HE:A!]
+
+  !!if&(artPosUNA)=0;
+    !!VR(availBackpackSlots):-1;
+  !!el&(artPosUNA)>=1/(artPosUNA)<=6|(artPosUNA)=8;
+    !!if&(artPosUNA)=1;
+      !!VR(artPosHEA:y):S(ART_SLOT_HEAD);
+    !!el&(artPosUNA)=2;
+      !!VR(artPosHEA):S(ART_SLOT_SHOULDERS);
+    !!el&(artPosUNA)=3;
+      !!VR(artPosHEA):S(ART_SLOT_NECK);
+    !!el&(artPosUNA)=4;
+      !!VR(artPosHEA):S(ART_SLOT_RIGHT_HAND);
+    !!el&(artPosUNA)=5;
+      !!VR(artPosHEA):S(ART_SLOT_LEFT_HAND);
+    !!el&(artPosUNA)=6;
+      !!VR(artPosHEA):S(ART_SLOT_TORSO);
+    !!el&(artPosUNA)=8;
+      !!VR(artPosHEA):S(ART_SLOT_FEET);
+    !!en;
+
+    !!HE(hero):A1/?(artOfSlot:y)/(artPosHEA);
+    !!VR(availBackpackSlots)&(artOfSlot)>(NO_ART):-1;
+  !!el&(artPosUNA)=7;                   [Rings]
+    !!if&(availRingSlots)>0;
+      !!VR(availRingSlots):-1;
+    !!el;
+      !!VR(availBackpackSlots):-1;
+    !!en;
+  !!el&(artPosUNA)=9;                   [Miscs]
+    !!if&(availMiscSlots)>0;
+      !!VR(availMiscSlots):-1;
+    !!el;
+      !!VR(availBackpackSlots):-1;
+    !!en;
+  !!en;
+
+  !!br&(availBackpackSlots)<0;
+!!en;
+
+!!VR(result)&i<(size):S(FALSE);
+
+
+// Restrain hero level at 74 in random maps
+// by Archer30
+; Hero can reach no more than Level 74 in random maps
+!?FU(OnAfterErmInstructions);
+*!UN:J1/?(lv:y)/d;
+*!FU&(lv)<>0:E;
+
+!!UN:C(GAME_MANAGER)/(UNC_INT)/?(gameMgr:y);
+!!UN:C(gameMgr)/128980/1/?(mapType:y);
+
+!!if&(mapType)=114;
+  !!UN:J1/74/d;
+!!en;
+
+
+// Prevent hero level to exceed the limit for all the cases
+// by Archer30
+; Not evn possible to break through the limit with HE:E
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/5089718/(gem_OnCheckHeroLevelUp); 4DA9B6
+
+!?FU(gem_OnCheckHeroLevelUp);
+; Exit if there isn't a limit
+!!UN:J1/?(maxLv:y)/?(var:y);           [UN:J1 result is not reliable. Don't use it!]
+!!FU|(maxLv)<=0/(maxLv)>74:E;
+
+!!SN:E5088784/(CALLCONV_FASTCALL)/(maxLv);
+!!VR(maxExp:y):Sv1;
+
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDI)/4/?(exp:y);
+!!VR(exp):F0/(maxExp);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDI)/4/(exp);
+
+
+// Fix resetting AI thinking radius to 4096 after loading a save game with HD mod feature
+// by Archer30
+; This is not a fix but simiply setting UN:J4 to ERA default, should secure the gameplay in most cases
+; Discussion: http://wforum.heroes35.net/showthread.php?tid=4218&pid=138675#pid138675
+!?FU(OnAfterErmInited);
+!!UN:J4/?i^gem_aiThinkingRadius^;
+!!VRi^gem_aiThinkingRadius^:F32000/(INT_MAX);
+
+!?FU(OnGameEnter);
+!!UN:J4/?(radius:y);
+!!UN&(radius)<=4096:J4/i^gem_aiThinkingRadius^;
+
+
+// Disable tactics message before tactics - 0x462D98 JMP SHORT 0x462DCA
+!?FU(OnGameEnter);
+!!UN:C4599192/2/12523;
+!!UN:C4599194/4/2425393296;
+
+
+// Enable combination artifacts and 5th misc slot for RoE/AB maps
+// by Hawaiing
+!?FU(OnGameEnter);
+!!UN:C(GAME_MANAGER)/(UNC_INT)/?(gameMgr:y);
+!!UN:C(gameMgr)/128664/(UNC_INT)/?(mapExpansion:y);
+!!UN&(mapExpansion)<2:C(gameMgr)/128664/(UNC_INT)/2;
+
+
+// Divide all the AI values by 10 in order to prevent negative values after gathering massive amount of troops
+// by Archer30
+!?FU(OnAfterErmInstructions);
+; Divide AI values only when Peasant's AI value is original (15)
+!!MA:I(MON_PEASANT)/?(aiValuePeasant:y);
+
+!!if&(aiValuePeasant)=15;
+  !!FU(GetMaxMonsterId):P?(lastMon:y);
+  !!VR(arraySize:y):S(lastMon) +1;
+  !!FU(NewIntArray):P(arraySize)/?i^gem_origAiValues^/(M_STORED);
+
+  !!re i/(MON_FIRST)/(lastMon);
+    !!MA:Ii/?(aiValue:y);
+    !!SN:Vi^gem_origAiValues^/i/(aiValue);
+  !!en;
+
+  !!VRi^gem_aiValuesDivided^:S(TRUE);
+!!en;
+
+!!FU(gem_ManageAIValues):P1;
+
+!?OB(OBJ_ALTAR_OF_SACRIFICE);
+!!FU(gem_ManageAIValues):P0;
+
+!$OB(OBJ_ALTAR_OF_SACRIFICE);
+!!FU(gem_ManageAIValues):P1;
+
+!?FU(gem_ManageAIValues)&i^gem_aiValuesDivided^;
+!#VA(mode:x);                           [0 - restoration, 1 - division]
+
+!!FU(GetMaxMonsterId):P?(lastMon:y);
+
+; Restoration
+!!if&(mode)=0;
+  !!re i/(MON_FIRST)/(lastMon);
+    !!SN:Vi^gem_origAiValues^/i/?(aiValue:y);
+    !!MA:Ii/(aiValue);
+  !!en;
+; Division
+!!el;
+  !!re i/(MON_FIRST)/(lastMon);
+    !!MA:Ii/d:10;
+  !!en;
+
+  !!VRi^gem_aiValuesDivided^:S(TRUE);
+!!en;
+
+
+// Bad Fix: Set a hard limit of the AI's Army value to prevent AI player being stuck
+// by Archer30
+; This script is disabled as it's proved to make AI players less aggressive
+*?FU(gem_CreateERMHook);
+*#VA(address:x);
+
+*!SN:E(address)/1/4499845/(gem_OnCalcAIArmyValue);
+
+*?FU(gem_OnCalcAIArmyValue);
+*#VA(address:x);
+
+*!UN:C(address)/(STRUCT_HOOK_CONTEXT_EAX)/4/?(value:y);
+
+*!if|(value)<0/(value)>1500000;         [Note that this number cannot be any larger, otherwise it might not work in some situations (Like when the hero has very high Primary Skills)]
+  *!UN:C(address)/(STRUCT_HOOK_CONTEXT_EAX)/4/1500000;
+*!en;
+
+
+// Other stuff
+!?FU(OnGameEnter);
+
+  !!UN:C6052891/1/4;                    [центрируем текст названия города в окне города (id 149)]
+  ; радус открытия всей карты
+  !!UN:C5196631/4/320;                  [чит-меню (ориг = 180)]
+  !!UN:C4204282/4/360;                  [чит wogeyeofsauron (ориг = 200)]
+  ; радус закрытия всей карты
+  !!UN:C4204369/4/360;                  [чит wogeyeofsauron (ориг = 200)]
+  !!UN:C5125902/4/34281 C5125907/1/144; [; отключить сообщение об ограничении опыта © Berserker]
+  
+  !!TL:E1; enable mulpiplayer timer
+
+
+
+  // Fix of the speed overload
+  !!SN:F^GetModuleHandleA^/^BattleSpeed.era^; [check plugin is loaded]
+  !!if&v1<1;
+    !!UN:C6916156/4/?(gameSpeed:y);     [if not loaded and speed >2]
+    !!UN&(gameSpeed)>2:C6916156/4/2;    [set speed to 2]
+  !!el;
+    !!UN:C4203475/6/4/8;             [set gosolo speed as 9]
+  !!en;
+*!UN:C5021668/1/144; cartographer lvl revie only upper level
+  // 4 lines of the creature description instead of 3 
+
+  !!UN:C6241860/1/1/?(baseHeight:y); if the best of the plugin isn't active
+  !!if&(baseHeight)=41;
+    !!UN:C6241860/1/1/54  C6243439/1/1/54  C6244490/1/1/54; [UN:C 5F3E44/1/1/54  C 5F446F/1/1/54  C 5F488A/1/1/54; [height of the creature desc in Battle/notBattle/buy creature info DLGs]
+    !!UN:C6241867/1/4/230 C6243446/1/4/230 C6244497/1/4/230; [yPos of the creature desc in Battle/notBattle/buy creature info DLGs]
+  !!en;
+
+
+  // fix AI behavior on the map >XL
+  !!UN:X?(mapSize:y)/?y77;
+  !!if&(mapSize)>145;
+    !!re i/0/4;(end_value);
+      !!UN:C7841770/i/1/?i^gem_ai_move_patch_%i^ C7841770/i/1/144;
+      !!UN:C7841673/i/1/?i^gem_ai_move_patch_%i_1^ C7841673/i/1/144;
+    !!en;
+  !!en;
+
+!?FU(OnGameLeave)&i^gem_ai_move_patch_1^;
+  !!re i/0/4;(end_value);
+    !!UN:C7841770/i/1/i^gem_ai_move_patch_%i^ C7841673/i/1/?i^gem_ai_move_patch_%i_1^; // skip ai move foo call
+  !!en;
+
+
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/5576191/(gem_OnRecruitCreatureDlgLeftClick);
+!!SN:Ex1/1/4435778/(gem_AI_GetCloneCastValue);
+
+// disable message about hiring army from dwelling after combat;
+!!SN:Ex1/1/4856136/(gem_OnDwellingFreeJoin);
+!!SN:Ex1/1/4856798/(gem_OnDwellingJoinMessage);
+
+!?FU(gem_OnDwellingFreeJoin);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/?(dwellingMons:y);
+!!re i/0/3;(end_value);
+  !!VR(offset:y):Si*2;
+  !!UN:C(dwellingMons)/(offset)/2/?k;
+  !!if&k;
+    !!VRi^gem_skipMsg^:S(TRUE);
+    !!br;
+  !!en;
+!!en;
+
+!?FU(gem_OnDwellingJoinMessage)&i^gem_skipMsg^;
+!!VRi^gem_skipMsg^:S(FALSE);
+
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ECX)/4/?(string:y);
+!!SN:E4210992/(CALLCONV_THISCALL)/(string)/0;
+!!SN:X?y99/0;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4856803;
+
+!?FU(gem_AI_GetCloneCastValue);
+!!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y) C(cmbMgr)/78528/4/?(currentActiveSide:y);
+!!VR(heroArmyMonCountOffset:y):S(currentActiveSide) *4 +21692;
+!!UN:C(cmbMgr)/(heroArmyMonCountOffset:y)/4/?(numberOfStacks:y);
+
+!!if&(numberOfStacks)>=20;
+
+  !!SN:X?y99/0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4435884;
+!!en;
+
+*!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(stack:y) C(stack)/244/4/?(side:y);
+
+
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/5574304/(gem_OnOpenRecruitDlg);
+
+!?FU(OnOpenRecruitDlg);
+!!VRi^gem_RecruitDlg_NeedToGetData^:S1;
+
+!?FU(OnCloseRecruitDlg);
+!!VRi^gem_CurrentProc_Dlg^:S0;
+!!VRi^gem_CurrentProc_Msg^:S0;
+!!VRi^gem_RecruitDlg_CurrentDlg^:S0;
+
+!?FU(gem_OnOpenRecruitDlg)&i^gem_RecruitDlg_NeedToGetData^;
+!!FU(H3Dlg_GetCurrentDlg):P?i^gem_RecruitDlg_CurrentDlg^;
+!!VRi^gem_RecruitDlg_NeedToGetData^:S0;
+
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?i^gem_CurrentProc_Dlg^ Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y)
+C(ebp)/8/4/?i^gem_CurrentProc_Msg^;
+!!FU(gem_RecruitDlg_SetMax):Px1;
+
+!?FU(OnKeyPressed)&i^gem_CurrentProc_Dlg^;
+
+!!if&x1>=(KEY_1)/x1<=(KEY_4)|x1=(KEY_RIGHT)/x1=(KEY_LEFT);
+!!FU(H3Dlg_GetCurrentDlg):P?(currentDlg:y);
+!!FU&i^gem_RecruitDlg_CurrentDlg^<>(currentDlg):E;
+  !!VR(dlg:y):Si^gem_CurrentProc_Dlg^;
+  !!UN:C(dlg:y)/88/4/?(currIndex:y);
+  !#VA(items[4]:y);
+  !!UN:C(dlg:y)/92/4/?(items[0]) C(dlg:y)/96/4/?(items[1]) C(dlg:y)/100/4/?(items[2]) C(dlg:y)/104/4/?(items[3]);
+  !!VR(max:y):S-1;
+  !!re i/0/3;
+
+    !!if&(items[i])<>(NO_MON);
+      !!VR(max:y):+1;
+    !!en;
+  !!en;
+
+  !!if&(max:y);
+    !!VR(saveIndex:y):S(currIndex);
+    !!if&x1<(KEY_1);
+      !!VR(offset:y):Sx1 -38;
+      !!VR(currIndex):+(offset:y);
+      !!if&(currIndex)>(max:y);
+        !!VR(currIndex):S0;
+      !!el&(currIndex)<0;
+        !!VR(currIndex):S(max:y);
+      !!en;
+    !!el;
+      !!VR(currIndex:y):Sx1 -(KEY_1);
+    !!en;
+    !!VR(currIndex):F0/(max:y);
+    !!if&(saveIndex)<>(currIndex);
+      !!VR(currIndex):+538;
+      !!VR(msg:y):Si^gem_CurrentProc_Msg^;
+      !!UN:C(msg)/4/4/12 C(msg)/4/512 C(msg)/8/4/(currIndex);
+      !!SN:E5573952/(CALLCONV_THISCALL)/(dlg:y)/(msg:y);
+    !!en;
+  !!en;
+!!en;
+
+!?FU(gem_OnRecruitCreatureDlgLeftClick);
+!!FU(gem_RecruitDlg_SetMax):Px1;
+
+!?FU(gem_RecruitDlg_SetMax);
+!#VA(hookContext:x);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDI)/4/?(isRmc:y);
+!!FU&(isRmc):E;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(dlg:y) C(dlg)/172/4/?(availableCreatures:y);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(msg:y) C(msg)/8/4/?(clickedItem:y);
+
+!!if&(clickedItem)>=538/(clickedItem)<=541;
+  !!VR(offset:y):S(clickedItem) -538 *4 +92;
+  !!UN:C(dlg:y)/(offset:y)/4/?t;
+  !!if&t<>(NO_MON);
+    !!re j/0/(RES_GEMS);
+      !!MA:Ct/j/?n;
+      !!if&n;
+        !!FU(gem_DlgDefProc):P508/j P529/j;;
+        !!br;
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+!!if&(clickedItem)<1000/(availableCreatures:y)>0; 
+
+  !!UN:C(msg)/4/4/13 C(msg)/4/512 C(msg)/8/4/532;
+  !!SN:E5573952/(CALLCONV_THISCALL)/(dlg)/(msg); [refresh with "max btn pressed" dlg]
+
+!!en;
+
+// disable mulpiplayer timer
+!?FU(OnGameLeave);
+  !!TL:E0; 
+
+4C841C
+// Fix crash in map veiew dlg with random Theme Music mod - currenlty disabled
+*?FU(gem_OnOpenMapViewDlg);
+  *!FU(gem_Buttons_Interaction):P(TRUE);
+
+*?FU(gem_OnCLoseMapViewDlg);
+  *!FU(gem_Buttons_Interaction):P;
+
+// refresh screen after placing stack
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/7696427/(gem_OnMonsterPlaceAtMap);
+
+!?FU(gem_OnMonsterPlaceAtMap);
+!!UN:R1;
+
+// Fix rebuilding town (after demolishing) doesn't update the max level of Mage Guild in random maps
+; Note: This hack is only valid for random maps as it can't tell whether the restriction comes from town type or is it from the map author
+; This script would conflict with mods that extends the max level of Mage Guilds in towns
+!?FU(OnAfterBuildTownBuilding);
+!#VA(townId:x) (buildingId:x);
+
+; Check if it is a random map
+!!UN:C(GAME_MANAGER)/(UNC_INT)/?(gameMgr:y);
+!!UN:C(gameMgr)/128980/1/?(mapType:y);[114 [r]andom_maps)]
+!!FU&(mapType)<>114:E;
+
+; Exit if not building (demolishing) town hall
+!!FU&(buildingId)<>10:E;
+
+; Exit if not from town screen
+!!FU(H3Dlg_GetCurrentDlgId):P?(result:y);
+!!FU&(result)<>(DLG_TOWN_SCREEN):E;
+
+; Get the town type to decide the max level of Mage Guilds
+!!CA0/(townId):T?(townType:y);
+!!VR(maxLevel:y):S2;
+
+; For Castle, the max level is 4
+!!if&(townType)=(TOWN_CASTLE);
+  !!VR(maxLevel):S3;
+; For the rest of the towns except for Stronghold and Fortress, the max level is 5
+!!el&(townType)<>(TOWN_STRONGHOLD)/(townType)<>(TOWN_FORTRESS);
+  !!VR(maxLevel):S4;
+!!en;
+
+; Allow 4th/5th level of Mage Guild to be built depending on town type
+!!if|(maxLevel)=3/(maxLevel)=4;
+  !!CA0/(townId):B4/3;
+!!en;
+
+!!CA0/(townId)&(maxLevel)=4:B4/4;
+
+; Set available spells
+!!FU(gem_Town_GetStruct):P(townId)/?(townStruct:y);
+; Tricky way to set addresses to 0
+!!VRz1:S^^;
+!!SN:E6023680/(CALLCONV_THISCALL)/(townStruct)/?z1;
+
+; Compatibility with Spell Research Mod
+!!UN:C6848424/4/?(spellsTable:y);
+!!FU(srm_SetUpTown):P(townId)/(spellsTable);
+
+
+// Rebalance Hill Forts - the cost of upgrade is calculated based on the level of the upgraded monster instead of the pre-upgraded monster
+; This is considered a bug fix as in the original H3, every upgrade has the same creature level before and after
+; In WoG with Extended Upgrade option, it's possible to upgrade Gremlins (level 1) to Santa Gremlins (leve 3) for free (since the fee is calculated based on Gremlins)
+; This script fixes this so that such upgrade would costs a little amount of fee (but still with discount as Hill Forts always do to low level creatures)
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/5144591/(gem_OnGetHillFortMonLevel); 5144591
+
+!?FU(gem_OnGetHillFortMonLevel);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(mon:y);
+
+!!if&(mon)>(NO_MON);
+  !!FU(GetUpgradedMonster):P(mon)/?(upgMon:y);
+  !!UN&(upgMon)>(NO_MON):Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/(upgMon);
+!!en;
+
+************************************************************************
+************************************************************************
+***************************** BATTLE FIXES *****************************
+************************************************************************
+************************************************************************
+** Shackles of war (retreat vs neutrals bttles with SW)
+!?FU(OnBeforeBattleAction)|i^battle_hero_1^<=(NO_HERO)/i^wog_72_randHeroActive^; [Works when the defender has no hero OR is a random hero (WoG Scripts)]
+!!BG:A?(actionType:y);
+
+!!if&(actionType)=(BATTLE_ACTION_RETREAT);
+  !!UN:C4689325/1/(ART_GRAIL);          [replace checked artId on hero to Grail from Shakles]
+!!en;
+
+!?FU(OnAfterBattleUniversal);
+!!UN:C4689325/1/(ART_SHACKLES_OF_WAR);           [set back correct art id]
+
+!?FU(OnGameLeave);
+!!UN:C4689325/1/(ART_SHACKLES_OF_WAR);           [set back correct art id]
+
+!?FU(OnBattleScreenMouseClick)&i^mouse_battleHex^>=(BATTLE_HEX_FIRST)/i^mouse_battleHex^<=(BATTLE_HEX_LAST);
+!!BU:Ei^mouse_battleHex^/?(stackId:y);
+
+!!if&(stackId)>(NO_STACK);
+  !!UN:P(WOG_OPT_STACK_EXPERIENCE)/?(isStackExp:y);
+  !!VR(isStackExp):X1;
+  !!UN:J11/(isStackExp);
+!!en;
+
+** War Machines Cost 1 gold when surrend
+; Note: It's required to use 3 triggers as the battle may not be triggered (BA:D1), also there is battle replay
+!?FU(OnBeforeBattleUniversal);
+  !!UN:P73/?(isEnabled:y);              [check if option is enabled]
+
+  !!if&(isEnabled)=(FALSE);
+    !!re i/(MON_CATAPULT)/(MON_AMMO_CART);
+      !!MA:Ci/(RES_GOLD)/?i^gem_%i_machine_cost^;
+    !!en;
+  !!en;
+
+!?FU(OnSetupBattlefield);
+  !!UN:P73/?(isEnabled:y);              [check if option is enabled]
+
+  !!if&(isEnabled)=(FALSE);
+    !!re i/(MON_CATAPULT)/(MON_AMMO_CART);
+      !!MA:Ci/(RES_GOLD)/1;
+    !!en;
+  !!en;
+
+!?FU(OnAfterBattleUniversal);
+!!UN:P73/?(isEnabled:y);                [check if option is enabled]
+
+!!if&(isEnabled)=(FALSE);
+  !!re i/(MON_CATAPULT)/(MON_AMMO_CART);
+    !!MA:Ci/(RES_GOLD)/i^gem_%i_machine_cost^;
+    !!VRi^gem_%i_machine_cost^:S(NULL);
+  !!en;
+!!en;
+
+!?FU(gem_OnOpenCreatureCombatDlg);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(stack:y);
+
+!!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y) C(stack)/244/4/?(side:y);
+!#VA(hero[2]:y) (armyPtr[2]:y);
+!!UN:C(cmbMgr:y)/21440/4/?(ground:y) C(cmbMgr)/21452/4/?(hero[0]) C(cmbMgr)/21456/4/?(hero[1])
+C(cmbMgr)/21700/4/?(armyPtr[0]) C(cmbMgr)/21704/4/?(armyPtr[1]);
+
+!!VR(oppSide:y):S1 X(side);
+
+!!if&(side);
+  !!UN:C(cmbMgr)/21448/4/?(town:y);
+!!el;
+  !!VR(town:y):S(NULL);
+!!en;
+
+!!SN:E4447296/(CALLCONV_THISCALL)/(stack)/(hero[side])/(armyPtr[side])/(town)/(hero[oppSide])/(armyPtr[oppSide])/(ground);         [recalc luck and morale for stack only]
+
+!?FU(gem_CreateERMHook);
+
+// open creatureInfoIncombat;
+
+!!SN:Ex1/1/6240062/(gem_OnOpenCreatureCombatDlg); // for morale stat changing
+
+
+//stat changing
+!!SN:Ex1/1/4500782/(gem_OnAfterArmySetNegativeMorale); // for morale stat changing
+
+!!SN:Ex1/1/4501536/(gem_OnAfterArmySetNegativeLuck); for negative luck stat changing in combat only
+!!SN:Ex1/1/4447391/(gem_OnAfterArmySetPositiveLuck); for positive luck stat changing in combat only
+
+!!SN:Ex1/1/4501694/(gem_OnCreatureGetLuckLvl); for luck stat changing not in combat only
+
+
+// text changing
+!!SN:Ex1/1/4505906/(gem_OnCreatureLuckDescriptionHalfingPart);
+!!SN:Ex1/1/4506010/(gem_OnCreatureLuckDescriptionSpellPartStart);
+!!SN:Ex1/1/4506086/(gem_OnCreatureLuckDescriptionSpellPartEnd);
+
+
+!!SN:Ex1/1/4505740/(gem_OnCreatureArchiDevilDescriptionCreate);
+!!SN:Ex1/1/4504226/(gem_OnCreatureArchAngelDescriptionCreate);
+!!SN:Ex1/1/4504330/(gem_OnCreatureGhostDragonDescriptionCreate);
+!!SN:Ex1/1/4504347/(gem_OnCreatureGhostDragonDescriptionCreate);
+  
+
+
+!?FU(gem_OnCreatureArchAngelDescriptionCreate);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(namePtr:y);
+  !!if&i^gem_MonPlusMoraleChanger^;
+    !!SN:H^monname^/i^gem_MonPlusMoraleChanger^/1/?z3;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/9598952;                         [set new ptr at mon name]
+    !!VRi^gem_MonPlusMoraleChanger^:S0;
+    !!VR(power:y):S2;  
+  !!el;
+    !!VR(power:y):S1;
+  !!en;
+  !!FU(gem_BufferEndingEditor):P6969508/(power);
+
+
+
+!?FU(gem_OnCreatureArchiDevilDescriptionCreate);
+  !!if&i^gem_MonMinusLuckChanger^;
+    !!SN:H^monname^/i^gem_MonMinusLuckChanger^/1/?z2;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/9598440;                         [set new ptr at mon name]
+    !!VR(power:y):S2;
+    !!VRi^gem_MonMinusLuckChanger^:S0;
+  !!el;
+    !!VR(power:y):S1;
+  !!en;
+
+  !!FU(gem_BufferEndingEditor):P6969512/(power);
+
+!?FU(gem_BufferEndingEditor);
+!#VA(bufferPtr:x) (newEnding:x);
+
+  !!UN:C(bufferPtr:x)/4/?(facingPtr:y);
+  !!SN:B(facingPtr:y)/d/?z1;
+  !!SN:Kz1/?(length:y);
+  !!VR(length):-1;
+  !!SN:Kz1/(length:y)/^%(newEnding)^;
+  !!SN:B(facingPtr:y)/d/z1;
+
+!?FU(gem_OnCreatureLuckDescriptionHalfingPart)&i^gem_MonPlusLuckChanger^;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/16/4/?(monLuck:y) C(ebp)/20/4/?(heroLuck:y)
+C(ebp)/16/4/d-i^gem_MonPlusLuckPower^ C(ebp)/20/4/di^gem_MonPlusLuckPower^;
+*!VRi^weNeedReturn^:S(TRUE);
+*!IF:L^%(monLuck) %(heroLuck:y)^;
+!?FU(gem_OnCreatureLuckDescriptionSpellPartStart)&i^gem_MonPlusLuckChanger^;/i^weNeedReturn^;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y); C(ebp)/16/4/?(bonusLuck:y) C(ebp)/20/4/?(luck:y);
+*!if&i^weNeedReturn^;
+*!IF:L^%^;
+  !!SN:H^monname^/(MON_GHOST_BEHEMOTH)/1/?z3;
+  !!FU(gem_BufferEndingEditor):P6969508/i^gem_MonPlusLuckPower^;
+
+  !!UN:C6969508/4/?(txtPtr:y);
+  !!SN:E6388190/(CALLCONV_CDECL)/?z2/(txtPtr:y)/z3;/0/0;
+  !!FU(gem_BufferEndingEditor):P6969508/1;
+
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/9598440 C(ebp)/16/4/di^gem_MonPlusLuckPower^;
+  C(ebp)/20/4/d-i^gem_MonPlusLuckPower^ C(ebp)/20/4/d-i^gem_MonPlusLuckPower^ ;
+  !!VRi^gem_MonPlusLuckPower^:S(NULL);
+*!en;
+
+!?FU(gem_OnCreatureLuckDescriptionSpellPartEnd)&i^gem_MonPlusLuckChanger^;/i^weNeedReturn^;
+!!SN:X?y99/0;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4505994; return dunction described above
+!!VRi^gem_MonPlusLuckChanger^:S(NULL);
+
+
+!?FU(OnGameEnter);      [block wog luck/morale combat bonuses]
+!!re i/0/4;
+  !!UN:C7725542/i/1/144;
+!!en;
+
+!?FU(gem_OnAfterArmySetNegativeMorale);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/?(morale:y);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/?(oppArmy:y);
+
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-4/4/?(ownArmy:y);
+  !!FU(gem_ArmyCompareTypeIteraror):P(ownArmy)/(MON_SUPREME_ARCHANGEL)/?(result:y);
+
+  !!VR(moraleChanger:y):S0;
+  !!if&(result:y);
+    !!VRi^gem_MonPlusMoraleChanger^:S(MON_SUPREME_ARCHANGEL);
+    !!VR(moraleChanger:y):+1;
+  !!el;
+    !!VRi^gem_MonPlusMoraleChanger^:S(NULL);
+  !!en;
+
+
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/20/4/?(oppArmy:y);
+
+  !!if&(oppArmy:y);
+    !!VR(currentDecrease:y):S0;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(bone:y); using native iterator value as bone/ghost dragon already there;
+    !!VR(decrease:y):S0;
+    !!if&(bone)<>7;
+      !!VR(currentDecrease:y):S1;
+    !!en;
+    
+    !!FU(gem_ArmyCompareTypeIteraror):P(oppArmy)/(MON_BLOOD_DRAGON)/?(result:y);
+    !!if&(result);
+      !!VR(minusMoralMonId:y):S(MON_BLOOD_DRAGON);
+      !!VR(decrease:y):S2;
+    !!el;
+      !!FU(gem_ArmyCompareTypeIteraror):P(oppArmy)/(MON_DRACOLICH)/?(result:y);
+      !!if&(result:y);
+        !!VR(minusMoralMonId:y):S(MON_DRACOLICH);
+        !!VR(decrease:y):S1;
+      !!el;
+        !!VR(minusMoralMonId:y):S(NULL);
+      !!en;
+    !!en;
+    !!VRi^gem_MonMinusMoralePower^:S(decrease) F(currentDecrease)/(decrease);
+    !!VRi^gem_MonMinusMoraleChanger^:S(minusMoralMonId);
+    !!if&(decrease);
+      !!VR(moraleChanger):-(decrease) +(currentDecrease);
+    !!en;
+
+  !!en;
+  !!if&(moraleChanger:y);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/d(moraleChanger:y);
+  !!en;
+!?FU(gem_OnCreatureGhostDragonDescriptionCreate)&i^gem_MonMinusMoralePower^;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/?(dragonId:y);
+!!if&(dragonId:y)=(NO_MON);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/i^gem_MonMinusMoraleChanger^;
+!!el;
+  !!if&i^gem_MonMinusMoraleChanger^;
+    !!VR(dragonId):Si^gem_MonMinusMoraleChanger^;
+  !!en;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/(dragonId:y);
+    !!VRi^gem_MonMinusMoraleChanger^:S(NULL);
+    !!VR(power:y):Si^gem_MonMinusMoralePower^;
+    !!VRi^gem_MonMinusMoralePower^:S(NULL);
+    !!FU(gem_BufferEndingEditor):P6969512/(power);
+!!en;
+
+
+!?FU(gem_OnAfterArmySetNegativeLuck);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/20/4/?(oppArmy:y);
+
+  !!FU(gem_ArmyCompareTypeIteraror):P(oppArmy)/(MON_HELL_BARON)/?(result:y);
+  !!if&(result:y);
+    !!VR(luckChanger:y):S-2;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ECX)/4/?(arch:y); using native iterator value as devil/archdevil already there;
+    !!if&(arch:y)<>7;
+      !!VR(luckChanger):+1;
+    !!en;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/d(luckChanger:y); change luck by hostile creatures 
+    !!VRi^gem_MonMinusLuckChanger^:S(MON_HELL_BARON);
+  !!en;
+
+!?FU(gem_OnAfterArmySetPositiveLuck);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/12/4/?(ownArmy:y);
+  !!FU(gem_ArmyCompareTypeIteraror):P(ownArmy)/(MON_GHOST_BEHEMOTH)/?(result:y);
+  *!IF:L^%^;
+
+  !!if&(result);
+    !!VR(luckChanger:y):S2;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/d(luckChanger:y); change luck by ally creatures
+    !!VRi^gem_MonPlusLuckChanger^:S(MON_GHOST_BEHEMOTH);
+    !!VRi^gem_MonPlusLuckPower^:S2;
+  !!el;
+    !!VRi^gem_MonPlusLuckChanger^:S(NULL);
+    !!VRi^gem_MonPlusLuckPower^:S(NULL);
+  !!en;
+
+!?FU(gem_OnCreatureGetLuckLvl);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(ownArmy:y);
+  !!FU(gem_ArmyCompareTypeIteraror):P(ownArmy)/(MON_GHOST_BEHEMOTH)/?(result:y);
+  !!if&(result);
+    !!VR(luckChanger:y):S2;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/d(luckChanger:y); change luck by ally creatures
+    !!VRi^gem_MonPlusLuckChanger^:S(MON_GHOST_BEHEMOTH);
+    !!VRi^gem_MonPlusLuckPower^:S2;
+  !!el;
+    !!VRi^gem_MonPlusLuckChanger^:S(NULL);
+    !!VRi^gem_MonPlusLuckPower^:S(NULL);
+  !!en;
+
+!?FU(gem_ArmyCompareTypeIteraror);
+!#VA(armyPtr:x) (monId:x) (result:x);
+!!VR(result):S(NULL);
+!!if&(armyPtr);
+  !!re i/0/(ARMY_SLOT_LAST);
+    !!VR(offset:y):Si *(SIZEOF_INT);
+    !!UN:C(armyPtr)/(offset)/4/?t;
+    !!if&t=(monId);
+      !!VR(result):S(TRUE);
+      !!br;
+    !!en;
+  !!en;
+!!en;
+
+
+// Magog's Fireball attack to indirect targets respecsts fire immunity (as in HotA)
+// by Archer30
+!?FU(gem_CreateERMHook);
+!#VA(address:x);
+
+!!SN:E(address)/1/4454655/(gem_OnCalcMonsterDamage);                      [trigger on calculating monster damage]
+
+!?FU(gem_OnCalcMonsterDamage);
+!#VA(address:x);
+
+!!UN:C(address)/(STRUCT_HOOK_CONTEXT_EDI)/4/?(stackPtr:y);
+!!UN:C(stackPtr)/244/4/?(side:y) C(stackPtr)/248/4/?(stackPerSide:y);
+!!VR(stack:y):S(side) *(BATTLE_STACKS_PER_SIDE) +(stackPerSide);
+
+; Exit if for some reaosn the stack ID is wrong
+!!FU|(stack)<(BATTLE_STACK_FIRST)/(stack)>(BATTLE_STACK_LAST):E;
+; Exit if the stack is the one being targeted
+!!BG:E?(targetStack:y);
+!!FU&(stack)=(targetStack):E;
+
+; Check if the stack has fire immunity
+!!BM(stack):F?(flags:y);
+!!VR(isFireImmune:y):S(flags) &(MON_FLAG_FIRE_IMMUNITY);
+!!FU&(isFireImmune)=(FALSE):E;
+
+; Jump if the target has fire immunity
+!!SN:X?(var:y)/0;
+!!UN:C(address)/(STRUCT_HOOK_CONTEXT_RET)/4/4454786;
+
+
+// Enable AI's Berserk casting
+// by Archer30
+; This script replaces 50% of AI's Fireball/Inferno/Meteor Shower casting to Berserk
+; This script assumes that Berserk is a fire spell. AI will only cast Berserk when it has Advanced/Expert Fire Magic
+; This script requires BG:E returns a valid stack to work
+; This script checks the targeted stack and see if it can receive Berserk - may be improved to include the surroudning stacks and evalute whether casting Berserk is ideal
+!?FU(OnBeforeBattleAction)&i^battle_ai_%i(battle_acting_side)^;
+; Exit if it is not hero casting
+!!BG:A?(action:y);
+!!FU&(action)<>(BATTLE_ACTION_HERO_CAST):E;
+
+; Exit if the hero does not learn Berserk
+!!BG:H?(hero:y);
+!!HE(hero):M(SPELL_BERSERK)/?(hasBerserk:y);
+!!FU&(hasBerserk)<>(TRUE):E;
+
+; Exit if the hero does not have Fire Magic level greater than Advanced
+!!HE(hero):S(SKILL_FIRE_MAGIC)/?(spellLv:y);
+!!TRi^battle_x^/i^battle_y^/i^battle_z^:G?(overlay:y);
+!!VR(spellLv)|(overlay)=46/(overlay)=226:S(SKILL_EXPERT);
+!!FU&(spellLv)<=(SKILL_BASIC):E;
+
+; Now there is a chance to change the target spell to Berserk if it is casting Fireball/Inferno/Meteor Shower
+!!BG:S?(spell:y);
+
+!!if|(spell)=(SPELL_FIREBALL)/(spell)=(SPELL_INFERNO)/(spell)=(SPELL_METEOR_SHOWER);
+  ; Check if the hero has sufficient mana to cast Berserk
+  !!SS(spell):C(spellLv)/?(cost:y);
+  !!SS(SPELL_BERSERK):C(spellLv)/?(newCost:y);
+
+  !!HE(hero):I?(mana:y)/1;
+  !!VR(newMana:y):S(mana) +(cost) -(newCost);
+
+  !!if&(newMana)>0;
+    ; Check if the target can receive Berserk (only the target but not the surrounding)
+    !!BG:E?(stack:y);
+
+    !!if&(stack)>(NO_STACK);            [The target must be alive]
+      !!BM(stack):Z?(stackStruct:y);
+      !!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y);
+      !!SN:E5914512/(CALLCONV_THISCALL)/(cmbMgr)/(SPELL_BERSERK)/i^battle_acting_side^/(stackStruct)/1/1; [can stack apply buff/debuff]
+
+      !!if&v1;
+        ; Check if it is lucky enough to replace (50% chance)
+        !!VR(random:y):R0/0/1;          [Customise the chance here]
+
+        !!if&(random)=0;
+          !!HE(hero):I(newMana)/1;
+          !!BG:S(SPELL_BERSERK);
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+
+// Bad Fix: Fix final damage on the battlefield overflowing
+// by Archer30
+; Ideally this script needs to be executed as late as possible to ensure overflow doesn't happen, like in a script with "-1000" as the prefix of filename
+!?FU(OnMonsterPhysicalDamage_Quit);
+!!MF:F?(damage:y);
+
+!!if&(damage)<0;
+  !!MF:F(INT_MAX);
+!!en;
+
+************************************************************************
+************************************************************************
+************************** ADVENTURE MAP FIXES *************************
+************************************************************************
+************************************************************************
+
+// Enable the tier 2 dwellings for every town in random maps
+!?FU(OnAfterErmInstructions);
+  !!UN:C(GAME_MANAGER)/(UNC_INT)/?(gameMgr:y);
+  !!UN:C(gameMgr)/128980/1/?(mapType:y);[114 [r]andom_maps)]
+
+  !!if&(mapType)=114;
+    !!UN:U(OBJ_TOWN)/(ANY_OBJ)/?(townsAmount:y);
+    !!UN:U(OBJ_RANDOM_TOWN)/(ANY_OBJ)/?(randomTownsAmount:y);
+    !!VR(townsAmount)&(randomTownsAmount):+(randomTownsAmount);
+
+    !!re i/(MAP_TOWN_FIRST)/(townsAmount)/1/-1;
+      !!FU(Town_CanBuildingBuilt):Pi/31/?(canBuild:y);
+      !!CA0/i&(canBuild):B6/31;
+    !!en;
+  !!en;
+
+
+// Fix hero scouting after closing hero screen with new arts equipped // see gem_fixes.erm
+!?FU(OnAfterHeroInteraction);
+!!FU(gem_CalculateScoutingRadiousForAllHeroes):P;
+
+!?FU(OnCloseHeroScreen);
+!!FU(gem_CalculateScoutingRadiousForAllHeroes):P;
+
+!?FU(gem_CalculateScoutingRadiousForAllHeroes);
+  !!OW:Cd/?(clickedPlayer:y);
+
+  !!if&(clickedPlayer)=i^timerOwner^;
+    !!FU(gem_Player_GetActiveHeroesList):P(clickedPlayer)/?(herArray:y);
+
+    !!if&(herArray)<>0;
+      !!FU(gem_UpdateScoutingRange):Pd/(herArray);
+    !!en;
+
+  !!en;
+
+
+// Fix Hd mod clicks outside Swap Mgr
+!?FU(OnHeroesMeetScreenMouseClick)|i^mouse_action^=(MOUSE_LMB_PRESSED)/i^mouse_action^=(MOUSE_RMB_PRESSED);
+  !!FU(H3Dlg_GetCurrentDlg):P?(currentDlg:y);
+
+  !!UN:C(currentDlg)/(STRUCT_H3DLG_WIDTH)/(UNC_INT)/?(dlgWidth:y);
+  !!UN:C(currentDlg)/(STRUCT_H3DLG_HEIGHT)/(UNC_INT)/?(dlgHeight:y);
+
+  !!if|i^mouse_x^<0/i^mouse_y^<0/i^mouse_x^>(dlgWidth)/i^mouse_y^>(dlgHeight);
+    !!CM:R0;
+  !!en;
+
+
+// Bad fix: Fix occasionally a neutral stack with invalid quantity is put on the map. These stacks would be removed from the map here.
+// by Archer30
+!?FU(OnEveryDay)&i^timerOnce^;
+; 904 - Disable Erm error report
+; 905 - Option for checking whethere there was an error report generated
+!!UN:P904/(TRUE) P905/(FALSE);
+
+!!VR(x:y):S-1;
+
+!!re i;
+  !!UN:U(OBJ_MONSTER)/(ANY_OBJ)/-1/(x)/(y:y)/(z:y);
+  !!br&(x)<0;
+
+  !!MO(x)/(y)/(z):G?(qty:y);
+  !!UN:P905/?(hasError:y);
+
+  !!if|(qty)=4095/(hasError);           [4095 is the magic number]
+    !!UN:P905/(FALSE);
+    !!UN:O(x)/(y)/(z)/1;                [Debug msg can be added here to help collect debug info from players]
+  !!en;
+!!en;
+
+!!UN:P904/(FALSE) P905/(FALSE);
+
+
+// Fix a bug where the hero could fight himself/herself with spacebar pressing when flying over the entrance of an enemy's town.
+// by Archer30
+!?FU(OnKeyPressed_AdvMap)&i^key^=(KEY_SPACE);
+!#VA(key:x) (preventDefault:x);
+
+; Check if there is a hero active
+!!OW:Ai^timerOwner^/?(hero:y);
+
+!!if&(hero)>(NO_HERO);
+  ; Check if the hero's current location is the entrance of a town
+  !!HE(hero):P?(x:y)/?(y:y)/?(z:y);
+  !!UN:P904/(TRUE) P905/(FALSE);        [904 - option for disabling erm error report. 905 - option for checking whether there is an erm error]
+  !!CA(x)/(y)/(z):P?(townX:y)/?(townY:y)/?(townZ:y);
+  !!UN:P905/?(hasError:y);
+
+  !!if&(hasError)<>(TRUE)/(x)=(townX)/(y)=(townY)/(z)=(townZ);
+    ; Check if the hero and the town belongs to different team
+    !!CA(x)/(y)/(z):O?(townOwner:y);
+
+    !!if&(townOwner)=(NO_OWNER);
+      ; Prevent default action (battle initialization) if the town belongs to no one
+      !!VR(preventDefault):S(TRUE);
+    !!el&i^timerOwner^<>(townOwner);
+      !!OW:Ti^timerOwner^/?(timerTeam:y) T(townOwner)/?(townTeam:y);
+
+      ; Prevent default action (battle initialization) if the hero and the town are in different teams
+      !!VR(preventDefault)&(timerTeam)<>(townTeam):S(TRUE);
+    !!en;
+  ; Reset option 905 if we got an error (a.k.a. the hero's current location is not a town)
+  !!el;
+    !!UN:P905/(FALSE);
+  !!en;
+
+  ; Reset option 904 in any case
+  !!UN:P904/(FALSE);
+!!en;
+
+
+** Fix of the heroes and towns reordering
+!?FU(OnAdventureMapLeftMouseClick)&999/i^mouse_action^=(MOUSE_LMB_PRESSED);/i^WOG_IsHdMod^=(TRUE);
+  !!UN:J8/1/^wog scripts.pac^;  // if wog scripts mod is loaded
+
+  !!if&-(TRUE);
+    !!if&i^mouse_item^>39/i^mouse_item^<=43:;  heroes listing
+      
+      !!VR(itemID:y):Si^mouse_item^-39; 
+      
+      !!if&i^key_alt^;
+        !#VA(hero[8]:y);
+        !!OW:O(CURRENT_PLAYER)/?(hrOnMap:y)/?(hero[0])/?(hero[1])/?(hero[2])/?(hero[3])/?(hero[4])/?(hero[5])/?(hero[6])/?(hero[7]);
+        !!OW:O(CURRENT_PLAYER)/(itemID)/?(clickHero:y);
+
+        !!if&(clickHero)<>(NO_HERO);
+          !!re i/0/(hrOnMap)/1/-1;
+            !!if&(hero[i])=(clickHero);
+              !!VR(hero[i]):S(hero[0]);
+              !!VR(hero[0]):S(clickHero);
+              !!OW:O(CURRENT_PLAYER)/(hrOnMap)/(hero[0])/(hero[1])/(hero[2])/(hero[3])/(hero[4])/(hero[5])/(hero[6])/(hero[7]);
+              !!CM:R0;
+              !!UN:R1;
+              !!br;
+            !!en;
+          !!en;
+        !!en;
+
+        !!FU:E;
+      !!en;
+
+      !!if&i^key_shift^;
+        !!OW:O(CURRENT_PLAYER)/1/(itemID)/0;
+        !!CM:R0;
+        !!UN:R1;
+        !!FU:E;
+      !!en;
+
+    !!el&i^mouse_item^>32/i^mouse_item^<=36;
+      !!VR(itemID:y):Si^mouse_item^-32; 
+
+      !!if&i^key_alt^;
+        !!OW:W(CURRENT_PLAYER)/?(townsOnMap:y) N(CURRENT_PLAYER)/(itemID)/?(clickTown:y);
+
+        !!re i/0/(townsOnMap)/1/-1;
+          !!OW:W(CURRENT_PLAYER)/i/?(townId:y);
+
+          !!if&(clickTown)=(townId);
+            !!OW:W(CURRENT_PLAYER)/0/?(firstTownId:y) W(CURRENT_PLAYER)/0/(townId) W(CURRENT_PLAYER)/i/(firstTownId);
+            !!CM:R0;
+            !!UN:R1;
+            !!br;
+          !!en;
+        !!en;
+
+        !!FU:E;
+      !!en;
+
+      !!if&i^key_shift^;
+        !!OW:N(CURRENT_PLAYER)/1/(itemID)/0;
+        !!CM:R0;
+        !!UN:R1;
+      !!en;
+    !!en;
+  !!en;
+
+
+  *** Instant Reveal Scouting Radius
+
+!$OB81;                                         // Trigger after visiting Scolar
+!!FU(gem_UpdateScoutingRange):P(CURRENT_HERO);
+
+!$OB104;                                        // Trigger after visiting University
+!!FU(gem_UpdateScoutingRange):P(CURRENT_HERO);
+
+!$OB113;                                        // Trigger after visiting Witch Hut
+!!FU(gem_UpdateScoutingRange):P(CURRENT_HERO);
+
+!$OB5/(ART_SPECULUM);                           // Trigger after visiting Speculum
+!!FU(gem_UpdateScoutingRange):P(CURRENT_HERO);
+
+!$OB5/(ART_SPYGLASS);                           // Trigger after visiting Spyglass
+!!FU(gem_UpdateScoutingRange):P(CURRENT_HERO);
+
+!?FU(OnAfterHeroGainLevel);                     // Trigger after lvl-up
+!!FU(gem_UpdateScoutingRange):P(CURRENT_HERO);
+
+!?FU(OnEveryDay)&i^timerDay^=1/i^timerOnce^;    // Trigger after game starts
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);            // For each hero
+  !!FU(gem_UpdateScoutingRange):Pi;
+!!en;
+
+  ** End of Script **
+
+
+** Reduce heros' max walking speed on "Replay Opponent Turn"
+; This restrains the max walking speed on replay as usually when you replay, you missed something and you want to watch carefully
+!?FU(OnGameEnter);
+!!UN:C4838745/1/3;                      [original: 4]
+!!UN:C4838760/4/3;
+
+************************************************************************
+************************************************************************
+**************************** COMMANDER FIXES ***************************
+************************************************************************
+************************************************************************
+
+!?FU(gem_CreateERMHook);
+  // Removing message about deacreasing army before combat and placing
+  // them into combat log
+  !!SN:Ex1/1/7786558/(gem_OnAstralAttackMessage);
+  !!SN:Ex1/1/7787216/(gem_OnAstralDefendMessage);
+  !!SN:Ex1/1/7772772/(gem_OnBruteGoldBonusMessage);
+
+  // ART_SLAVAS_RING_OF_POWER's fixes
+  !!SN:Ex1/1/7782812/(gem_OnNPCBattleStackInit);
+  !!SN:Ex1/1/7771289/(gem_OnNPCGetRingBonus);
+  !!UN:C7771553/-1/1/1;                 [Change the number to check the skill level at 0x76959C cmp     dword ptr [eax+edx*4+38h], 2 / jg      short loc_7695E3]
+  *!SN:Ex1/1/7779070/(gem_OnNPCBattleDescriptionGet);
+
+  // Elixir of Life gives full hp for NPC
+  *!SN:Ex1/1/4484064/(gem_OnWogRegenerationCheckingCombatCreatureAbilities);
+!?FU(gem_OnWogRegenerationCheckingCombatCreatureAbilities);
+  !!FU:E;
+
+
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(combatStack:y);
+  !!UN:C8646396/4/?(creatureId:y); temporary wog variable - here it contains handled creature id
+  !!if&(creatureId)>=(MON_COMMANDER_FIRST_A)/(creatureId)<=(MON_COMMANDER_LAST_D);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(combatStack:y);
+    !!SN:E7788612/(CALLCONV_CDECL)/(creatureId)/(combatStack);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/v1;?(crExpobonusRestoredHealth:y);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/50;(defaultRestoredHealth); remove healing bonus
+
+    *!VRv1:B;
+    *!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/0;-1;(defaultRestoredHealth); remove healing bonus
+    *!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/(defaultRestoredHealth); remove healing bonus
+  *!el&(crExpobonusRestoredHealth)<(defaultRestoredHealth);
+    *!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/(defaultRestoredHealth); set creature healing to default 50 (if stack exp gives less than that)
+  !!en;
+
+  !!FU:E;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(crExpobonusRestoredHealth:y);
+
+  !!UN:C42232776/4/?(defaultRestoredHealth:y);
+  *!IF:L^%(creatureId) %(crExpobonusRestoredHealth)^;
+  !!if&(creatureId)>=(MON_COMMANDER_FIRST_A)/(creatureId)<=(MON_COMMANDER_LAST_D);
+    *!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/0;-1;(defaultRestoredHealth); remove healing bonus
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/(defaultRestoredHealth); remove healing bonus
+  !!el&(crExpobonusRestoredHealth)<(defaultRestoredHealth);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/(defaultRestoredHealth); set creature healing to default 50 (if stack exp gives less than that)
+  !!en;
+
+!?FU(gem_OnBruteGoldBonusMessage); // replace brute message with adv map dlg info panel message
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(strPtr:y) Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-64/4/?(gold:y);
+  !!UN:C(ADV_MANAGER)/4/?(advMgr:y);
+  !!FU(GetTextTableString):P^znpc00^/175/1/?(npcMes:z);
+  !!SN:E4284352/(CALLCONV_THISCALL)/(advMgr)/(npcMes:z)/(RES_GOLD)/(gold); [show message]
+  !!SN:X?y99/0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/7772811;                            [return to stack end]
+
+!?FU(gem_OnAstralAttackMessage);
+  !!SN:X?y99/0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/7786697;
+  !!FU(gem_PreapareNpcMessage):P(BATTLE_RIGHT);
+
+!?FU(gem_OnAstralDefendMessage);
+  !!SN:X?y99/0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/7787355;
+  !!FU(gem_PreapareNpcMessage):P(BATTLE_LEFT);
+
+!?FU(gem_PreapareNpcMessage);
+!#VA(side:x) (localStr:z);
+  !!VRo:S(side) *56;                        [weird offset btw - 14 intead of 7]
+
+  !!re i/0/(ARMY_SLOT_LAST);                [iterate all army slots]
+    !!UN:C42338576/o/4/?t C42338604/o/4/?n; [take stolen army types and numbers]
+    !!if&n;
+      !!VRs:Sn -1 B;
+      !!SN:H^monname^/t/s/?(monName:z) T^gem.battle.astralCustomText^/?(add:z)/^monNum^/n/^monName^/(monName:z);
+      !!VR(localStr:z):+(add:z);
+    !!en;
+    !!VRo:+4;
+  !!en;
+
+  !!SN:K(localStr:z)/?(size:y);d-2;
+  !!if&(size)>2;
+    !!VR(size):-2;
+    !!FU(Substr):P(localStr)/0/(size)/?(localStr);
+    !!VR(localStr):+^%T(gem.period)^;
+    !!VRs^gem_NPC_DecreeasesArmyMessage%(side)^:S(localStr:z);+^%n %(monName:z), ^;
+    !!VRi^gem_NPC_DecreeasesArmyMessage%(side)^:S(TRUE);
+  !!en;
+!?FU(OnCombatRound)&i^battle_isVisible^/v997=0;
+*!IF:L^%i(battle_humanOnly) %i(battle_isQuick)^;
+
+  !!re i/1/0/-1;/(BATTLE_RIGHT);
+    !!if&i^gem_NPC_DecreeasesArmyMessage%i^;
+      *!VR(hint:z):S^%T(gem.endl)^;     [Archer30: The script works without new line and looks nicer in battle log dlg]
+      *!MM:S(hint:z);
+
+      !!SN:T^gem.battle.armyDecrease%i^/?(head:z);
+      !!MM:S(head:z);
+      !!VR(hint:z):Ss^gem_NPC_DecreeasesArmyMessage%i^;
+      !!MM:S(hint:z);
+    !!en;
+  !!en;
+
+!?FU(OnAfterBattleUniversal);
+!!SN:W^gem_NPC_DecreeasesArmyMessage0^ W^gem_NPC_DecreeasesArmyMessage1^;:S(FALSE);
+
+
+
+
+!?FU(gem_OnNPCGetRingBonus);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ECX)/4/?(npc:y) Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(skillIndex:y); [получаем указатель на NPC и индекс проверяемого навыка]
+
+  !!VR(skillLevelPtr:y):S(skillIndex) *(SIZEOF_DWORD) +(npc) +56;                                [we get a pointer to the value of the skill being checked]
+
+  !!UN:C(skillLevelPtr)/4/?(skillLevel:y);                                                       [get skill value]
+  !!if&(skillLevel)<2;                                                                           [if less than 2]
+    !!SN:E7791165/(CALLCONV_THISCALL)/(npc)/(ART_SLAVAS_RING_OF_POWER);                          [check if NPC has a ring]
+    !!if&v1;                                                                                     [if there is]
+      !!SN:X?y99/0;
+      !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/7771478; [jumping directly to the calculation of bonuses from the ring, bypassing the addition of standard bonuses]
+    !!en;
+  !!en;
+
+!?FU(gem_OnNPCBattleDescriptionGet);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/1/?(skillLevel:y);                 [get skill value]
+  !!if&(skillLevel)<2;                                                  [if less than 2]
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ECX)/4/?(npc:y);
+    !!SN:E7791165/(CALLCONV_THISCALL)/(npc)/(ART_SLAVAS_RING_OF_POWER); [check if NPC has a ring]
+    !!if&v1;                                                            [if there is]
+      !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/1/2;                           [set skill cast value as at advanced skill lvl]
+    !!en;
+  !!en;
+
+!?FU(gem_OnNPCBattleStackInit);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/1/?(skillLevel:y);                 [get skill value]
+  !!if&(skillLevel)<2;                                                  [if less than 2]
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/?(npc:y);
+    !!SN:E7791165/(CALLCONV_THISCALL)/(npc)/(ART_SLAVAS_RING_OF_POWER); [check if NPC has a ring]
+    !!if&v1;                                                            [if there is]
+      !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/1/2;                           [set skill cast value as at advanced skill lvl]
+    !!en;
+  !!en;
+
+
+// Fix Brute's Gold bonus overflowing
+// by Berserker
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/7772754/(gem_Brute_AddGold);
+
+!?FU(gem_Brute_AddGold);
+!!SN:X?(hook:y);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBP)/(UNC_UINT32)/?(ebp:y);
+!!UN:C(ebp)/-64/(UNC_INT32)/?(bruteGold:y);
+!!UN:C(ebp)/-68/(UNC_INT32)/?(playerGold:y);
+
+; Fix calculated Brute gold bonus overflow
+!!VR(bruteGold)&(bruteGold)<0:S(INT_MAX);
+!!FU(gem_Brute_SafeAdd):P(playerGold)/(bruteGold)/?(finalGold:y);
+!!VR(playerGold):S(finalGold) -(bruteGold);
+!!UN:C(ebp)/-64/(UNC_INT32)/(bruteGold);
+!!UN:C(ebp)/-68/(UNC_INT32)/(playerGold);
+
+!?FU(gem_Brute_SafeAdd);
+!#VA(value1:x);
+!#VA(value2:x);
+!#VA(result:x);
+
+!!VR(result):S(value1) +(value2);
+!!VR(sign1:y):S1;
+!!VR(sign1)&(value1)<0:S-1;
+!!VR(sign2:y):S1;
+!!VR(sign2)&(value2)<0:S-1;
+
+!!if&(sign1)=(sign2);
+  !!VR(sign3:y):S1;
+  !!VR(sign3)&(result)<0:S-1;
+
+  ; Overflow changed result sign
+  !!if&(sign1)<>(sign3);
+    !!VR(result)&(sign1)<0:S(INT_MIN);
+    !!VR(result)&(sign1)>=0:S(INT_MAX);
+  !!en;
+!!en;
+
+
+// Fix occasionally commanders receiving incorrect exp with when transfering between campaign zones
+// by Archer30
+; This happens in SoD scenarios - Commanders' exp are reset to 0
+
+!?FU(OnTransferHero);
+  !#VA(hero:x);
+
+  !!UN:P(WOG_OPT_DISABLE_COMMANDERS)/?(cmdDisabled:y);
+  !!FU&(cmdDisabled):E;
+
+  !!CO(hero):X1/?i^gem_cmdExp_%(hero)^;
+
+!?FU(OnAfterErmInstructions);
+  !!UN:P(WOG_OPT_DISABLE_COMMANDERS)/?(cmdDisabled:y);
+  !!FU&(cmdDisabled):E;
+
+  !!SN:F^IsCampaign^;
+  !!FU&v1<>(TRUE):E;
+
+  !!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+    !!co&i^gem_cmdExp_%i^=0;
+
+    !!COi:X1/i^gem_cmdExp_%i^;
+    !!VRi^gem_cmdExp_%i^:S0;
+  !!en;
+
+
+// Make sure the first acting stack is correct in the first round
+// by Archer30
+; Ideally this script needs to be executed as late as possible to ensure overflow doesn't happen, like in a script with "-1000" as the prefix of filename
+!?FU(OnBattleRound_Quit)&i^battle_round^=0;
+!!FU(ActivateNextStack):P;
+
+************************************************************************
+************************************************************************
+******************************* LUCK FIXES *****************************
+************************************************************************
+************************************************************************
+
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/4461853/(gem_CheckMeleeNegativeLuck);
+!!SN:Ex1/1/4453947/(gem_CheckRangeNegativeLuck);
+
+!?FU(gem_CheckMeleeNegativeLuck);
+!!SN:X?y99/0;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4461866;                                                 [Jump over hero check]
+!!FU(gem_CheckNegativeLuck):Px1;
+
+!?FU(gem_CheckRangeNegativeLuck);
+!!SN:X?y99/0;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4453960;                                                 [Jump over hero check]
+!!FU(gem_CheckNegativeLuck):Px1;
+
+!?FU(gem_CheckNegativeLuck);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(currentStackPtr:y) C(currentStackPtr)/1260/4/?(luck:y); 
+!!UN:C(currentStackPtr)/248/4/?(currentStack:y) C(currentStackPtr)/244/4/?(side:y);
+
+!!VR(currentStack)&(side): +(BATTLE_STACKS_PER_SIDE);                                         [For right side]
+
+!!if&(luck)<0;
+  !!UN:C4605324/1/?(maxBadLuck:y);                                                            [Read max value from bad morale and use it for misfortune]
+  !!VR(maxBadLuck)&(maxBadLuck:y)<0: *-1;                                                             
+  !!VR(luck):*-1 F1/(maxBadLuck);
+  !!VR(rand:y):R0/1/12;
+  !!if&(rand)<=(luck);
+    !!UN:C(currentStackPtr)/112/4/-1;                                                         [set stack atrr "isLucky" to -1]
+    !!BA:Q?(isQuick:y);
+    !!if&(isQuick)=0;
+      !!FU(GetTextFileString):P^genrltxt^/45/?(str:z);
+      !!BM(currentStack):T?t N?n;
+      !!VRn:-1 F0/1;
+      !!SN:H^monname^/t/n/?(name:z);
+      !!SN:E6388190/(CALLCONV_CDECL)/?(varStr:z)/(str:z)/(name);                              [Replace %s in str with name and put result into varStr]
+      !!MM:S(varStr:z);
+      !!SN:P^BADLUCK^;
+      !!BM(currentStack):V48;
+    !!en;
+  !!en;
+!!en;
+
+!?FU(OnStackToStackDamage_Quit)&x9=0;                                                         [(x1 - atck stack, x2 - def stack, x4 - final dmg)]
+!!BMx1:Z?(structure:y);
+!!UN:C(structure)/112/4/?(isLucky:y);
+
+!!if&(isLucky)=-1;
+  !!VRx4:Sd>>1;                                                                               [decrease base damage]
+  !!UN:C(structure)/112/4/(NULL);                                                             [reset luck flag]
+!!en;
+
+************************************************************************
+************************************************************************
+******************************* FUNCTIONS ******************************
+************************************************************************
+************************************************************************

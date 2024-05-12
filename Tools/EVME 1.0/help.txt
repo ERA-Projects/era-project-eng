@@ -1,0 +1,157 @@
+ERM VARS MEMORY EDITOR v1.0 by Berserker (2B)
+* Special thanks to Valery Rogacev and James Vogan for translating this help from russian *
+
+1. The program is designed for make debugging ERM-scripts easy by working with Heroes memory directly.  The tediousness of adding display commands (IF:M) to a script, putting the revised script in a map, then re-starting the game to see what is happening in the script, as well as the absence of convenient tools for working directly in Heroes memory, inspired the author to create the present program.
+
+2. License
+All rights to the product belong to the author - Berserker (berserkerx@rambler.ru).
+This program is distributed as FREEWARE and on the principle of "AS IS" - this means that the author is not responsible for any damage caused by using this program.
+The use of the program as a paid product without the consent of the author is FORBIDDEN.
+
+3. Supported versions of Heroes.
+Currently it supports the following versions of executable files: 
+WoG 3.58f, TE, possibly WoG 3.59, Phoenix.
+
+4. PROGRAM USAGE:
+
+a) The program is protected from failures in the most critical places and the user simply can not "harm" the game by entering incorrect data, and so on. However, there are commands that are potentially dangerous if incorrectly used. These include: save dump to file command (if you enter the name of a system file, it will be over-written), writing directly in memory, and copying memory blocks.
+
+b) Start (with the Heroes game you wish to debug running - you can use the Windows key + D to get to the desktop from within a game)
+After starting EVME you will be asked to select your Heroes version (TE based or 3.58). After selecting, press ENTER. 
+Then EVME will try to find the process by its window title. If the game is not running or if its window title was changed, EVME will not locate it. In any case, you can always close the program.
+
+c) Commands.
+
+Commands in EVME are entered by pressing a specific KEY. The available commands are displayed at start. If you have forgotten some, press "H" to display the summary of commands.
+
+Let's have a look at each of the commands and their parameters:
+ 
+~> Get ERM variable.
+Parameters: *variable* *number* 
+(Note: here and further: the parameters must be separated by a single space only)
+
+*variable* - is an ERM variable (supported: global V, W, F (flags), Z), whether the first character is upper or lower case is not important.
+
+*number* - Quantity of variables being read and displayed (the window is designed to display a maximum capacity of 1000 lines, any additional output will cause the loss of one or more lines from the top of the window. This parameter can be omitted if you want to display only one variable.
+
+Example:
+z55
+-----------
+Outputs the value of z55.
+
+
+~> Set ERM variable.
+Parameters: *variable* *new value 1* *new value 2* *new value 3*...
+*new value* - valid for this type of variable value. If multiple values are specified then variables with indices X+1, X+2 ... X+N will also be set, where X is an initial index of variable.
+
+Example:
+v1 100 200 300
+-------------
+Will set v1 to 100, v2 to 200 and v3 to 300.  (Similar to VR:C ERM command.)
+
+
+~> Fill a number of variables with a single specified value
+Parameters: *variable* *number* *fill value*
+
+Example:
+v1 10000 0
+-------------
+Will clear all v-variables (v1 to v10000)
+
+
+~> Select a hero.
+Parameters: *Hero ID*
+
+Example:
+155
+-------------------
+Will select Xeron (ID = 155)
+
+
+~> Read data at address.
+Parameters: *address* *type* *number*
+*address* -  address in decimal. If you want to write in hex, then place "$" before the address number 
+*type* - supported: I (4 bytes, number), W (2 bytes, number), B (1 byte, number), Z (x bytes, null terminated string), C (character)
+
+Example:
+$887668 i 1
+-------------------
+Displays variable v1 (a 4-byte integer - see ERM Help for the byte size of variables - most are 4 bytes)
+
+
+~> Write data at address.
+Parameters: *address* *type* *new value 1* *new value 2*...
+
+Example:
+$887668 b -1 -1 -1 -1
+-------------------
+Will set v1 to -1
+
+
+~> Get address of global ERM variable.
+Parameters: *variable*
+Example:
+
+w1
+-------------------
+Displays the address of the selected Hero "w" variable.
+!!!!!!!!!!: hero with ID = 0 (Orrin) is used by default (set a different hero with the hero number first, as shown above)
+
+
+~> Assign the value of one variable to another
+Parameters: *destination variable* *source variable*
+
+Example:
+
+v1 w77
+-------------------
+v1 now has the w77 value of the current Hero
+
+
+~> Dump variables to file.
+Parameter 1: *file name*
+Parameter 2: *variable* *number*
+
+Example:
+
+z_vars.dmp
+z1 10
+-------------------
+File "EVME\z_vars.dmp" will be created and will contain the values of z1-z10 (in their machine form)
+
+
+~> Load variables from dump.
+Parameters 1: *file name*
+Parameters 2: *variable* *number*
+
+Example:
+
+z_vars.dmp
+z1 10
+-------------------
+Will load z1-z10 from file z_vars.dmp
+
+
+~> Copy memory block.
+Parameters: *source address* *destination address* *number of bytes*
+
+Copy bytes from one memory location to another.
+
+Example:
+
+$880000 $900000 100
+-------------------
+Copy 100 bytes from $880000 to $900000
+
+
+Console configuration:
+
+1) Right click on the window title -> Properties
+2) Enable options "Text selection using mouse" and "quick insertion"
+3) Click OK. Select "save configuration for all windows with the same title"
+
+Now we can select text with mouse and copy the selected text to the clipboard by pressing ENTER.
+
+To insert text from the clipboard, right click on the window contents.
+
+Good luck!

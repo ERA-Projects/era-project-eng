@@ -1,0 +1,288 @@
+ZVSE2
+
+** Bank, Transfer all resources button and Resource trading post 
+** by Donald X. Vaccarino, Timothy E. Pulver and Hermann the Weird
+** Updated August 6 2004 by Hermann the Weird
+** rewritten August 3 2022 by daemon_n
+
+** The Loan Bank lets you loan gold and resources for a fee
+** Transfer all resources button transfers all resources including gold and mithril to another player
+** Resource trading post lets you trade resources among players
+
+** temporary vars: v3
+** Dialogue: 4
+
+** ERM numbers:
+** Borrow money or resources: 105
+
+
+** Initialization code **
+
+--------------------------------------------------------------------------------
+
+** Main click routine **
+
+
+!?FU(OnTownMouseClick)&999/i^mouse_action^=(MOUSE_LMB_PRESSED);
+!!if&i^mouse_x^>=163/i^mouse_x^<=226/i^mouse_y^>407/i^mouse_y^<433|i^mouse_item^=160;
+  !!CA-1:B3/14 O?(owner:y);             [Check if Marketplace is built]
+  !!UN:P105/?(isBankEnabled:y);         [Check for bank enabled]
+
+  !!if&(owner)<>i^timerOwner^;
+    !!VRt:Si^mouse_action^ -12 *2 F(MSG_TYPE_MES)/(MSG_TYPE_POPUP);
+    *!IF:Q1/(PIC_TYPE_LUCK_NEGATIVE)/1/t/^%T(wog.105.no_owner)^; - Disable by Archer30 since it is not H3 style - should be silent as the ally's Market
+    !!FU:E;
+  !!en;
+
+  !!if&(TRUE);
+    !!VRs:S0;
+    !!re i/0/(RES_LAST_WOG);
+      !!OW:R-1/i/?f;
+      !!if&f>0;
+        !!VRs:+1;
+      !!en;
+    !!en;
+
+    !!if&s=0/(isBankEnabled)=(FALSE);
+      !!IF:Q1/(PIC_TYPE_LUCK_NEGATIVE)/1/(MSG_TYPE_MES)/^%T(wog.105.transfer.name)%T(wog.endl)%T(wog.endl)%T(wog.105.transfer.no_resources)^;
+    !!el;
+      !!FU(RadioDlg_Reset):P;
+      !!VR(msg:z):S^%T(wog.105.greeting)^;
+      !!FU(RadioDlg_SetTitle):P(msg:z);
+      !!if&(isBankEnabled);
+        !!VR(msg:z):S^%T(wog.105.borrow)^;
+        !!FU(RadioDlg_AddItem):P(msg:z)/10/^^;
+      !!en;
+      !!if&s;
+        !!VR(oneText:z):S^%T(wog.105.transfer_one)^;
+        !!VR(allText:z):S^%T(wog.105.transfer_all)^;
+        !!FU(RadioDlg_AddItems):P(oneText:z)/1/^^/(allText:z)/7/^^;
+      !!en;
+      !!VR(cancelText:z):S^%T(wog.105.cancel)^;
+      !!FU(RadioDlg_AddItem):P(cancelText:z)/-1;/^cancel^;
+      !!FU(RadioDlg_SelectItemByValue):P-1;
+      !!FU(RadioDlg_Show):Pd/?(value:y);
+    !!en;
+
+    !!if&(value)=1;
+      !!FU(WOG_105_TransferOneDlg):Ps;
+
+    !!el&(value)=7;
+      !!FU(WOG_105_TransferAllDlg):P;
+    !!el&(value)=10;
+      !!if&i^WOG_105_player_%i(timerOwner)_debt^;
+        !!FU(UnpackUnion):Pi^WOG_105_player_%i(timerOwner)_debt^/?(chosenRes:y)/8/?(amount:y)/24;
+        !!VR(cancelText:z):S^%T(wog.105.loan.name)%T(wog.105.loan.debt)^;
+        !!FU(WOG_105_LeaveMarketMessage):P(cancelText:z)/(chosenRes)/(amount);
+      !!el;
+        !!FU(WOG_105_LoanResourceDlg):P;
+      !!en;
+
+    !!en;
+  !!el;
+    !!CA-1:T?t;
+    !!VR(pic:y):St+(PIC_TYPE_CASTLE_TOWN_BUILDING);
+    !!VRt:Si^mouse_action^ -12 *2 F(MSG_TYPE_MES)/(MSG_TYPE_POPUP);
+    !!IF:Q1/(pic)/14/t/^%T(wog.105.no_market)^;
+  !!en;
+!!en;
+
+!?FU(WOG_105_TransferOneDlg);
+  !#VA(resources:x);
+  !!VR(header:z):S^%T(wog.105.transfer.name)%T(wog.endl)%T(wog.endl)^;
+
+  !!if&(resources)>1;
+    !!VR(text:z):S^%(header)%T(wog.105.transfer.select)^;
+    !!FU(WOG_SetupMultiResDlg):P(text:z)/i^timerOwner^/?(chosenPicture:y)/?(chosenRes:y);
+    !!VR(baseRes:y):S(chosenRes);
+  !!el;
+    !!re i/0/(RES_LAST_WOG);
+      !!OW:R-1/i/?f;
+      !!if&f>0;
+        !!VR(chosenRes):Si;
+        !!VR(chosenPicture):Si;
+        !!br;
+      !!en;
+    !!en;
+  !!en;
+
+  !!VR(cancelText:z):S^%(header)%T(wog.105.transfer.cancel)^;
+
+  !!if&(chosenPicture)<>(NO_RES);
+    !!FU(WOG_GetResourceName):P(chosenRes)/?(resName:z);
+    !!SN:T^wog.105.transfer.to^/?(text:z)/^resource^/(resName);
+    !!VR(msg:z):S^%(header)%(text)^;
+    !!FU(WOG_SetupMultiPlayerDlg):P(msg:z)/0/?(chosenPicture:y)/?(newOwner:y);
+    !!if&(chosenPicture)<>(NO_PLAYER);/(newOwner)<>i^timerOwner^;
+
+      !!OW:R-1/(chosenRes)/?(maxRes:y);
+      !!SN:T^wog.105.transfer.input^/?(msg:z)/^resource^/(resName)/^max^/(maxRes) T^wog.105.transfer.name^/?(title:z);
+      !!re i;
+
+        !!FU(WOG_105_InputValue):P(title)/(msg)/?(answer:y)/?(amount:y);
+        !!if&(answer)=-1;
+
+          !!FU(WOG_105_LeaveMarketMessage):P(cancelText:z);
+          !!br;
+        !!el&(amount)>0;
+          !!VR(amount):Fd/(maxRes);
+
+          !!OW:R-1/(chosenRes)/d-(amount) R(newOwner)/(chosenRes)/d(amount);
+          !!UN:R4;
+
+          !!FU(WOG_GameMgr_GetPlayer_Name):P(newOwner)/?(name:z);
+          !!VR(res:z):S^%(amount) {~>smalres.def:0:%(chosenRes)}^;
+          !!SN:T^wog.105.transfer.confirm_one^/?(msg:z)/^resource^/(res)/^name^/(name);
+          !!IF:Q1/(chosenRes)/(amount)/(PIC_TYPE_FLAG)/(newOwner)/(MSG_TYPE_MES)/^%(header)%(msg)^;
+          !!br;
+        !!en;
+      !!en;
+
+    !!el;
+      !!FU(WOG_105_LeaveMarketMessage):P(cancelText:z);
+    !!en;
+  !!el;
+    !!FU(WOG_105_LeaveMarketMessage):P(cancelText:z);
+  !!en;
+
+!?FU(WOG_105_TransferAllDlg);
+  !!VR(header:z):S^%T(wog.105.transfer.name)%T(wog.endl)%T(wog.endl)^;
+  !!VR(text:z):S^%(header)%T(wog.105.transfer.all)^;
+  !!FU(WOG_SetupMultiPlayerDlg):P(text:z)/0/?(chosenPicture:y)/?(newOwner:y);
+  !!if&(chosenPicture)<>(NO_PLAYER);
+    !!re i/(RES_FIRST)/(RES_LAST_WOG);
+      !!OW:R-1/i/?(value:y) R-1/i/0 R(newOwner)/i/d(value);
+    !!en;
+    !!UN:R4;
+    !!FU(WOG_GameMgr_GetPlayer_Name):P(newOwner)/?(name:z);
+    !!SN:T^wog.105.transfer.confirm_all^/?(msg:z)/^name^/(name);
+    !!IF:Q1/(PIC_TYPE_FLAG)/(newOwner)/(MSG_TYPE_MES)/^%(header)%(msg)^;
+  !!el;
+    !!VR(cancelText:z):S^%(header)%T(wog.105.transfer.cancel)^;
+    !!FU(WOG_105_LeaveMarketMessage):P(cancelText:z);
+  !!en;
+
+!?FU(WOG_105_LeaveMarketMessage);
+  !#VA(text:x) (pic[2]:x);
+  !!FU:A?(argc:y);
+  !!if&(argc)>2;
+    !!VR(picType:y):S(pic[0]);
+    !!VR(value:y):S(pic[1]);
+  !!el;
+    !!VR(picType:y):S(NO_PIC_TYPE);
+    !!VR(value:y):S(NO_PIC_TYPE);
+  !!en;
+
+  !!CA-1:T?t;
+  !!VR(town:y):St+(PIC_TYPE_CASTLE_TOWN_BUILDING);
+  !!IF:Q1/(town)/14/(picType)/(value)/(MSG_TYPE_MES)/z(text);
+
+!?FU(WOG_105_LoanResourceDlg);
+  !!UN:P36/?(mithrilEnabled:y);
+  !!FU(NewIntArray):P16/(NO_RES)/?(resources:y);
+  !!VRf:S0;
+  !!VR(maxRes:y):Si^timerDay^ :14 +5;
+  !!VR(maxGold:y):Si^timerDay^ +49 *100;
+  !!re i/0/(RES_LAST_SOD)/1/(mithrilEnabled);
+    !!SN:M(resources)/f/i;
+    !!VRf:+1;
+    !!SN:M(resources)/f/(maxRes);
+    !!VRf:+1;
+  !!en;
+  !!SN:M(resources)/12/(RES_GOLD) M(resources)/13/(maxGold);
+  !!FU(PrepareMultiPicDialog):P(resources);
+  !!VR(header:z):S^%T(wog.105.loan.name)%T(wog.endl)^;
+  !!IF:N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/^%(header)%T(wog.105.loan.choice)^/?(chosenRes:y);
+  !!FU(WOG_GetResourceName):P(chosenRes)/?(resName:z);
+
+  !!if&(chosenRes)<>(NO_RES);
+
+    !!VR(maxRes)&(chosenRes)=(RES_GOLD):S(maxGold);
+    !!VR(lim:z):S^%(maxRes) {~>smalres.def:0:%(chosenRes)}^;
+    !!SN:T^wog.105.loan.offer^/?(msg:z)/^max^/(lim)^resource^/(resName);
+    !!IF:Q1/(chosenRes)/(maxRes)/(MSG_TYPE_MES)/^%(header)%(msg)^;
+    !!SN:T^wog.105.loan.input^/?(msg:z)/^resource^/(resName)/^max^/(maxRes) T^wog.105.loan.name^/?(title:z);
+
+    !!re i;
+      !!FU(WOG_105_InputValue):P(title)/(msg)/?(answer:y)/?(amount:y);
+
+      !!if&(answer)=-1;
+        !!VR(msg:z):S^%(header)%T(wog.105.loan.cancel)^;
+        !!FU(WOG_105_LeaveMarketMessage):P(msg:z);
+        !!br;
+      !!el&(amount)>0/(amount)<=(maxRes);
+        !!VR(debt:y):S(amount) *30 :100 +(amount);
+        !!FU(PackUnion):P(chosenRes)/8/(debt)/24/?i^WOG_105_player_%i(timerOwner)_debt^;
+        !!OW:R-1/(chosenRes)/d(amount);
+        !!UN:R4;
+        !!IF:Q1/(chosenRes)/(amount)/(MSG_TYPE_MES)/^%(header)%T(wog.105.loan.confirm)^;
+        !!br;
+      !!el&(amount)>0;
+        !!SN:T^wog.105.loan.limit^/?(limit:z)/^resource^/(resName);
+        !!IF:Q1/(chosenRes)/(maxRes)/(MSG_TYPE_MES)/^%(header)%(limit)^;
+      !!en;
+
+    !!en;
+  !!en;
+--------------------------------------------------------------------------------
+!?FU(WOG_105_InputValue);
+  !#VA(title:x) (text:x) (answer:x) (value:x); 
+  !!VRz2:Sz(text);
+  !!VRz1:Sz(title);
+  !!IF:D4/1/2/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^; [Set up input box]
+  !!IF:F4/^^/^^/^^/^^/(TRUE);
+  !!IF:E3/4;
+  !!VR(answer):Sv3;
+  !!VR(value):Vz1;                     [convert string to integer]
+
+** Mouse over hint text **
+!?FU(OnTownMouseHint)&i^mouse_x^>=163/i^mouse_x^<=226/i^mouse_y^>407/i^mouse_y^<433|i^mouse_item^=160;
+  ; Note: The small area &i^mouse_x^>=163/i^mouse_x^<=226/i^mouse_y^>407/i^mouse_y^<433 does not show hint correclty for some reasons
+  !!VR(msg:z):S^%T(wog.105.transfer.hint)^;
+  !!UN:P105/?y-1; [Check for bank enabled]
+  !!if&y-1;
+    !!VR(msg):+^ %T(wog.105.loan.hint)^;
+  !!en;
+  !!CM:M(msg); [Display hint text]
+
+** End of mouse over hint text **
+
+--------------------------------------------------------------------------------
+
+** Borrow money or resources section **
+
+!?FU(OnEveryDay)&i^WOG_105_player_%i(timerOwner)_debt^/999;
+  !!FU(UnpackUnion):Pi^WOG_105_player_%i(timerOwner)_debt^/?(chosenRes:y)/8/?(debt:y)/24;
+  !!OW:Ri^timerOwner^/(chosenRes)/?(playerRes:y);
+  !!if&(playerRes)>1;
+    !!VR(resToPay:y):S(playerRes) :2;
+
+    !!IF:V2/0;
+    !!if&(resToPay)>=(debt);
+      !!OW:Ri^timerOwner^/(chosenRes)/d-(debt);
+      !!VRi^WOG_105_player_%i(timerOwner)_debt^:S0;
+      !!IF:V2/1;
+    !!el;
+      !!VR(debt):-(resToPay);
+      !!FU(PackUnion):P(chosenRes)/8/(debt)/24/?i^WOG_105_player_%i(timerOwner)_debt^;
+      !!OW:Ri^timerOwner^/(chosenRes)/d-(resToPay);
+    !!en;
+
+    [** Check if Loan Repayment messages are disabled **]
+
+    !!VRi:S1 Sd<<i^timerOwner^;
+    !!VRf:Sv3325 &i;
+    !!if&i<>f;
+      !!if&2;
+        !!VR(taken:z):S^%(debt) {~>smalres.def:0:%(chosenRes)}^;
+        !!SN:T^wog.105.loan.paid^/?(msg:z)/^taken^/(taken);
+      !!el;
+        !!VR(taken:z):S^%(resToPay) {~>smalres.def:0:%(chosenRes)}^;
+        !!VR(owe:z):S^%(debt) {~>smalres.def:0:%(chosenRes)}^;
+        !!SN:T^wog.105.loan.collector^/?(msg:z)/^taken^/(taken)/^owe^/(owe);
+      !!en;
+      !!IF:Q1/(chosenRes)/(debt)/(MSG_TYPE_MES)/^%T(wog.105.loan.name)%T(wog.endl)%(msg)^;
+    !!en;
+
+  !!en;
+--------------------------------------------------------------------------------

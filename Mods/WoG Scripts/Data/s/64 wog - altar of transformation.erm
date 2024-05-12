@@ -1,0 +1,389 @@
+ZVSE2
+
+**   Altar of Tranformation Script Version 1.8 created by Timothy E. Pulver
+**   Modified by Thomas Franz (alias samot)
+**   - rewritten and optimized transfer routine, general optimizations (freed some variables etc.)
+**   - ghosts can't be transfered and can't be get by transfer
+**   - added: trolls, mummies and nomads to neutral creatures
+**   - it will cost up to 100 spell points to control the result of the transformation, each spell point
+**     lesser increase the chance to get another town instead of your selected by 1 %
+**   Requires WoG version 3.58 or later using ERM version 2.8 or later.
+**   WoGify Name: script14.erm
+**   Updated: October 14, 2004
+**   Updated: Dec 2023 by Archer30
+
+** This script makes all "Lightning Altars" on a map function as transformation
+** devices. When a hero climbs the altar, his or her army will be transformed
+** into different creatures, while maintaining approximately the same level of
+** power. This version differs from previous versions in that all creatures
+** after transformation will be of the same town type, which will either be
+** the hero's native town type, or if the hero already has all native creatures,
+** it will be a random town type instead.
+
+** All creatures are subject to transformation with the following exceptions:
+** powerful neutral dragons will not be affected *except* for the Faerie
+** Dragon, which may change into a WoG 8th level monster matching the
+** new chosen town type, and God's Representatives (Emissaries) won't
+** be affected either.
+
+** If the town type is the Necropolis, there's a 50% chance that any non-upgraded
+** level 3 creatures will become Mummies. Rampart has also a 50% chance to get Sylvan Centaurs
+** instead of Grand Elves.
+
+** Most creatures in the game have a chance of appearing from the
+** altar if the right level (plus upgraded or non-upgraded) troops are in the
+** hero's army. The exceptions are powerful neutral dragons (except for the
+** Faerie Dragon), God's Representatives and the four elemental
+** Messengers. Except the Messengers these creatures also will not be transformed.
+
+** Edited by Archer30:
+** Now all the level creatures with fight values bigger than Blood Dragon and lower than or equal to Darkness Dragon will be transformed to Level 8 creatures.
+** All the creatures with fight values bigger than Darkness Dragons are immune to the transformation.
+** All the creatures would only be transformed to non-upgraded. Eg. Battle Dwarves -> Archers (instead of Marksmen).
+
+** Each Transformation Altar on the map can only be visited once per week.
+
+
+Variables Used in this Script: v1, z451-z453
+Function Variables Used in this Script: x1-x5, y-1, y-2
+
+
+// Hint for mouse hovering
+!?FU(OnAdvMapTileHint);
+!#VA(x:x) (y:x) (z:x);             Object entrance coordinates
+!#VA(objType:x) (objSubtype:x);    Type and subtype of object. For active hero it's object under hero.
+!#VA(tileX:x) (tileY:x) (tileZ:x); Real tile coordinates.
+
+!!FU(WOG_ShowNewWoGObjectInfo):P14/20/(tileX)/(tileY)/(tileZ);
+
+// Right-clicking dialogue
+!?FU(OnAdventureMapRightMouseClick);
+!!FU(WOG_ShowNewWoGObjectInfo):P14/20;
+
+----------------------------------------------------------------------------------------
+
+; Function to reset all Altar of Transformation right-click text
+; This function also sets PM commands to attract AI to Altar objects
+!?FU(OnEveryDay)&i^timerWeekDay^=1/i^timerDay^>1/i^timerOnce^;
+!!FU(WOG_ResetNewWoGObject):P14/20;
+
+----------------------------------------------------------------------------------------
+
+!?OB(OBJ_NEW_WOG_OBJECTS)/20;  [Triggers when any "Lightning Altar" is visited]
+** vars used
+** v1 - answer for radioboxes
+** y-19 : current number of spell points
+** y-20 - y-26: invested spell points
+** (investedMana) : chance to get what you want
+** (townType) : selected town type
+
+!!UN:P14/?(wogOption:y); [Check if script is enabled: y1]
+!!FU&(wogOption)<>(TRUE):E; [Exit if script isn't enabled]
+
+!!PM998:Pi^timerOwner^/(TRUE);
+
+!!PO998:N?(value:y);  // get current PO:N value
+
+!!if&(value);
+  !!IF&(ERM_FLAG_IS_HUMAN):M(MSG_TYPE_MES)/z114005; // show message that already visited
+  !!FU:E; // Exit function if altar has been visited
+!!en;
+
+; Get the available monster types to be converted of the hero
+!!MA:F(MON_DARKNESS_DRAGON)/?(darknessDragonFv:y);
+
+!!FU(NewIntArray):P?(availMonList:y);
+
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!HE(CURRENT_HERO):C0/i/?(type:y)/?(num:y);
+
+  !!if&(type)>(NO_MON)/(num)>0;
+    ; Skip if the creature is a God's Representative or a Ghost
+    !!co&(type)>=(MON_EMISSARY_OF_WAR)/(type)<=(MON_EMISSARY_OF_LORE)|(type)=(MON_GHOST);
+
+    ; Skip if the creature is stonger than Darkness Dragon (the strongest Level 8 unit)
+    !!MA:F(type)/?(fv:y);
+
+    !!co&(fv)>(darknessDragonFv);
+
+    !!FU(Array_Push):P(availMonList)/(type);
+  !!en;
+!!en;
+
+!!FU(Array_SortedUnique):P(availMonList);
+!!SN:M(availMonList)/?(size:y);
+
+; Exit if there is no creature available to be converted (no creature at all or only overpowered ones exist)
+!!if&(size)=0;
+  !!IF&(ERM_FLAG_IS_HUMAN):M^%T(wog.14.noMon)^;
+  !!FU:E;
+!!en;
+
+!!VR(chosenMon:y):S(NO_MON);
+
+// Manage human behaviours
+!!if&(ERM_FLAG_IS_HUMAN);
+  ; Show tutorial for human player
+  !!IF:M1/z114004;
+
+  ; Organise array for IF:N - disabled for now for converting all
+  ; Disabled to work with the whole army
+  *!FU(NewIntArray):P?(monPicsList:y);
+
+  *!re i/0/(size)/1/-1;
+    *!SN:M(availMonList)/i/?(type);
+    *!FU(Array_Push):P(monPicsList)/(PIC_TYPE_MONSTER)/(type);
+  *!en;
+
+  *!FU(PrepareMultiPicDialog):P(monPicsList);
+  *!IF:N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/^%T(wog.14.chooseMon)^/?(choice:y);
+  *!FU&(choice)=-1:E;
+
+  *!SN:M(availMonList)/(choice)/?(chosenMon:y);
+
+  ; Ask if hero wishes to visit the altar and how much of his mana he want to invest, return in v1
+  !!VRv1:S0;
+  !!HE(CURRENT_HERO):I?(mana:y)/1; // get number of spell points
+  !!VR(mana):F0/(BITS_15_MASK);             [Fix hero's mana in case it is negative]
+  !!HE(CURRENT_HERO):I(mana);
+
+  !!VRy-20:S(mana) F0/100; // set y-20 to act. spell points but max. to 100
+  !!VRy-21:Sy-20 *3 :4; 
+  !!VRy-22:Sy-20 *2 :3; 
+  !!VRy-23:Sy-20 :2; 
+  !!VRy-24:Sy-20 :3;
+  !!VRy-25:Sy-20 *3 :4; 
+  !!VRy-26:Sy-20 :10;
+
+  !!if&y-20=100;
+    !!IF:G1/1/256/114013/114034/114035/114036/114037/114038/114039/114040/114021/114022;
+  !!el;
+    !!IF:G1/1/256/114013/114014/114015/114016/114017/114018/114019/114020/114021/114022;
+  !!en;
+
+  !!VR(investedMana:y)&v1=1:Sy-20; // 100 SP or max Mana
+  !!VR(investedMana)&v1=2:Sy-21; 
+  !!VR(investedMana)&v1=4:Sy-22; 
+  !!VR(investedMana)&v1=8:Sy-23; 
+  !!VR(investedMana)&v1=16:Sy-24; 
+  !!VR(investedMana)&v1=32:Sy-25;
+  !!VR(investedMana)&v1=64:Sy-26; 
+  !!VR(investedMana)&v1=128:S0; // invested mana = chance
+
+  !!FU&v1=256:E; // exit if No Transformation is selected
+
+  ; decrease mana of visiting hero if he is no AI
+  !!HE(CURRENT_HERO):Id-(investedMana);
+
+  ; ask for the town type you want
+  !!if&(investedMana)>0;
+    !!re i/(TOWN_FIRST)/(TOWN_LAST_WOG);
+      !!VR(index:y):Si +4;
+      !!FU(WOG_Town_GetName):Pi/?z(index);
+    !!en;
+
+    !!IF:G1/1/1/114033/4/5/6/7/8/9/10/11/12/114032/114022;
+    !!FU(IntLog2):Pv1/?(townType:y);
+
+    ; Set neutral town
+    !!if&(townType)=9;
+      !!VR(townType):S(NO_TOWN);
+    ; exit if No Transformation is selected
+    !!el&(townType)>=10;
+      !!FU:E;
+    !!en;
+  !!en;
+
+// Manage AI behaviours
+!!el;
+  !!OB998:S;                            [disable pyramid feature]
+
+  ; AI has a 100 % chance to convert without mana costs
+  !!VR(investedMana):S100; 
+  ; set town to hero's native town if AI visits
+  !!HE(CURRENT_HERO):B2/?(heroType:y);          [Get type of hero of AI]
+  !!VR(townType):S(heroType) :2;
+
+  ; Get the best creature to be converted
+  ; Currenlty we select with this criteria: not belongs to the town of the hero/highest total fight value
+  ; Disabled to work with the whole army
+  *!VR(hightestTotalFv:y):S0;
+
+  *!re j/0/(size)/1/-1;
+    *!SN:M(availMonList)/j/?(availMon:y);
+    ; Check if the town type is the same as the hero's town type
+    *!MA:O(availMon)/?(monTownType:y);
+    *!co&(monTownType)=(townType);
+
+    ; Calculate the total fight value of the available monster type
+    *!VR(totalNum:y):S0;
+
+    *!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+      *!HE(CURRENT_HERO):C0/i/?(type)/?(num);
+
+      *!if&(type)=(availMon)/(num)>0;
+        *!VR(totalNum:y):+(num);
+      *!en;
+    *!en;
+
+    *!MA:F(availMon)/?(fv);
+    *!VR(totalFv:y):S(totalNum) *(fv);
+
+    ; Set if the total fight value is bigger than the current one
+    *!if&(totalFv)>(hightestTotalFv);
+      *!VR(hightestTotalFv):S(totalFv);
+
+      *!VR(chosenMon):S(availMon);
+    *!en;
+  *!en;
+!!en;
+
+; Convert the chosen monster
+; Disabled to work with the whole army
+*!FU(WOG_14_ConvertMonsters)&(chosenMon)>(NO_MON):P(townType)/(investedMana)/(chosenMon);
+; Convert the whole army - for creatures with town type mismatching the picked town type only
+!!VRi^wog_14_monsterChanged^:S(FALSE);
+
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!HE(CURRENT_HERO):C0/i/?(chosenMon:y)/?(num:y);
+
+  !!if&(chosenMon)>(NO_MON)/(num)>0;
+    !!MA:F(chosenMon)/?(fv);
+
+    !!if&(fv)<=(darknessDragonFv);
+      ; Convert only when the chosen type is different from destination
+      !!MA:O(chosenMon)/?(chosenTownType:y);
+
+      !!if&(chosenTownType)<>(townType);
+        !!FU(WOG_14_ConvertMonsters):P(townType)/(investedMana)/(chosenMon);
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+ [If hero visits altar, display this message]
+!!if&(ERM_FLAG_IS_HUMAN);
+  !!SN:D;
+  !!SN:P^TELPTOUT^; // make teleport sound
+
+  ; Different msg depending on whether any of the troops has been changed
+  !!if&i^wog_14_monsterChanged^;
+    !!VRz3:Sz114006 +z114007;
+  !!el;
+    !!VRz3:Sz114006 +^%T(wog.14.noChange)^;
+  !!en;
+
+  ; Check if pictures exists
+  !!VRz2:S^..\data\s\pic\script14.jpg^;
+  !!UN:J8/2/2; [Check if file z2 is present in Data\s folder: Flag 1=0 if file missing]
+  !!SN:T^wog.14.objName^/?z1;
+
+  !!if&1;
+    !!IF:D7/3/^^/^^/2/^^/^^/^^/1/^^/^^/^^/^^/^^/^^/^^; [Set up custom dialogue box]
+    !!IF:F7/^^/^^/^^/^^/(FALSE); [Disable Cancel button]
+    !!IF:E1/7; [Display Custom Dialogue]
+  !!el;
+    !!IF:M1/z3; // if picture not exists show usual message
+  !!en;
+!!en;
+
+; Set Altar right-click text to show it has been visited this week
+; This value also determines if the Altar may be visited or not
+!!PO998:N1;
+!!PM998:V(FALSE);  [Set Altar to tell AI it has been visited this week]
+
+----------------------------------------------------------------------------------------
+
+ [Start of function to convert level 7 or lower creatures]
+!?FU(WOG_14_ConvertMonsters);
+!#VA(townType:x) (chance:x) (chosenMon:x);
+
+; Set the level for the chosen monster
+!!MA:L(chosenMon)/?(level:y);
+
+!!if&(level)>=6;
+  !!MA:F(chosenMon)/?(fv:y) F(MON_BLOOD_DRAGON)/?(bloodDragonFv:y);
+
+  ; Set to level 8 if the creature is stronger than Blood Dragon
+  !!VR(level)&(fv)>=(bloodDragonFv):S7;
+!!en;
+
+; Loop through the army slots and convert the chosen monster
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!HE(CURRENT_HERO):C0/i/?(type:y)/?(num:y);
+
+  !!if&(type)=(chosenMon)/(num)>0;
+    ; Get new town type for the conversion
+    !!VR(random:y):R0/0/100; // random 0-100
+
+    ; Set to desirable new town type; set it to the random if odds are bad
+    !!if&(random)<=(chance);
+      !!VR(newTownType:y):S(townType);
+    !!el;
+      !!VR(random:y):R0/(NO_TOWN)/(TOWN_LAST_WOG);
+      !!VR(newTownType):S(random);
+    !!en;
+  
+    ; Get the actual monster to convert to
+    !!if&(newTownType)>=(TOWN_FIRST)/(newTownType)<=(TOWN_LAST_WOG);
+      !!if&(level)<7;
+        !!UN:T(newTownType)/(level)/(FALSE)/?(newMon:y); // get new monster type (town, Lvl, upgr) (if no neutral creature and Level 1-7)
+      !!el;
+        !!VR(newMon):S(newTownType) +(MON_SUPREME_ARCHANGEL);  // L8-Units (town typ + 150)
+      !!en;
+    !!el;
+      !!FU(WOG_14_GetNeutralMon):P(type)/(level)/(FALSE)/?(newMon); // If town type is Neutral, calculate creature
+    !!en;
+
+    ; Convert monster only when the new type is different from the original
+    !!if&(chosenMon)<>(newMon);
+      !!HE(CURRENT_HERO):C0/i/(newMon)/(num)/0/0; // change creatures in the targeted slot to new type, reset the experience
+
+      !!VRi^wog_14_monsterChanged^:S(TRUE);
+    !!en;
+  !!en;
+!!en;
+
+----------------------------------------------------------------------------------------
+
+ [Start of function to calculate Neutral creatures, Return in v1]
+!?FU(WOG_14_GetNeutralMon);
+!#VA(mon:x) (level:x) (isUpgr:x) (result:x);
+
+; Initialize valuable
+!!VR(result):S(mon);
+; Get random numbers
+!!VR(random:y):R0/1/2;                  [Random number 1..2]
+!!VR(randomAlt:y):R0/1/3;               [Random number 1..3]
+
+!!if&(isUpgr)=(FALSE);
+  !!VR(result)&(level)=0:S(MON_HALFLING);    [Halfling]            - Level 1
+  !!VR(result)&(level)=1:S(MON_ROGUE);       [Rogue]               - Level 2
+  !!VR(result)&(level)=2:S(MON_MUMMY);       [Mummy]               - Level 3
+  !!VR(result)&(level)=3:S(MON_SHARPSHOOTER);[Sharpshooter]        - Level 4
+  !!VR(result)&(level)=4/(randomAlt)=1:S(MON_ARCTIC_SHARPSHOOTER); [Arctic Sharpshooter] - Level 5
+  !!VR(result)&(level)=4/(randomAlt)=2:S(MON_LAVA_SHARPSHOOTER); [Lava Sharpshooter]   - Level 5
+  !!VR(result)&(level)=4/(randomAlt)=3:S(MON_GOLD_GOLEM); [Gold Golem]         - Level 5
+  !!VR(result)&(level)=5/(randomAlt)=1:S(MON_ENCHANTER); [Enchanter]            - Level 6
+  !!VR(result)&(level)=5/(randomAlt)=2:S(MON_SORCERESS); [Sorceress]            - Level 6
+  !!VR(result)&(level)=5/(randomAlt)=3:S(MON_DIAMOND_GOLEM); [Diamond Golem]       - Level 6
+  !!VR(result)&(level)=6:S(MON_GORYNYCH);    [Gorynych]             - Level 7
+; Convert the creature to upgraded ones (not used for now)
+!!el;
+  !!VR(result)&(level)=0:S(MON_HALFLING);    [Halfling]            - Level 1 Upgraded
+  !!VR(result)&(level)=1:S(MON_BOAR);        [Boar]                - Level 2 Upgraded
+  !!VR(result)&(level)=2/(random)=1:S(MON_NOMAD);  [Nomad]               - Level 3 Upgraded
+  !!VR(result)&(level)=2/(random)=2:S(MON_SANTA_GREMLIN); [Santa Gremlin]       - Level 3 Upgraded
+  !!VR(result)&(level)=3/(random)=1:S(MON_WEREWOLF);[Werewolf]            - Level 4 Upgraded
+  !!VR(result)&(level)=3/(random)=2:S(MON_TROLL);  [Troll]               - Level 4 Upgraded
+  !!VR(result)&(level)=4:S(MON_ZEALOT);      [War Zealot]          - Level 5 Upgraded
+  !!VR(result)&(level)=5/(random)=1:S(MON_NIGHTMARE); [Nightmare]            - Level 6 Upgraded
+  !!VR(result)&(level)=5/(random)=2:S(MON_HELL_STEED); [Hell Steed]           - Level 6 Upgraded
+  !!VR(result)&(level)=6:S(MON_GORYNYCH);    [Gorynych]             - Level 7 Upgraded
+!!en;
+
+; Convert the creature to level 8
+!!VR(result)&(level)=7:S(MON_FAERIE_DRAGON); [Faerie Dragon]        - Level 8
+
+
+** End of Script **

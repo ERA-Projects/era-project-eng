@@ -1,0 +1,391 @@
+ZVSE2
+
+**  Treasure Chest 2 Script Version 1.3 created by Timothy E. Pulver
+**  Requires WoG version 3.57 or later using ERM version 2.6 or later.
+**  WoGify Name: script31.erm
+**  Updated: September 12, 2004
+
+** This script makes use of the fifth new treasure chest added to the
+** the WoG editor. This chest is the right-most chest on the second
+** row of Treasure objects. When picked up by a hero, there are three
+** possible results: Gold and a scroll, a Tome of Knowledge, or a
+** Deed to an unowned mine.
+
+** If the chest holds gold (300-900 gp) and a scroll, the hero has the
+** option to keep the scroll or destroy it for its magical energy. The
+** level of the scroll is dependant on the level of the hero plus a random
+** factor. At level 20 and up, all scrolls will be for 5th level spells.
+** If the hero destroys the scroll, the spell points gained are equal to
+** the spell level x 30.
+
+** The second possibility is that the chest contains two Tomes of Knowledge.
+** This result can only occur if the hero has at least two skills at the
+** Basic or Advanced level. A Tome of Knowledge will raise the hero's skill
+** to Expert after one week's time. Only one Tome may be chosen to study.
+
+** The third option for the chest's content is a deed to an unowned mine.
+** The mine is randomly selected from all unowned mines on the map and is
+** immediately flagged with the player's colour. A small area around the
+** mine is revealed and the map view is briefly changed to show the mine's
+** location.
+
+** Version 1.1 equips scrolls with the new HE:A4 command and includes a hero's
+** current skill levels when he or she finds tomes of knowledge.
+
+** Version 1.2 removes Armageddon and Clone from the "Living Scroll" category.
+
+** Mod by JH Vogan 7/28/2009:  store random #'s in PO998 so can't reload saved
+** game and get something different!
+
+
+Flags used: 1-2, 409, 1000
+Variables used: v1-v6, z1-z7, w64 (check only)
+Local variables: y1-y7, x1-x3, x16
+Timers used: 28
+Functions used: 5200-5208, 5210-5210, (5211 reserved but not used)
+Note: Function 5209 is used in the update of WoGify: script00.erm.
+
+---------------------------------------------------------------------------------------
+
+!#UN:P31/?v1; [Check if script is enabled: v1]
+
+ [ERM Enable Treasure Chest 2]
+!#UN&v1=1:B5/1;
+
+-------------------------------------------------------------------------------
+** function to preload one TC1 object, called by script00 after wogification
+
+!?FU5211; x1=TC subtype
+!!FU&x1<>5:E; exit if not TC5
+!!UN:U101/x1/-2/952; [get x/y/l of yellow square of object into v952-v954]
+!!VRv3:S1 R4;
+!!PO952:Nv3; store rndm #
+!!VRy6:S1 R9;
+!!PO952:Hy6; store rndm #
+
+!!re i/0/2;
+  !!VRy1:Si +1;
+  !!FU(WOG_GENERATE_SPELL):Py1/y1/0/0/1/0;
+
+  !!if&y-99<>(NO_SPELL);
+    !!PO952:Vi/y-99; store spell #
+  !!el;
+    !!PO952:Vi/(SPELL_MAGIC_ARROW); store spell #
+  !!en;
+!!en;
+
+!!FU(WOG_GENERATE_SPELL):P4/4/0/0/1/0;
+
+!!if&y-99<>(NO_SPELL);
+  !!PO952:Sy-99; store spell #
+!!el;
+  !!PO952:S(SPELL_MAGIC_ARROW); store spell #
+!!en;
+
+!!FU(WOG_GENERATE_SPELL):P5/5/0/0/1/0;
+
+!!if&y-99<>(NO_SPELL);
+  !!PO952:Ty-99; store spell #
+!!el;
+  !!PO952:T(SPELL_MAGIC_ARROW); store spell #
+!!en;
+
+ [Store number of mines in y1]
+!!UN:U53/-1/?y1;
+ [Generate random starting mine number to check for unowned status - y2]
+!!VRy2:Sy1 -1;
+!!VRy3:S1 Ry2;
+!!PO952:V3/y3; store rndm starting mine #
+[Determine amount of gold in chest (0-600)+300 - store in PO:O]
+!!VRy5:S0 R6;
+!!PO952:Oy5;
+ [Choose random starting number for first secondary skill]
+!!VRy1:S0 R27;
+!!PO952:B0/y1;
+ [Choose random starting number for 2nd secondary skill]
+!!VRy1:S0 R27;
+!!PO952:B1/y1;
+-------------------------------------------------------------------------------
+
+[Treasure Chest type 5 is trigger]
+
+[Section Variables: v3]
+
+!?OB101/5;
+!!UN:P31/?y-1; [Check if script is enabled: y-1]
+!!FU&y-1<>1:E; [Exit if script isn't enabled]
+
+ [Generate random chest result from 1-5 - store in v3]
+!!PO998:N?v3; get pre-set rndm #
+
+ [If result is 1, Call Deed function]
+!!FU5206&v3=1:P;
+
+ [If result is 2 or 3, Call Tomes of Knowledge function]
+!!FU5201&v3>=2/v3<=3:P;
+
+ [If result is 4 or 5, Call Scroll/Spell Points and Gold function]
+!!FU5200&v3>=4/v3<=5:P;
+
+---------------------------------------------------------------------------------------
+
+[Function 5200 - Scroll/Spell Points and Gold]
+
+[Section Variables: y1-y11, v1, w64, z1-z2, flags 1, 2 & 1000]
+
+!?FU5200;
+
+ [Determine level of Hero - store in y1]
+!!HE-1:Ed0/?y1;
+
+ [Divide Hero's level by 10 and add 1. If number is above 5, set to 5]
+!!VRy2:Sy1 :10 +1 F1/5;
+
+ [Small chance of spell being 1 or 2 levels higher, increasing with level]
+!!PO998:H?y6; get pre-set rndm #
+!!VRy7:Sy1 %5;
+!!VRy6:+y7;
+!!VRy2&y2<5/y6>=10:+1;
+!!VRy2&y2<5/y6>=14:+1;
+
+ [Get spell number for scroll (v1): level=y2]
+!!PO998:V0/?y21; get pre-set spell # for lvl 1
+!!PO998:V1/?y22; get pre-set spell # for lvl 2
+!!PO998:V2/?y23; get pre-set spell # for lvl 3
+!!PO998:S?y24; get pre-set spell # for lvl 4
+!!PO998:T?y25;  get pre-set spell # for lvl 5
+!!VRy26:S20+y2; index to spells by level
+!!VRy-99:Syy26;
+
+ [Check if hero already has that scroll--removed by JHV for pre-set mod]
+!!VRy9:Sy-99 +1001; [Scroll artifact number]
+
+ [Store name of spell in z1]
+!!UN:N1/1/y-99;
+
+ [Calculate Mana value of scroll (level x 30) - store in y3]
+!!VRy3:Sy2 *30;
+
+ [Determine amount of gold in chest (300-900) - store in y5]
+!!PO998:O?y5; 0-6
+!!VRy5:*100+300;
+
+ [Double gold if hero learned the "wealth" lesson at the Adventure Cave]
+!!VRy5&w64=3:*2;
+
+ [Check if Living Scrolls script is active and if this is a Living Scroll]
+!!UN:P33/?y8; [Check if Living Scrolls script is active]
+!!VRy8|y-99<10/y-99=24/y-99=25/y-99=26/y-99=35/y-99=38/y-99=39/y-99=40/y-99>=65:S0;
+!!VRz2&y8=0:Sz131001;
+!!VRz2&y8=1:Sz131002;
+
+ [Display message with choice of scroll or mana - result of choice in Flag 2]
+!!IF&1000:Q2/9/y-99/35/y3/7/z131003;
+
+ [If Hero is controlled by the AI, choose randomly]
+!!VRy4&-1000:S0 R1;
+!!IF&-1000/y4=0:V2/0;
+!!IF&-1000/y4=1:V2/1;
+
+ [Add 1001 to spell number to make it a scroll]
+!!VRy-99:+1001;
+
+ [If Hero keeps scroll, equip it automatically (if possible)]
+!!HE-1&2:A4/y-99;
+
+ [If Hero destroys scroll, display message and add mana to Hero's current total]
+ [but if it's the AI, give the hero 1500 experience instead]
+!!IF&1000/-2:Q2/35/y3/1/z131004;
+!!HE-1&-2/1000:Idy3;
+!!HE-1&-2/-1000:Ed1500;
+
+ [Add gold to player's total]
+!!OW:R-1/6/dy5;
+
+---------------------------------------------------------------------------------------
+
+[Function 5201 - Tomes of Knowledge]
+
+[Section Variables: y1-y9, v1-v3, z1-z3, flags 2 & 1000]
+
+!?FU5201;
+
+!!FU(WOG_31_GetRandomBasicOrAdvancedSecSkills):P?y30/?y31;
+
+; If Hero does not have at least 2 skills Basic or Advanced, change result to 4 (Scroll)
+!!if&y31=(NO_SKILL);
+  !!VRv3:S4;
+  !!FU:E;
+!!en;
+
+; If hero has two Basic or Advanced Secondary Skills, display dialogue with choice]
+!!HE(CURRENT_HERO):Sy30/?y8;            [Level in 1st Skill (y8)]
+!!HE(CURRENT_HERO):Sy31/?y9;            [Level in 2nd Skill (y9)]
+!!VRy32:Sy8 +1;                         [Get new levels]
+!!VRy33:Sy9 +1;
+!!VRy3:Sy30 *3 +2 +y32;                 [1st Secondary Skill # used for dialogue box display]
+!!VRy4:Sy31 *3 +2 +y33;                 [2nd Secondary Skill # used for dialogue box display]
+!!SN:H^secskill^/y30/(SKILL_NOT_LEARNED)/?z1; [Lookup name of 1st Secondary Skill - store in z1]
+!!SN:H^secskill^/y31/(SKILL_NOT_LEARNED)/?z2; [Lookup name of 2nd Secondary Skill - store in z2]
+
+!!VRz6&y8=1:Sz131005;                   [Skill level in 1st skill if Basic: z6]
+!!VRz6&y8=2:Sz131006;                   [Skill level in 1st skill if Advanced: z6]
+!!VRz7&y9=1:Sz131005;                   [Skill level in 2nd skill if Basic: z7]
+!!VRz7&y9=2:Sz131006;                   [Skill level in 2nd skill if Advanced: z7]
+
+; Show dialog for human players to choose a skill
+!!if&1000;
+  !!IF&y30<>-1/y31<>-1:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_SEC_SKILL)/y4/(MSG_TYPE_CHOOSE_PIC)/z131009; [Choose which skill to proceed]
+; If Hero is controlled by AI, choose randomly]
+!!el;
+  !!VRy5:R0/0/1;
+
+  !!if&y5=0;
+    !!IF:V2/0;
+  !!el;
+    !!IF:V2/1;
+  !!en;
+!!en;
+
+; Set z3, y6 and y7 according to choice made]
+!!if&1000;
+  !!if&2;
+    !!VRz3:Sz1;
+    !!VRy6:Sy3;                         [dialogue display number of skill]
+  !!el;
+    !!VRz3:Sz2;
+    !!VRy6:Sy4;                         [dialogue display number of skill]
+  !!en;
+
+  !!HE(CURRENT_HERO):B0/?z4;
+  !!IF:Q2/(PIC_TYPE_SEC_SKILL)/y6/(MSG_TYPE_MES)/z131024;
+!!en;
+
+!!if&2;
+  !!VRy7:Sy30;                          [actual number of skill]
+!!el;
+  !!VRy7:Sy31;                          [actual number of skill]
+!!en;
+
+!!HE(CURRENT_HERO):Sy7/d1;
+
+---------------------------------------------------------------------------------------
+
+[Search for Basic or Advanced Secondary Skill known by Hero]
+
+!?FU(WOG_31_GetRandomBasicOrAdvancedSecSkills);
+!#VA(skill1:x) (skill2:x);
+
+!!VR(skill1):S(NO_SKILL);
+!!VR(skill2):S(NO_SKILL);
+
+!!FU(NewIntArray):P?(basicOrAdvSecSkills:y);
+
+!!UN:P193/?(isWarfare:y);
+
+!!re i/(SEC_SKILL_FIRST)/(SEC_SKILL_LAST);
+  !!HE(CURRENT_HERO):Si/?(skillLv:y);
+
+  !!if&(isWarfare);
+    !!co|i=(SKILL_ARTILLERY)/i=(SKILL_FIRST_AID); // skip same skills if warfare
+  !!en;
+
+  !!FU(Array_Push)|(skillLv)=(SKILL_BASIC)/(skillLv)=(SKILL_ADVANCED):P(basicOrAdvSecSkills)/i;
+!!en;
+
+; Exit if there are fewer than 2 skills at Basic or Advanced level
+!!SN:M(basicOrAdvSecSkills)/?(size:y);
+!!FU&(size)<2:E;
+
+!!VR(lastIndex:y):S(size) -1;
+!!FU(Array_Shuffle):P(basicOrAdvSecSkills);
+!!FU(Array_Pop):P(basicOrAdvSecSkills)/?(skill1)/?(skill2);
+
+---------------------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------------------
+
+[Function 5206 - Give player a Deed to an available (unowned) Mine if possible]
+
+[Section Variables: y1-y3, v1 & v3]
+
+!?FU5206;
+
+ [Initialize v1 to -1]
+!!VRv1:S-1;
+
+ [Store number of mines in y1]
+!!UN:U53/-1/?y1;
+
+!!PO998:V3/?y3; get pre-set rndm #
+!!VRy3&y3>y1:Sy1; fixed by algor
+
+ [Part 1 of checking for owned status of mine]
+!!UN&y1>0:U53/-1/y3/4; [Store location of first mine checked for new UN:U syntax: v4/v5/v6]
+!!DO5207/y3/y1/1&y1>0:Py3;
+
+ [Part 2 of checking for owned status of mine]
+!!VRv4:S-1; [Initialize v4 to -1 to work with new faster UN:U syntax]
+!!DO5207/1/y1/1&y1>0/y3<>1/v1=-1:P0;
+
+ [If no valid mine is found, change v3 to 2 (Tomes of Knowledge) result]
+!!VRv3&v1=-1:S2;
+
+---------------------------------------------------------------------------------------
+
+[Function 5207 - Check for an available (unowned) Mine]
+
+[Section Variables: x1, x16, y1-y3, v1, v2 & v4-v6, flag 1000]
+
+!?FU5207;
+
+ [Store coordinates of each mine in v4/v5/v6]
+!!UN|x1=0/x16>x1:U53/-1/-1/4;
+
+ [Check owner of mine - store in y1. Check type of mine - store in y2]
+!!MNv4/v5/v6:O?y1 R?y2;
+!!FU&y1<>-1:E;
+
+ [Check current player - store in y3]
+!!OW:C?y3;
+
+ [If mine is unowned, make player the owner and reveal 3 squares of the shroud around it]
+ [Also, set v1 to 1]
+!!MNv4/v5/v6:Oy3;
+!!UN:Sv4/v5/v6/y3/3;
+!!VRv1:S1;
+
+ [If mine was unowned, display message and then change point of view to the mine]
+!!if&1000;
+  !!FU5208:Py2; [Store mine string in z1]
+  !!IF:Q2/y2/v2/1/z131025;
+  !!UN:Lv4/v5/v6/1000; [Move view for 2.5 seconds to mine]
+!!en;
+
+ [Set x16 to 999 to exit loop]
+!!VRx16:S999;
+
+---------------------------------------------------------------------------------------
+
+[Function 5208 - Get type of Mine and store string in z1 and amount produced in v2]
+
+[Section Variables: x1, v2, z1]
+
+!?FU5208;
+
+ [Set z1 depending on mine type]
+!!VRz1&x1=0:Sz131026;
+!!VRz1&x1=1:Sz131027;
+!!VRz1&x1=2:Sz131028;
+!!VRz1&x1=3:Sz131029;
+!!VRz1&x1=4:Sz131030;
+!!VRz1&x1=5:Sz131031;
+!!VRz1&x1=6:Sz131032;
+!!VRz1&x1=7:Sz131033;
+
+ [Set v2 depending on mine type]
+!!VRv2|x1=0/x1=2:S-2; [Sawmill or Ore Pit]
+!!VRv2&x1=6:S-1000; [Gold Mine]
+!!VRv2&x1<>0/x1<>2/x1<>6:S-1; [All other types of mine]

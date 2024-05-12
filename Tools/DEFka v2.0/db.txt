@@ -1,0 +1,197 @@
+0;Pikeman;cpkman.def;avwpike.def
+1;Halberdier;chalbd.def;avwpikx0.def
+2;Archer;clcbow.def;avwlcrs.def
+3;Marksman;chcbow.def;avwhcrs.def
+4;Griffin;cgriff.def;avwgrif.def
+5;Royal Griffin;crgrif.def;avwgrix0.def
+6;Swordsman;csword.def;avwswrd0.def
+7;Crusader;ccrusd.def;avwswrx0.def
+8;Monk;cmonkk.def;avwmonk.def
+9;Zealot;czealt.def;avwmonx0.def
+10;Cavalier;ccavlr.def;avwcvlr0.def
+11;Champion;cchamp.def;avwcvlx0.def
+12;Angel;cangel.def;avwangl.def
+13;Archangel;crangl.def;avwarch.def
+14;Centaur;ccentr.def;avwcent0.def
+15;Centaur Captain;cecent.def;avwcenx0.def
+16;Dwarf;cdwarf.def;avwdwrf0.def
+17;Battle Dwarf;cbdwar.def;avwdwrx0.def
+18;Wood Elf;celf.def;avwelfw0.def
+19;Grand Elf;cgrelf.def;avwelfx0.def
+20;Pegasus;cpegas.def;avwpega0.def
+21;Silver Pegasus;capegs.def;avwpegx0.def
+22;Dendroid Guard;ctree.def;avwtree0.def
+23;Dendroid Soldier;cbtree.def;avwtrex0.def
+24;Unicorn;cunico.def;avwunic0.def
+25;War Unicorn;cwunic.def;avwunix0.def
+26;Green Dragon;cgdrag.def;avwdrag0.def
+27;Gold Dragon;cddrag.def;avwdrax0.def
+28;Gremlin;cgrema.def;avwgrem0.def
+29;Master Gremlin;cgremm.def;avwgrex0.def
+30;Stone Gargoyle;cgargo.def;avwgarg0.def
+31;Obsidian Gargoyle;cogarg.def;avwgarx0.def
+32;Stone Golem;csgole.def;avwgolm0.def
+33;Iron Golem;cigole.def;avwgolx0.def
+34;Mage;cmage.def;avwmage0.def
+35;Arch Mage;camage.def;avwmagx0.def
+36;Genie;cgenie.def;avwgeni0.def
+37;Master Genie;csulta.def;avwgenx0.def
+38;Naga;cnaga.def;avwnaga0.def
+39;Naga Queen;cnagag.def;avwnagx0.def
+40;Giant;cltita.def;avwtitn0.def
+41;Titan;cgtita.def;avwtitx0.def
+42;Imp;cimp.def;avwimp0.def
+43;Familiar;cfamil.def;avwimpx0.def
+44;Gog;cgog.def;avwgog0.def
+45;Magog;cmagog.def;avwgogx0.def
+46;Hell Hound;chhoun.def;avwhoun0.def
+47;Cerberus;ccerbu.def;avwhoux0.def
+48;Demon;cohdem.def;avwdemn0.def
+49;Horned Demon;cthdem.def;avwdemx0.def
+50;Pit Fiend;cpfien.def;avwpitf0.def
+51;Pit Lord;cpfoe.def;avwpitx0.def
+52;Efreeti;cefree.def;avwefre0.def
+53;Efreet Sultan;cefres.def;avwefrx0.def
+54;Devil;cdevil.def;avwdevl0.def
+55;Arch Devil;cadevl.def;avwdevx0.def
+56;Skeleton;cskele.def;avwskel0.def
+57;Skeleton Warrior;cwskel.def;avwskex0.def
+58;Walking Dead;czombi.def;avwzomb0.def
+59;Zombie;czomlo.def;avwzomx0.def
+60;Wight;cwight.def;avwwigh.def
+61;Wraith;cwrait.def;avwwigx0.def
+62;Vampire;cvamp.def;avwvamp0.def
+63;Vampire Lord;cnosfe.def;avwvamx0.def
+64;Lich;clich.def;avwlich0.def
+65;Power Lich;cplich.def;avwlicx0.def
+66;Black Knight;cbknig.def;avwbkni0.def
+67;Dread Knight;cblord.def;avwbknx0.def
+68;Bone Dragon;cndrgn.def;avwbone0.def
+69;Ghost Dragon;chdrgn.def;avwbonx0.def
+70;Troglodyte;ctrogl.def;avwtrog0.def
+71;Infernal Troglodyte;citrog.def;avwinfr.def
+72;Harpy;charpy.def;avwharp0.def
+73;Harpy Hag;charph.def;avwharx0.def
+74;Beholder;cbehol.def;avwbehl0.def
+75;Evil Eye;ceveye.def;avwbehx0.def
+76;Medusa;cmedus.def;avwmeds.def
+77;Medusa Queen;cmeduq.def;avwmedx0.def
+78;Minotaur;cminot.def;avwmino.def
+79;Minotaur King;cminok.def;avwminx0.def
+80;Manticore;cmcore.def;avwmant0.def
+81;Scorpicore;ccmcor.def;avwmanx0.def
+82;Red Dragon;crdrgn.def;avwrdrg.def
+83;Black Dragon;cbdrgn.def;avwddrx0.def
+84;Goblin;cgobli.def;avwgobl0.def
+85;Hobgoblin;chgobl.def;avwgobx0.def
+86;Wolf Rider;cbwlfr.def;avwwolf0.def
+87;Wolf Raider;cuwlfr.def;avwwolx0.def
+88;Orc;corc.def;avworc0.def
+89;Orc Chieftain;corcch.def;avworcx0.def
+90;Ogre;cogre.def;avwogre0.def
+91;Ogre Mage;cogmag.def;avwogrx0.def
+92;Roc;croc.def;avwroc0.def
+93;Thunderbird;ctbird.def;avwrocx0.def
+94;Cyclops;ccyclr.def;avwcycl0.def
+95;Cyclops King;ccycllor.def;avwcycx0.def
+96;Behemoth;cybehe.def;avwbhmt0.def
+97;Ancient Behemoth;cabehe.def;avwbhmx0.def
+98;Gnoll;cgnoll.def;avwgnll0.def
+99;Gnoll Marauder;cgnolm.def;avwgnlx0.def
+100;Lizardman;cpliza.def;avwlizr.def
+101;Lizard Warrior;caliza.def;avwlizx0.def
+102;Gorgon;ccgorg.def;avwgorg.def
+103;Mighty Gorgon;cbgog.def;avwgorx0.def
+104;Serpent Fly;cdrfly.def;avwdfly.def
+105;Dragon Fly;cdrfir.def;avwdfir.def
+106;Basilisk;cbasil.def;avwbasl.def
+107;Greater Basilisk;cgbasi.def;avwgbas.def
+108;Wyvern;cwyver.def;avwwyvr.def
+109;Wyvern Monarch;cwyvmn.def;avwwyvx0.def
+110;Hydra;chydra.def;avwhydr.def
+111;Chaos Hydra;cchydr.def;avwhydx0.def
+112;Air Elemental;caelem.def;avwelma0.def
+113;Earth Elemental;ceelem.def;avwelme0.def
+114;Fire Elemental;cfelem.def;avwelmf0.def
+115;Water Elemental;cwelem.def;avwelmw0.def
+116;Gold Golem;cggole.def;avwglmg0.def
+117;Diamond Golem;cdgole.def;avwglmd0.def
+118;Pixie;cpixie.def;avwpixie.def
+119;Sprite;csprite.def;avwsprit.def
+120;Psychic Elemental;cpsyel.def;avwpsye.def
+121;Magic Elemental;cmagel.def;avwmagel.def
+122;NOTUSED;notused;notused
+123;Ice Elemental;cicee.def;avwicee.def
+124;NOTUSED;notused;notused
+125;Magma Elemental;cstone.def;avwstone.def
+126;NOTUSED;notused;notused
+127;Storm Elemental;cstorm.def;avwstorm.def
+128;NOTUSED;notused;notused
+129;Energy Elemental;cnrg.def;avwnrg.def
+130;Firebird;cfbird.def;avwfbird.def
+131;Phoenix;cphx.def;avwphx.def
+132;Azure Dragon;cadrgn.def;avwazure.def
+133;Crystal Dragon;ccdrgn.def;avwcdrg.def
+134;Faerie Dragon;cfdrgn.def;avwfdrg.def
+135;Rust Dragon;crsdgn.def;avwrust.def
+136;Enchanter;cench.def;avwench.def
+137;Sharpshooter;csharp.def;avwsharp.def
+138;Halfling;chalf.def;avwhalf.def
+139;Peasant;cpeas.def;avwpeas.def
+140;Boar;cboar.def;avwboar.def
+141;Mummy;cmummy.def;avwmumy.def
+142;Nomad;cnomad.def;avwnomd.def
+143;Rogue;crogue.def;avwrog.def
+144;Troll;ctroll.def;avwtrll.def
+145;Catapult;smcata.def;ava0003.def
+146;Ballista;smbal.def;ava0004.def
+147;First Aid Tent;smtent.def;ava0006.def
+148;Ammo Cart;smcart.def;ava0005.def
+149;Tower;notused;notused
+150;Supreme Archangel;zm150z.def;zmm150z.def
+151;Diamond Dragon;zm151z.def;zmm151z.def
+152;Lord of Thunder;zm152z.def;zmm152z.def
+153;Antichrist;zm153z.def;zmm153z.def
+154;Blood Dragon;zm154z.def;zmm154z.def
+155;Darkness Dragon;zm155z.def;zmm155z.def
+156;Ghost Behemoth;zm156z.def;zmm156z.def
+157;Hell Hydra;zm157z.def;zmm157z.def
+158;Sacred Phoenix;zm158z.def;zmm158z.def
+159;Ghost;zm159g.def;z358o8.def
+160;Emissary of War;zm160g.def;zmm160g.def
+161;Emissary of Peace;zm161g.def;zmm161g.def
+162;Emissary of Mana;zm162g.def;zmm162g.def
+163;Emissary of Lore;zm163g.def;zmm163g.def
+164;Fire Messenger;zm164gd.def;zmm164d.def
+165;Earth Messenger;zm165gd.def;zmm165d.def
+166;Air Messenger;zm166gd.def;zmm166d.def
+167;Water Messenger;zm167gd.def;zmm167d.def
+168;Gorynych;zm168dg.def;zmm168g.def
+169;War zealot;zm169zl.def;zmm169z.def
+170;Arctic Sharpshooter;zm170sw.def;zmm170s.def
+171;Lava Sharpshooter;zm171sr.def;zmm171s.def
+172;Nightmare;zm172n.def;zmm172n.def
+173;Santa Gremlin;zm173m.def;zmm173m.def
+174;Paladin (attacker);zm174npc.def;zmm174n.def
+175;Hierophant (attacker);zm175npc.def;zmm175n.def
+176;Temple Guardian (attacker);zm176npc.def;zmm176n.def
+177;Succubus (attacker);zm177npc.def;zmm177n.def
+178;Soul Eater (attacker);zm178npc.def;zmm178n.def
+179;Brute (attacker);zm179npc.def;zmm179n.def
+180;Ogre Leader (attacker);zm180npc.def;zmm180n.def
+181;Shaman (attacker);zm181npc.def;zmm181n.def
+182;Astral Spirit (attacker);zm182npc.def;zmm182n.def
+183;Paladin (defender);zm174npc.def;zmm174n.def
+184;Hierophant (defender);zm175npc.def;zmm175n.def
+185;Temple Guardian (defender);zm176npc.def;zmm176n.def
+186;Succubus (defender);zm177npc.def;zmm177n.def
+187;Soul Eater (defenderr);zm178npc.def;zmm178n.def
+188;Brute (defender);zm179npc.def;zmm179n.def
+189;Ogre Leader (defender);zm180npc.def;zmm180n.def
+190;Shaman (defender);zm181npc.def;zmm181n.def
+191;Astral Spirit (defender);zm182npc.def;zmm182n.def
+192;Sylvan Centaur;zm192z.def;zmm192z.def
+193;Sorceress;zm193z.def;zmm193z.def
+194;Werewolf;zm194z.def;zmm194z.def
+195;Hell Steed;zm195z.def;zmm195z.def
+196;Dracolich;zm196z.def;zmm196z.def

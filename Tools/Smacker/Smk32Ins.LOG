@@ -1,0 +1,92 @@
+***  Installation Started 02/25/2005 20:34  ***
+Title: Smacker Video Technology
+Source: C:\DOCUME~1\MARK\LOCALS~1\TEMPOR~1\CONTENT.IE5\SHY3OTUF\SMACKE~1.EXE
+Made Dir: C:\Program Files\Modding Tools\Smacker
+File Copy: C:\Program Files\Modding Tools\Smacker\UNWISE.EXE
+RegDB Key: Software\Microsoft\Windows\CurrentVersion\Uninstall\Smacker Video Technology
+RegDB Val: Smacker Video Technology
+RegDB Name: DisplayName
+RegDB Root: 2
+RegDB Key: Software\Microsoft\Windows\CurrentVersion\Uninstall\Smacker Video Technology
+RegDB Val: C:\PROGRA~1\MODDIN~1\Smacker\UNWISE.EXE C:\PROGRA~1\MODDIN~1\Smacker\Smk32Ins.LOG
+RegDB Name: UninstallString
+RegDB Root: 2
+File Copy: C:\WINDOWS\SYSTEM\Dispdib.dll
+File Copy: C:\WINDOWS\SYSTEM\Mciaap.drv
+File Copy: C:\WINDOWS\SYSTEM\Aawin.hlp
+File Copy: C:\WINDOWS\SYSTEM\Aawin.exe
+File Copy: C:\WINDOWS\SYSTEM\Aavga.dll
+File Copy: C:\WINDOWS\SYSTEM\Aaplay.dll
+File Copy: C:\Program Files\Modding Tools\Smacker\Graphpr.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\History.txt
+File Copy: C:\Program Files\Modding Tools\Smacker\Radsi.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Radsiw.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\radutil.dll
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackc.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smacker.hlp
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackerw.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackfr.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackgo.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackmix.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackplw.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackply.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackpw6.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackscr.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smackscw.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smacksw6.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smkcompi.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Smkinfo.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Soundpr.exe
+File Copy: C:\Program Files\Modding Tools\Smacker\Vic32.dll
+File Copy: C:\Program Files\Modding Tools\Smacker\Webdial.exe
+Made Dir: C:\Documents and Settings\Mark\Start Menu\Programs\Smacker
+Shell Link: C:\Documents and Settings\Mark\Start Menu\Programs\Smacker\Smacker Tools.lnk
+Shell Link: C:\Documents and Settings\Mark\Start Menu\Programs\Smacker\Uninstall Smacker.lnk
+INI New: Created INI
+INI File: C:\WINDOWS\smacker.ini
+INI Sect: SmackMain
+INI Item: InstallDirectory
+INI Val: C:\DOCUME~1\MARK\LOCALS~1\TEMPOR~1\CONTENT.IE5\SHY3OTUF
+INI File: C:\WINDOWS\smacker.ini
+INI Sect: SmackMain
+INI Item: Directory
+INI Val: C:\PROGRA~1\MODDIN~1\Smacker
+INI File: C:\WINDOWS\system.ini
+INI Sect: mci
+INI Item: animation1
+INI Val: mciaap.drv
+INI File: C:\WINDOWS\win.ini
+INI Sect: mci extensions
+INI Item: fli
+INI Val: animation1
+INI File: C:\WINDOWS\win.ini
+INI Sect: mci extensions
+INI Item: flc
+INI Val: animation1
+INI File: C:\WINDOWS\win.ini
+INI Sect: extensions
+INI Item: fli
+INI Val: aawin.exe -r ^.fli
+INI File: C:\WINDOWS\win.ini
+INI Sect: extensions
+INI Item: flc
+INI Val: aawin.exe -r ^.flc
+RegDB Key: .smk
+RegDB Val: Smacker.Animation
+RegDB Key: Smacker.Animation
+RegDB Val: Smacker Animation
+RegDB Key: Smacker.Animation\shell\open\command
+RegDB Val: C:\PROGRA~1\MODDIN~1\Smacker\Smackgo.exe %1
+RegDB Key: .ss
+RegDB Val: SmackScript.Application
+RegDB Key: SmackScript.Application
+RegDB Val: SmackScript Application
+RegDB Key: SmackScript.Application\shell\open\command
+RegDB Val: C:\PROGRA~1\MODDIN~1\Smacker\Smackscw.exe %1
+RegDB Key: .sbt
+RegDB Val: SmackerBatch.File
+RegDB Key: SmackerBatch.File
+RegDB Val: Smacker Batch File
+RegDB Key: SmackerBatch.File\shell\open\command
+RegDB Val: C:\PROGRA~1\MODDIN~1\Smacker\Smackerw.exe %1
+User Rights: Admin

@@ -1,0 +1,39 @@
+ZVSE2
+
+** MONOLITH TOLL
+
+* Option 065 by Steven Lynch (script65)
+
+* Normally with two-way liths there is no cost for quite high reward:
+* to be able to visit many areas of the map and gain access to non-guarded items and map locations.
+* It seems to make sense to have some sort of cost for using two-way liths, even if not extravagant.
+* One-way liths will continue to be free, as they are not susceptible to being used over and over again like two-way liths are.
+
+* The cost to use a two-way lith is 100 gold per week for human players
+* and 50 gold per week for AI players, but if the AI has no gold, it will still be able to use the lith.
+** updated a bit by daemon_n
+
+!?OB(OBJ_MONOLITH_TWO_WAY); [Trigger for stepping on any Two-Way Monolith]
+!!UN:P65/?y1;             [check if script enabled]
+!!FU&y1<>1:E;             [exit, if script not enabled]
+
+!!OB998:S;                [Disable Two-Way Monoliths until conditions are proven]
+
+!!VR(cost:y):Si^timerIsAi^ *-50 +100 *i^timerWeek^;
+!!IF:V1/1;                [reset vlag 1]
+!!OW:R-1/(RES_GOLD)/?(playerGold:y);           [How much gold does the player have?]
+
+!!if&(ERM_FLAG_IS_HUMAN)/(playerGold)>=(cost);
+  !!IF:Q1/(RES_GOLD)/(cost)/(MSG_TYPE_QUESTION)/^%T(wog.65.question)^; [Question, which only applies to human players]
+!!el&(ERM_FLAG_IS_HUMAN);
+  !!IF:Q1/(RES_GOLD)/(cost)/(MSG_TYPE_MES)/^%T(wog.65.no_gold)^ V1/0;  [Message if the player said yes but doesn't have enough gold]
+!!en;
+
+!!if&1;
+  !!VR(cost):F0/(playerGold);
+  !!OW:R-1/(RES_GOLD)/d-(cost);
+  !!OB998:R;                [Disable Two-Way Monoliths until conditions are proven]
+!!en;
+
+
+** End of Script **

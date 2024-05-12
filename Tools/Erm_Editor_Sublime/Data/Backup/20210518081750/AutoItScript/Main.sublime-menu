@@ -1,0 +1,44 @@
+[
+	{
+	 "caption": "Tools",
+	 "mnemonic": "T",
+	 "id": "tools",
+	 "children":
+		[
+			{ "caption": "-", "id": "packagecommands" },
+			{ "command": "autoittidy", "caption": "AutoIt - Tidy", "mnemonic": "T"},
+			{ "command": "autoitincludehelper", "caption": "AutoIt - IncludeHelper", "mnemonic": "I"}
+		]
+	},
+	{
+		"caption": "Preferences",
+		"id": "preferences",
+		"children":
+		[
+			{
+				"caption": "Package Settings",
+				"mnemonic": "P",
+				"id": "package-settings",
+				"children":
+				[
+                    {
+                        "caption": "AutoIt",
+                        "children":
+                        [
+							{
+								"command": "open_file",
+								"args": {"file": "${packages}/AutoItScript/AutoIt.sublime-settings"},
+								"caption": "AutoIt Settings - Default"
+							},
+							{
+								"command": "open_file",
+								"args": {"file": "${packages}/User/AutoIt.sublime-settings"},
+								"caption": "AutoIt Settings - User"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

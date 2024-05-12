@@ -1,0 +1,1085 @@
+ZVSE2
+
+** ENHANCED SECONDARY SKILLS  -  ERM script 48
+
+** By Arstahd
+** Version: 1.11   updated 22.2(Febrary).2012 by rennyo
+** Updated: Sep 2022 by Archer30 and daemon_n
+** Special thanks to Hermann the Weird for help with bug fixing and script maintenance
+
+*  Variables used: s, r, j
+*  V Variables used: v7020-v7054
+*  Z Variables used: z1-z3, z700-z706
+*  Y Variables used: y1-y11
+*  W Variables used: w4-w8
+*  Functions used: 7001-7026   (7016, 7018, 7022 not used)
+*  Flags used: 1, 2
+
+
+***  Artillery  ***
+**      Ballista does (1-50 + hero level) damage to an enemy stack prior to a battle (attacker or defender). Will not wipe out a stack. Gives Experience.
+**      Ammo Cart adds 100% damage (more shots).
+**      Artillery increases the effect of the ballista.
+**      Basic: adds 100% damage, Advanced: adds 200% damage, Expert: adds 300% damage
+***  Eagle Eye  ***
+**      Grants the ability to counter a beneficial spell cast by the enemy.
+**      The countered spell would take the same spell points from the caster.
+**      Basic: 10%, Advanced: 20%, Expert: 30%
+**      Bird of Perception, Stoic Watchman, & Emblem of Cognizance increase the chance.
+**      New combination artifact - (above three) adds 20% to chance to counter enemy hero's spells
+***  Estates  ***
+**      For each level of estates:
+**      The hero will generate an additional 5 gold per hero level every day.
+**      The hero will generate 1-3 units of a resource every week, doubled for wood or ore.
+**      The resource types will be randomly set when the skill is learned.
+***  First Aid  ***
+**      First Aid Tent resurrects (1-50 + hero level) HP's of dead troops for the winner of a battle (attacker or defender).
+**      Ammo Cart adds 100% HP's (medical supplies).
+**      First Aid increases the effect of the first aid tent.
+**      Basic: adds 100% HP's, Advanced: adds 200% HP's, Expert: adds 300% HP's
+***  Learning  ***
+**      Hero gains experience every day.
+**      Basic: +100, Advanced: +200, Expert: +300
+***  Luck  ***
+**      Luck gives each stack in a hero's army a chance to get +2 Attack, +2 Defence and Fortune for a battle.
+**      Basic: 10% - up to 1 stack, Advanced: 20% - up to 2 stacks, Expert: 30% - up to 3 stacks
+***  Mysticism  ***
+**      Mysticism makes it more difficult for an enemy to cast spells, effectively reducing the enemy's spell points for the battle.
+**      Basic: 80% of normal, Advanced: 70% of normal, Expert: 60% of normal
+***  Navigation  ***
+**      Navigation increases attack and defence during naval battles.
+**      Basic: +1, Advanced: +2, Expert: +3
+***  Pathfinding  ***
+**      Pathfinding raises the minimum daily starting movement on land (after any movement bonuses are taken into account)
+**      Basic: 1700 (6), Advanced: 1760 (7), Expert: 1830 (8)
+***  Resistance  ***
+**      Resistance endows a hero's troops with magic resistance. Increased chances.
+**      Basic: 10%, Advanced: 20%, Expert: 30%
+**      New combination artifact - Boots of Polarity, Garniture of Inteference, Surcoat of Counterpoise
+**      +20% to artifact bonus
+***  Scholar  ***
+**      Each week a hero will attempt to research a new spell.
+**      Basic: 40% up to 2nd, Advanced: 50% up to 3rd, Expert 60% up to 4th.
+***  Scouting  ***
+**      Scouting gives a hero a small chance for a random event for each step taken.
+**      Basic: 1%, Advanced: 1.5%, Expert: 2%
+***  Sorcery  ***
+**      Sorcery increases the damage of hero's spells. Increased percentages.
+**      Basic: +10%, Advanced: +20%, Expert: +30%
+***  Armorer  ***
+**      Armorer reduces the damage a hero's troops receive. Increased percentages.
+**      Basic: -10%, Advanced: -15%, Expert: -20%
+
+
+** Initialization Code
+[Check if Artillery, Eagle Eye, Estates, First Aid, Learning, Luck, Mysticism,
+Navigation, Pathfinding, Resistance, Scholar, Scouting is enabled in WoGify Options]
+
+!#UN:P201/?i^wog_201_enabled^;
+!#UN:P202/?i^wog_202_enabled^;
+!#UN:P203/?i^wog_203_enabled^;
+!#UN:P204/?i^wog_204_enabled^;
+!#UN:P205/?i^wog_205_enabled^;
+!#UN:P206/?i^wog_206_enabled^;
+!#UN:P207/?i^wog_207_enabled^;
+!#UN:P208/?i^wog_208_enabled^;
+!#UN:P209/?i^wog_209_enabled^;
+!#UN:P210/?i^wog_210_enabled^;
+!#UN:P211/?i^wog_211_enabled^;
+!#UN:P212/?i^wog_212_enabled^;
+
+!?FU(OnAfterErmInstructions);
+; Set up new names and descriptions for War Machines
+!!SN&i^wog_204_enabled^:H^art^/(ART_FIRST_AID_TENT)/1/z148000;
+!!SN&i^wog_201_enabled^:H^art^/(ART_BALLISTA)/1/^%T(wog.201.ballista_description)^;
+
+!!if|i^wog_204_enabled^/i^wog_201_enabled^;
+  !!SN:H^art^/(ART_AMMO_CART)/0/^%T(wog.201.ammo_name)^;
+  !!SN:H^art^/(ART_AMMO_CART)/1/^%T(wog.201.ammo_description)^;
+!!en;
+
+; Disable the feature to remove Eagle Eye II skill when the hero has learned all the spells if Eagle Eye I is enabled
+!!VRi^wog_103_removeEagleEye^&i^wog_202_enabled^:S(FALSE);
+** end of Initialization Code
+
+
+; Hooks
+!?FU(WOG_CreateERMHook);
+!#VA(address:x);
+
+; Artillery 
+!!SN&i^wog_201_enabled^:E(address)/1/4607915/(WOG_201_KillWithArtillery); hook before artifact cast
+; Pathfinding
+!!SN&i^wog_209_enabled^:E(address)/1/5131985/(WOG_OnGetMovementPointsByMonsterSpeed);
+; Scouting II
+!!SN&i^wog_212_enabled^:E(address)/1/4718431/(WOG_OnBeforeHeroMove);
+
+
+; Set up Resistance, Armorer and Sorcery II values
+!?FU(OnGameEnter);
+!!if&i^wog_210_enabled^;
+  !!UN:C6548044/(UNC_INT)/?i^wog_210_patch1^;
+  !!UN:C6548048/(UNC_INT)/?i^wog_210_patch2^;
+  !!UN:C6548052/(UNC_INT)/?i^wog_210_patch3^;
+
+  !!UN:C6548044/(UNC_INT)/1036831949;   [set Basic Resistance]
+  !!UN:C6548048/(UNC_INT)/1045220556;   [set Advanced Resistance]
+  !!UN:C6548052/(UNC_INT)/1050253721;   [set Expert Resistance]
+!!en;
+
+!!UN:P214/?(armorer:y);
+
+!!if&(armorer);
+  !!UN:C6547980/(UNC_INT)/?i^wog_214_patch1^;
+  !!UN:C6547984/(UNC_INT)/?i^wog_214_patch2^;
+  !!UN:C6547988/(UNC_INT)/?i^wog_214_patch3^;
+
+  !!UN:C6547980/(UNC_INT)/1036831949;   [set Basic Armorer]
+  !!UN:C6547984/(UNC_INT)/1041865112;   [set Advanced Armorer]
+  !!UN:C6547988/(UNC_INT)/1045220556;   [set Expert Armorer]
+!!en;
+
+!!UN:P213/?(sorceryII:y);
+
+!!if&(sorceryII);
+  !!UN:C6548092/(UNC_INT)/?i^wog_213_patch1^;
+  !!UN:C6548096/(UNC_INT)/?i^wog_213_patch2^;
+  !!UN:C6548100/(UNC_INT)/?i^wog_213_patch3^;
+
+  !!UN:C6548092/(UNC_INT)/1036831949;   [set Basic Sorcery]
+  !!UN:C6548096/(UNC_INT)/1045220556;   [set Advanced Sorcery]
+  !!UN:C6548100/(UNC_INT)/1050253721;   [set Expert Sorcery]
+!!en;
+
+
+; Restore Resistance, Armorer and Sorcery II values
+!?FU(OnGameLeave);
+!!if&i^wog_210_enabled^;
+  !!UN:C6548044/(UNC_INT)/i^wog_210_patch1^;
+  !!UN:C6548048/(UNC_INT)/i^wog_210_patch2^;
+  !!UN:C6548052/(UNC_INT)/i^wog_210_patch3^;
+!!en;
+
+!!UN:P214/?(armorer:y);
+
+!!if&(armorer);
+  !!UN:C6547980/(UNC_INT)/i^wog_214_patch1^;
+  !!UN:C6547984/(UNC_INT)/i^wog_214_patch2^;
+  !!UN:C6547988/(UNC_INT)/i^wog_214_patch3^;
+!!en;
+
+!!UN:P213/?(sorceryII:y);
+
+!!if&(sorceryII);
+  !!UN:C6548092/(UNC_INT)/i^wog_213_patch1^;
+  !!UN:C6548096/(UNC_INT)/i^wog_213_patch2^;
+  !!UN:C6548100/(UNC_INT)/i^wog_213_patch3^;
+!!en;
+
+
+** Timer routines
+!?FU(OnEveryDay)&i^wog_205_enabled^/i^timerDay^>1; [daily - continue if learning enabled]
+; Check if there is only one player in the game. Skip giving exp if it does
+!!VR(counter:y):S0;
+
+!!re i/(PLAYER_FIRST)/(PLAYER_LAST);
+  !!OW:Ii/d/?(isDead:y);
+  !!VR(counter)&(isDead)<>(TRUE):+1;
+
+  !!br&(counter)>=2;
+!!en;
+
+!!FU&i>(PLAYER_LAST):E;
+
+; Get the max exp of the game
+!!UN:J1/?(maxLevel:y)/d;                [Note: Level limit is 0 by default, if there is no limit]
+!!FU(WOG_GetExpRequirementOfLevel)&(maxLevel)>0:P(maxLevel)/?(maxExp:y);
+
+; Check all the heroes owned by the player
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?(owner:y);
+
+  !!if&(owner)=i^timerOwner^;
+    !!HEi:S(SKILL_LEARNING)/?(skillLevel:y) E?(exp:y)/?(level:y)/1;
+    !!co&(maxLevel)>0/(level)>=(maxLevel);[active only when the hero has not yet reach the level limit of the scenario.]
+
+    !!if&(skillLevel:y)>0;
+      !!VR(bonusExp:y):S(skillLevel) *100;
+      !!VR(exp):+(bonusExp);
+
+      ; Fix exp if there is a level limit in the scenario
+      !!VR(exp)&(maxLevel)>0:F0/(maxExp);
+
+      !!HEi:E(exp);
+    !!en;
+  !!en;
+!!en;
+
+!?FU(OnEveryDay)&i^timerWeekday^=1/i^timerDay^>1; [weekly - continue if estates or scholar enabled]
+!!DO(WOG_203_211_ManageWeeklyEvents)/(HERO_FIRST)/(HERO_LAST_WOG)/1|i^wog_203_enabled^/i^wog_211_enabled^:P; [iterate through all heroes]
+** end of timer routines
+
+
+** start of movement trigger
+!?FU(OnHeroMove)&i^wog_212_enabled^;                        [continue if scouting enabled]
+!!HE(CURRENT_HERO):N?(hero:y) O?(owner:y);                          [get #, owner of hero]
+!!FU&(owner)<>i^timerOwner^:E;                               [exit if not current player's hero]
+
+!!OW:Ii^timerOwner^/?(isAi:y) Gi^timerOwner^/?(isInteracting:y);                [get current player]
+!!FU&(isAi)<>(TRUE)/(isInteracting)=0:E;
+
+!!HE(hero):P?(x:y)/?(y:y)/?(z:y);               [get hero's position]
+!!TR(x)/(y)/(z):T?(terrainType:y)/d/d/d/d/d/d/d;                  [get terrain type]
+
+!!if&i^wog_212_enabled^/(terrainType)<>8;
+  !!HE(hero):S(SKILL_SCOUTING)/?(skillLevel:y);              [get hero's scouting skill level if on land]
+  !!FU(WOG_ExecuteScoutingEvents)&(skillLevel)>(SKILL_NOT_LEARNED):P(skillLevel)/(hero);            [do scouting function - if enabled]
+!!en;
+** end of movement trigger
+
+
+!?FU(WOG_OnBeforeHeroMove);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(activeHeroPtr:y);
+
+!!if&(activeHeroPtr)=0;
+  !!SN:X?t/0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4721255;
+!!en;
+
+
+** start of battle-start trigger
+!?FU(OnBeforeBattle)|i^wog_204_enabled^/i^wog_207_enabled^;
+
+** first aid
+!!if&i^wog_204_enabled^;
+  !!SN:Mi^wog_204_monList_0^ Mi^wog_204_monList_1^;
+  !!FU(NewIntArray):P14/?i^wog_204_monList_0^/(M_TEMP) P14/?i^wog_204_monList_1^/(M_TEMP);
+
+  !!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+    !!re j/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+      !!BA:Mi/j/?(type:y)/?(num:y);
+      !!VR(index:y):Sj *2;
+      !!SN:Vi^wog_204_monList_%i^/(index)/(type)/(num);
+    !!en;
+  !!en;
+!!en;
+
+** mysticism
+!!if&i^wog_207_enabled^;
+  ; Initialise vars
+  !!VRi^wog_207_manaDiff_0^:S0;
+  !!VRi^wog_207_manaDiff_1^:S0;
+
+  ; Set up Mysticism effect if the battle is with two heroes
+  !!if&i^battle_hero_1^>(NO_HERO);
+    !!FU(WOG_207_SetUpMysticismManaReduction):P(BATTLE_LEFT);
+    !!FU(WOG_207_SetUpMysticismManaReduction):P(BATTLE_RIGHT);
+  !!en;
+!!en;
+
+!?FU(OnSetupBattlefield)&i^wog_202_enabled^;               [Continue trigger if any skills are enabled]
+
+** eagle eye
+!!VRi^wog_202_chance_0^:S0;                               [reset i^wog_202_chance_0^]
+!!VRi^wog_202_chance_1^:S0;                               [reset i^wog_202_chance_1^]
+!!VRi^wog_202_heroSpellCountered^:S(FALSE);                        [reset global flag of whether a spell has been countered]
+
+!!re i/(BATTLE_LEFT)/i^battle_hero_vs_hero^;
+  !!FU(WOG_202_CalcCounterSpellChance):Pi/?i^wog_202_chance_%i^;
+!!en;
+** end of battle-start trigger
+
+
+** start of battlefield start trigger
+!?FU(WOG_BattleStack_InitParams)&i^battle_hero_%x2^<>(NO_HERO)/i^wog_208_enabled^;                               [continue if luck or navigation enabled]
+!#VA(stackId:x) (side:x);
+
+!!HEi^battle_hero_%(side:x)^:R7/?(bits:y);
+!!VR(bits):&(BIT_18);                                                                         [if hero is on boat]
+
+!!if&(bits);
+  !!HEi^battle_hero_%(side)^:S(SKILL_NAVIGATION)/?(skillLevel:y);
+
+  !!if&(skillLevel);
+    !!BM(stackId):Ad(skillLevel:y) Dd(skillLevel:y);
+  !!en;
+!!en;
+** navigation
+
+** start of battle turn one trigger
+!?FU(OnBattleRound)&i^wog_206_enabled^/i^battle_round^=0;
+** luck
+!!re i/0/i^battle_hero_vs_hero^;
+  !!HEi^battle_hero_%i^:S(SKILL_LUCK)/?(luckLevel:y);
+  !!if&(luckLevel);
+    !!FU(NewIntArray):P?(mons:y);
+    !!re j/0/(ARMY_SLOT_LAST);
+      !!BA:Mi/j/?n/?t;
+      !!if&t<>(NO_MON)/n>0;
+        !!FU(Array_Push):P(mons)/j;
+      !!en;
+    !!en;
+    !!SN:M(mons)/?(size:y);
+    !!if&(size);
+      !!VR(chance:y):S10 *(luckLevel);
+      !!VR(luckLevel):F0/(size);
+      !!FU(Array_Shuffle):P(mons);
+      !!re j/0/(luckLevel)/1/-1;
+        !!FU(Array_Pop):P(mons)/?(stackBySideId:y);
+        !!VR(rand:y):R0/1/100;
+        !!if&(chance)>=(rand);
+          !!VR(stackId:y):Si *(BATTLE_STACKS_PER_SIDE) +(stackBySideId);
+          !!BM(stackId):Z?s Dd2 Ad2; P?(pos:y) ; C(SPELL_FORTUNE)/(pos)/(SKILL_NOT_LEARNED)/100/1 Dd2 Ad2;
+          !!FU(WOG_Battle_CanStackReceiveSpell):P(stackId)/(SPELL_FORTUNE)/i/?(canRecieveSpell:y);
+          !!HEi^battle_hero_%i^:Z?h;
+          !!SN&(canRecieveSpell:y):E4474384/(CALLCONV_THISCALL)/s/(SPELL_FORTUNE)/100/0/h;
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+
+** start of pre-action trigger
+!?FU(OnBeforeBattleAction)&i^wog_202_enabled^;                                      [Continue trigger if eagle eye is enabled]
+!!FU&i^wog_202_chance_0^=0/i^wog_202_chance_1^=0:E;                 [exit if no one has eagle eye]
+
+; Exit if not casting
+!!BG:A?(action:y) E?(target:y);         [get action type and target]
+
+!!FU&(action)<>(BATTLE_ACTION_HERO_CAST)/(action)<>(BATTLE_ACTION_MONSTER_CAST):E; [no effect if not casting]
+
+; Check if the spell is beneficial, here we check the type of target
+; Note: BG:S returns -1 on monster casting, that's why we have to check target side
+!!VR(isBenificial:y):S(FALSE);
+
+!!if&(action)=(BATTLE_ACTION_HERO_CAST);
+  !!BG:S?(spell:y);                     
+  !!FU&(spell)>(SPELL_LAST_WOG):E;      [no effect if the spell is an extended spell, could have compatibility impact with erm]
+
+  !!SS(spell):O?(spellTargetType:y);
+  !!VR(isBenificial)&(spellTargetType)=1:S(TRUE);
+!!el&(action)=(BATTLE_ACTION_MONSTER_CAST);
+  ; Check if the target is valid, if not, check the casting position and see if there is a dead stack (need this for Archangel resurrection casting)
+  !!if&(target)=(NO_STACK);
+    !!BG:D?(pos:y);
+    !!BU:D(pos)/?(target:y);
+    !!FU&(target)<0:E;
+  !!en;
+
+  !!BM(target):I?(targetSide:y);
+  !!VR(isBenificial)&(targetSide)=i^battle_acting_side^:S(TRUE);
+!!en;
+
+!!FU&(isBenificial)<>(TRUE):E;
+
+; Check if it is lucky enough to counter
+!!VR(result:y):S(FALSE);
+!!VR(random:y):R0/0/99;                 [random roll]
+!!VR(result)&i^battle_acting_side^=(BATTLE_LEFT)/i^wog_202_chance_1^>0/(random)<i^wog_202_chance_1^:S(TRUE); [if attacker cast, check against defender Eagle Eye rating]
+!!VR(result)&i^battle_acting_side^=(BATTLE_RIGHT)/i^wog_202_chance_0^>0/(random)<i^wog_202_chance_0^:S(TRUE); [if defender cast, check against attacker Eagle Eye rating]
+!!FU&(result)<>(TRUE):E;
+
+!!if&i^battle_isVisible^;
+  ; Play sound
+  !!SN:P^telptin^;
+
+  ; Show shield animation on the target or acting stack if massive
+  !!if&(target)>(NO_STACK);
+    !!BM(target):V32;
+  !!el;
+    !!BMi^battle_acting_stack^:V32;
+  !!en;
+!!en;
+
+; Reduce mana (spell count) and show animation on the caster
+!!VR(oppSide:y):Si^battle_acting_side^ X1;
+
+; For monster cast
+!!if&(action)=(BATTLE_ACTION_MONSTER_CAST);
+  ; Skip the current turn
+  !!BMi^battle_acting_stack^:Ed-1;      [reduce spell count by 1]
+  !!BG:A(BATTLE_ACTION_WALK);           [make unit move (cancel action), possible to get morale]
+
+  ; Show mana drained animation on the casting monster
+  !!BMi^battle_acting_stack^&i^battle_isVisible^:V76;
+; For hero cast
+!!el&(action)=(BATTLE_ACTION_HERO_CAST);
+  ; Reduce mana by the cost of the spell supposed to cast (by daemon_n)
+  !!BG:H?(hero:y);
+
+  !!if&(hero)<>(NO_HERO);
+    !!HE(hero):Z?(heroStruct:y);
+    !!VR(oppArmyOffs:y):S(oppSide) *(UNC_INT) +21700;
+    !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y)  C(cmbMgr)/(oppArmyOffs)/4/?(oppArmyPtr:y) C(cmbMgr)/21440/4/?(groundType:y);
+    !!SN:E5133488/(CALLCONV_THISCALL)/(heroStruct)/(spell)/(oppArmyPtr)/(groundType);
+    !!SN:E5084480/(CALLCONV_THISCALL)/(heroStruct)/v1;
+  !!en;
+
+  ; Set to no cast and pass the turn
+  ; Note: BG:A would result in grid visually missing. Here we pass the stack turn and get back to redraw grids and spell book button
+  !!BG:A(BATTLE_ACTION_SKIP);
+  !!BHi^battle_acting_side^:M1;
+  !!VRi^wog_202_heroSpellCountered^:S(TRUE);
+
+  ; Show mana drained animation on the hero
+  !!if&i^battle_isVisible^;
+    !!if&i^battle_current_side^=(BATTLE_LEFT);
+      !!VR(pos:y):S0;                   [attakcing hero]
+    !!el;
+      !!VR(pos):S16;                    [defending hero]
+    !!en;
+
+    !!FU(WOG_PlayAnimationOnHex):P76/(pos)/100;
+  !!en;
+!!en;
+
+; Show combat msg
+!!if&i^battle_isVisible^;
+  !!HEi^battle_hero_%(oppSide)^:B0/?z2;
+
+  !!if&(action)=(BATTLE_ACTION_MONSTER_CAST);
+    !!BMi^battle_acting_stack^:T?(type:y) N?(num:y);
+    !!VR(isPlural:y):S(num) -1 B;
+    !!SN:H^monname^/(type)/(isPlural)/?z4;
+  !!el;
+    !!HE(hero):B0/?z4;
+  !!en;
+
+  !!SN:T^wog.202.battleLog^/?z3/^hero^/z2/^victim^/z4;
+  !!MM:Sz3;
+!!en;
+
+; Return to the caster's stack turn
+; This is needed as when we cancel the hero spell with BG:A, the action turn is finished and roll to the next stack. We don't want to skip the caster's turn when the spell failed as it is way too imba
+!?FU(OnBeforeBattleStackTurn)&i^wog_202_enabled^/i^wog_202_heroSpellCountered^;
+!#VA(stack:x);
+
+!!VR(stack):Si^battle_acting_stack^;
+!!BM(stack):Fd~(MON_FLAG_ACTED);
+!!VRi^wog_202_heroSpellCountered^:S(FALSE);
+
+** end of pre-action trigger
+
+!?FU(WOG_204_FindTargetToResurrect);
+!#VA(side:x) (power:x);
+
+    !!VR(min:y):S(side) *21;
+    !!VR(max:y):S(min) +20;(ARMY_SLOT_LAST);
+    !!re i/(min)/(max);
+      !!BMi:N?n O?(slot:y) B?(startNumber:y);
+      !!if&(slot)<>(NO_STACK)/n>0/(startNumber:y)>n;
+        *!BMi:B?(startNumber:y);
+      !!en;
+    !!en;
+
+  *!re i/(min)/(max);
+    *!BMi:T?t N?n;
+    *!if&t=(MON_FIRST_AID_TENT)/n>0;
+      
+      *!IF:L^%n %t^;
+    *!en;
+  *!en;
+
+███─████─████────████──████─███─█───█─████─█──█────█──█
+█───█──█─█──█────█──██─█──█─█───██─██─█──█─██─█────██─█
+███─█──█─████────█──██─████─███─█─█─█─█──█─█─██─██─█─██
+█───█──█─█─█─────█──██─█──█─█───█───█─█──█─█──█────█──█
+█───████─█─█─────████──█──█─███─█───█─████─█──█────█──█
+
+
+*?FU(WOG_204_GetResurrectPower);
+*#VA(side:x) (result:x);
+*!VR(result):S0;
+
+*!HEi^battle_hero_%i^:A2/(ART_FIRST_AID_TENT)/?y99/?(isTent:y);
+*!if&(isTent);
+   *!HEi^battle_hero_%i^:A2/(ART_AMMO_CART)/?y99/?(isAmmo:y) S(SKILL_FIRST_AID)/?(skillLvl:y) E?y99/?(heroLv:y)/1;
+   *!VR(multipler:y):S1 +(isAmmo) +(skillLvl);
+   *!VR(result):R0/1/50 + (heroLv) *(multipler);
+
+*!en;
+  *!VR(min:y):S(side) *21;
+  *!VR(max:y):S(min) +20;
+
+*?FU(OnAfterBattleUniversal);
+  *!re i/0/i^battle_hero_vs_hero^;(end_value);
+    *!HEi^battle_hero_%i^:O?o A2/(ART_FIRST_AID_TENT)/?y99/?(isTent:y);
+    *!IF:M^%o^;
+    *!if&o<>(NO_OWNER);/(isTent);
+      *!FU(WOG_204_GetResurrectPower):Pi/?(power:y);
+      *!if&(power);
+        *!FU(WOG_73_BattleFunc_CalculateStackHealing):Pi/(power:y)/?l/?n;
+        
+      *!en;
+    *!en;
+  *!en;
+** end of post-action trigger
+
+
+// Additional resistance for the resistance artifacts combo
+!?FU(OnDwarfMagicResistance)&i^wog_210_enabled^;
+!!MR:N?(stack:y);
+!!BM(stack):I?(side:y);
+
+!!if&i^battle_hero_%(side)^>(NO_HERO);
+  !!re i/(ART_GARNITURE_OF_INTERFERENCE)/(ART_BOOTS_OF_POLARITY);
+    !!HEi^battle_hero_%(side)^:A2/i/?(has:y)/?(equipped:y);
+
+    !!FU&(equipped)=0:E;
+  !!en;
+
+  ; Check if Orb of Vulnerability is equipped by any of the heroes
+  !!HEi^battle_hero_%(side)^:A2/(ART_ORB_OF_VULNERABILITY)/?(has)/?(orbEquipped:y);
+  !!FU&(orbEquipped):E;
+
+  !!VR(oppSide:y):S(side) X(TRUE);
+
+  !!if&i^battle_hero_%(oppSide)^>(NO_HERO);
+    !!HEi^battle_hero_%(oppSide)^:A2/(ART_ORB_OF_VULNERABILITY)/?(has)/?(orbEquipped);
+    !!FU&(orbEquipped):E;
+  !!en;
+
+  ; Increase spell resistance by 20 if applicable
+  !!MR:F?(resist:y);
+
+  !!if&(resist)<100;
+    ; Skip if it is a beneficial spell
+    !!MR:S?(spell:y);
+    !!SS(spell):O?(spellType:y);
+
+    !!if&(spellType)<1;
+      !!VR(resist):+20 F0/100;
+      !!MR:F(resist);
+    !!en;
+  !!en;
+!!en;
+
+
+** start of battle end trigger
+!?FU(OnAfterBattleUniversal)|i^wog_204_enabled^/i^wog_207_enabled^; [Continue trigger if any skills are enabled]
+** first aid
+!!if&i^wog_204_enabled^;
+  !!HEi^battle_hero_0^:O?(owner:y);     [get attacking hero's owner]
+
+  !!if&(owner)<>(NO_OWNER);
+    !!HEi^battle_hero_0^A2/6/?(has:y)/?(equipped:y); [see if attacking hero has a First Aid Tent]
+    !!FU(WOG_204_FirstAidAfterBattle)&(equipped)>0:P(BATTLE_LEFT); [handle first aid tent for attacker]
+  !!en;
+
+  !!if&i^battle_hero_1^>(NO_HERO);
+    !!HEi^battle_hero_1^:O?(owner);     [get defending hero's owner]
+
+    !!if&(owner)<>(NO_OWNER);
+      !!HEi^battle_hero_1^:A2/6/?(has)/?(equipped); [see if defending hero has a First Aid Tent]
+      !!FU(WOG_204_FirstAidAfterBattle)&(equipped)>0:P(BATTLE_RIGHT); [handle first aid tent for defender]
+    !!en;
+  !!en;
+!!en;
+
+** mysticism
+!!if&i^wog_207_enabled^/i^battle_hero_1^>(NO_HERO);
+  !!HEi^battle_hero_0^:Id-i^wog_207_manaDiff_0^/1;
+  !!HEi^battle_hero_1^:Id-i^wog_207_manaDiff_1^/1;
+!!en;
+
+** end of battle end trigger
+!?FU(WOG_201_SelectBestTarget);
+!#VA(side:x) (dmg:x) (result:x);
+
+!!VR(min:y):S(side) *21;
+!!VR(max:y):S(min) +20;
+!!VR(result):S(NO_STACK);
+!!VR(killFv:y):S0;
+!!VR(killCount:y):S0;
+
+!!re i/(min)/(max);
+  *!BA:M(enemySide)/i/?(mon:y)/?(qty:y);
+  !!BMi:N?(qty:y) H?(hp:y) T?(mon:y) O?(armySlot:y);
+
+  !!co|(armySlot)=(NO_MON);
+
+  !!if&(mon)>(NO_MON)/(qty)>0/(hp)>0;
+    !!MA:F(mon)/?(fv:y);
+    *!VR(maxKillCount:y):S(qty);
+    !!VR(currKillCount:y):S(dmg) :(hp) F0/(qty);
+    !!VR(currKillFv:y):S(currKillCount) *(fv);
+
+    ; Store the values if killing at least one
+    !!if&(currKillCount)>0/(currKillFv)>(killFv);
+      !!VR(result):Si;
+      !!VR(killFv):S(currKillFv);
+      !!VR(killCount):S(currKillCount);
+    !!en;
+  !!en;
+!!en;
+!?FU(OnStackToStackDamage)&i^wog_201_Shoot^;
+!!VRx4:Si^wog_201_Shoot^;
+
+** function to handle artillery, hero, skill level
+!?FU(OnAfterTacticsPhase);
+!!VRi^wog_201_ShootOnce^:S(TRUE);
+&i^wog_201_enabled^
+!?FU(WOG_201_KillWithArtillery)&i^wog_201_enabled^/i^wog_201_ShootOnce^;
+  !!VRi^wog_201_ShootOnce^:S(FALSE);
+  !!FU(WOG_GetRandomSeedByCoord):Pi^battle_x^/i^battle_y^/i^battle_z^/?(seed:y);
+  !!re (side:y)/0/i^battle_hero_vs_hero^;
+    !!HEi^battle_hero_%(side)^:A2/(ART_BALLISTA)/?y99/?(ballista:y) S(SKILL_ARTILLERY)/?(artilleryLv:y);
+    !!if&(ballista)/(artilleryLv);
+
+      !!VR(min:y):S(side) *21;
+      !!VR(max:y):S(min) +20;
+
+      !!re i/(min)/(max);
+        !!BMi:T?t N?n;
+
+        !!if&n>0/t=(MON_BALLISTA);
+          !!BMi:Z?(stack:y);
+          !!HEi^battle_hero_%(side)^:A2/(MON_AMMO_CART)/?(has:y)/?(equipped:y) E?(exp:y)/?(heroLv:y)/1; [check for Ammo Cart, get hero's level, artillery level]
+          !!VR(equipped):F0/1 +1;       [ammo cart bonus]
+          !!VR(mult:y):S1 +(artilleryLv) *(equipped); [set multiplier to 1]
+          !!VR(seed):+i^timerDay^ +(side) +i^battle_hero_%(side)^;
+          !!FU(WOG_SafeRand):P1/50/(seed)/?(dmg:y);
+          !!VR(dmg:y):+(heroLv) *(mult); [ballista damage: (1-50 + hero level) x bonus multiplier x ammo]
+          !!VR(oppSide:y):S(side) X1;
+          !!FU(WOG_201_SelectBestTarget):P(oppSide)/(dmg)/?(targetStackId:y);
+
+          !!if&(targetStackId)<>(NO_STACK);
+            !!BM(targetStackId:y):Z?(targetStack:y) N?n H?h L?l;
+
+            !!VR(maxDamage:y):Sn *h -l -1;
+            !!VRi^wog_201_Shoot^:S(dmg) Fd/(maxDamage);
+
+            !!UN:C(stack)/16/4/(targetStack:y);                              [set stack target]
+
+            !!BMi:U3/?(shots:y) U3/1 G213/?(luck:y)/d  G213/0/d;
+
+            !!if&i^battle_isVisible^;
+              !!VR(msg:z):S^%T(wog.201.ballista_log)^;
+              !!MM:S(msg:z);
+            !!en;
+
+            !!re j/0/4;                                                      [ skip double damage bonus]
+              !!UN:C4470304/j/1/?i^test_%j^ C4470304/j/1/(OPCODE_NOP_1); 
+            !!en;
+
+            !!SN:E4453920/(CALLCONV_THISCALL)/(stack)/(targetStack:y);       [shoot stack to stack]
+
+            !!re j/0/4;
+              !!UN:C4470304/j/1/i^test_%j^;
+            !!en;
+            restore stack and hero data
+            !!BMi:U3/(shots:y) G213/(luck:y)/d;
+
+            next time make lost uncureable
+            *!BM(targetStackId:y):N?(new:y);
+            *!VR(lost:y):Sn -(new);
+            *!BM(targetStackId:y):Bd-(lost);
+            !!VRi^wog_201_Shoot^:S(FALSE);
+          !!en;
+
+          !!br;
+
+        !!en;
+      !!en;
+
+    !!en;
+  !!en;
+
+
+** function to handle first aid tent
+!?FU(WOG_204_FirstAidAfterBattle);                 y1= HP   y2=slot y9= first aid
+!#VA(side:x);
+
+!!HEi^battle_hero_%(side)^:A2/(ART_AMMO_CART)/?y7/?y8 E?y3/?y4/1 S(SKILL_FIRST_AID)/?y9;          [check for Ammo Cart, get hero's level, first aid level]
+!!VRy5:S1;                                          [set multiplier to 1]
+!!VRy5&y8>0:+1;                                     [ammo cart bonus]
+!!VRy5&y9>0:+y9;                                    [first aid bonus]
+!!VRy1:S0 +1 R49 +y4 *y5;                           [first aid tent heal: (1-50 + hero level) x bonus multiplier]
+!!VRy2:R0/0/6;                                      [random slot # to start search from]
+!!VRv2:S7;                                          [7 = slot not found]
+!!DO7003/0/6/1:P(side)/y1/y2;                       [heal next slot with >= 1 monster killed]
+
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!SN:Mi^wog_204_monList_%i^;
+  !!VRi^wog_204_monList_%i^:S0;
+!!en;
+** end of function
+
+
+** function to find slot where at least 1 cr was lost
+!?FU7003;           x1=side x2=hp healed  x3=slot
+!#VA(side:x) (hpHealed:x) (slot:x);
+!#VA(usedY[10]:y);
+
+!!VRy4:Sx3 %7;                                      [get an actual slot number]
+!!BA:Mx1/y4/?y5/?y6;                                [get y5 type and y6 qty in slot y3]
+
+!!VR(index:y):Sy4 *2;
+!!SN:Mi^wog_204_monList_%(side)^/(index)/?(prevType:y);
+
+!!if&(prevType)=y5;
+  !!VR(index):+1;
+  !!SN:Mi^wog_204_monList_%(side)^/(index)/?y7;       [get previous qty]
+
+  !!VRy7:-y6;                                         [subtract current qty to get qty lost]
+  !!FU7004&v2=7/y7>0/y6>0:Px1/x2/x3/y4/y5/y6/y7;      [try to heal stack if some lost but some left]
+!!en;
+
+!!VRx3:+1;                                            [next slot]
+** end of function
+
+
+** function to heal a stack
+!?FU7004;
+!#VA(side:x);
+
+!!FU&x5<0:E;                                        [exit if invalid value]
+
+!!HEi^battle_hero_%(side)^:B0/?z1 O?y30;                             [get hero's name]
+!!MA:Px5/?y8;                                       [get hit points of monster x5 into y8]
+!!FU&y8<1:E;                                        [exit if invalid value]
+
+!!VRy5:Sx2;                                         [# of hit points to heal]
+!!VRy5::y8;                                         [divided by monster hit points, rounded down, equals # to save]
+!!VRy5&y5>x7:Sx7;                                   [can't save more than qty that died]
+!!BA&x1=(BATTLE_LEFT)/y5>0:M0/x4/?x5/dy5;                       [restore y5 creatures attacker]
+!!BA&x1=(BATTLE_RIGHT)/y5>0:M1/x4/?x5/dy5;                       [restore y5 creatures defender]
+
+; Show msg when the current player is the same as the interacting player
+!!OW:C?y31/?y32;
+
+!!if&y30=y32;
+  !!IF&y5=1:Q2/(PIC_TYPE_MONSTER)/x5/1/z148007;
+  !!IF&y5>1:Q2/(PIC_TYPE_MONSTER)/x5/1/z148008;
+!!en;
+
+!!SN:D;                                             [redraw screen to show revived creatures]
+!!VRv2&y5>0:Sx4;                                    [note that we healed a stack if we did]
+** end of function
+
+
+** function for mysticism
+!?FU(WOG_207_SetUpMysticismManaReduction);
+!#VA(side:x);
+!#VA(usedY[1]:y);
+
+!!VR(enemySide:y):S(side) X1;
+
+; Check for Mysticism level
+!!HEi^battle_hero_%(side)^:S(SKILL_MYSTICISM)/?(mysticismLv:y); [get hero's Mysticism level]
+!!FU&(mysticismLv)=(SKILL_NOT_LEARNED):E;     [Exit if Mysticism is not learned]
+
+; Check for Mana
+!!HEi^battle_hero_%(enemySide)^:I?(mana:y)/1; [get enemy hero's spell points]
+
+; Reduce mana for the enemy if Mysticism is learned and enemy has mana
+!!if&(mysticismLv)>(SKILL_NOT_LEARNED)/(mana)>0;
+  !!FU(WOG_207_GetManaPercentage):P(mysticismLv)/?y1; [Get percenatge of mana left]
+  !!VR(newMana:y):S(mana) *y1 :100;           [calculate enemy hero's new spell points, decimal adjustment]
+
+  ; Show msg for humna player - could be both sides
+  !!if&1000;
+    !!HEi^battle_hero_%(side)^:B0/?z1;            [get hero's name]
+    !!HEi^battle_hero_%(enemySide)^:B0/?z3;       [get enemy hero's name]
+    !!VR(picIndex:y):S26 +(mysticismLv);          [set mysticism picture]
+    !!IF:Q2/(PIC_TYPE_SEC_SKILL)/(picIndex)/(MSG_TYPE_MES)/z148009; [Show message for human player]
+  !!en;
+
+  !!HEi^battle_hero_%(enemySide)^:I(newMana); [enemy hero's spell points reduced]
+  ; Store the mana reduced of the enemy hero
+  !!VRi^wog_207_manaDiff_%(enemySide)^:S(newMana) -(mana);
+!!en;
+
+!?FU(WOG_207_GetManaPercentage);
+!#VA(mysticismLv:x) (result:x);
+
+!!if&(mysticismLv)=(SKILL_BASIC);
+  !!VR(result):S80;                           [basic 80%]
+!!el&(mysticismLv)=(SKILL_ADVANCED);
+  !!VR(result):S70;                           [advanced 70%]
+!!el&(mysticismLv)=(SKILL_EXPERT);
+  !!VR(result):S60;                           [expert 60%]
+!!en;
+** end of function
+
+
+** function to iterate through current player's heroes (weekly)
+!?FU(WOG_203_211_ManageWeeklyEvents);
+!!HEx16:O?(owner:y);                              [get owner of iterated hero]
+
+!!if&(owner)=i^timerOwner^;
+  !!HEx16:S(SKILL_ESTATES)/?(skillLevel:y);                            [get hero's estates level]
+  !!FU(WOG_203_SetUpEstatesWeeklyBonus)&i^wog_203_enabled^/(skillLevel)>(SKILL_NOT_LEARNED):Px16/(skillLevel);     [if hero in use and it's that hero's owner's turn, continue in function (estates) - if enabled]
+  !!HEx16:S(SKILL_SCHOLAR)/?(skillLevel);                            [get hero's scholar skill level]
+  !!FU(WOG_211_TeachScholarSpell)&i^wog_211_enabled^/(skillLevel)>(SKILL_NOT_LEARNED):Px16/(skillLevel);                  [if hero in use and it's that hero's owner's turn, continue in function (scholar) - if enabled]
+!!en;
+** end of function
+
+
+** function for estates      x2=estates level
+!?FU(WOG_203_SetUpEstatesWeeklyBonus);
+!#VA(hero:x) (estatesLv:x);
+
+!!HE(hero):B0/?z700;                           [get hero's name]
+!!HE(hero):R2/?y1;                             [get hero's sex]
+!!IF:W(hero);                                  [enable hero variables]
+
+; Question: Is w8 really used for anything? - Archer30
+!!if&(estatesLv)>=(SKILL_BASIC);
+  !!VRw5&w8<1:R0/0/5;             [if not set, get random resource #]
+  !!VRw8&w8=0:S1;                 [set to lock resources]
+
+  !!if&(estatesLv)>=(SKILL_ADVANCED);
+    !!VRw6&w8<2:R0/0/5;
+    !!VRw8&w8=1:S2;
+
+    !!if&(estatesLv)>=(SKILL_EXPERT);
+      !!VRw7&w8<3:R0/0/5;
+      !!VRw8&w8=2:S3;
+    !!en;
+  !!en;
+!!en;
+
+!!VRy3:R0/1/2;                                [set quantity for resource 1]
+!!VRy3|w5=(RES_WOOD)/w5=(RES_ORE):*2;         [double for wood or ore]
+!!VRy4:R0/1/2;                                [set quantity for resource 2]
+!!VRy4|w6=(RES_WOOD)/w6=(RES_ORE):*2;          [double for wood or ore]
+!!VRy5:R0/1/2;                                [set quantity for resource 3]
+!!VRy5|w7=(RES_WOOD)/w7=(RES_ORE):*2;         [double for wood or ore]
+
+!!if&1000;
+  !!IF&(estatesLv)=(SKILL_BASIC):Q2/w5/y3/1/z148013;
+  !!IF&(estatesLv)=(SKILL_ADVANCED):Q2/w5/y3/w6/y4/1/z148014;
+  !!IF&(estatesLv)>=(SKILL_EXPERT):Q2/w5/y3/w6/y4/w7/y5/1/z148015;
+!!en;
+
+!!if&(estatesLv)>=(SKILL_BASIC);
+  !!OW:Ri^timerOwner^/w5/dy3; [give the resources]
+
+  !!if&(estatesLv)>=(SKILL_ADVANCED);
+    !!OW:Ri^timerOwner^/w6/dy4; [give the resources]
+    !!OW&(estatesLv)>=(SKILL_EXPERT):Ri^timerOwner^/w7/dy5; [give the resources]
+  !!en;
+!!en;
+** end of function
+
+
+** function for scholar       x2=scholar level
+!?FU(WOG_211_TeachScholarSpell);
+!#VA(hero:x) (scholarLv:x);
+
+!!HE(hero):B0/?z700;                           [get hero's name]
+!!HE(hero):S7/?y2;                             [get hero's wisdom skill level]
+!!VRy3&(scholarLv)=1:S57;                      [set basic scholar picture]
+!!VRy3&(scholarLv)=2:S58;                      [set advanced scholar picture]
+!!VRy3&(scholarLv)=3:S59;                      [set expert scholar picture]
+!!HE(hero):A2/0/?y7/?y8;                       [see if hero has a spell book]
+!!VRy6:R0/0/99;                                [random roll for chance to learn spell]
+!!VRy6&(scholarLv)=2:+10;                      [advanced bonus]
+!!VRy6&(scholarLv)=3:+20;                      [expert bonus]
+!!VRv7027:S0;                                  [loop counter]
+
+** Algor: begin
+!!if&y8>0/y6>59;
+  !!VRv1:S-1;
+  !!DO7015/0/69/1:P(hero)/y2/-1/(scholarLv);            [count number of avaliable spells in v1]
+
+  !!if&v1>-1;
+    !!VRv1:-1;
+    !!VRy10:S0 Rv1;                           [y10 - random avaliable spell]
+    !!VRv1:S-1;
+    !!DO7015/0/69/1:P(hero)/y2/y10/(scholarLv);         [learn y10 avaliable spell]
+  !!en;
+!!en;
+
+!?FU7015;                                     [x1 - hero, x2 - wisdom, x3 - learn spell(>=0)/count spells(=-1), x4 - scholar]
+!!HEx1:Mx16/?y1;                              [y1=1 for known spell]
+!!UN:J0/x16/?y2;                              [y2=1 for banned spell]
+!!SSx16:L?y3;                                 [y3 - spell level]
+!!VRy6:Sy3 -2;                                [y6 - required wisdom level]
+!!VRy7:Sy3 -1;                                [y7 - required sholar level]
+
+!!if&y1=0/y2=0/y6<=x2/y7<=x4;
+  !!VRv1:+1;                                  [v1 - spell count]
+
+  !!if&v1=x3;
+    !!HEx1:Mx16/1 O?y4;                       [learn slell, y4 - owner]
+    !!OW:Iy4/?y5;                             [y5=0 for human player]
+    !!IF&y5=0:Q2/9/x16/1/z148016;             [message for human player]
+    !!VRx16:S100;                             [exit cycle]
+  !!en;
+!!en;
+** Algor: end
+
+
+** function for eagle eye            x1 = hero #     x2 = attacker/defender
+!?FU(WOG_202_CalcCounterSpellChance);
+!#VA(side:x) (result:x);
+
+!!VR(result):S(NULL);
+!!BA:H(side)/?(hero:y);
+!!HE(hero):S(SKILL_EAGLE_EYE)/?(skillLvl:y); [get eagle eye skill level]
+!!FU&(skillLvl)<=(SKILL_NOT_LEARNED):E;
+
+!#VA(artEquipped[3]:y);
+
+!!HE(hero):A2/63/?(has:y)/?(artEquipped[0]) A2/64/?(has)/?(artEquipped[1]) A2/65/?(has)/?(artEquipped[2]); [check for artifacts]
+!!VR(result):S10 *(skillLvl);           [set base chance to skill level x 10]
+!!VR(result)&(artEquipped[0])>0:+5;     [Bird of Perception +5]
+!!VR(result)&(artEquipped[1])>0:+10;    [Stoic Watchman +10]
+!!VR(result)&(artEquipped[2])>0:+15;    [Emblem of Cognizance +15]
+!!VR(result)&(artEquipped[0])>0/(artEquipped[1])>0/(artEquipped[2])>0:+20; [All three +20]
+** end of function
+
+
+** function to pick a monster
+!?FU(WOG_212_GetRandomMonsterAndNames);
+!#VA(mon:x);
+
+; Get the level range of the monster depending on game time
+!!if&i^timerWeek^<2;
+  !!VR(minLevel:y):S(MON_MIN_LEVEL);
+  !!VR(maxLevel:y):S2;
+!!el&i^timerWeek^>=2/i^timerWeek^<3;
+  !!VR(minLevel):S(MON_MIN_LEVEL);
+  !!VR(maxLevel):S5;
+!!el;
+  !!VR(minLevel):S(MON_MIN_LEVEL);
+  !!VR(maxLevel):S(MON_MAX_LEVEL);
+!!en;
+
+!!MA:F(MON_BLOOD_DRAGON)/?(bloodFv:y);
+!!VR(maxFv:y):S(bloodFv) -1;
+!!FU(WOG_GetRandomMonster):P?(mon)/(minLevel)/(maxLevel)/(maxFv);
+
+!!SN:H^monname^/(mon)/0/?z704;          [get monster name]
+!!SN:H^monname^/(mon)/1/?z705;          [get monsters name]
+** end of function
+
+
+** function for scouting       x1=scouting
+!?FU(WOG_ExecuteScoutingEvents);
+!#VA(skillLevel:x) (hero:x);
+
+; Exit if not lucky
+!!VRy4&(skillLevel)=(SKILL_BASIC):R0/0/1199; [set random roll to 1.0% (12/1200)]
+!!VRy4&(skillLevel)=(SKILL_ADVANCED):R0/0/799; [set random roll to 1.5% (12/800)]
+!!VRy4&(skillLevel)=(SKILL_EXPERT):R0/0/599; [set random roll to 2.0% (12/600)]
+!!FU&y4>12:E;
+
+; Exit if the position is not passable, or is a yellow square
+!!HE(hero):P?y30/?y31/?y32;
+!!TRy30/y31/y32:E?y33 P?y34;
+!!FU|y33=0/y34=0:E;
+
+!!HE(hero):B0/?z700;                    [get hero's name]
+!!HE(hero):R2/?y1;                      [get hero's sex]
+
+!!VRz701&y1=0:Sz148017;
+!!VRz701&y1=1:Sz148018;
+!!VRz702&y1=0:Sz148019;
+!!VRz702&y1=1:Sz148020;
+!!VRz703&y1=0:Sz148021;
+!!VRz703&y1=1:Sz148022;
+
+!!VRy3:S11 +(skillLevel);               [set scouting picture]
+
+!!if&y4=1;
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_SPELL_POINTS)/20/(MSG_TYPE_MES)/z148023;
+  !!HE(hero):Id+20;                     [give 20 spell points]
+!!el&y4=2;
+  !!VRr:S1 R24 *100;                    [random 1 to 25 x 100]
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_RES_GOLD)/r/(MSG_TYPE_MES)/z148024;
+  !!OW:Ri^timerOwner^/(RES_GOLD)/dr;    [give gold]
+!!el&y4=3;
+  !!VRs:S0 R5;                          [random resource 0 to 5]
+  !!VRr:S1 R2;                          [random quantity 1 to 3]
+  !!VRr&s=0:*2;                         [double for wood]
+  !!VRr&s=2:*2;                         [double for ore]
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/s/r/(MSG_TYPE_MES)/z148025;
+  !!OW:Ri^timerOwner^/s/dr;                        [give the resources]
+!!el&y4=4;
+  !!VRs:S0 R5;                          [random resource 0 to 5]
+  !!VRr:S4 R2;                          [random quantity 4 to 6]
+  !!VRr&s=0:*2;                         [double for wood]
+  !!VRr&s=2:*2;                         [double for ore]
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/s/r/(MSG_TYPE_MES)/z148026;
+  !!OW:Ri^timerOwner^/s/dr;             [give resources]
+!!el&y4=5;
+  !!FU(WOG_212_GetRandomMonsterAndNames):P?s; [call function to pick monster]
+  !!MA:Gs/?r;                           [get 1 weeks production]
+  !!IF&1000/r=1:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_MONSTER)/s/(MSG_TYPE_MES)/z148027;
+  !!IF&1000/r>1:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_MONSTER)/s/(MSG_TYPE_MES)/z148028;
+  !!HE(hero)&1000:Cs/r/-1/0/-1/0/-1/0/-1/0/-1/0/-1/0;  [give creatures]
+  !!HE(hero)&-1000:C2/s/r/0;            [offer AI creatures]
+!!el&y4=6;
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_MORALE_FIRST)/1/(MSG_TYPE_MES)/z148029;
+  !!HE(hero):R0/d1;                     [+1 morale]
+!!el&y4=7;
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_LUCK_FIRST)/1/(MSG_TYPE_MES)/z148030;
+  !!HE(hero):R1/d1;                     [+1 luck]
+!!el&y4=8;
+  !!HE(hero):E?y5/?y6/1;                [get hero's level]
+  !!VRr:Sy6 R20 *50;                    [(level + 0-20) x 50]
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_EXPERIENCE)/r/(MSG_TYPE_MES)/z148031;
+  !!HE(hero):Edr;                       [give experience]
+!!el&y4=9;
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(MSG_TYPE_MES)/z148032;
+  !!HE(hero):Wd+400;                    [increase movement]
+!!el&y4=10;
+  !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(MSG_TYPE_MES)/z148033;
+  !!VRr:S3 *x1 +16;                     [area]
+  !!UN:Sy30/y31/y32/i^timerOwner^/r;    [reveal area]
+!!en;
+
+; Human only events
+!!if&(ERM_FLAG_IS_HUMAN);
+  ; Fight random neutrals
+  !!if&y4=11;
+    !!FU(WOG_212_GetRandomMonsterAndNames):P?s;     [call function to pick monster]
+    !!MA:Vs/?r;                               [get AdvMapL]
+    !!VRz30:Sz148034 +z148035;
+    !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_MONSTER)/s/(MSG_TYPE_QUESTION)/z30;
+    !!HE(hero)&2:Ty30/y31/y32/s/r;      [fight monsters]
+  !!el&y4=12;
+    !!FU(WOG_212_GetRandomMonsterAndNames):P?s;     [call function to pick monster]
+    !!MA:Hs/?r;                               [get AdvMapH]
+    !!VRz30:Sz148036 +z148037;
+    !!IF&1000:Q2/(PIC_TYPE_SEC_SKILL)/y3/(PIC_TYPE_MONSTER)/s/(MSG_TYPE_QUESTION)/z30;
+    !!HE(hero)&2:Ty30/y31/y32/s/r;      [fight monsters]
+  !!en;
+
+  ; Update the screen or resources bar
+  !!if&y4>=2/y4<=4;                           [redraw resources bar]
+    !!UN:R2;
+  !!el;
+    !!SN:D;                                   [redraw screen]
+  !!en;
+!!en;
+** end of function
+
+
+** trigger for Pathfinding
+!?FU(WOG_OnGetMovementPointsByMonsterSpeed);
+!#VA(address:x);
+
+!!UN:C(address)/(STRUCT_HOOK_CONTEXT_EBX)/4/?(heroStruct:y) C(heroStruct)/26/2/?(hero:y);
+
+!!HE(hero):S(SKILL_PATHFINDING)/?(skillLevel:y);
+!!FU&(skillLevel)<=(SKILL_NOT_LEARNED):E;[exit if the hero has no Pathfinidng skill]
+
+!!UN:C(address)/(STRUCT_HOOK_CONTEXT_ECX)/4/?(lowestSpeed:y); [Get the lowest monster speed of the hero's army]
+!!if&(lowestSpeed)<8;[exit if Pathfinding is not needed at all]
+  !!if&(skillLevel)=(SKILL_BASIC);
+    !!VR(lowestSpeed):S6;
+  !!el&(skillLevel)=(SKILL_ADVANCED);
+    !!VR(lowestSpeed):S7;
+  !!el&(skillLevel)>=(SKILL_EXPERT);
+    !!VR(lowestSpeed):S8;
+  !!en;
+  !!UN:C(address)/(STRUCT_HOOK_CONTEXT_ECX)/4/(lowestSpeed:y);
+!!en;
+
+
+** end of trigger

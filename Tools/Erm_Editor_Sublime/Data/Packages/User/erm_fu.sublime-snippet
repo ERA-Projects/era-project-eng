@@ -1,0 +1,8 @@
+<snippet>
+  <content><![CDATA[
+!!FU(${1:FunctionName}):P$2;$0
+]]></content>
+  <description>CALL FUNCTION</description>
+  <tabTrigger>fu</tabTrigger>
+  <scope>source.erm - receiver.erm - trigger.erm</scope>
+</snippet>

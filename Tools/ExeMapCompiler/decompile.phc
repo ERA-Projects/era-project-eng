@@ -1,0 +1,49 @@
+<?php
+/**
+ * Dempiles .dbgmap binary maps into plain txt files with Address => Label pairs. Dbgmap files have the following structure:
+ * [0] Labels section
+ * [4] Number of labels
+ *   > Repeat "Number of labels" times
+ *   [4] Label address
+ *   [4] Label name length
+ *   [...] Label name
+ * [0] Modules section (program modules = source code containers, used in line numbers tracking, example: "stdio.c")
+ * [4] Number of modules
+ *   > Repeat "Number of modules" times
+ *   [4] Module name length
+ *   [...] Module name
+ * [0] Line numbers section
+ * [4] Number of line numbers
+ *   > Repeat "Number of line numbers" times
+ *   [4] Address of code/data
+ *   [4] Module index (from modules table, starting from zero)
+ *   [4] Line number
+ *
+ * All addresses are relative to PE image base. Ex. for 0x401000 absolute address and 0x400000 image
+ * base, relative address will be 0x001000.
+ */
+declare(strict_types=1);
+error_reporting(-1);
+
+require_once(__DIR__ . "/lib/utils.php");
+require_once(__DIR__ . "/lib/MapDecompiler.php");
+
+const DECOMPILED_MAP_EXT = 'txt';
+const ARG_MAP_PATH       = 1;
+const ARG_DST_DIR        = 2;
+
+print("Current directory is: " . getcwd() . "\r\n");
+$mapPath    = trim(getArg(ARG_MAP_PATH, 'Enter path to dbgmap file: '), '\\/');
+$dstDirPath = trim(getArg(ARG_DST_DIR, 'Enter path to destination directory: '), '\\/');
+
+is_file($mapPath)   or fail("Failed to locate dbgmap file in '$mapPath'");
+is_dir($dstDirPath) or fail("Failed to locate destination directory: '$dstDirPath'");
+
+$map        = file_get_contents($mapPath);
+$mapName    = (string) pathinfo($mapPath)['filename'];
+$outMapPath = "{$dstDirPath}/{$mapName}." . DECOMPILED_MAP_EXT;
+$decompiler = new MapDecompiler($map);
+
+file_put_contents($outMapPath, $decompiler->decompile());
+
+print("Decompiled dbgmap '{$mapName}' of size " . filesize($mapPath) . " to text map of size " . filesize($outMapPath));

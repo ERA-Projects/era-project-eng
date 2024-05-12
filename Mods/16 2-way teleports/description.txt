@@ -1,0 +1,1 @@
+The mod increases the number of subtypes of two-way monoliths from 8 to 16.

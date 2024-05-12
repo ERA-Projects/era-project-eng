@@ -1,0 +1,152 @@
+ZVSE2
+; rewritten in Feb 2022 by daemon_n;
+
+; Spellbook v1.4 by Anders Jonsson (thanks to Timothy Pulver for help)
+; Updated September 14, 2004
+; (Updated September 16, 2004 by Timothy to change y variables in trigger sections to y- variables)
+
+; Makes a spellbook picked up from the adventure map contain a few spells.
+; No Adventure Map movement spells will be availible.
+
+; Variables used: v2-v4, z1-z9(may be used in other scripts but will be thrashed by this), [z127000-z127003]
+; Flags used: none
+
+
+!?OB5/0;
+!!UN:P27/?y1;
+!!FU&y1<>1:E;
+!!HE(CURRENT_HERO):Z?(hero:y);
+!!UN:C(hero)/980/1/?(artsInBack:y);
+!!FU&(artsInBack)>63:E;
+
+!!OB998:M-1/1/0;
+!!HE-1:A2/0/?(hasSB:y)/?(hasSB);  (checks if hero has a spellbook already)
+!!HE-1&(hasSB)>0:A3/0/1/0; (removes existing spellbook if hero already has one to avoid an extra)
+
+
+!!FU(WOG_GetRandomSeedByCoord):Pv998/v999/v1000/?(rndSeed:y);
+!!FU(WOG_SafeRand):P0/9/(rndSeed)/?(learnLvl:y);
+!!HE-1:S(SKILL_LUCK)/?(luck:y);        (Get luck level)
+!!VR(learnLvl):+(luck);
+
+!!HE-1:S(SKILL_WISDOM)/?(wis:y);       (Get Wisdom level)
+!!VR(learnLvl):+(wis) +(wis) -6;   (Bonus for Wisdom)
+!!VR(learnLvl)&(learnLvl)>9:S9;
+!!VR(learnLvl)&(learnLvl)<0:S0;      (Get into correct range)
+!!re i/1/9;                          [clear z-vars;]
+  !!VRzi:S^^;
+!!en;
+*** Level 5 ***
+!!if&(learnLvl)=9;
+
+  !!FU(WOG_GENERATE_SPELL):P5/5/0/0/1/0; (Get a fifth level spell)
+  !!VRv2:Sy-99;
+
+  !!if&v2<>(NO_SPELL);
+
+    !!UN:N1/z-2/v2; (store spell name)
+    !!HE-1:Mv2/1;   (give spell)
+  !!en;
+
+!!en;
+
+
+*** Level 4 ***
+  !!if&(learnLvl)>6;
+
+    !!FU(WOG_GENERATE_SPELL):P4/4/0/0/1/0;    (Get a fourth level spell)
+    !!VRv2:Sy-99;
+    !!if&v2<>(NO_SPELL);
+      !!UN:N1/z-1/v2;
+      !!HE-1:Mv2/1;
+
+      !!FU(WOG_GENERATE_SPELL):P4/4/0/0/1/1/v2; (And another)
+      !!VRv3:Sy-99;
+      !!if&v3<>(NO_SPELL);
+
+        !!UN:N1/z9/v3;  (store spell names)
+        !!HE-1:Mv3/1;   (give spells)
+      !!en;
+    !!en;
+  !!en;
+
+*** Level 3 ***
+  !!if&(learnLvl)>3;
+    !!FU(WOG_GENERATE_SPELL):P3/3/0/0/1/0;    (Get a third level spell)
+    !!VRv2:Sy-99;
+    !!if&v2<>(NO_SPELL);
+      !!UN:N1/z8/v2;
+      !!HE-1:Mv2/1;
+
+      !!FU(WOG_GENERATE_SPELL):P3/3/0/0/1/1/v2; (And another)
+      !!VRv3:Sy-99;
+
+      !!if&v3<>(NO_SPELL);
+        !!UN:N1/z7/v3;  (store spell names)
+        !!HE-1:Mv3/1;   (give spells)
+      !!en;
+    !!en;
+  !!en;
+
+*** Level 2 ***
+  !!FU(WOG_GENERATE_SPELL):P2/2/0/0/0/0; (Get a second level spell)
+  !!VRv2:Sy-99;
+  !!if&v2<>(NO_SPELL);
+    !!UN:N1/z6/v2;
+    !!HE-1:Mv2/1;
+    !!FU(WOG_GENERATE_SPELL):P2/2/0/0/0/1/v2; (And another)
+    !!VRv3:Sy-99;
+
+    !!if&v3<>(NO_SPELL);
+
+      !!UN:N1/z5/v3;  (store spell names)
+      !!HE-1:Mv3/1;   (give spells)
+      !!FU(WOG_GENERATE_SPELL):P2/2/0/0/0/2/v2/v3; (And another)
+      !!VRv4:Sy-99;
+
+      !!if&v4<>(NO_SPELL);
+        !!UN:N1/z4/v4; (store spell names)
+        !!HE-1:Mv4/1; (give spells)
+      !!en;
+
+    !!en;
+  !!en;
+
+*** Level 1 ***
+  !!FU(WOG_GENERATE_SPELL):P1/1/0/0/1/0; (Get a 1st level spell)
+  !!VRv2:Sy-99;
+    *!IF:L^%v2^;
+
+  !!if&v2<>(NO_SPELL);
+    !!UN:N1/z3/v2;
+    !!HE-1:Mv2/1;
+    !!FU(WOG_GENERATE_SPELL):P1/1/0/0/1/1/v2; (And another)
+    !!VRv3:Sy-99;
+      *!IF:L^%v2 %v3^;
+
+    !!if&v3<>(NO_SPELL);
+
+      !!UN:N1/z2/v3;  (store spell names)
+      !!HE-1:Mv3/1;   (give spells)
+      !!FU(WOG_GENERATE_SPELL):P1/1/0/0/1/2/v2/v3; (And another)
+      !!VRv4:Sy-99;
+      *!IF:L^%v2 %v3 %v4^;
+
+      !!if&v4<>(NO_SPELL);
+        !!UN:N1/z1/v4; (store spell names)
+        !!HE-1:Mv4/1; (give spells)
+      !!en;
+
+    !!en;
+  !!en;
+
+
+
+*** Display Message ***
+!!if&1000;
+  !!IF&(learnLvl)<4:Q1/8/0/1/z127000;
+  !!IF&(learnLvl)>3/(learnLvl)<7:Q1/8/0/1/z127001;
+  !!IF&(learnLvl)>6/(learnLvl)<9:Q1/8/0/1/z127002;
+  !!IF&(learnLvl)=9:Q1/8/0/1/z127003;
+!!en;
+

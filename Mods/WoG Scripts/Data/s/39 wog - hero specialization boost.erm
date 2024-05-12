@@ -1,0 +1,491 @@
+ZVSE2
+
+** HERO SPECIALIZATION BOOST (HSB)
+** by Alexis Koz
+**
+** updated by Tobyn on 2004 October 26
+** (added debug msg at negative attack for monster specialists)
+**
+** (Updated by samot on Oct 2004: added to FU850, it may be given a 3rd parameter for duration (if not given duration = power))
+** (Updated by Fnord on August 23, 2004 to add additional disabling for MP battles)
+** (Updated by Tobyn on Aug 2004: to fit Neutral Town script67 Planeswalkers and Rebalanced Heroes script37)
+** (Updated by Archer30 on Apr 2022: Rewrote the function of Calculating Monster Spec Bonuses)
+
+** (Rewritten by daemon_n on November 2022: Rewrote the whole logic and behaviour)
+
+;Thanks to: Fnord the Wizard who enchanted me
+;Thanks to: All WoG command
+;USED:
+;v425-v441 dont use these variables in all scripts before I agreed.   ( edit by igrik (06/05/2019) v425-v441 -> v3925-v3941 )
+;w28-w32
+;z405-406
+;FU803-808, 850-852
+;Flags 429, 430
+;Timer 77 [TOBYN: this timer isn't used here. Check if unused by other scripts and update usage358.txt]
+
+;-------------------------------Description-------------------------------------
+;New abilities:
+;    - All heroes with monster specialities improve their unit stats (Vampire and Skeleton specialists not so high as the others)
+;    - Most spell-casters can randomly cast their spells in a battle at no cost (Animate Dead,
+;        Resurrection and some other cause problems, therefore those heroes use other auto-spells.
+;        Thant and Jeddite get nothing from HSB at all.)
+;    - All heroes with Intelligence specialization have commander with DeathStare ability
+;    - All heroes with Navigation specialization have commander with flying ability
+;    - All heroes with Ballista specialization have commander which can shoot
+;    - All heroes with Archery specialization cast Precision spell on all allied units at the beginning of a battle (even if hero doesn't know this spell or has no spellbook)
+;    - All heroes with First Aid specialization cast StoneSkin spell on all allied units except undeads at the beginning of a battle (even if hero doesn't know this spell or has no spellbook)
+;    - All heroes with Fire Magic specialization cast Curse spell on all enemy units at the beginning of a battle (even if hero doesn't know this spell or has no spellbook)
+;    - All heroes with Sorcery specialization cast Misfortune spell on all enemy units at the beginning of a battle (even if hero doesn't know this spell or has no spellbook)
+;    - All heroes with Eagle Eye specialization let all own 1st and 2nd level units fly in a battle
+;    - All heroes with Mysticism specialization add 12+4*Herolevel mana to hero's mana-pool in the beginning of battle. (Remarks: After battle amount of mana cannot be more than before battle).
+;    - All heroes with Resistance specialization decrease 12+4*Herolevel mana from enemy hero's mana-pool in the beginning of battle.
+
+
+--------------------------------------------------------------------------------
+
+ [Check for network battle: sets to 1 or 2 if it's a network battle]
+ [and sets to 0 if it's not a network battle]
+ 
+-----------------------------------Init-----------------------------------------
+
+
+!#UN:P39/?i^wog_39_enabled^;
+!#VRi^wog_39_monsterSpecialtiesEnabled^&i^wog_39_enabled^:S(TRUE); [variable for controlling whether monster specs are enabled]
+
+; This must be executed later than Neutral Town hero spec in order to set up new creature specs
+!?FU(OnAfterErmInited)&i^wog_39_enabled^; [initialize of heroes w28-w32]
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:X?(specType:y)/?(specSubtype:y);
+
+  !!if|(specType)=1/(specType)=4;
+    !!if&(specSubtype)<>(MON_BALLISTA);
+      !!co&i^wog_39_monsterSpecialtiesEnabled^<>(TRUE);
+
+      !!HEi:X1/?(monId:y);
+      !!FU(WOG_39_GetMonSpecText):Pi/(monId)/?(msg:z);
+      !!SN:H^spec^/i/2/(msg);
+    !!el;
+      !!FU(WOG_39_SetNPCBonuses):Pi/?(result:y);
+
+      !!if&(result);
+        !!SN:H^spec^/i/2/?(msg) H^spec^/i/2/^%(msg)%T(wog.39.monster.146)^;
+      !!en;
+    !!en;
+  !!el&(specType)=3;
+    !!FU(WOG_39_GetSpellSpecText):Pi/?(result)/?(msg);
+
+    !!if&(result);
+      !!SN:H^spec^/i/2/?(origDesc:z) H^spec^/i/2/^%(origDesc)%(msg)^;
+    !!en;
+  !!el&(specType)=0;
+    !!FU(WOG_39_SetNPCBonuses):Pi/?(result);
+
+    !!if&(result);
+      !!SN:T^wog.39.skill.%(specSubtype)^/?(msg);
+      !!SN:H^spec^/i/2/?(origDesc) H^spec^/i/2/^%(origDesc)%(msg)^;
+      !!co;
+    !!en;
+
+    !!FU(WOG_39_GetSkillSpecText):Pi/(specSubtype)/?(result)/?(msg);
+
+    !!if&(result);
+      !!SN:H^spec^/i/2/?(origDesc);
+
+      ; Set the original specialty length in globals vars if the hero specialise in Mysticism or Resistance, as we need to update spec text on leveling up later
+      !!SN|(specSubtype)=(SKILL_MYSTICISM)/(specSubtype)=(SKILL_RESISTANCE):K(origDesc)/?i^wog_39_origSpecLength_%i^;
+
+      !!SN:H^spec^/i/2/^%(origDesc)%(msg)^;
+    !!en;
+  !!en;
+!!en;
+
+!?FU(OnHeroGainLevel)&i^wog_39_enabled^;
+  !!HE(CURRENT_HERO):N?(heroId:y);
+  !!HE(heroId):X?(specType:y)/?(specSubtype:y);
+
+  !!if&(specType)=1/(specSubtype)<>(MON_BALLISTA)/i^wog_39_monsterSpecialtiesEnabled^;
+    !!HE(heroId):X?(specType:y)/?(monId:y);
+    !!FU(WOG_39_GetMonSpecText):P(heroId)/(monId)/?(txt:z);
+    !!SN:H^spec^/(heroId)/2/(txt:z);
+  !!el&(specType)=0;
+    !!if|(specSubtype)=(SKILL_RESISTANCE)/(specSubtype)=(SKILL_MYSTICISM);
+      !!HE(heroId):E?y99/?l B0/?(heroName:z);
+      !!VRl:*3 +9;
+      !!SN:T^wog.39.skill.%(specSubtype)^/?(str:z)/^heroName^/(heroName)/^mana^/l;(spellName);
+
+      ; Get the original spec string by cutting the current one
+      !!SN:H^spec^/(heroId)/2/?(oudatedDesc:z); 
+      !!FU(Substr):P(oudatedDesc)/0/i^wog_39_origSpecLength_%(heroId)^/?(origDesc:z);
+      !!SN:H^spec^/(heroId)/2/^%(origDesc)%(str)^;
+    !!en;
+  !!en;
+
+!?FU(WOG_39_GetSpellBySkill);
+!#VA(skillId:x) (spellID:x) (isBuf:x);
+
+  !!VR(spellID):S(NO_SPELL);
+  !!VR(isBuf):S(NO_SPELL);
+
+  !!if&(skillId)=(SKILL_ARCHERY);
+    !!VR(spellID):S(SPELL_PRECISION);
+    !!VR(isBuf):S(TRUE);
+  !!el&(skillId)=(SKILL_FIRST_AID);
+    !!VR(spellID):S(SPELL_STONE_SKIN);
+    !!VR(isBuf):S(TRUE);    
+  !!el&(skillId)=(SKILL_SORCERY);
+    !!VR(spellID):S(SPELL_MISFORTUNE);
+    !!VR(isBuf):S(FALSE);  
+  !!el&(skillId)=(SKILL_FIRE_MAGIC);
+    !!VR(spellID):S(SPELL_CURSE);
+    !!VR(isBuf):S(FALSE);  
+  !!en;
+
+!?FU(WOG_39_GetSkillSpecText);
+!#VA(heroId:x) (skillId:x) (result:x) (txt:x);
+
+!!VR(result):S(FALSE);
+!!FU(WOG_39_GetSpellBySkill):P(skillId)/?(spellID:y)/?(isBuf:y);
+!!VR(str:z):S^^;
+!!HE(heroId):B0/?(heroName:z);
+
+!!if&(spellID)<>(NO_SPELL);
+  !!SN:H^spell^/(spellID)/(SPELL_TEXT_NAME)/?(spellName:z);
+
+  !!if&(isBuf);
+    !!SN:T^wog.39.skill.buff^/?(str:z)/^heroName^/(heroName)/^spellName^/(spellName);
+  !!el;
+    !!SN:T^wog.39.skill.debuff^/?(str:z)/^heroName^/(heroName)/^spellName^/(spellName);
+  !!en;
+
+  !!VR(result):S(TRUE);
+!!el&(skillId)=(SKILL_EAGLE_EYE);
+  !!SN:T^wog.39.skill.%(skillId)^/?(str:z);
+  !!VR(result):S(TRUE);
+!!el|(skillId)=(SKILL_MYSTICISM)/(skillId)=(SKILL_RESISTANCE);
+  !!HE(heroId):E?k/?l;
+  !!VRl:*3 +9;
+  !!SN:T^wog.39.skill.%(skillId)^/?(str:z)/^heroName^/(heroName)/^mana^/l;(spellName);
+  !!VR(result):S(TRUE);
+!!en;
+
+!!VR(txt):Z(str);
+
+
+!?FU(WOG_39_GetSpellSpecText);
+!#VA(heroId:x) (result:x) (txt:x);
+
+!!VR(result):S(FALSE);
+!!VR(str:z):S^^;
+!!FU(WOG_39_GetCastedSpell):P(heroId)/?(spellID:y)/?(frequency:y);
+
+!!if&(spellID)<>(NO_SPELL);
+  !!VR(result):S(TRUE);
+  !!HE(heroId):B0/?(heroName:z);
+  !!SN:H^spell^/(spellID)/(SPELL_TEXT_NAME)/?(spellName:z);
+  !!SN:T^wog.39.spell.table^/?(str)/^heroName^/(heroName)/^spellName^/(spellName)/^frequency^/(frequency);
+!!en;
+
+!!VR(txt):Z(str);
+
+
+----------------------------------Before battle---------------------------------
+; The timing is later than OnSetupBattlefield in order to be compatible with henchmen
+!?FU(OnSetupBattlefield_Quit)&i^wog_39_enabled^;/i^battle_isNetwork^=(FALSE);
+!#VA(add[2]:y) (remove[2]:y);
+
+!!re i/0/i^battle_hero_vs_hero^;
+  !!FU(WOG_39_BattleField_setup):Pi/?(add[i])/?(remove[i]);
+!!en;
+
+!!re i/0/i^battle_hero_vs_hero^;
+  !!VR(oppSide:y):S1 Xi;
+  !!VRi^wog_39_hero_changed_mana_%i^:S(add[i]) -(remove[oppSide]);
+  !!co&i^wog_39_hero_changed_mana_%i^=0;
+  !!HEi^battle_hero_%i^:I?i^wog_39_hero_started_mana_%i^/1 Idi^wog_39_hero_changed_mana_%i^/1 I?m/1;
+  !!VRi^wog_39_hero_changed_mana_%i^&m<0:-m;
+  !!VRm:F0/(INT_MAX);
+  !!HEi^battle_hero_%i^:Im/1;
+!!en;
+
+!?FU(OnAfterCommanderResurrect)&i^wog_39_enabled^;
+!!HE(CURRENT_HERO):N?(heroId:y);
+!!FU(WOG_39_SetNPCBonuses):P(heroId);
+
+!?FU(OnAfterCommanderBuy)&i^wog_39_enabled^;
+!!HE(CURRENT_HERO):N?(heroId:y);
+!!FU(WOG_39_SetNPCBonuses):P(heroId);
+
+!?FU(WOG_39_SetNPCBonuses);
+!#VA(heroId:x) (result:x);
+
+!!HE(heroId):X?(specType:y)/?(specSkill:y);N?(heroId:y);
+!!VR(result):S(FALSE);
+!!UN:P(WOG_OPT_DISABLE_COMMANDERS)/?(isNpcDisabled:y);
+!!FU&(isNpcDisabled):E;
+
+!!if&(specType:y)=0;
+  !!if&(specSkill)=(SKILL_INTELLIGENCE);
+    !!CO(heroId):B1/12/1;     //commanders of Intelligence heroes have DeathStare
+    !!VR(result):S(TRUE);
+  !!el&(specSkill)=(SKILL_NAVIGATION);
+    !!CO(heroId):B1/14/1;     //commanders of Navigation heroes can fly
+    !!VR(result):S(TRUE);
+  !!en;
+!!el&(specType)=1/(specSkill)=(MON_BALLISTA);
+  !!CO(heroId):B1/4/1; //commanders of Ballista heroes can shoot
+!!en;
+
+
+!?FU(WOG_39_BattleField_setup);
+!#VA(side:x) (mistBon:x) (resBon:x);
+
+!!HEi^battle_hero_%(side)^:X?(specType:y)/?(specSkill:y);
+!!VR(oppSide:y):S1 X(side);
+!!if&(specType:y)=0;
+  !!FU(WOG_39_GetSpellBySkill):P(specSkill)/?(spellID:y)/?(isBuf:y);
+
+  !!if&(spellID)<>(NO_SPELL);
+    !!FU(WOG_Battle_CanCast):P(side)/(TRUE)/?(result:y);
+    !!if&(result:y);
+      !!VR(oppSide:y)&(isBuf):S(side);
+      !!FU(WOG_Battle_SetSideSpellEffects):P(side)/(oppSide)/(spellID)/5/(SKILL_EXPERT)/(FALSE);
+      !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
+      !!SN:E4625200/(CALLCONV_THISCALL)/(cmbMgr);         [recalc luck and morale]
+    !!en;
+
+  !!el&(specSkill)=(SKILL_EAGLE_EYE);
+    !!FU(WOG_39_AddCreatureFlags):P(side)/1/(MON_FLAG_FLYER);
+  !!el&(specSkill)=(SKILL_MYSTICISM);
+    !!HEi^battle_hero_%(side)^:E?s/?l;
+    !!VR(mistBon):Sl* 3 +9 F12/(INT_MAX);
+  !!el&(specSkill)=(SKILL_RESISTANCE);
+    !!HEi^battle_hero_%(side)^:E?s/?l;
+    !!VR(resBon):Sl* 3 +9 F12/(INT_MAX); 
+  !!en;
+!!el&(specType:y)=3;
+  !!FU(WOG_39_GetCastedSpell):Pi^battle_hero_%(side)^/?(spellID:y)/?(frequency:y);
+  !!VRi^wog_39_hero_%(side)_cast_chance^:S(NULL);
+  !!if&(spellID)<>(NO_SPELL);
+    !!FU(WOG_Battle_CanCast):P(side)/(TRUE)/?(result:y);
+
+    !!if&(result:y);
+      !!VRi^wog_39_hero_%(side)_cast_chance^:S(frequency);
+    !!en;
+
+  !!en;
+!!en;
+
+
+!?FU(WOG_39_AddCreatureFlags);
+!#VA(side:x) (maxLevel:x) (flag:x);
+
+  !!VR(start:y):S(side) *(BATTLE_STACKS_PER_SIDE);
+  !!VR(end:y):S(start) +20;
+
+  !!re i/(start)/(end);
+    !!BMi:T?t N?n S?s;
+
+    !!if&t>(NO_MON)/n>0/s>0;
+      !!MA:Lt/?l;
+      !!BMi&l<=(maxLevel):Fd|(flag);
+    !!en;
+  !!en;
+
+
+-----------------------When next monster gain control---------------------------
+
+!?FU(WOG_39_GetCastedSpell);
+!#VA(heroId:x) (spell:x) (frequency:x);
+
+!!VR(spell):S(NO_SPELL);
+!!VR(frequency):S(NULL);
+
+!!HE(heroId):X?(specType:y)/?(heroSpell:y);
+
+!!if&(specType)=3/(heroSpell)>=(SPELL_FIRST_BATTLE);
+  !!SS(heroSpell):L?l F?f;(flag:y);
+  !!VR(damageSpell:y):Sf &512;
+  !!VR(anyHexTarget:y):Sf &128;
+
+  !!if&(heroSpell)=(SPELL_FIRE_WALL);
+    !!VR(spell):S(SPELL_SHIELD);
+  !!el|(heroSpell)=(SPELL_FIREBALL)/(heroSpell)=(SPELL_INFERNO);
+    !!VR(spell):S(SPELL_FIRE_SHIELD);
+  !!el|(heroSpell)=(SPELL_PRECISION);/(spellID)=(SPELL_INFERNO);
+    !!VR(spell):S(SPELL_AIR_SHIELD);
+  !!el&(anyHexTarget)/l>2/(damageSpell)=0|(heroSpell)=(SPELL_RESURRECTION)/(heroSpell)=(SPELL_ANIMATE_DEAD);
+    !!VR(spell):S(SPELL_SLOW);
+  !!el&l>2/(damageSpell)|(heroSpell)=(SPELL_DEATH_RIPPLE);
+    !!VR(spell):S(SPELL_MAGIC_ARROW);
+  !!el;
+    !!VR(spell):S(heroSpell);
+  !!en;
+
+  !!if&(spell)<>(NO_SPELL);
+    !!SS(spell):L?l F?f;
+    !!VR(damageSpell:y):Sf &512;
+    !!VR(frequency):S5 *l;
+    !!if&(damageSpell);
+      !!VR(frequency):+3;
+    !!el&l>1;
+      !!VR(frequency):-l;
+    !!en;
+
+    !!if&(spell)=(SPELL_MAGIC_ARROW);
+      !!VR(frequency):S14;
+      !!if&(heroSpell)=(spell);
+        !!VR(frequency):S9;
+      !!en;
+    !!en;
+    !!VR(frequency):F7/25 *2;
+  !!en;
+!!en;
+
+!?FU(WOG_39_CastAutoSpell);
+!#VA(side:x);
+
+!!if&i^wog_39_hero_%(side)_cast_chance^;
+  *!VRi:S(side:x);
+  *!if&(side:x)=(activeSide);
+    !!VR(rand:y):R0/1/i^wog_39_hero_%(side)_cast_chance^;
+
+    !!if&(rand)=i^wog_39_hero_%(side)_cast_chance^;
+      !!FU(WOG_39_GetCastedSpell):Pi^battle_hero_%(side)^/?(spellID:y)/?i^wog_39_hero_%(side)_cast_chance^; [reset cast chance]
+      !!if&(spellID:y)=(NO_SPELL);
+        *!IF:M^%(side)^;
+        !!FU:E;
+      !!en;
+      *!IF&(side):M^%(side)^;
+      !!FU(WOG_33_GetSpellTargetSide):P(spellID:y)/?(targetStackSide:y);
+
+      !!if&(targetStackSide)<>(NO_STACK);
+        !!VR(targetStackSide):X(side);                                                                 [revert side for right hero]
+        !!FU(WOG_33_GetTargetStackId):P(targetStackSide)/(side)/(spellID)/?(targetStackId:y);
+
+        !!if&(targetStackId)<>(NO_STACK);
+          !!BM(targetStackId):P?(position:y);
+          !!FU(WOG_Battle_GetHeroSpellSchoolLvl):Pi^battle_hero_%(side)^/(spellID)/?(schoolLvl:y);
+
+          !!UN:C5133500/1/?(oldSpell:y) C(COMBAT_MANAGER)/4/?(cmbMgr:y)  C(cmbMgr)/81268/1/?(noCastLimit:y)   C(cmbMgr)/78528/4/?(activeSide:y) 
+          C5133500/1/(spellID:y) C(cmbMgr)/81268/1/(TRUE) C(cmbMgr)/78528/4/(side);
+
+          !!BH(side:x):M?(cast:y) C(spellID)/(position)/3/1 M(cast:y);
+          !!UN:C5133500/1/(oldSpell:y) C(cmbMgr)/81268/1/(noCastLimit) C(cmbMgr)/78528/4/(activeSide:y);
+        !!en;
+      !!en;
+    !!el;
+      !!VRi^wog_39_hero_%(side)_cast_chance^:-1;                                                       [increase cast chance]
+    !!en;
+!!en;
+
+// remove added spell points after combat
+!?FU(OnAfterBattleAction)&i^wog_39_enabled^/i^battle_round^>-1;
+  !!BU:C?(isEnd:y);
+
+  !!if&(isEnd);
+    !!re i/0/i^battle_hero_vs_hero^;
+      !!if&i^wog_39_hero_changed_mana_%i^>0;
+        !!HEi^battle_hero_%i^:I?m/1; get current mana
+        !!if&m>i^wog_39_hero_started_mana_%i^; [check if it is more than started]
+          !!VRm:-i^wog_39_hero_changed_mana_%i^ Fi^wog_39_hero_started_mana_%i^/m;
+          !!HEi^battle_hero_%i^:Im/1;
+        !!en;
+      !!el;
+        !!HEi^battle_hero_%i^:Id-i^wog_39_hero_changed_mana_%i^/1 I?m/1;
+        !!VRm:F0/(INT_MAX);
+        !!HEi^battle_hero_%i^:Im/1;
+      !!en;
+        !!VRi^wog_39_hero_changed_mana_%i^:S0;
+        !!VRi^wog_39_hero_started_mana_%i^:S0;
+
+      !!VRi^wog_39_hero_%i_cast_chance^:S(NULL);
+    !!en;
+  !!en;
+!?FU(OnBattleStackObtainsTurn)&i^wog_39_enabled^/i^battle_round^>-1;
+!!FU(WOG_39_CastAutoSpell):Px1;i^battle_acting_side^;/i^wog_39_hero_1_cast_chance^;
+
+!?FU(OnAfterBattleUniversal)&i^wog_39_enabled^;
+!!re i/0/(BATTLE_LEFT);
+  !!VRi^wog_39_hero_%i_cast_chance^:S(NULL);  
+!!en;
+
+!?FU(WOG_CreateERMHook)&i^wog_39_enabled^/i^wog_39_monsterSpecialtiesEnabled^;
+!!SN:Ex1/1/5137685/(WOG_Hero_GetSpecMonster);
+
+!?FU(WOG_39_Hero_GetSpecMonsterStats);
+!#VA(heroId:x) (monLvl:x) (attack:x) (defense:x) (damage:x) (bonusHp:x);
+
+  !!VR(damage):S(monLvl) +1;
+  !!HE(heroId):E?s/?(level:y);
+  !!VR(attack):S(level) :(damage) *5;*(coef);S(int);
+  !!VR(defense):S(attack);*(coef);
+
+  !!if&(monLvl)=(MON_MAX_LEVEL);
+    !!VR(damage):S10;
+  !!en;
+
+  !!VR(bonusHp):S(level) *3 +12;                [Additional percent to HP = 12+3*level of hero]
+
+!?FU(WOG_Hero_GetSpecMonster);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-4/4/?(hero:y) C(hero)/26/4/?(heroId:y);
+  !!HE(heroId):X?y99/?(monId:y);
+
+  !!if&(monId)<>(MON_SKELETON)/(monId)<>(MON_VAMPIRE)/(monId)<>(MON_BALLISTA);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(monPtr:y) C(monPtr)/4/4/?(monLvl:y);
+    !!UN:C(monPtr)/76/4/?(currHp:y);
+    !!UN:C(monPtr)/84/4/?(attack:y) C(monPtr)/88/4/?(defense:y);               [edit min/max damage]
+    !!FU(WOG_39_Hero_GetSpecMonsterStats):P(heroId)/(monLvl)/?(attack:y)/?(defense:y)/?(damage:y)/?(bonusHp:y);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(monId:y);
+    !!VR(newHp:e):S(currHp) :100 *(bonusHp);
+    !!VR(hp:y):S(newHp);
+    !!UN:C(monPtr)/76/4/d(hp); edit hp
+    !!UN:C(monPtr)/92/4/d(damage) C(monPtr)/96/4/d(damage);               [edit min/max damage]
+  !!en;
+
+!?FU(WOG_39_GetMonSpecText);
+!#VA(heroId:x) (monId:x) (result:x);
+
+  !!MA:L(monId)/?(monLvl:y) A(monId)/?(attack:y) D(monId)/?(defense:y); U(monId)/?(upgMonType:y);
+  !!FU(GetUpgradedMonster):P(monId)/?(upgMonType:y);
+  !!SN:H^monname^/(monId)/1/?(monName:z);
+
+  !!if&(upgMonType)<>(NO_MON);
+    !!SN:H^monname^/(upgMonType)/1/?(upgMonName:z)
+    T^wog.39.monster.creatures^/?(monNames:z)/^monName^/(monName)/^upgMonName^/(upgMonName);
+  !!el;
+    !!SN:T^wog.39.monster.creature^/?(monNames:z)/^monName^/(monName);
+  !!en;
+
+  !!FU(WOG_39_Hero_GetSpecMonsterStats):P(heroId)/(monLvl)/?(attack:y)/?(defense:y)/?(damage:y)/?(health:y);
+  !!HE(heroId):B0/?(heroName:z) R2/?(gender:y);
+
+  !!SN:T^wog.whose%(gender)^/?(whose:z)
+  T^wog.39.monster.table1^/?(txt1:z)/^heroName^/(heroName)/^monNames^/(monNames)/^whose^/(whose)
+  /^attack^/(attack)/^defense^/(defense);
+
+  !!if|(monId)=(MON_SKELETON)/(monId)=(MON_VAMPIRE);
+    !!VR(result):Z^%(txt1)%T(wog.39.monster.table3)^;
+  !!el;
+    !!SN:T^wog.39.monster.table2^/?(txt2:z)/^damage^/(damage)/^health^/(health);
+    !!VR(result):Z^%(txt1)%(txt2)%T(wog.39.monster.table3)^;
+  !!en;
+
+-----------------------Right mouse click in battle info-------------------------
+; VRv425-v428 cannot touch   [SECTION EDITED by Tobyn]
+!?FU(OnBattleScreenMouseClick)&i^wog_39_enabled^/i^mouse_action^=(MOUSE_RMB_PRESSED)/i^mouse_battleHex^>=252/i^mouse_battleHex^<=253;/i^battle_isNetwork^=(FALSE);
+  !!VR(side:y):Si^mouse_battleHex^ -252;
+  !!FU&i^battle_hero_%(side)^=(NO_HERO):E;
+
+  !!CM:R0;
+  !!VR(heroId:y):Si^battle_hero_%(side)^;
+
+  !!SN:H^spec^/(heroId)/2/?(msg:z);
+
+  !!HE(heroId):X?(specType:y)/?(spellID:y);\
+
+  !!if&(specType)/i^wog_39_hero_%(side)_cast_chance^;
+    !!SN:T^wog.39.spell.combat^/?(chance:z)/^frequency^/i^wog_39_hero_%(side)_cast_chance^;
+    !!VR(msg):+(chance);
+  !!en;
+
+  !!IF:Q1/-1/-1/(MSG_TYPE_POPUP)/(msg);

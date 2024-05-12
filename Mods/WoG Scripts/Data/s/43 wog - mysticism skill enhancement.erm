@@ -1,0 +1,296 @@
+ZVSE2
+
+Mysticism Enhancement v1.3 by Anders Jonsson
+Updated July 14, 2004
+Updated September 15, 2004 by Timothy Pulver for local y variable correction.
+Updated August 1, 2022 by daemon_n
+Updated October 20, 2023 by daemon_n: no more ERT/Z/V/F/etc
+
+This script enhances the Mysticism Skill levels as:
+Basic- hero can predict what next "Week of" will be. This only works if Timothy Pulver's Week of Monsters
+Script v1.3 or higher is running at the same time.
+Advanced- hero can predict what spells a Mage Guild will contain. This will drain the hero of all spell
+points and movement for that turn.
+Expert- if the player right-clicks on an enemy hero whithin a hero with Mysticism's scouting radius, and
+the hero with Mysticism is selected, the hero may pay 5 Spell Points to learn all enemy hero skills,
+spells, equipped artifacts, creatures, and how much experience, primary skills, luck, morale and spell
+points that hero has.
+It also lets heroes regenerate 5%, 10% or 15% of their normal maximum spell points each day, depending
+on their level of Mysticism, double amount for AI heroes.
+Variables used:
+Flags:
+
+
+; Set up global var for additional spell points regeneration
+!#UN:P35/?(wogOption:y);
+!#VRi^wog_35_extraManaRegenEnabled^&(wogOption):S(TRUE);
+
+*************
+*** Basic ***
+*************
+
+!?FU(WOG_OnNewDay);
+!!UN:P35/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+; Loop through all the heroes to show Week of Monsters info and add extra spell points
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?y1 S(SKILL_MYSTICISM)/?y2; (Check hero owner and level of Mysticism)
+  !!co|y1=(NO_OWNER)/y2<=(SKILL_NOT_LEARNED);   (Next if not the same)
+
+  ; Set up variables for showing week of monsters info
+  !!OW:Iy1/?y4;        (owner is AI?)
+  ; Add additional spell points
+  !!if&i^wog_35_extraManaRegenEnabled^;
+    !!FU(WOG_Hero_GetFullSpellPoints):Pi/?y3;
+    !!HEi:I?y5/1;      (get current spell points)
+    !!co&y5>=y3;       (next if current spell points >= maximum)
+
+    !!VRy6:Sy3 *y2 :20 -1 -y2; (Spell points are mysticism level/10 of normal, -level of mysticism -1, for normal regeneration)
+    !!HEi:X?y8/?y9/d/d/d/d/d;
+
+    !!if&y8=0/y9=8; (if Hero is a spec Mysticism)
+      !!HEi:Ed/?y11/1;
+      !!VRy10:Sy3 *y11 :200; (spec mysticism: +0.5% for lvl of max SP hero)
+      !!VRy6:+y10;
+    !!en;
+
+    !!VRy6&y4=1:*2;      (double bonus for AI)
+    !!VRy5:+y6;          (add current spell points)
+    !!VRy5&y5<1:S1;      (check for negative SP)
+    !!VRy5&y5>y3:Sy3;    (check for add SP > max)
+    !!HEi:Iy5/1;       (set hero spell points)
+  !!en;
+!!en;
+
+
+!?FU(OnEveryDay);
+*** Linked to Week of Monster Script ***
+!!UN:P35/?(isMysticism:y) P20/?(isWeekOf:y);
+!!FU|(isMysticism)<>(TRUE)/(isWeekOf)<>(TRUE):E;
+
+; Initialize RMB text on End Turn button for Week of Monsters option
+!!if&i^timerWeekDay^=1/i^timerOnce^;
+  !!re i/(PLAYER_FIRST)/(PLAYER_LAST);
+    !!VRs^wog_35_prediction_%i^:S^^;
+  !!en;
+
+; Set up RMB text
+!!el&i^timerWeekDay^=2/i^timerIsAi^=(FALSE);
+  !!VR(heroId:y):S(NO_HERO);
+  !!OW:Hi^timerOwner^/1;
+
+  !!re i/2/v1/1/1;
+    !!HEvi:S(SKILL_MYSTICISM)/?l;
+
+    !!if&l>(SKILL_NOT_LEARNED);
+      !!VR(heroId:y):Svi;
+
+      !!br;
+    !!en;
+  !!en;
+
+  !!if&(heroId)<>(NO_HERO);
+    !!HE(heroId:y):R2/?g B0/?(heroName:z);
+    !!SN:T^wog.whom%g^/?(whom:z);
+
+    !!FU(WOG_20_GetNextWeekType):Pi^wog_20_week_type^/?(nextWeekType:y);
+    !!VR(nextWeekSubtype:y):Si^wog_20_next_week_subtype^;
+
+    !!if&(nextWeekType)<>i^wog_20_next_week_type^;
+      !!FU(WOG_20_GetNextWeekSubtype):P(nextWeekType)/?i^wog_20_next_week_subtype^;
+      !!VR(nextWeekSubtype:y):Si^wog_20_next_week_subtype^;
+      !!VRi^wog_20_next_week_type^:S(nextWeekType);
+    !!en;
+
+    !!FU(WOG_20_GetWeekName):P(nextWeekType:y)/(nextWeekSubtype)/?(nextWeekName:z);
+    !!FU(WOG_35_GetMethodText):P(heroId:y)/?(method:z); (get creature with description and way to predict)
+    !!SN:T^wog.35.prediction^/?(msg:z)/^method^/(method)/^heroName^/(heroName)/^whom^/(whom)/^nextWeekName^/(nextWeekName);
+
+    ; Set up msg when right-clicking on End Turn button
+    !!SN:T^wog.35.predictionRMB^/?s^wog_35_prediction_%i(timerOwner)^/^heroName^/(heroName)/^nextWeekName^/(nextWeekName);
+
+    !!if&(nextWeekType:y)=(WOG_20_RESOURCE_WEEK);
+      !!VR(picType:y):S(nextWeekSubtype);
+      !!VR(picSubType:y):S0;
+    !!el;
+      !!VR(picType:y):S(PIC_TYPE_MONSTER);
+      !!VR(picSubType):S(nextWeekSubtype);
+    !!en;
+
+    !!VR(skillIco:y):S(SKILL_MYSTICISM) +1 *3 -1 +l;
+    !!IF:Q1/(PIC_TYPE_SEC_SKILL)/(skillIco:y)/(picType:y)/(picSubType:y)/(MSG_TYPE_MES)/(msg:z) V9/1; [Display Week of Monsters info](Don't display this again if more heroes have mysticism)
+  !!en;
+!!en;
+
+
+****************
+*** Advanced ***
+****************
+
+!?FU(OnTownMouseClick)&999/i^mouse_action^=(MOUSE_RMB_PRESSED);
+!!UN:P35/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!VR(heroId:y):S(NO_HERO);
+!!CA-1:H0/?(harHero:y) H1/?(visHero:y) G?(guildLevel:y) T?(townType:y) U?(townId:y);
+!!VR(maxGm:y):S4;
+
+!!if|(townType)=(TOWN_STRONGHOLD)/(townType)=(TOWN_FORTRESS);
+  !!VR(maxGm:y):S2;
+!!el&(townType)=(TOWN_CASTLE);
+  !!VR(maxGm:y):S3;
+!!en;
+
+!!VR(guildId:y):S(guildLevel) -1;
+
+!!if&(visHero)<>(NO_HERO);
+  !!HE(visHero):S(SKILL_MYSTICISM)/?(lvl:y);
+  !!VR(heroId)&(lvl)>1:S(visHero);
+
+!!el&(harHero)<>(NO_HERO);
+  !!HE(harHero):S(SKILL_MYSTICISM)/?(lvl:y);
+  !!VR(heroId)&(lvl)>1:S(harHero);
+!!en;
+
+!!if&(heroId)<>(NO_HERO)/i^mouse_item^=(guildId)/(guildId)<>(maxGm);
+
+  !!CA-1:N?z1;(townName:z);               (get town name)
+  !!VR(townName:z):Sz1;
+  !!HE(heroId):R2/?g I?(sPoints:y)/1 B0/?(heroName:z);
+  !!SN:T^wog.who%g^/?(who:z) T^wog.whose%g^/?(whose:z) T^wog.whom%g^/?(whom:z);
+
+  !!SN:T^wog.35.mageGuild.question^/?(msg:z)/^heroName^/(heroName)/^townName^/(townName)/^who^/(who)/^whose^/(whose)/^whom^/(whom);
+
+  ; Disable normal popup if Demolishing town is disabled
+  !!UN:P(WOG_OPT_DISABLE_TOWN_DEMOLISHING)/?(disabledDemolishing:y);
+  !!CM&(disabledDemolishing):R0;
+
+  !!VR(sPoints):*-1;
+  !!VR(picType:y):S(PIC_TYPE_FIRST_TOWN_BUILDING) +(townType);
+  !!VR(picId:y):S(lvl) +26;
+  !!IF:Q1/(PIC_TYPE_SEC_SKILL)/(picId)/(picType)/(maxGm)/(PIC_TYPE_SPELL_POINTS)/(sPoints)/(MSG_TYPE_QUESTION)/(msg:z);
+  !!if&1;
+    !!HE(heroId):I0/1 W0/1;
+    !!FU(NewIntArray):P42/(PIC_TYPE_SPELL)/?(spells:y); [set array of pic spells]
+    !!VR(hasLibrary:y):S(FALSE);
+
+    !!VR(hasLibrary)&(townType)=(TOWN_TOWER):S(TRUE);
+    !!VRf:S1;
+
+    !!re i/0/(maxGm);
+      !!VR(maxScrollsOnLevel:y):S5 -i +(hasLibrary);
+      !!re j/0/(maxScrollsOnLevel)/1/-1;
+        !!CA-1:Gi/j/?(spellId:y);
+        !!if&(spellId)<>(NO_SPELL);
+          !!SN:M(spells)/f/(spellId);
+          !!VRf:+2;
+        !!en;
+      !!en;
+    !!en;
+
+    !!VR(size:y):Sf -1;
+
+
+    !!SN:M(spells)/(size);
+    !!VR(dlgs:y):S(size) Sd>>4;
+    !!VR(it:y):S0;
+    !!FU(WOG_35_GetMethodText):P(heroId)/?(method:z);                              (get creature with description and way to predict)
+
+    !!SN:T^wog.35.mageGuild.answer^/?(msg:z)/^method^/(method:z)/^heroName^/(heroName);/^townName^/(townName)/^who^/(who)/^whose^/(whose)/^whom^/(whom);
+
+    !!re i/0/(dlgs);
+      !!FU(Array_Slice):P(spells)/(it)/16/?(spellsC:y);
+      !!VR(it:y):+16; Fd/(size);
+      !!FU(PrepareMultiPicDialog):P(spellsC);
+      !!IF:N1/(msg:z);    
+    !!en;
+
+
+  !!en;
+
+!!en;
+
+
+!?FU(WOG_35_GetMethodText);                    (Draw creature with description and way to predict)
+!#VA(heroId:x) (result:x);
+!!VR(method:y):T0/0/4;
+!!VRr:T0/0/32;
+!!FU(WOG_GetRandomMonster):P?(ranMon:y);
+!!SN:H^monname^/(ranMon)/0/?(monName:z);
+!!HE(heroId:x):R2/?g;     (Get hero sex)
+!!SN:T^wog.who%g^/?(who:z) T^wog.whose%g^/?(whose:z) T^wog.35.kind.%r^/?(kind:z);
+!!SN:T^wog.35.method.%(method)^/?(msg:z)/^kind^/(kind)/^monName^/(monName)/^who^/(who)/^whose^/(whose);
+!!VR(result):Z(msg);
+
+**************
+*** Expert ***
+**************
+
+// cut hero dlg
+!?FU(OnPreHeroScreen)&i^WOG_35_DisableHeroClick^=1;
+
+  !!UN:C6916808/4/?(dlg:y);
+  !!re i/122/137;(end_value);
+    !!SN:E6288816/2/(dlg)/i;
+    !!if&v1>0;
+      !!SN:E6286720/2/v1/6/6;/0/0/0/(dlg);
+      !!VRi^WOG_35_DisableHeroClick^:S2;
+    !!en;
+  !!en;
+
+!?FU(OnAdventureMapRightMouseClick)&999/i^mouse_item^=(ITEM_ADVMAP_ADVENTURE_MAP);
+!!UN:P35/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+!!FU(WOG_35_MistExp):P;
+
+!?FU(WOG_35_MistExp);
+
+!!OW:A(CURRENT_PLAYER)/?(activeHero:y);
+
+!!if&(activeHero)<>(NO_HERO);
+  !!HE(activeHero):S(SKILL_MYSTICISM)/?(mist:y) I?(sPoints:y)/1;
+  !!VR(cost:y):S5;
+  !!if&(mist)>2/(sPoints)>=(cost);
+    !!OBi^mouse_mapX^/i^mouse_mapY^/i^mouse_mapZ^:T?t;
+    !!if&t=(OBJ_HERO);
+      !!HEi^mouse_mapX^/i^mouse_mapY^/i^mouse_mapZ^:N?(heroId:y) O?(owner:y);
+      !!OW:Ti^timerOwner^/?(myTeam:y) T(owner)/?(targetTeam:y);
+      !!if&(owner)<>i^timerOwner^/(myTeam)<>(targetTeam);
+
+        !!FU(WOG_Hero_GetObjectRange):P(activeHero)/i^mouse_mapX^/i^mouse_mapY^/i^mouse_mapZ^/?(range:y);
+        !!FU(WOG_Hero_GetScoutingRadius):P(activeHero)/?(scouting:y);
+        !!VR(scouting):+1 Sd*(scouting);
+
+        !!if&(scouting)>(range);
+          
+          !!FU(WOG_35_ShowOfferMessage):P(activeHero)/(heroId)/(cost)/?(result:y);
+
+          !!if&(result); // show hero dlg
+            !!HE(activeHero):Id-(cost);
+            !!CM:R0;
+            !!VRi^WOG_35_DisableHeroClick^:S(TRUE); // tell to disable actions
+            !!UN:R5/1/0; // set std cursor
+            //show cut hero dlg
+            !!SN:E5118576/(CALLCONV_FASTCALL)/(heroId)/1/1/0;i(int hero_id, int is_DelButtn, int a3, char is_RightClickDlg)
+            !!VRi^WOG_35_DisableHeroClick^:S(FALSE);
+          !!en;
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+
+!?FU(WOG_35_ShowOfferMessage);
+!#VA(heroId:x) (targetHero:x) (cost:x) (result:x);
+!!HE(heroId:x):R2/?g B0/?(heroName:z);
+!!SN:T^wog.who%g^/?(who0:z) T^wog.whose%g^/?(whose0:z);
+
+!!HE(targetHero:x):B0/?(targetHeroName:z) R2/?g;           (Get Hero name)
+!!SN:T^wog.who%g^/?(who1:z) T^wog.whose%g^/?(whose1:z);
+
+!!SN:T^wog.35.distanceView^/?(msg:z)/^heroName^/(heroName)/^targetHeroName^/(targetHeroName)/^who0^/(who0)/^whose0^/(whose0)/^whose1^/(whose1)/^cost^/(cost);
+!!VR(cost)&(cost)>0:*-1;
+!!IF:Q1/(PIC_TYPE_SEC_SKILL)/29/(PIC_TYPE_SPELL_POINTS)/(cost)/(MSG_TYPE_QUESTION)/(msg:z);
+!!VR(result)&1:S(TRUE);

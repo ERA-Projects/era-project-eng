@@ -1,0 +1,9 @@
+<snippet>
+  <content><![CDATA[
+!?FU($1);
+$0
+]]></content>
+  <description>!?FU(XXX)</description>
+  <tabTrigger>on</tabTrigger>
+  <scope>source.erm - receiver.erm - trigger.erm</scope>
+</snippet>

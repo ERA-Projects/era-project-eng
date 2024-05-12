@@ -1,0 +1,927 @@
+ZVSE2
+
+**Modified by Perry R 2019**
+*Use ERA 3* NEW
+
+** Neutral Units v2.3 by Alexandru Balahura (Neutral Units, Neutral Stack Size, All Monsters are always Savage)
+** and Timothy Pulver (Neutral Stack Experience, Neutral Town and Creature Bank Growth)
+** Check for script53 added by Hermann the Weird
+
+** Modified by Thomas Franz (samot)
+** - no monster growth if the No-Growth-Option in the map editor is set (FU5402)
+**- no monster growth if the creatures are friendly (always join) - (FU5402)- this option is disabled
+** - abandonded mines are guarded by ghosts (as HoMM 1), at least 7 stacks of 50 ghosts
+**   their number increase daily by 101-103% + 1-3 ghosts (if there are 100 ghosts in
+**   a stack it will growth by 2 (101% of 100 are 1 + 1 random ghost) until 6 ghosts
+**   (103% of 100 = 3 + 3 random ghosts)
+** - if AI visits a abandoned mine it has only to fight against an increased stack of
+**   troglodytes
+** - increase guards of local events and pandora's boxes by 10% per week (at least 1)
+
+** WoGify Name: script57.erm
+** Last Updated: November 1, 2004
+* updated by JHV Dec. 15, 2012 to allow some Neutral Monster Boost parameters to
+* be read from Data/NeutBst.txt
+** Last Updated: Feb 2024 by Archer30 and daemon_n
+
+** Function(s) used: FU1000-FU1003, FU5400-FU5413
+
+** Variables used: z745
+
+** WoG Option numbers used: 57, 231, 232, 235
+
+** PO Numbers used: S (for resetting Creature Banks)
+
+** The Neutral Units option adds a bonus of +1 Attack and +1 Defense for every
+** 4 game days (plus an additional base bonus of +1 Attack and +1 Defense) to
+** neutral creatures. It also adds approximately +6-6.99% Health every four days
+** (+10.5-12.25% per week), gives Bless to all living neutral creatures, and
+** Expert Precision to all neutral Archers to make the game more competitive.
+** Also units from Dragon Utopia, Creature Banks, Creature Generators, Crypt,
+** Fishing Well, Garrisons, Death Chamber and Adventure Cave receive these bonuses.
+** Bonuses are also given to creatures defending neutral towns.
+
+Hints for Neutral Units Bonuses:
+
+1. Try to get a hero up to level 5 in the first week and up to at least level 10 in the first month.
+2. Use Disrupting Day, Stone Skin and Shield to make the game a bit easier.
+
+Recommendations for Neutral Units Bonuses:
+
+1. Don't use Diplomacy, otherwise this script is useless.
+2. Don't use First Aid II and Resistance I.
+3. Use Neutral Stack Size, Neutral Stack Experience, Neutral Town and Creature Bank Growth.
+
+** THANKS TO TIMOTHY E. PULVER(Best Erm Scripter of All) FOR HIS SUGGESTIONS AND HIS HELP.
+
+** If the Neutral Stack Size option is enabled, all neutral monster stacks on the
+** adventure map will be adjusted so that they contain more creatures. Starting with
+** more creatures will also effectively result in them growing faster, although the
+** actual weekly rate of growth remains unchanged.
+
+** If the Neutral Stack Experience option is selected, neutral units will be experienced,
+** depending on their level, the game date, and the player difficulty level chosen.
+** Creatures will have 1 rank for every x days (but see notes), as follows:
+
+** Game Difficulty:   Easy   Normal   Hard   Expert   Impossible
+** Level 1 & 2:        14      7        5       4         3
+** Level 3 & 4:        28     14       10       8         6
+** Level 5 & 6:        42     21       15      12         9
+** Level 7:            56     28       20      16        12
+
+** Note 1: One is subtracted from the game day before calculating so that creatures
+**         will gain a rank at the start of each week on Normal difficulty.
+** Note 2: The rank of neutral stacks will never be more than the attacking hero's
+**         level plus the game difficulty level (0..4), so a level 1 hero would never
+**         face higher than a rank 2 stack at Normal difficulty, or a rank 5 stack
+**         at Impossible difficulty.
+
+** If the Neutral Town and Creature Bank Growth option is enabled, the guards
+** will grow by 10% each week per stack (minimum +1), neutral towns will gain
+** new creatures. There's also a 10% chance per stack that a stack will be upgraded.
+** Creature Banks will also have their resources grow at a rate of 10% or +1
+** every 3 weeks if 10% would be less than 1. In addition, creature banks "regenerate"
+** at the start of each month.
+
+!#VRi^wog_235_increaseTownGuards_enabled^:S(TRUE);
+
+
+********************************************************************************
+; Store the stack exp option at the start of the game
+; Warning: If there is any option turning off stack experience in the mid game, it may be incompatible
+!#UN:P(WOG_OPT_STACK_EXPERIENCE)/?i^wog_900_enabled^;
+
+!?OB54;                                 [ALL UNITS ON THE MAP]
+!!VRi^Encounter_Type^:S1;
+
+!$OB54;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB20;                                 [Golem Factory]
+!!VRi^Encounter_Type^:S1;
+
+!$OB20;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB63/0;                               [Pyramid]
+!!VRi^Encounter_Type^:S1;
+
+!$OB63/0;                               [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB24/0;                               [Derelict Ship]
+!!VRi^Encounter_Type^:S2;
+*!FU(WOG_ReduceExtraCBGuardsForAI)&-1000:P; [Reduce extra CB guard numbers for AI if necessary]
+
+!$OB24/0;                               [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB85/0;                               [Shipwreck]
+!!VRi^Encounter_Type^:S2;
+*!FU(WOG_ReduceExtraCBGuardsForAI)&-1000:P; [Reduce extra CB guard numbers for AI if necessary]
+
+!$OB85/0;                               [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB86/0;                               [Shipwreck Survivor]
+!!VRi^Encounter_Type^:S1;
+
+!$OB86/0;                               [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB25;                                 [DRAGON UTOPIA]
+!!VRi^Encounter_Type^:S2;
+*!FU(WOG_ReduceExtraCBGuardsForAI)&-1000:P; [Reduce extra CB guard numbers for AI if necessary]
+
+!$OB25;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB17;                                 [CREATURE GENERATORS]
+!!VRi^Encounter_Type^:S1;
+
+!$OB17;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB16;                                 [CREATURE BANKS]
+!!VRi^Encounter_Type^:S2;
+*!FU(WOG_ReduceExtraCBGuardsForAI)&-1000:P; [Reduce extra CB guard numbers for AI if necessary]
+
+!$OB16;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB84;                                 [CRYPT]
+!!VRi^Encounter_Type^:S2;
+*!FU(WOG_ReduceExtraCBGuardsForAI)&-1000:P; [Reduce extra CB guard numbers for AI if necessary]
+
+!$OB84;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB49;                                 [Fishing Well by Timothy E. Pulver]
+!!VRi^Encounter_Type^:S1;
+
+!$OB49;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB33;                                 [Garrisons by Timothy E. Pulver]
+!!VRi^Encounter_Type^:S1;
+
+!$OB33;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB63/15;                              [DEATH CHAMBER by Rich Reed a.k.a. "Space8999"]
+!!VRi^Encounter_Type^:S3;
+
+!$OB63/15;                              [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB63/57;                              [ADVENTURE CAVE by Donald X. Vaccarino]
+!!VRi^Encounter_Type^:S1;
+
+!$OB63/57;                              [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB5;                                  [GUARDED ARTIFACTS]
+!!VRi^Encounter_Type^:S1;
+
+!$OB5;                                  [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB98;                                 [TOWNS]
+!!CA998:O?y-1;                          [Check owner of town]
+!!VRi^Encounter_Type^&y-1<0:S1;         [Only apply script to neutral towns]
+
+!$OB98;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB53/7;                               [abandoned Mines]
+!!MN998:O?y-1;                          [Check owner of mine]
+!!VRi^Encounter_Type^&y-1<>-1:S2;       [Only apply script to not taken mines]
+!!VRv2:Sv998;
+!!VRv3:Sv999;
+!!VRv4:Sv1000;
+!!DO5413/0/6/1&-1000:P1/53/7;           [reset guards to 1 stack troglodytes if AI visits]
+
+!$OB53/7;                               [abandoned Mines]
+!!VRi^Encounter_Type^:S0;
+
+!?OB6;                                  [Pandora's Box]
+!!VRi^Encounter_Type^:S1;
+
+!$OB6;                                  [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?OB26;                                 [Local Event]
+!!VRi^Encounter_Type^:S1;
+
+!$OB26;                                 [POST-VISIT TRIGGER]
+!!VRi^Encounter_Type^:S0;
+
+!?FU(OnAfterLoadGame);
+!!VRi^Encounter_Type^:S0;               [Reset i^Encounter_Type^ to 0]
+
+
+ [Battlefield Setup Trigger]
+; Here we use two different methods to add the bonuses
+; For stack exp, they are added when the stack is genereated on FU(WOG_BattleStack_InitParams)
+; For other bonuses, we set at the start of battle on FU(OnAfterTacticsPhase) and FU(OnCombatRound)
+
+// Set up neutral experience
+!?FU(OnBeforeBattleUniversal)&i^Encounter_Type^>0/i^battle_human_0^;
+!!UN:P231/?(neutralExp:y); [Check if Neutral Stack Experience is enabled]
+
+!!if&(neutralExp:y);
+  ; Turn on stack experience if not enabled yet
+  !!UN:P(WOG_OPT_STACK_EXPERIENCE)/1;
+  !!VRy-1:Si^timerDay^ -1; [Subtract 1 from current day: y2]
+  !!UN:J2/?y2; [Player chosen difficulty level: y2]
+
+  ; If neutral stack exp difficulty has not been selected, define the interval with game difficulty
+  !!if&i^Stack_Exp_Rate^=0;
+    !!VRy-3&y2=0:S14; [Easy interval (14): y-3]
+    !!VRy-3&y2=1:S7; [Normal interval (7): y-3]
+    !!VRy-3&y2=2:S5; [Hard interval (5): y-3]
+    !!VRy-3&y2=3:S4; [Expert interval (4): y-3]
+    !!VRy-3&y2=4:S3; [Impossible interval (3): y-3]
+  ; Overrides interval value if any neutral stack exp difficulty is selected
+  !!el;
+    !!VRy-3:Si^Stack_Exp_Rate^;
+  !!en;
+
+  !!VRi^wog_231_base_exp_rank^:Sy-1 :y-3; [Base rank for this date and difficulty: y-4]
+
+  !!HEi^battle_hero_0^:E?(exp:y)/?i^wog_231_hero_lvl^/1; [Hero's experience level: y-6 (y7 isn't used but avoids a bug)]
+  !!VRi^wog_231_hero_lvl^:+y2 F1/(INT_MAX); [Hero's level +game difficulty: y-6, cannot be negative]
+!!en;
+
+; Restore stack exp option after battle
+!?FU(OnAfterBattleAction)&i^wog_231_base_exp_rank^;
+!!BU:C?(battleIsEnded:y);
+!!FU&(battleIsEnded)<>(TRUE):E;
+
+!!UN:P231/?(neutralExp:y);
+!!FU&(neutralExp)<>(TRUE):E;
+
+!!UN:P(WOG_OPT_STACK_EXPERIENCE)/i^wog_900_enabled^;
+
+!?FU(OnAfterBattleUniversal)&i^wog_231_base_exp_rank^;
+!!VRi^wog_231_base_exp_rank^:S0;
+!!VRi^wog_231_hero_lvl^:S0;
+
+!?FU(WOG_BattleStack_InitParams)&i^wog_231_base_exp_rank^;
+!#VA(stackId:x) (side:x);
+
+!!if&(side)=(BATTLE_RIGHT)/i^Encounter_Type^<>3;
+  !!FU5401:Px1/i^wog_231_base_exp_rank^/i^wog_231_hero_lvl^;
+!!en;
+
+ [Add ranks to Neutral Stacks if option enabled]
+!?FU5401;
+ [x1=stack Id, x2=base rank, x3=hero's level+1]
+!!BMx1:T?y1 N?y2; [Creature type (y1), number (y2)]
+!!FU|y1<0/y2<1:E; [Exit if no stack at this number]
+!!FU&y1>=(MON_COMMANDER_FIRST_A)/y1<=(MON_COMMANDER_LAST_D):E; [Exit if it's a Commander]
+
+!!MA:Ly1/?y3; [Creature level: y3]
+!!VRy3::2 +1; [Divide by 2 (dropping fractions) and add 1 to get level divisor (1..4): y3]
+!!VRy4:Sx2 :y3; [Divide base rank by level divisor to get final rank: y4]
+!!FU&y4<1:E; [Exit if no ranks added]
+!!VRy5:Sx1 *-1 -1; [Negative stack index: y5]
+!!VRy4&y4>x3:Sx3; [If rank is higher than hero's level+game difficulty, set it to hero's level+game difficulty]
+!!EAy5:Ey4/12/d/d; [Set stack to rank y4]
+
+
+*New option form Dif mod that provides the same scaling to usually only neutrals get, also to AI players. 
+This option is for everyone who wants to have stronger AI players and the difficulty not just comes from the amount of units.
+
+!?FU(OnAfterTacticsPhase)&i^Encounter_Type^>=1/(ERM_FLAG_IS_HUMAN);[Edit: Moved Trigger from BF to OnCombatRound and to OnAfterTacticsPhase in order to have corrected first unit set]
+!!BA:O?y2/?y3;
+!!FU&y3>(NO_HERO):E;                    [Exit if Enemy Hero at Neutrals and its not from Random Hero]
+
+!!UN:P231/?v1;                          [Check if Neutral Stack Experience is enabled: v1]
+
+!!UN:P57/?v2;                           [Check if Neutral Units script is enabled in WoGify Options: v2]
+!!DO1000/21/41/1&v2=1/i^Health_Grow_Enable^:P; [Add Att, Def, HP, only Run when selected and not for AI]
+!!DO(Dif_Mod_Static_Boost)/21/41/1&i^Dif_Mod_Neutral_boost^:P; [Add Att, Def, HP, and speed]
+
+!?FU(OnCombatRound)&i^battle_round^=0/(ERM_FLAG_IS_HUMAN);
+!!UN:P57/?v2;                           [Check if Neutral Units script is enabled in WoGify Options: v2]
+!!BA:O?y2/?y3;
+!!OW:Iy2/?y5;                           [Attacker Owner check for AI]
+!!OW:Iy3/?y7;                           [Defender Owner check for AI]
+!!FU&y5=0/y7=0:E;                       [If both human exit script]
+!!FU&y5=1/y7=1:E;                       [If both AI exit script]
+
+!!VRy10&y5=1:S0; !!VRy11&y5=1:S20;      [If Attacker is AI]
+!!VRy10&y7=1:S21; !!VRy11&y7=1:S41;     [If Defender is AI]
+!!DO1000/y10/y11/1&v2=1/i^Health_Grow_Enable^/i^Dif_Mod_AI_Scaling^:P; [Add Att, Def, HP]
+
+
+ [Add Attack, Defense, Health, Bless and Precision to stacks]
+!?FU1000;
+!!BMx16:N?y20;                          [Creature Number y20]
+
+!!if&y20>0;
+  !!VRy1:Si^timerDay^:i^Health_Grow_Enable^; [current day: y1] ; Sunday is the bonuses day]
+  !!BMx16:Ady1 Ddy1;                    [+1.75 attack per week(month+7), +1.75 defense per week(month+7)]
+  !!BMx16:H?y2;                         [Hit Points of stack: y2]
+  !!VRy6:Sy1*5+100;
+  !!VRy4:Sy2*y6:100-y2;                 [5% of hit points: y3]
+  !!BMx16:Hdy4;                         [+10.5-12.25% per week;+42-49% of hit points per month]
+!!en;
+
+
+!?FU(Dif_Mod_Static_Boost);
+!!BMx16:N?y20;                          [Creature Number y20]
+
+!!if&y20>0;                             [if a valid stack]
+  !!VRy1:S1;                            [set bonus to 1]
+  !!BMx16:Ady1 Ddy1;                    [+1 attack and defense]
+  !!BMx16:H?y2 T?y11;                   [Hit Points of stack: y2]
+  !!VRy6:Sy1*5+100;                     [calc new HP]
+  !!VRy4:Sy2*y6:100-y2;                 [5% of hit points]
+  !!BMx16:Hdy4;                         [set hit points]
+  !!VRy10:Si^timerDay^;                 [current day  y10 Sunday is the bonuses day]
+  !!FU|y11=145/y11=146/y11=147/y11=148/y11=149:E; [Execlude Warmachines]
+  !!BMx16&y10>84:Sd1;                   [add one speed at start of month 4]
+  !!BMx16&y10>168:Sd1;                  [add one speed at start of month 7]
+  !!BMx16&y10>252:Sd1;                  [add one speed at start of month 10]
+!!en;
+
+
+********************************************************************************
+** Monsters Aggression **
+!?FU(OnEveryDay)&i^timerOnce^=1/i^timerDay^=1; [On First Day of the Map]
+
+!!SN:W^Aggression_Neutrals^/?y1; !!FU&y1=0:E; [Option from Dif Mod to enable/disable changed aggression value]
+!!UN:U54/-1/?y1;                        [Number of monsters on the map: y1]
+!!VRv2:S-1;                             [Initialize v2 to -2 to work with new faster UN:U syntax]
+!!re i/1/y1;
+  !!UN:U54/-1/-1/2;                     [Store coordinates for next monster in v2/v3/v4]
+  !!MOv2/v3/v4:R?y4/1;                  [check if monsters is forbidden to grow (if #=1 then the amount of monsters won't grow) get agression level]
+  !!if&y4>0;                            [exit if they mustn't grow (option in map editor) or are friendly (always join)]
+    !!VRy5:S0R2;                        [Generate coinflip for chance to increase agression by 1, 2 o 3]    
+    !!VRy4&y5=0:+1;                     [Add +1 to agression level so the chance to join is less]
+    !!VRy4&y5=1:+2;                     [Add +2 to agression level so the chance to join is less]
+    !!VRy4&y5=2:+3;                     [Add +3 to agression level so the chance to join is less]
+    !!VRy4&y4>=10:S10;                  [Value cannot be more than 10]
+    !!MOv2/v3/v4:Ry4/1;                 [Set all monster stacks to new agression level]
+  !!en;
+!!en;
+
+
+** Monster Growth **
+!?FU(OnEveryDay)&i^timerOnce^=1/i^timerDay^=1; [On First Day of the Map]
+
+!!UN:P232/?y1;                          [Check if script is enabled: y1]
+!!FU&y1=0:E;
+
+!!UN:U54/-1/?y2;                        [Number of monsters on the map: y2]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!MA:F(MON_BLOOD_DRAGON)/?y30;
+!!DO5402/1/y2/1&y2>0:Py30;              [Cycle through all monsters]
+
+
+!?FU5402;
+!#VA(bloodDragonFv:x);
+
+!!VRv2&x16=1:S-1;
+!!UN:U54/-1/-1/2;                       [Store coordinates for next monster in v2/v3/v4]
+!!OBv2/v3/v4:U?y1;                      [Subtype: y1]
+!!MOv2/v3/v4:O?y3 R?y4/1;               [check if monsters is forbidden to grow (if #=1 then the amount of monsters won't grow) get agression level]
+!!FU|y3=1/y4=0:E;                       [exit if they mustn't grow (option in map editor) or are friendly (always join)]
+
+!!MOv2/v3/v4:G?y2;                      [Number in stack: y2]
+!!FU&y2>=3800:E;                        [Exit if Stack is near at 4000 Units]
+!!MA:Ly1/?y10;                          [Get Monster Level]
+
+!!SN:W^Stack_Size_Mod_L1^/?y61;         [Lvl 1]
+!!SN:W^Stack_Size_Mod_L2^/?y62;         [Lvl 2]
+!!SN:W^Stack_Size_Mod_L3^/?y63;         [Lvl 3]
+!!SN:W^Stack_Size_Mod_L4^/?y64;         [Lvl 4]
+!!SN:W^Stack_Size_Mod_L5^/?y65;         [Lvl 5]
+!!SN:W^Stack_Size_Mod_L6^/?y66;         [Lvl 6]
+!!SN:W^Stack_Size_Mod_L7^/?y67;         [Lvl 7]
+!!SN:W^Stack_Size_Mod_L8^/?y68;         [Lvl 8]
+
+** LEVEL 1 **
+!!MOv2/v3/v4&y10=0:Gdy61;
+
+** LEVEL 2 **
+!!MOv2/v3/v4&y10=1:Gdy62;
+
+** LEVEL 3 **
+!!MOv2/v3/v4&y10=2:Gdy63;
+
+** LEVEL 4 **
+!!MOv2/v3/v4&y10=3:Gdy64;
+
+** LEVEL 5 **
+!!MOv2/v3/v4&y10=4:Gdy65;
+
+** LEVEL 6 **
+!!MOv2/v3/v4&y10=5:Gdy66;
+
+** LEVEL 7 **
+!!if&y10=(MON_MAX_LEVEL);
+  !!MA:Fy1/?y30;
+
+  ; Set up bonus quantity for level 7 (weaker than Blood Dragons, the weakest level 8)
+  !!if&y30<(bloodDragonFv);
+    !!MOv2/v3/v4:Gdy67;
+  ; Set up bonus quantity for level 8 (if stronger than Blood Dragons)
+  !!el;
+    !!MOv2/v3/v4:Gdy68;
+  !!en;
+!!en;
+
+!!if&i^More_Random_Stack_Size^;
+  !!VRy2:S-4 R10;                       [Random additional units: -4..6: y2]
+  !!MOv2/v3/v4:Gdy2;                    [Add extra units]
+!!en;
+
+
+** Neutral Town and Creature Bank Growth **
+
+ [Daily Timer, only activates once (for first colour)]
+!?FU(OnEveryDay)&i^timerOnce^/i^timerDay^>1;
+
+!!UN:P235/?y-12;                        [Check if script is enabled: y-12]
+!!FU&y-12<>1:E;                         [Exit if not enabled]
+
+!!if&i^wog_235_increaseTownGuards_enabled^;
+  !!UN:U98/-1/?y-1;                       [Number of Towns on map: y-1]
+
+  !!VRi^wog_235_is3rdWeek^:S(FALSE);
+  !!VRy-9:Si^timerWeek^ :3 *3;            [Determine every 3rd week: y-9]
+  !!VRi^wog_235_is3rdWeek^&y-9=i^timerWeek^:S(TRUE); [Set i^wog_235_is3rdWeek^ to 1 every 3rd week: i^wog_235_is3rdWeek^]
+
+  !!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+  !!DO5403/1/y-1/1&y-1>0/i^timerWeekDay^=1:P; [Loop through all Towns weekly]
+!!en;
+
+!!UN:U16/-1/?y-4;                       [Number of Creature Banks on map: y-4]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5405/1/y-4/1&y-4>0:P16/y-4;         [Loop through all Creature Banks]
+!!UN:U24/-1/?y-5;                       [Number of Derelict Ships on map: y-5]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5405/1/y-5/1&y-5>0:P24/y-5;         [Loop through all Derelict Ships]
+!!UN:U25/-1/?y-6;                       [Number of Dragon Utopias on map: y-6]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5405/1/y-6/1&y-6>0:P25/y-6;         [Loop through all Dragon Utopias]
+!!UN:U84/-1/?y-7;                       [Number of Crypts on map: y-7]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5405/1/y-7/1&y-7>0:P84/y-7;         [Loop through all Crypts]
+!!UN:U85/-1/?y-8;                       [Number of Shipwrecks on map: y-8]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5405/1/y-8/1&y-8>0:P85/y-8;         [Loop through all Shipwrecks]
+
+!!UN:U53/7/?y-9;                        [Number of abandoned mines on map: y-9]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5412/1/y-9/1&y-8>0:P53/7;           [Loop through all abandoned mines]
+!!UN:U26/-1/?y10;                       [Number of local events on map: y10]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5412/1/y10/1&y-8>0/i^timerWeekDay^=1:P26/-1; [Loop through all local events]
+!!UN:U6/-1/?y10;                        [Number of pandora's boxes on map: y10]
+!!VRv2:S-1;                             [Initialize v2 to -1 to work with new faster UN:U syntax]
+!!DO5412/1/y10/1&y-8>0/i^timerWeekDay^=1:P6/-1; [Loop through all pandora's boxes]
+
+!!FU(WOG_231_RefillDeathChamber):P;
+
+!?FU(WOG_231_RefillDeathChamber);
+!!UN:P70/?(dc:y);                       [** Store 1 in i^WOG_70_enabled^ if script enabled, 0 if disabled]
+
+!!if&(dc);
+  !!VR(x:y):S-1; 
+
+  !!re i;                               [endless loop]
+    !!UN:U63/15/-1/(x)/(y:y)/(z:y);     [find next (x) = -1 on failure]
+    !!br&(x)<0;                         [exit loop if nothing found]
+
+    !!PO(x)/(y)/(z):S?(counter:y);
+    !!PM(x)/(y)/(z):V?(notVisited:y);
+
+    !!if&(notVisited)=(FALSE);
+      !!PO(x)/(y)/(z):Sd-1;
+
+      !!if&(counter)=1;
+        !!re (player:y)/(PLAYER_FIRST)/(PLAYER_LAST); [reset AI visits]
+          !!PM(x)/(y)/(z):P(player)/(FALSE);
+        !!en;
+
+        !!PM(x)/(y)/(z):V1;
+      !!en;
+
+    !!el&i^timerWeekDay^=1;             [counter>=100]
+      !!PO(x)/(y)/(z):Sd1;              [coef]
+    !!en;
+  !!en;
+!!en;								   
+
+ [Loop through all towns]
+!?FU5403;
+!!UN:U98/-1/-1/2;                       [Town coordinates in v2/v3/v4]
+!!CAv2/v3/v4:O?y1 T?y2;                 [Owner of Town: y1, Type of Town: y2]
+!!FU&y1>=0:E;                           [Skip if town is owned]
+!!CAv2/v3/v4:H0/?y3;                    [Check if Town has a Garrison Hero: y3]
+!!VRy-3:S0;                             [Initialize y-3 to 0]
+!!DO5404/0/6/1:Py3/y2;                  [Loop through garrison slots in town]
+
+ [Loop through garrison slots in neutral town]
+ [x1=hero number (-1=none), x2=town type]
+!?FU5404;
+!!VRy-1:S-1;                            [Initialize y1 to -1]
+!!CAv2/v3/v4&x1<0:M2/x16/?y1/?y2;       [Guards in slot x16, Type=y1, Number=y2]
+!!HEx1&x1>=0:C0/x16/?y1/?y2;            [Garrison hero's slot x16, Type=y1, Number=y2]
+
+!!VRy3&y2>0:Sy2 *i^Guarded_Object_growth_Rate^ :100 -y2 F1/500000; [10% of the number of guards (rounded down): y3]  Lukas]
+
+!!if&y2<=0/y-3=0;
+  !!VRy4:Sx16;                          [Set y4 to x16 for level of creature to place in empty slot: y4]
+  !!VRy4&y4>i^timerWeek^:Si^timerWeek^; [Creature level (0..6) can't exceed week number (2+): y4]
+  !!UN:Tx2/y4/0/?y1;                    [Type of creature (non-upgraded) to place in empty slot: y1]
+  !!MA:Gy1/?y3;                         [Basic town dwelling growth of creature: y3]
+
+  !!VRy3:*i^Guarded_Object_Faktor^ :2;  [3:2 Faktor 1,5 Multiply growth by 1.5 (round down): y3]  Lukas]
+!!en;
+
+!!FU|y1<0/y3<1:E;                       [Skip slot if no creature there]
+
+!!VRy8:S1 R9;                           [Random number 1..10: y8]
+!!MA&y8=1:Ly1/?y5;                      [Level of creature in slot x16 (0..6): y5]
+!!UN&y8=1:Tx2/y5/0/?y6;                 [Equivalent non-upgraded creature of this level in town: y6]
+!!UN&y8=1:Tx2/y5/1/?y7;                 [Equivalent upgraded creature of this level in town: y7]
+!!VRy1&y8=1/y1=y6:Sy7;                  [10% chance per week of creature being upgraded: y1]
+
+!!VRy3:F1/500000;                       [Fix to prevent overflow]
+!!CAv2/v3/v4&x1<0:M2/x16/y1/dy3;        [Add extra guards to slot x16]
+!!HEx1&x1>=0:C0/x16/y1/dy3;             [Add extra creatures to slot x16]
+!!VRy-3&y2<=0:S99;                      [Set y-3 to 99 if empty slot found: y-3]
+
+
+ [Loop through all creature banks]
+ [x1=type of bank, x2=number of banks]
+!?FU5405;
+!!UN:Ux1/-1/-1/2;                       [Creature Bank coordinates in v2/v3/v4]
+!!CBv2/v3/v4:T?y1;                      [Check if Creature Bank already Taken: y1=1 if Taken]
+
+!!if&y1=0/i^timerWeekDay^=1;
+  ; Loop through guard slots and resources in creature bank each week
+  !!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+    !!FU5406:Pi;
+  !!en;
+              
+  !!CBv2/v3/v4:M?y30/?y31;              [Number of Bonus Creatures, Type=y30, Number=y31]
+
+  ; Every 3rd week, add 1 bonus creature: y31 (maximum 127)
+  !!if&y30>(NO_MON)/y31>0/y31<127/i^wog_235_is3rdWeek^;
+    !!CBv2/v3/v4:M?y30/d1;              [Set new number of bonus creatures]
+  !!en;
+!!en;
+
+!!POv2/v3/v4&y1=1:S?y18;                [Read PO:S number for Creature Bank square: y18]
+!!POv2/v3/v4&y1=1/y18=0:S28;            [Set PO:S number for Creature Bank square to 28: y18]
+!!VRy18&y1=1/y18>0:-1;                  [Subtract one from PO:S number: y18]
+!!POv2/v3/v4&y1=1/y18>0:Sy18;           [Write new PO:S number: y18]
+
+!!FU|y1<>1/y18<>1:E;                    [Exit if bank not taken or y18<>1]
+
+ [Reset/Restock taken creature banks after 28 days]
+!!POv2/v3/v4:S0;                        [Reset Creature Bank's PO:S number to 0]
+!!OBv2/v3/v4&x1=16:U?y2;                [Subtype of type 16 creature bank: y2]
+!!FU&x1=16/y2>=13/y2<=16:E;             [Exit if it's an Emissary building]
+
+!!CBv2/v3/v4:T0 V0;                     [Reset creature bank to "not taken"]
+
+!!UN:J6/4/?y3;                          [Random Treasure Artifact: y3]
+!!UN:J6/4/?y4;                          [Random Minor Artifact: y4]
+!!UN:J6/16/?y5 J6/16/?y6 J6/16/?y7 J6/16/?y8; [Random Relics: y5, y6, y7, y8]
+!!CBv2/v3/v4&x1=24:G0/115/12 G1/115/12 G2/115/12 G3/115/12 G4/123/12; [Derelict Ship]
+!!CBv2/v3/v4&x1=24:R6/6000 A2/0/y4;     [Derelict Ship: 6000 gold, 1 Minor Artifact]
+!!CBv2/v3/v4&x1=85:G0/60/10 G1/60/10 G2/60/10 G3/61/10 G4/61/10; [Shipwreck]
+!!CBv2/v3/v4&x1=85:R6/5000 A2/0/y4;     [Shipwreck: 5000 gold, 1 Minor Artifact]
+!!CBv2/v3/v4&x1=84:G0/57/20 G1/59/20 G2/60/20 G3/62/10 G4/63/6 G5/64/3; [Crypt]
+!!CBv2/v3/v4&x1=84:R6/6000 A2/0/y3 A3/y4;[Crypt: 6000 gold, 1 Treasure Artifact, 1 Minor Artifact]
+
+!!if&x1=(OBJ_DRAGON_UTOPIA);
+  !!CB2:G0/134/3 G1/135/2 G2/133/2 G3/132/1; [Dragon Utopia (guards replaced with neutral dragons)]
+
+  ; Set up additional guards depending on whether Enhanced Dragon Utopia is enabled
+  !!UN:P53/?y30;                        [Enhanced Dragon Utopia]
+
+  !!if&y30;
+    !!CB2:G4/(MON_BLOOD_DRAGON)/4 G5/(MON_DRACOLICH)/1;
+  !!el;
+    !!CB2:G4/(MON_DIAMOND_DRAGON)/3 G5/(MON_DARKNESS_DRAGON)/3;
+  !!en;
+!!en;
+
+!!CBv2/v3/v4&x1=25:R6/50000 R4/6 R5/6;  [Dragon Utopia: 50000 gold, 6 Crystal, 6 Gems]
+!!CBv2/v3/v4&x1=25:A2/0/y5 A2/1/y6 A2/2/y7 A2/3/y8; [Dragon Utopia: 4 Relics]
+!!UN&x1=25:P3/?y9 P238/?y10 P177/?y14;  [Check if Commanders (y9), Commander Artifacts (y10), and Slava's Ring (y14) are enabled]
+!!VRy15&x1=25/y9=0/y10=0/y14=1:S8;      [Commander Artifact's minus Slava's Ring: y15]
+!!VRy15&x1=25/y9=0/y10=0/y14=0:S9;      [Commander Artifact's including Slava's Ring: y15]
+!!VRy16&x1=25/y9=0/y10=0:S146 Ry15;     [Random Commander Artifact 1: y16]
+!!VRy17&x1=25/y9=0/y10=0:S146 Ry15;     [Random Commander Artifact 2: y17]
+!!CBv2/v3/v4&x1=25/y9=0/y10=0:A3/y16 A3/y17; [Dragon Utopia: 2 Commander Artifacts]
+!!CBv2/v3/v4&x1=16/y2=0:G0/95/10 G1/95/10 G2/95/10 G3/95/10 G4/95/10; [Cyclops Stockpile]
+!!CBv2/v3/v4&x1=16/y2=0:R0/10 R1/10 R2/10 R3/10 R4/10 R5/10; [Cyclops Stockpile: 10 of each resource]
+!!CBv2/v3/v4&x1=16/y2=1:G0/17/30 G1/17/30 G2/17/30 G3/17/30 G4/17/30; [Dwarven Treasury]
+!!CBv2/v3/v4&x1=16/y2=1:R6/7500 R4/10;  [Dwarven Treasury: 7500 Gold, 10 Crystals]
+!!CBv2/v3/v4&x1=16/y2=2:G0/5/20 G1/5/20 G2/5/20 G3/5/20 G4/5/20; [Griffin Conservatory]
+!!CBv2/v3/v4&x1=16/y2=3:G0/43/60 G1/42/60 G2/42/60 G3/43/60 G4/42/60; [Imp Cache]
+!!CBv2/v3/v4&x1=16/y2=3:R6/5000 R1/6;   [Imp Cache: 5000 Gold, 6 Mercury]
+!!CBv2/v3/v4&x1=16/y2=4:G0/77/10 G1/77/10 G2/77/10 G3/77/10 G4/77/10; [Medusa Stores]
+!!CBv2/v3/v4&x1=16/y2=4:R6/5000 R3/10;  [Medusa Stores: 5000 Gold, 10 Sulfur]
+!!CBv2/v3/v4&x1=16/y2=5:G0/39/6 G1/39/6 G2/39/6 G3/39/6 G4/39/6; [Naga Bank]
+!!CBv2/v3/v4&x1=16/y2=5:R6/12000 R5/24; [Naga Bank: 12000 Gold, 24 Gems]
+!!CBv2/v3/v4&x1=16/y2=6:G0/105/18 G1/105/18 G2/105/18 G3/108/18 G4/108/18; [Dragon Fly Hive]
+!!CBv2/v3/v4&x1=16/y2=11:G0/23/6 G1/19/10 G2/23/6 G3/19/10 G4/23/6; [Hunting Lodge]
+!!CBv2/v3/v4&x1=16/y2=11:R6/1000 R0/40; [Hunting Lodge: 1000 Gold, 40 Wood]
+!!CBv2/v3/v4&x1=16/y2=12:G0/33/8 G1/29/50 G2/33/8 G3/29/50 G4/33/8; [Snow-covered Grotto]
+!!CBv2/v3/v4&x1=16/y2=12:R6/1000 R2/40; [Snow-covered Grotto: 1000 Gold, 40 Ore]
+!!CBv2/v3/v4&x1=16/y2=17:G0/63/6 G1/63/6 G2/63/6 G3/63/6 G4/63/6; [Transylvanian Tavern]
+!!CBv2/v3/v4&x1=16/y2=17:R6/5000;       [Transylvanian Tavern: 5000 Gold]
+!!CBv2/v3/v4&x1=16/y2=18:G0/63/6 G1/63/6 G2/63/6 G3/63/6 G4/63/6; [Home of the Bat]
+!!CBv2/v3/v4&x1=16/y2=18:R1/5 R3/5 R4/5 R5/5; [Home of the Bat: 5 Mercury, 5 Sulfur, 5 Crystal, 5 Gems]
+!!CBv2/v3/v4&x1=16/y2=19:G0/37/6 G1/37/6 G2/37/6 G3/37/6 G4/37/6; [Lost Bottle]
+!!CBv2/v3/v4&x1=16/y2=19:R1/5 R3/5 R4/5 R5/5; [Lost Bottle: 5 Mercury, 5 Sulfur, 5 Crystal, 5 Gems]
+!!CBv2/v3/v4&x1=16/y2=20:G0/75/6 G1/73/6 G2/75/6 G3/73/6 G4/75/6; [Grotto]
+!!CBv2/v3/v4&x1=16/y2=20:R6/2000 R2/35; [Grotto: 2000 Gold, 35 Ore]
+
+; Grow new creature bank's guards and resources for each game week
+!!re i/1/i^timerWeek^;
+  !!re j/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+    !!FU5406:Pj;
+  !!en;
+!!en;
+
+ [Loop through guard slots and resources in creature bank]
+ [x1=-1 for normal growth, x1=guard slot number if restocking new bank]
+ [x2=type of creature bank if restocking]
+!?FU5406;
+!#VA(slot:x);
+
+!!VRy10:S(slot);                        [Set y10 to guard slot number: y10]
+!!CB2:Gy10/?y1/?y2;                     [Guard slot y10, Type: y1, Number: y2]
+
+; If the position has no guard
+!!if&y2<=0;
+  !!CB2:G0/?y6/?y8;                     [Guard Type in slot 0: y6, Number in y8]
+  !!CB2&y8<1:G1/?y6/?y8;                [Guard Type in slot 1 if nothing in 0: y6]
+  !!FU|y6<=(NO_MON)/y8<=0:E;            [If nothing in slot y10 and nothing in slot 0 or 1, If guard type in slot 0 or 1 is less than 0, Exit]
+
+  ; Set up commander in the last slot
+  !!if&y10=(ARMY_SLOT_LAST);
+    !!UN:P(WOG_OPT_DISABLE_COMMANDERS)/?y30;
+
+    !!if&y30=(FALSE);
+      !!MA:Oy6/?y7;                       [Town number that creature in slot 0 belongs to: y7]
+      !!VRy1:S(MON_COMMANDER_FIRST_D) +y7;[Set "Commander" in slot 6: y1]
+      !!CB2:G(ARMY_SLOT_LAST)/y1/1; [Set 1 Commander in slot 6]
+    !!en;
+
+  ; Set up new guards in other slots
+  !!el;
+    !!VRy9:Sy8 :2 +1 F1/500000;         [Half of the number of guards in slot 0 or 1 plus one: y9]
+
+    ; Special rule for Dragon Utopia - Disabled as it's already set with CB:G
+    *!if&y6=(MON_FAERIE_DRAGON);
+      *!if&y10=(ARMY_SLOT_4);
+        *!VRy6:S(MON_DIAMOND_DRAGON);
+      *!el&y10=(ARMY_SLOT_5);
+        *!VRy6:S(MON_DARKNESS_DRAGON);
+      *!en;
+    *!en;
+
+    !!CB2:Gy10/y6/y9;                   [Set y9 new creatures in empty slot]
+  !!en;
+
+; If the position is guarded and not commander
+!!el|y1<(MON_COMMANDER_FIRST_A)/y1>(MON_COMMANDER_LAST_D);
+  !!VRy3:Sy2 *i^Guarded_Object_growth_Rate^ :100 -y2 F1/500000;   [10% of the number of guards (rounded down): y3]   Lukas]
+  !!CB2:Gy10/y1/dy3;                    [Add extra guards to slot y10 but don't increase Commanders]
+  !!CB2:Gy10/?y98/?y3;
+  !!VRy3:F1/500000;
+  !!CB2:Gy10/?y98/y3;
+!!en;
+
+; Manage bonus resources
+!!CB2:Ry10/?y4;                         [Number of Resource type y10: y4]
+!!VRy5&y4>0:Sy4 :10;                    [10% of resources: :y5]
+!!VRy5&y4>0/y5=0/i^wog_235_is3rdWeek^:S1; [Every 3rd week set resource bonzus to 1 if less than 1: y5]
+!!CB2&y4>0/y5>0:Ry10/dy5;               [Add resource bonus]
+
+
+ [If necessary, reduce number of guards in Creature Banks when AI attacks]
+ [x16=guard stack number (0..6)]
+; Archer30: This function is not currently used as it may not be necessary. AI seems to be fine.
+; Note that it is strongly not recommended to use it as it sets CB:G directly. If an AI's defeated by an CB, the CB:G would still be changed for the later battles. The ideal implementation is setting BM:N for AI if really necessary.
+!?FU(WOG_ReduceExtraCBGuardsForAI);
+!!UN:P235/?(cbGrowth:y);
+!!FU&(cbGrowth)<>(TRUE):E;
+
+!!MA:F(MON_BLOOD_DRAGON)/?(bloodDragonFv:y);
+
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!CB998:Gi/?(type:y)/?(num:y);        [Guard slot, Type, Number]
+
+  !!if&(type)>(NO_MON)/(num)>=0;
+    !!MA:L(type)/?(level:y);            [Level of creatures in stack]
+
+    !!if&(level)=0;
+      !!VR(num):F1/50;
+    !!el&(level)=1;
+      !!VR(num):F1/30;
+    !!el&(level)=2;
+      !!VR(num):F1/25;
+    !!el&(level)=3;
+      !!VR(num):F1/15;
+    !!el&(level)=4;
+      !!VR(num):F1/10;
+    !!el&(level)=5;
+      !!VR(num):F1/8;
+    !!el&(level)=6;
+      ; Set up different limitation for level 7 and level 8
+      !!MA:F(type)/?(fv:y);
+
+      !!if&(fv)<(bloodDragonFv);
+        !!VR(num):F1/6;
+      !!el;
+        !!VR(num):S1;
+      !!en;
+    !!en;
+  !!en;
+
+  !!CB998:Gi/d/(num);                   [Guard slot, Type, Number]
+!!en;
+
+ [Start of Battle Trigger for Creature Banks, Crypts,]
+ [Derelict Ships, Shipwrecks, and Dragon Utopias]
+; Set up CB commanders - for human only
+!?FU(OnBeforeBattleUniversal)&i^Encounter_Type^=2/(ERM_FLAG_IS_HUMAN);
+
+!!BA:M1/(ARMY_SLOT_LAST)/?y-1/?y2;      [Check for Commander type (y-1), number (y2)]
+!!FU|y-1<(MON_COMMANDER_FIRST_A)/y-1>(MON_COMMANDER_LAST_D)/y2<1:E; [Exit if no Commander monsters defending]
+
+!!UN:N3/-1/y-1/0;                       [Commander creature name for setting Commander's screen name: z-1]
+!!VRy-3:Sy-1 -183;                      [Commander type: 0..9: y-3]
+!!VRy-15:Sy-3 *2;                       [Owner hero class: y-15]
+!!CO-4:E1 Ty-3 N-1 Hy-3 P1;             [Enable Commander, set type, name, owner hero class, custom stat control]
+!!VRy-4:Si^timerDay^ -1 :7 +1;          [Calculate current week: y-4]
+
+!!VRy-5:Si^Guarded_Object_Commander_Bonus_Att^ *y-4 +6; [Attack, Defense: y-5 +6] Lukas]
+!!VRy-6:Si^Guarded_Object_Commander_Bonus_Dmg^ *y-4 +9; [Damage (max. damage): y-6  +9]    Lukas]
+!!VRy-7:Si^Guarded_Object_Commander_Bonus_HP^ *y-4 +50; [Health 50 plus 50 HP per week: y-7   S150 *y-4 +50]  Lukas]
+
+!!VRy-8:Sy-4 :3;                        [Every 3 weeks: y-8]
+!!VRy-9:S6 +y-8;                        [Speed: y-9]
+!!VRy10:S2 *y-4 +3;                     [Magic Resistance: y10]
+!!VRy-11:Sy-6 :2;                       [Damage Low: y-11]
+!!VRy-12:S2 +y-8;                       [Magic Power: y-12]
+!!CO-4:P0/y-5 P1/y-5 P2/y-7 P3/y-6 P4/y-12 P5/y-9 P6/y10; [Set stats in Commander screen]
+!!VRy-12&y-12>6:S6;                     [Max. castings 6: y-12]
+
+ [Give up to 6 special abilities -- 1 plus 1 for every 3 weeks]
+!!VRy-13:Sy-8 +1;                       [Add 1 to "every three weeks" number: y-13]
+!!VRy-13&y-13>6:S6;                     [Maximum value of 6: y-13]
+!!DO5409/1/y-13/1&y-13>0:Py-3/y-1/y-6;  [Give Commanders up to 6 special abilities]
+!!VRz745:Sz157000;                      [Initialize z745]
+!!DO5410/0/14/1&y-13>0:P;               [Build ability text for description field: z745]
+!!UN:G1/y-1/2/745;                      [Set ability text string for Commander]
+
+ [Give Comanders up to 6 special abilities]
+ [x1=Commander Type (0..8), x2=Commander Monster Number (183..191)]
+ [x3=Maximum Damage]
+!?FU5409;
+
+ [Paladin]
+!!CO-4&x1=0/x16=1:B1/13/1;              [Champion Distance Bonus]
+!!CO-4&x1=0/x16=2:B1/2/1;               [Maximum Damage]
+!!CO-4&x1=0/x16=3:B1/0/1;               [Reduce Enemy Defense by 50%]
+!!CO-4&x1=0/x16=4:B1/8/1;               [Block Physical Damage]
+!!CO-4&x1=0/x16=5:B1/9/1;               [Strike Twice]
+!!CO-4&x1=0/x16=6:B1/4/1;               [Shooting]
+
+ [Hierophant]
+!!CO-4&x1=1/x16=1:B1/5/1;               [Unlimited Retaliation]
+!!CO-4&x1=1/x16=2:B1/0/1;               [Reduce Enemy Defense by 50%]
+!!CO-4&x1=1/x16=3:B1/11/1;              [Regenerate 50 HP each Round]
+!!CO-4&x1=1/x16=4:B1/10/1;              [Attack may Paralyze]
+!!CO-4&x1=1/x16=5:B1/8/1;               [Block Physical Damage]
+!!CO-4&x1=1/x16=6:B1/4/1;               [Shooting]
+
+ [Temple Guardian]
+!!CO-4&x1=2/x16=1:B1/5/1;               [Unlimited Retaliation]
+!!CO-4&x1=2/x16=2:B1/2/1;               [Maximum Damage]
+!!CO-4&x1=2/x16=3:B1/11/1;              [Regenerate 50 HP each Round]
+!!CO-4&x1=2/x16=4:B1/9/1;               [Strike Twice]
+!!CO-4&x1=2/x16=5:B1/8/1;               [Block Physical Damage]
+!!CO-4&x1=2/x16=6:B1/4/1;               [Shooting]
+
+ [Succubus]
+!!CO-4&x1=3/x16=1:B1/14/1;              [Flying]
+!!CO-4&x1=3/x16=2:B1/5/1;               [Unlimited Retaliation]
+!!CO-4&x1=3/x16=3:B1/7/1;               [Fire Shield]
+!!CO-4&x1=3/x16=4:B1/0/1;               [Reduce Enemy Defense by 50%]
+!!CO-4&x1=3/x16=5:B1/10/1;              [Attack my Paralyze]
+!!CO-4&x1=3/x16=6:B1/4/1;               [Shooting]
+
+ [Soul Eater]
+!!CO-4&x1=4/x16=1:B1/2/1;               [Maximum Damage]
+!!CO-4&x1=4/x16=2:B1/1/1;               [Fearsome]
+!!CO-4&x1=4/x16=3:B1/9/1;               [Strike Twice]
+!!CO-4&x1=4/x16=4:B1/3/1;               [No Enemy Retaliation]
+!!CO-4&x1=4/x16=5:B1/12/1;              [Death Stare]
+!!CO-4&x1=4/x16=6:B1/4/1;               [Shooting]
+
+ [Brute]
+!!CO-4&x1=5/x16=1:B1/13/1;              [Champion Distance Bonus]
+!!CO-4&x1=5/x16=2:B1/0/1;               [Reduce Enemy Defense by 50%]
+!!CO-4&x1=5/x16=3:B1/1/1;               [Fearsome]
+!!CO-4&x1=5/x16=4:B1/8/1;               [Block Physical Damage]
+!!CO-4&x1=5/x16=5:B1/9/1;               [Strike Twice]
+!!CO-4&x1=5/x16=6:B1/13/1;              [No Enemy Retaliation]
+
+ [Ogre Leader]
+!!CO-4&x1=6/x16=1:B1/2/1;               [Maximum Damage]
+!!CO-4&x1=6/x16=2:B1/0/1;               [Reduce Enemy Defense by 50%]
+!!CO-4&x1=6/x16=3:B1/1/1;               [Fearsome]
+!!CO-4&x1=6/x16=4:B1/9/1;               [Strike Twice]
+!!CO-4&x1=6/x16=5:B1/13/1;              [No Enemy Retaliation]
+!!CO-4&x1=6/x16=6:B1/4/1;               [Shooting]
+
+ [Shaman]
+!!CO-4&x1=7/x16=1:B1/7/1;               [Fire Shield]
+!!CO-4&x1=7/x16=2:B1/1/1;               [Fearsome]
+!!CO-4&x1=7/x16=3:B1/6/1;               [Strike All Enemies Around]
+!!CO-4&x1=7/x16=4:B1/11/1;              [Regenerate 50 HP each Round]
+!!CO-4&x1=7/x16=5:B1/10/1;              [Attack may Paralyze]
+!!CO-4&x1=7/x16=6:B1/4/1;               [Shooting]
+
+ [Astral Spirit]
+!!CO-4&x1=8/x16=1:B1/14/1;              [Flying]
+!!CO-4&x1=8/x16=2:B1/5/1;               [Unlimited Retaliation]
+!!CO-4&x1=8/x16=3:B1/13/1;              [Champion Distance Bonus]
+!!CO-4&x1=8/x16=4:B1/6/1;               [Strike All Enemies Around]
+!!CO-4&x1=8/x16=5:B1/11/1;              [Regenerate 50 HP each Round]
+!!CO-4&x1=8/x16=6:B1/3/1;               [No Enemy Retaliation]
+
+  [Build ability text for description field: z745]
+!?FU5410;
+!!CO-4:B1/x16/?y1;                      [Check if Commander has bonus: y1=1 if yes]
+!!VRz745&x16=0/y1=1:+z157001;           [Reduce Enemy Defense]
+!!VRz745&x16=1/y1=1:+z157002;           [Fearsome]
+!!VRz745&x16=2/y1=1:+z157003;           [Maximum Damage]
+!!VRz745&x16=3/y1=1:+z157004;           [No Enemy Retaliation]
+!!VRz745&x16=4/y1=1:+z157005;           [Shooting]
+!!VRz745&x16=5/y1=1:+z157006;           [Endless Retaliation]
+!!VRz745&x16=6/y1=1:+z157007;           [Strike All Enemies Around]
+!!VRz745&x16=7/y1=1:+z157008;           [Fire Shield]
+!!VRz745&x16=8/y1=1:+z157009;           [Block Physical Damage]
+!!VRz745&x16=9/y1=1:+z157010;           [Strike Twice]
+!!VRz745&x16=10/y1=1:+z157011;          [Paralyze]
+!!VRz745&x16=11/y1=1:+z157012;          [Regeneration]
+!!VRz745&x16=12/y1=1:+z157013;          [Deathstare]
+!!VRz745&x16=13/y1=1:+z157014;          [Champion Distance Bonus]
+!!VRz745&x16=14/y1=1:+z157015;          [Fly]
+
+
+**************************** end function FU5410 ****************************************
+
+
+** abandoned mines and (on monday) local events / pandoras boxes
+** called by TM2; x1/x2 gives type and subtype
+!?FU5412;
+!!UN:Ux1/x2/-1/2;                       [get coordinates to v2-v4]
+!!MNv2/v3/v4&x1=53:O?y1;                [get owner of abandoned mine]
+!!VRy1|x1=26/x1=6:S-1;                  [set y1 to -1 if it is an local event or pandoras box]
+!!DO5413/0/6/1&y1=-1:P0/x1/x2;          [loop daily through all slots (of the mine only if it has no owner)]
+
+**************************** end function FU5412 ****************************************
+
+!?FU5413;                               [set / increase ghosts in abandoned mines; increase once per week guards in local events]
+** x1 = if 1 (AI visits the mine) then set troglodydes as guards
+** x2 = type (53=mine, 6=pandoras boxes, 26=local event)
+
+** abandoned mines
+!!MNv2/v3/v4&x2=53:Mx16/?y1/?y2;        [get guards of slot x16 of the abandoned mine]
+!!VRy1:S159;                            [set guard to ghosts in mine]
+!!VRy1&x1=1/x16=0:S70;                  [if x1=1 (AI visits) set stack 1 to Troglodytes]
+!!VRy1&x1=1/x16>0:S-1;                  [and delete all other guards]
+!!VRy2&y2<50:S50;                       [set at least 50 Ghosts per stack]
+!!VRy3:S1 R2;                           [random 1-3]
+!!VRy4:S101 R2;                         [random 101-103]
+!!VRy5:Sy2 *y4 :100;                    [get 100-103% of the old guards]
+!!VRy5&y5<=y2:+1;                       [but at least 1 more as before]
+!!VRy2:Sy5 + y3;                        [Increase guards by 100-103% plus 1-3 random ghosts]
+!!VRy2&x1=1/x16>0:S0;                   [set number to 0 if x1=1 (AI visits the abandoned mine]
+!!MNv2/v3/v4&x2=53:Mx16/y1/y2;          [set the guards of the abandoned mine]
+!!FU&x2=53:E;                           [exit if abandoned mine]
+
+** Local events and pandora's boxes (the LE-receiver works for both)
+!!LEv2/v3/v4:Gx16/?y1/?y2;              [get guards of slot x16 of the local event]
+!!VRy5:Sy2 *11 :10;                     [set y5 to 110% of old guards]
+!!VRy5&y5<=y2:+1;                       [but at least 1 more as before]
+!!LEv2/v3/v4&y1>-1:Gx16/d/y5;           [set guards of slot x16 of the local event]
+
+**************************** end function FU5413 ****************************************

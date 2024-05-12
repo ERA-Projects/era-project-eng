@@ -1,0 +1,76 @@
+#	Text resource for "script25.erm" document		
+125004		<!!S>	01.08.2004
+125005		<!!Q>	01.08.2004
+125006		<!!Q>	01.08.2004
+125007	Buy All Available Troops	<!!S>	01.08.2004
+125008	{%Z3}
+
+There are no troops
+available to buy.	<!!M>	01.08.2004
+125009	{%Z3}
+
+There are no available
+army slots for new troops.	<!!M>	01.08.2004
+125010	{%Z3}
+
+You don't have enough resources
+to purchase any of the available troops.	<!!M>	01.08.2004
+125011	Buy these %Z3
+troops for 	<!!S>	01.08.2004
+125012	%Z2%V630 gold	<!!S>	01.08.2004
+125013	%Z2, %V624 wood	<!!S>	01.08.2004
+125014	%Z2, %V625 mercury	<!!S>	01.08.2004
+125015	%Z2, %V626 ore	<!!S>	01.08.2004
+125016	%Z2, %V627 sulfur	<!!S>	01.08.2004
+125017	%Z2, %V628 crystals	<!!S>	01.08.2004
+125018	%Z2, %V629 gems	<!!S>	01.08.2004
+125019		<!!S>	01.08.2004
+125020		<!!S>	01.08.2004
+125021	{Swap Hidden/Display Skills}
+
+(No hidden skills to swap)	<!!M>	01.08.2004
+125022	{%Z3's Hidden Skills}	<!!S>	01.08.2004
+125023	%Z1
+
+(Page 1 of %Y-29)	<!!S>	01.08.2004
+125024	%Z1
+
+(Page 2 of %Y-29)	<!!S>	01.08.2004
+125025	%Z1
+
+(Page 3 of %Y-29)	<!!S>	01.08.2004
+125026	%Z1
+
+(Page 4 of %Y-29)	<!!S>	01.08.2004
+125027	%Z1
+
+(none)	<!!M>	01.08.2004
+125028	{Swap Hidden/Display Skills}
+
+Do you wish to swap %Z-1 with %Z-2?	<!!Q>	01.08.2004
+125029	{Swap Hidden/Display Skills}
+
+Do you wish to put %Z-1 into empty skill slot #%Y9?	<!!Q>	01.08.2004
+125030		<!!Q>	01.08.2004
+125031	You can reread this sign at any
+time by right-clicking it.
+
+{Do you want to write a new}
+{message on the sign?}	<!!Q>	01.08.2004
+125032	Enter new message for Sign Post	<!!S>	01.08.2004
+125033	Message Disabling	<!!S>	01.08.2004
+125034	Disable Enhanced Sorcery Bonus Resource messages	<!!S>	01.08.2004
+125035	Disable Living Scrolls Start of Battle messages	<!!S>	01.08.2004
+125036	Disable Monster Muttering messages	<!!S>	01.08.2004
+125037	Disable Cards of Prophecy Start of Battle messages	<!!S>	01.08.2004
+125038	Disable Quick Combat Battle Option messages (last option selected will be used)	<!!S>	01.08.2004
+125039	Disable Bank Loan Repayment messages	<!!S>	01.08.2004
+125040	{Message Disabling}
+
+There are no scripts currently active with messages that can be disabled.	<!!M>	01.08.2004
+125064	Quick Combat Battle Options
+
+(Right-click System Options to disable and use last option selected)	<!!S>	01.08.2004
+125065	Play out the battle normally	<!!S>	01.08.2004
+125066	Use Quick Combat to resolve the battle	<!!S>	01.08.2004
+125067	Use Quick Combat but don't cast hero spells (conserve spell points)	<!!S>	01.08.2004

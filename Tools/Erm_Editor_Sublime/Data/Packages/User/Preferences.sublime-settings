@@ -1,0 +1,26 @@
+{
+	"autoupdate": false,
+	"check_update": false,
+	"color_scheme": "Packages/User/Monokai2B.tmTheme",
+	"enable_telemetry": false,
+	"fallback_encoding": "Cyrillic (Windows 1251)",
+	"font_size": 13,
+	"ignored_packages":
+	[
+		"GitGutter",
+		"Vintage",
+	],
+	"rulers":
+	[
+		100
+	],
+	"tab_size": 2,
+	"theme": "Adaptive.sublime-theme",
+	"translate_tabs_to_spaces": true,
+	"update_check": false,
+	"menu_visible": true,
+	"caret_style": "blink",
+	"themed_title_bar": false,
+	"show_encoding": true,
+
+}

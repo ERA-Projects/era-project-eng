@@ -1,0 +1,750 @@
+ZVSE2
+
+**  Freelancer's Guild Script Version 1.3 created by Timothy E. Pulver
+**  Requires WoG version 3.57 or later using ERM version 2.6 or later.
+**  WoGify Name: script21.erm
+**  Updated: October 6, 2004
+**  Updated: Jun 2023 by Archer30
+
+** This script enhances all Freelancer's Guilds on a map, allowing a hero
+** who visits to hire a stack of monsters to hunt down an enemy. Either
+** a specific hero or an entire faction (colour) may be specified as the
+** target. If a specific hero is specified and the monsters successfully
+** attack and kill that hero, they will then switch to hunting the faction
+** of that hero's colour.
+
+** Wandering monsters move 1 space per turn and will not move until two
+** turns after they are initially hired. The cost for hiring freelance monsters
+** is 1/25th of normal recruiting cost. If a monster cannot reach a hero or
+** (hero or castle), it will move in that direction and get as close as possible.
+** Wandering monsters cannot travel through subterranean gates, liths or
+** across water.
+
+** To install this script in a map, simply copy & paste the code into a global
+** (timed) event. Copy the entire code, from ZVSE to the end. Make sure
+** that you disable ALL colours from receiving the event and/or change
+** the event day to something like 500 or later to avoid the ERM script
+** popping up as if it were a regular event message. The title of the event
+** is unimportant, but I would suggest something like "Freelancer's Guild".
+** And of course, you'll also need to put one or more "Freelancer's Guilds" on
+** your map for the heroes to visit. Happy hero hunting! :-)
+
+Variables: z1-z5, v213-247, v249, v250-257, z210-z231
+Flags: 49-51
+Functions: 1400-1409
+Dialogues: 30-32
+
+; This script is better executed earlier than other stuff with monster battles (BA:D1 and SN:Q)
+
+
+----------------------------------------------------------------------------------------
+
+ [Reset Freelancer's Guilds each week]
+!?FU(OnEveryDay)&i^timerOnce^/i^timerWeekday^=1;
+!!UN:P21/?(wogOption:y);            [Check if script is enabled]
+!!FU&(wogOption)<>(TRUE):E;         [Exit if script isn't enabled]
+
+ [Set up initial creature variables - v215-v220]
+!!FU(WOG_21_Get6RandomMonsters):P?v215/?v216/?v217/?v218/?v219/?v220;
+
+ [Set up v variables with z variable index numbers - v241-v246]
+!!VRv241:C215/216/217/218/219/220;
+
+ [Set counter for number of available freelancers]
+!!VRv221:S6;
+
+-------------------------------------------------------------------------------------
+
+ [Freelancer's Guild object is trigger]
+!?OB(OBJ_FREELANCERS_GUILD);
+!!UN:P21/?(wogOption:y);                [Check if script is enabled]
+!!FU&(wogOption)<>(TRUE):E;             [Exit if script isn't enabled]
+
+ [Enable object]
+!!OB998:R;
+
+ [Continue only if not AI player]
+!!FU&-(ERM_FLAG_IS_HUMAN):E;
+
+; Check if it is possible to place a monster stack on the map
+!!VR(monX:y):Sv998 -1;
+!!VR(monY:y):Sv999 +1;
+!!UN:X?(size:y)/?(layer:y);
+!!FU|(monX)<0/(monX)>=(size)/(monY)<0/(monY)>=(size):E;
+
+!!OB(monX)/(monY)/v1000:T?(objType:y);
+!!FU&(objType)<>(OBJ_STUB)/(objType)<>(OBJ_MONSTER):E;
+
+ [Set up new text for artifacts used as dialogue box pictures]
+!!VRz210:Sz121001;
+!!VRz211:Sz121002;
+!!VRz212:Sz121003;
+!!VRz213:Sz121004;
+!!UN:A(ART_ENDLESS_BAG_OF_GOLD)/9/210;
+!!UN:A(ART_ENDLESS_BAG_OF_GOLD)/10/211;
+!!UN:A(ART_TITANS_GLADIUS)/9/212;
+!!UN:A(ART_TITANS_GLADIUS)/10/213;
+
+ [Display dialogue box asking if player wishes to buy or sell creatures]
+!!IF:Q2/(PIC_TYPE_ART)/(ART_ENDLESS_BAG_OF_GOLD)/(PIC_TYPE_ART)/(ART_TITANS_GLADIUS)/(MSG_TYPE_CHOOSE_PIC)/z121005;
+
+ [Restore artifact text]
+!!UN:A(ART_ENDLESS_BAG_OF_GOLD)/9/0;
+!!UN:A(ART_ENDLESS_BAG_OF_GOLD)/10/0;
+!!UN:A(ART_TITANS_GLADIUS)/9/0;
+!!UN:A(ART_TITANS_GLADIUS)/10/0;
+
+ [If player chooses "hire freelancers", call Function 1400 unless a monster's already there or the map is full of wandering monsters]
+!!if&-2;
+  !!OB(monX)/(monY)/v1000:T?(objType:y);
+
+  !!if&(objType)=(OBJ_STUB);
+    ; Check if there are more than enough wandering monsters on the map
+    !!FU(WOG_GetNumberOfAvailWanderingMonsters):P?(availWM:y);
+
+    !!if&(availWM)>0;
+      !!FU1400:P;
+    ; If the map has too many wandering monsters, display this
+    !!el;
+      !!IF:M1/z121006;
+      !!OB998:S;
+    !!en;
+   [If player chooses "hire freelancers" but a monster's already present, display this]
+   [and disable object]
+  !!el;
+    !!IF:M1/z121006;
+    !!OB998:S;
+  !!en;
+!!en;
+
+-------------------------------------------------------------------------------------
+
+ [Start of Function 1400 - Hire Freelancers]
+!?FU1400;
+
+ [Set flag 2 to false]
+!!IF:V2/0;
+
+ [Disable object's standard game function]
+!!OB998:S;
+
+; Check if there is at least another player in another team in the game
+!!OW:Ti^timerOwner^/?(currTeam:y);
+!!VR(hasAnotherPlayer:y):S(FALSE);
+
+!!re i/(PLAYER_FIRST)/(PLAYER_LAST);
+  !!co&i=i^timerOwner^;
+
+  !!OW:Ii/?(isAi:y)/?(hasLost:y);
+
+  !!if&(hasLost)<>(TRUE);
+    !!OW:Ti/?(playerTeam:y);
+
+    !!br&(playerTeam)<>(currTeam);
+  !!en;
+!!en;
+
+!!VR(hasAnotherPlayer)&i<=(PLAYER_LAST):S(TRUE);
+
+ [If no factions are present besides hiring faction, display this message]
+!!if&(hasAnotherPlayer)<>(TRUE);
+  !!IF:M1/z121072;
+  !!FU:E;
+!!en;
+
+ [Set up text for freelancer radio button extended dialogue box title]
+!!VRz214:Sz121007;
+!!VRz221:Sz121008;
+
+ [Call Function 1401 - Generate Freelancers Available]
+!!DO1401/215/220/1:P;
+
+ [Set v2 (stores checkbox selected) to 0]
+!!VRv2:S0;
+
+ [Display radio button extended dialogue box to choose freelancers to hire]
+!!if&v221>0;
+  !!IF:G1/2/64/214/v241/v242/v243/v244/v245/v246/221/0/0/0/0/0;
+
+ [If no freelancers are available, display this message]
+!!el;
+  !!IF:M1/z121009;
+  !!FU:E;
+!!en;
+
+ [Determine which box was checked - store number in y1]
+!!if&v2=0;
+  !!VRy1:S8;
+!!el;
+  !!FU(IntLog2):Pv2/?y1;
+  !!VRy1:+1;
+!!en;
+
+ [If "No thanks" option is chosen, display the following and exit]
+!!if&y1=7;
+  !!IF:M1/z121010;
+  !!FU:E;
+!!en;
+
+ [Store number of v variable for creature type in y2]
+!!VRy2:S214 +y1;
+
+ [Store creature type in v222]
+!!VRv222:Svy2;
+
+ [Store number of v variable for number of creatures in y3]
+!!VRy3:Sy2 +10;
+
+ [Store number of creatures in v223]
+!!VRv223:Svy3;
+
+ [Store number of v variable for cost of creatures in y4]
+!!VRy4:Sy2 +20;
+
+ [Store number/type of creatures for dialogue display purposes in y5]
+!!VRy5:Svy3 *65536 +vy2;
+
+ [Store player's current gold in y6]
+!!OW:R(CURRENT_PLAYER)/(RES_GOLD)/?y6;
+
+ [Set up variables for single or plural words]
+!!if&v223>1;
+  !!VRz1:Sz121011;
+!!el;
+  !!VRz1:Sz121012;
+!!en;
+
+ [Check if player has enough gold to afford freelancers]
+ [Display message and exit if not enough]
+!!if&y6<vy4;
+  !!IF:M1/z121013;
+  !!FU:E;
+!!en;
+
+ [Ask if player wants to hire selected freelancers - yes/no question is Flag 2]
+!!IF:Q2/(PIC_TYPE_RES_GOLD)/vy4/(PIC_TYPE_MONSTER)/y5/(MSG_TYPE_QUESTION)/z121014;
+
+ [If player selects "Cancel", display this message and exit]
+!!if&-2;
+  !!IF:M1/z121015;
+  !!FU:E;
+!!en;
+
+ [Convert gold cost into a negative value]
+!!VRy7:Svy4 *-1;
+
+ [Store gold cost in variable v224]
+!!VRv224:Svy4;
+
+ [Store dialogue box negative value in y8]
+!!VRy8:Sy7 -100000;
+
+ [Set up variables for single or plural words]
+!!if&v223>1;
+  !!VRz1:Sz121016;
+!!el;
+  !!VRz1:Sz121017;
+!!en;
+
+ [Deduct gold and display message]
+!!OW:R-1/6/dy7;
+!!IF:Q1/(PIC_TYPE_RES_GOLD)/y8/(PIC_TYPE_MONSTER)/y5/(MSG_TYPE_MES)/z121018;
+
+ [Remove creatures from availability list and decrement counter (v221)]
+!!VRy9:S240 +y1;
+!!VRv249:Sy9;  [Store creatures' variable index]
+!!VRv233:Svy9; [Store creatures' variable value]
+!!VRvy9:S0;
+!!VRv221:-1;   [z variable index - Suppress display of creatures in dialogue box]
+
+ [Function 1406 - ask if player wishes to send monsters after a specific hero or]
+ [an entire faction]
+!!FU1406:P;
+
+-------------------------------------------------------------------------------------
+
+ [Start of Function 1401 - Generate Freelancers Available]
+!?FU1401;
+
+ [Set y1 to current day]
+!!VRy1:Sc;
+
+ [Check creature's level - store in y2]
+!!MA:Lvx16/?y2;
+
+ [Calculate number of creatures - store in v(x16+10)]
+!!VRy3:S7 -y2;     [Total number of creatures = (7 - creature level)]
+!!VRy3:*y3;        [ x (7 - creature level)]
+!!VRy3:*y1 :2;     [ x number of days, divided by 2]
+!!VRy3:F1/(INT_MAX);                    [If total creatures is 0, set it to 1]
+!!VRy4:Sx16 +10;   [v Variable to store number of creatures in]
+!!VRvy4:Sy3;       [Store creatures in v variable]
+
+ [Calculate cost of creatures - store in v(x16+20)]
+!!MA:Cvx16/6/?y5;  [Store gold cost of one creature of this type in y5]
+!!VRy6:Sx16 +20;   [v Variable to store cost of creatures in]
+!!VRy7:Sy5 *y3 :25; [Total cost of creatures = gold cost * number of creatures divided by 25]
+!!VRvy6:Sy7;       [Store total cost of creatures in v variable]
+
+ [Look up name of monster - store in z222]
+!!if&y3>1;
+  !!UN:N3/222/vx16/1;  [If more than 1 creature]
+!!el;
+  !!UN:N3/222/vx16/0;  [If only 1 creature]
+!!en;
+
+ [Store dialogue box string in z(x16)]
+!!VRzx16:S^%Y3 %Z222 (%Y7^+z121019;
+
+-------------------------------------------------------------------------------------
+
+ [Choose Creature Number]
+
+!?FU(WOG_21_Get6RandomMonsters);
+!#VA(mon1:x) (mon2:x) (mon3:x) (mon4:x) (mon5:x) (mon6:x);
+
+!!re i/1/6;
+  !!VRxi:S(NO_MON);
+!!en;
+
+!!FU(GetMaxMonsterId):P?(lastMon:y);
+!!FU(NewIntArray):P?(validMons:y);
+
+!!re i/(MON_FIRST)/(lastMon);
+  !!co|i=(MON_NOT_USED_1)/i=(MON_NOT_USED_2)/i=(MON_NOT_USED_3)/i=(MON_NOT_USED_4);
+  !!co&i>=(MON_CATAPULT)/i<=(MON_ARROW_TOWERS);
+  !!co&i>=(MON_EMISSARY_OF_WAR)/i<=(MON_EMISSARY_OF_LORE);
+  !!co&i>=(MON_COMMANDER_FIRST_A)/i<=(MON_COMMANDER_LAST_D);
+
+  !!FU(Array_Push):P(validMons)/i;
+!!en;
+
+!!SN:M(validMons)/?(size:y);
+
+!!if&(size)>0;
+  !!FU(Array_Shuffle):P(validMons);
+  !!FU(Array_Pop):P(validMons)/?(mon1)/?(mon2)/?(mon3)/?(mon4)/?(mon5)/?(mon6);
+!!en;
+
+-------------------------------------------------------------------------------------
+
+ [Start of Function 1403 - Enter a specific hero for monsters to hunt]
+!?FU1403;
+
+ [Set word for singular or plural]
+!!if&v223>1;
+  !!VRz3:Sz121020;
+!!el;
+  !!VRz3:Sz121021;
+!!en;
+
+ [Set up extended dialogue box number 30]
+!!VRz215:Sz121022;
+!!VRz216:Sz121023;
+!!IF:D30/215/216/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^;
+
+ [Call dialogue box number 30]
+!!IF:E1/30;
+
+ [Check if z1 has an empty string (no input) - check result stored in Flag 49]
+!!VRz1:H49;
+!!VR(inputIsValid:y):S(FALSE);
+!!VR(inputIsValid)&49/v1<>-1:S(TRUE);
+
+ [Set v214 to -1 and (owner) to 0]
+!!VRv214:S(NO_HERO);
+!!VR(owner:y):S(NO_OWNER);
+
+!!if&(inputIsValid);
+  ; Check is input is a valid hero number
+  !!FU(WOG_CheckIfZ1FirstCharIsNum):P?(isNum:y);
+  !!VRv214&(isNum):Vz1;
+  !!VRv214|v214<(NO_HERO)/v214>(HERO_LAST_WOG):S(NO_HERO);
+
+  ; Get the hero's name if it is a valid hero number
+  !!if&v214>(NO_HERO);
+    !!HEv214:B0/?z218;
+  ; If input is not a valid hero number, check if it is a hero's name
+  !!el;
+    !!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+      !!HEi:B0/?z218;
+
+      !!br&z218=z1;
+    !!en;
+
+    !!VRv214&i<=(HERO_LAST_WOG):Si;
+  !!en;
+!!en;
+
+ [See if hero is on map]
+!!if&v214>(NO_HERO);
+  !!HEv214:O?(owner);
+
+  !!if&(owner)>(NO_OWNER);
+    !!OW:T(owner)/?(heroTeam:y);
+
+     [See if hero is the same team as current hero]
+    !!OW:Ti^timerOwner^/?(currTeam:y);
+    !!HE(CURRENT_HERO):N?(currHero:y);
+
+    !!if&(currTeam)=(heroTeam);
+       [Set word for singular or plural]
+      !!if&v223>1;
+        !!VRz3:Sz121024;
+      !!el;
+        !!VRz3:Sz121025;
+      !!en;
+
+      !!if&(currHero)=v214;
+        !!IF:M1/z121027;
+      !!el;
+        !!IF:M1/z121026;
+      !!en;
+
+      !!VR(inputIsValid):S(FALSE);
+    !!el;
+       [Set word for singular or plural]
+      !!if&v223>1;
+        !!VRz2:Sz121036;
+      !!el;
+        !!VRz2:Sz121037;
+      !!en;
+
+       [If hero is valid and is on the map, display this and call Function 1407 to set up]
+       [wandering monster]
+      !!HEv214:R2/?(gender:y);
+      !!SN:T^wog.whom%(gender)^/?z231;
+      !!IF:M1/z121040;
+      !!FU1407:P1/v214;
+    !!en;
+
+   [If hero isn't on map, display the following and set (inputIsValid) to false and v214 to -1]
+  !!el;
+    !!IF:M1/z121028;
+    !!VR(inputIsValid):S(FALSE);
+    !!VRv214:S(NO_HERO);
+  !!en;
+ [If hero name isn't a valid hero, display this message unless no name was entered]
+ [Function 1403 - Call again if player entered an invalid hero name]
+!!el&(inputIsValid);
+   [Set word for singular or plural]
+  !!if&v223>1;
+    !!VRz2:Sz121029;
+    !!VRz3:Sz121031;
+  !!el;
+    !!VRz2:Sz121030;
+    !!VRz3:Sz121032;
+  !!en;
+
+  !!IF:M1/z121033;
+  !!FU1403:P;
+  !!FU:E;
+!!en;
+
+ [If player decides to cancel service, display this and restore creatures to list]
+ [Set Flag 3]
+!!IF:V3/1;
+
+ [If nothing was entered or cancel was clicked, display this]
+!!IF&(inputIsValid)<>(TRUE):Q3/z121034;
+
+!!if&-3;
+  !!IF:Q1/(PIC_TYPE_RES_GOLD)/v224/(MSG_TYPE_MES)/z121035;
+  !!OW:R(CURRENT_PLAYER)/(RES_GOLD)/dv224;
+  !!VRv221:+1;
+  !!VRvv249:Sv233;
+ [Function 1406 - asks again if player wants to hunt down a specific hero or]
+ [an entire faction]
+!!el;
+  !!FU1406&(inputIsValid)<>(TRUE):P;
+!!en;
+
+----------------------------------------------------------------------------------------
+
+ [Start of Function 1405 - player can choose from a list of factions (colours) the]
+ [one that the hired creatures should attack]
+!?FU1405;
+
+ [Display dialogue box to choose faction (colour) to go after]
+ [Set up variables for single or plural words]
+!!if&v223>1;
+  !!VRz3:Sz121041;
+  !!VRz4:Sz121043;
+!!el;
+  !!VRz3:Sz121042;
+  !!VRz4:Sz121044;
+!!en;
+
+!!FU(WOG_SetupMultiPlayerDlg):Pz121045/(FALSE)/?(chosenPicture:y)/?(chosenPlayer:y)/-1;
+!!VR(chosenPlayer)&(chosenPlayer)=i^timerOwner^:S(NO_PLAYER);
+
+ [Store player colour text of colour chosen in z1]
+!!FU(GetTextFileString):P^plcolors^/(chosenPlayer)/?z1;
+
+ [Store word for single vs. plural]
+!!if&v223>1;
+  !!VRz2:Sz121055;
+!!el;
+  !!VRz2:Sz121056;
+!!en;
+
+ [If a colour is chosen, display the following and call Function 1407 - set wandering monster]
+!!if&(chosenPlayer)<>(NO_PLAYER);
+  !!IF:Q1/(PIC_TYPE_FLAG)/(chosenPlayer)/(MSG_TYPE_MES)/z121057;
+  !!FU1407:P2/(chosenPlayer);
+!!en;
+
+ [If player changes his or her mind, display this]
+!!IF:V4/1;
+!!IF&(chosenPlayer)=(NO_PLAYER):Q4/z121058;
+
+ [If player decides to cancel service, display this and restore creatures to list]
+!!if&-4;
+  !!IF:Q1/(PIC_TYPE_RES_GOLD)/v224/(MSG_TYPE_MES)/z121059;
+  !!OW:R-1/6/dv224;
+  !!VRv221:+1;
+  !!VRvv249:Sv233;
+!!en;
+
+ [If player doesn't cancel service, call Function 1406 again - player can choose]
+ [to send monsters after a specific hero or an entire faction]
+!!FU1406&(chosenPlayer)=(NO_PLAYER)/4:P;
+
+----------------------------------------------------------------------------------------
+
+ [Start of Function 1406 - asks if player wishes to send monsters after a specific hero]
+ [or after an entire faction]
+!?FU1406;
+
+ [Set word for singular or plural]
+!!if&v223>1;
+  !!VRz1:Sz121060;
+  !!VRz2:Sz121062;
+!!el;
+  !!VRz1:Sz121061;
+  !!VRz3:Sz121063;
+!!en;
+
+ [Set up new text for artifacts used as dialogue box pictures]
+!!VRz210:Sz121064;
+!!VRz211:Sz121065+z2+z121082;
+!!VRz212:Sz121066;
+!!VRz213:Sz121067+z2+z121083;
+!!UN:A(ART_THUNDER_HELMET)/9/210;
+!!UN:A(ART_THUNDER_HELMET)/10/211;
+!!UN:A(ART_AMBASSADORS_SASH)/9/212;
+!!UN:A(ART_AMBASSADORS_SASH)/10/213;
+
+ [Display dialogue asking if player wants freelancers to go after a specific hero]
+ [or a whole faction]
+!!IF:Q2/(PIC_TYPE_ART)/(ART_THUNDER_HELMET)/(PIC_TYPE_ART)/(ART_AMBASSADORS_SASH)/(MSG_TYPE_CHOOSE_PIC)/z121068;
+
+ [Restore artifact text]
+!!UN:A(ART_THUNDER_HELMET)/9/0;
+!!UN:A(ART_THUNDER_HELMET)/10/0;
+!!UN:A(ART_AMBASSADORS_SASH)/9/0;
+!!UN:A(ART_AMBASSADORS_SASH)/10/0;
+
+ [Function 1403 - Player can specify a specific hero for monsters to hunt]
+!!if&2;
+  !!FU1403:P;
+
+ [Function 1405 - Player can choose from a list of factions (colours) for monsters to hunt]
+!!el;
+  !!FU1405:P;
+!!en;
+
+----------------------------------------------------------------------------------------
+
+ [Start of Function 1407 - sets up wandering monster to hunt down hero or faction]
+!?FU1407;
+!#VA(type:x);                           [1 for hero, 2 for faction]
+!#VA(subtype:x);                        [hero ID or faction ID]
+
+ [Set up extended dialogue box number 32]
+!!VRz229:Sz121069;
+
+!!if&v223=1;
+  !!UN:N3/1/v222/0;
+  !!VRz230:Sz121070;
+!!el;
+  !!UN:N3/1/v222/1;
+  !!VRz230:Sz121071;
+!!en;
+
+!!IF:D32/229/230/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^/^^;
+
+ [Call dialogue box number 32]
+!!IF:E1/32;
+
+ [Determine location for wandering monster to appear - object location with x = x - 1]
+!!VR(monX:y):Sv998 -1;
+!!VR(monY:y):Sv999 +1;
+
+ [Place new monster]
+!!UN:I(monX)/(monY)/v1000/(OBJ_MONSTER)/v222;
+
+ [Set wandering monster numbers, hostility rating, set to grow and message text]
+!!MO(monX)/(monY)/v1000:Gv223 R1 U1 O0;
+!!VRz1:H49;
+!!MO(monX)/(monY)/v1000&v1<>-1/49:Mz1;
+
+ [Convert monster to wandering monster]
+!!MW:M(monX)/(monY)/v1000/?(wanderMon:y);
+
+; Note: Be very careful with MW:A - they don't work as described in Erm Help!
+; If you set the last parametre to 2, the monster will chase the hirer instead, reason is yet to be found.
+ [Store current hero colour in y5]
+ [Store hero colour plus 1 in y6 so player numbers will go from 1 to 9]
+!!VR(ownerPlusOne:y):Si^timerOwner^ +1;
+
+ [If search requested for specific hero, set monsters to attack hero] - will be set to chase the faction when arrives
+!!if&(type)=1;
+  !!MW(wanderMon):A2/(subtype)/(ownerPlusOne)/0 A3/1/0/0/1/0/0;
+
+ [If search requested for an entire faction, set monsters to find faction]
+!!el;
+  !!MW(wanderMon):A2/(subtype)/(ownerPlusOne)/0 A3/0/0/0/0/0/1;
+!!en;
+
+ [Set search radius]
+!!UN:X?(size:y)/?(hasUnderground:y);
+!!MW(wanderMon):A4/(size);
+
+---------------------------------------------------------------------------------------
+
+ [Start of trigger for when a wandering monster attacks a hero]
+!?FU(OnWanderingMonsterReach);
+!!UN:P21/?y-1; [Check if script is enabled: y-1]
+!!FU&y-1=0:E; [Exit if script isn't enabled]
+
+ [If WM was set to chase a specific hero, when it has done,]
+ [reset it to go after the hero's faction (if it survives]
+
+ [Check hero number monster was chasing - store in y-1]
+!!MWv997:A2/?y-1/d/d;
+
+ [Check owner (colour) of hero monster was chasing - store in y-2]
+!!HEy-1:O?y-2;
+
+ [Set monsters to chase faction - y-2]
+!!MWv997:A2/y-2/d/d A3/0/0/0/0/0/1;
+
+; Show text when monster attacks - if the target belongs to a human player
+!!if&(ERM_FLAG_IS_HUMAN);
+  !!MO998:M?z1;
+  !!IF:M^%z1^;
+!!en;
+
+---------------------------------------------------------------------------------------
+
+ [Start of trigger for when a hero attacks a monster -- check if it's a WM]
+!?OB(OBJ_MONSTER);
+!!UN:P21/?(wogOption:y);                [Check if script is enabled]
+!!FU&(wogOption)<>(TRUE):E;             [Exit if script isn't enabled]
+
+ [Check if it's a wandering monster: v1=WM # (so >0 if it's a WM)]
+!!MW:Cv998/v999/v1000/?(mwId:y);
+
+ [If (mwId) > 0, check WM's "y destination" and see if it's greater than 0]
+!!if&(mwId)>0;
+  !!MW(mwId):A2/?(subtype:y)/?(hiredPlayerPlusOne:y)/d;
+
+ [If (mwId) > 0 and (hiredPlayerPlusOne) > 0, it means it's a wandering monster sent out by a player]
+  !!if&(hiredPlayerPlusOne)>0;
+    !!MW(mwId):A3/d/d/d/d/d/?(chasingType:y)/d;
+
+    ; If chasing a hero, check if the hero is on the map
+    !!if&(chasingType)=0;
+      !!HE(subtype):P?(x:y)/?(y:y)/?(z:y);
+
+      ; Exit function if the hero is not on the map (the wandering monster would hunt for any hero nearby right now)
+      !!FU&(x)=-1/(y)=-1/(z)=-1:E;
+    ; If chasing a player, check if the player is alive
+    !!el&(chasingType)=1;
+      !!OW:I(subtype)/?(isAi:y)/?(hasLost:y);
+
+      ; Exit funtion if the player has lost (the wandering monster becomes inactive)
+      !!FU&(hasLost):E;
+    !!en;
+
+    ; Set the monster to flee if it is a betrayal
+    !!VR(hiredPlayer:y):S(hiredPlayerPlusOne) -1;
+    !!FU1409:P(mwId)/(hiredPlayer)/?(result:y);
+
+    ; New implementation
+    *!SN&(result):Q;
+  !!en;
+!!en;
+
+---------------------------------------------------------------------------------------
+
+ [Start of attacking a Freelancer's Guild wandering monster]
+ [x1=wandering monster #, x2=player colour+1]
+!?FU1409;
+!#VA(mwId:x) (hiredPlayer:x) (result:x);
+
+!!VR(result):S(FALSE);
+
+ [Get player team that sent the WM]
+!!OW:T(hiredPlayer)/?(hiredTeam:y);
+
+ [Get team of hero who attacked]
+!!OW:Ti^timerOwner^/?(ownerTeam:y);
+
+ [If attacking player is in the same team that hired the WM, it gives a message and leaves]
+!!if&(ownerTeam)=(hiredTeam);
+   [Get type of monster]
+  !!OB998:U?(type:y);
+
+   [Get number of monsters]
+  !!MO998:G?(num:y);
+
+   [Set words depending on number of monsters: store in z2]
+  ; Lookup name of monster (plural): store in z1
+  !!if&(num)>1;
+    !!SN:H^monname^/(type)/0/?z1;
+    !!VRz2:Sz121073;
+    !!VRz3:Sz121075;
+    !!VRz4:Sz121077;
+    !!VRz5:Sz121079;
+  ; Lookup name of monster (singular): store in z1
+  !!el;
+    !!SN:H^monname^/(type)/1/?z1;
+    !!VRz2:Sz121074;
+    !!VRz3:Sz121076;
+    !!VRz4:Sz121078;
+    !!VRz5:Sz121080;
+  !!en;
+
+  !!MO998:Mz121081;
+
+  ; New implementation
+  ; It seems this implementation has a chance to conflict with Mixed Neutrals
+  *!if&(ERM_FLAG_IS_HUMAN);
+    *!IF:M^%z121081^;
+    *!SN:P^killfade^;
+  *!en;
+
+  *!OB998:S;
+  *!UN:Ov998/v999/v1000/1;
+  *!VR(result):S(TRUE);
+
+  !!VRi^wog_21_betrayed^:S(TRUE);
+
+ [Change number of monsters to 0 and delete their wandering monster message]
+ [if attacking player colour is also the hiring player colour]
+  !!MO998:G0;
+!!en;
+
+; The trigger has to be OnBeforeBattle to be compatible with Henchmen script
+!?FU(OnBeforeBattle)&i^wog_21_betrayed^;
+!!BA:D1;                                [Cancel the battle]
+!!SN:Q;                                 [Cancel the process of selectig a henchman (if applicable)]
+
+!?FU(OnBeforeBattleUniversal)&i^wog_21_betrayed^;
+!!SN:Q;
+!!VRi^wog_21_betrayed^:S(FALSE);
+
+!?FU(OnAfterLoadGame);
+!!VRi^wog_21_betrayed^:S(FALSE);

@@ -1,0 +1,18 @@
+Map			Zone																																																																									Connections																							
+				Type					Restrictions				Player towns					Neutral towns					Town types									Minimum mines							Mine Density							Terrain									Monsters												Treasure									Zones					Restrictions																		
+Name	Minimum Size	Maximum Size	Id	human start	computer start	Treasure	Junction	Base Size	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions	Ownership	Minimum towns	Minimum castles	Town Density	Castle Density	Minimum towns	Minimum castles	Town Density	Castle Density	Towns are of same type	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Elemental	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Match to town	Dirt	Sand	Grass	Snow	Swamp	Rough	Cave	Lava	Strength	Match to town	Neutral	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Forge	Low	High	Density	Low	High	Density	Low	High	Density	Zone 1	Zone 2	Value	Wide	Border Guard	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions															
+Oceans Eleven	8	18	1			x		8	1	2	2	2						1					x	x	x	x		x	x	x			1		1	1	1	1								x			x						strong		x	x	x	x	x	x	x	x	x	x	5000	6000	0	4000	5000	10	500	3000	9	1	2	5000			1	2	2	2															
+			2	x				10	1	2	2	2	1		1								x	x	x	x		x	x	x		1		1												x									average		x	x	x	x	x	x	x	x	x	x	4000	6000	0	4000	6000	10	2000	3000	9	2	3	6000			1	2	2	2															
+			3			x		12	1	2	2	2								1			x	x	x	x		x	x	x																	x	x	x	x	x	x	x	x	strong		x	x	x	x	x	x	x	x	x	x	7000	8000	1	6000	8000	9	2000	3000	9	3	4	7000			1	2	2	2															
+			4			x		10	1	2	2	2								1			x	x	x	x		x	x	x															1		x	x	x	x	x	x	x	x	strong		x	x	x	x	x	x	x	x	x	x	9000	11000	1	5000	7000	9	3000	4000	9	3	5	7000			1	2	2	2															
+			5			x		10	1	2	1	2								1			x	x	x	x		x	x	x																	x	x	x	x	x	x	x	x	strong		x	x	x	x	x	x	x	x	x	x	9000	11000	1	5000	7000	9	3000	4000	9	4	5	6000			1	2	2	2															
+			6			x		12	1	2	1	2							1				x	x	x	x		x	x	x																	x	x		x	x			x	strong		x	x	x	x	x	x	x	x	x	x	15000	20000	1	6000	8000	8	2000	3000	10	4	6	9000			1	2	2	2															
+			7			x		10	1	2	1	2								1			x	x	x	x		x	x	x																	x	x	x	x	x	x	x	x	strong		x	x	x	x	x	x	x	x	x	x	9000	11000	1	5000	7000	9	3000	4000	9	5	6	9000			1	2	2	2															
+			8			x		10	1	2	1	2								1			x	x	x	x		x	x	x															1		x	x	x	x	x	x	x	x	strong		x	x	x	x	x	x	x	x	x	x	9000	11000	1	5000	7000	9	3000	4000	9	6	7	9000			1	2	2	2															
+			9			x		12	1	2	1	2								1			x	x	x	x		x	x	x																	x	x	x	x	x	x	x	x	strong		x	x	x	x	x	x	x	x	x	x	7000	8000	1	6000	8000	9	2000	3000	9	6	8	9000			1	2	2	2															
+			10	x				10	1	2	1	2	2		1								x	x	x	x		x	x	x		1		1												x									average		x	x	x	x	x	x	x	x	x	x	4000	6000	0	4000	6000	10	2000	3000	9	7	8	6000			1	2	2	2															
+			11			x		8	1	2	1	2						1					x	x	x	x		x	x	x			1		1	1	1	1								x			x						strong		x	x	x	x	x	x	x	x	x	x	5000	6000	0	4000	5000	10	500	3000	9	7	9	7000			1	2	2	2															
+																																																																												9	10	6000			1	2	2	2															
+																																																																												10	11	5000			1	2	2	2															
+
+

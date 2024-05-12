@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UN:C to bin patch converter</title>
+</head>
+
+<style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    overflow: auto;
+  }
+
+  *:not(img) {
+    box-sizing: border-box;
+  }
+
+  .site-wrapper {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .section {
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  .section.section--fill {
+    flex: 1 0 0;
+  }
+
+  p {
+    margin: 0 0 20px;
+  }
+
+  pre {
+    margin: 0 0 20px;
+  }
+
+  #code-editor {
+    border: 1px solid #ccc;
+    font: 16px/20px monospace;
+    height: 100%;
+    padding: 12px;
+    resize: vertical;
+    width: 100%;
+    margin: 0;
+  }
+
+  .main-title {
+    font: 20px/1 serif;
+    color: #D00000;
+    margin: 10px 0 20px;
+  }
+</style>
+
+<body>
+  <div class="site-wrapper">
+    <div class="section">
+      <h1 class="main-title">Panda™ UN:C to bin patch converter</h1>
+      <p>Converts all C[address]/[size: 1, 2 or 4]/[value] into single binary patch. Example patch:</p>
+      <pre style="white-space: pre-line;">
+        ; Extend scouting radius for Scouting skill
+        !!UN:C6547928/4/5;
+        !!UN:C6547932/4/6;
+        !!UN:C6547936/4/7;
+        C0x63E9E4/1/8; a short syntax demo with hexadecimal address notation
+      </pre>
+
+      <p>
+        <button onclick="convertUncToBin();" id="convert-btn">Convert UN:C codes to BIN patch</button>
+        <a href="#" id="bin-link" download="patch.bin"></a>
+      </p>
+    </div>
+
+    <div class="section section--fill">
+      <textarea id="code-editor"></textarea>
+    </div>
+  </div>
+
+  <script>
+    function $ (selector) {
+      if (typeof selector === 'string') {
+        return document.querySelectorAll(selector);
+      } else {
+        return selector;
+      }
+    }
+
+    function d (...values) {
+      console.debug(...values);
+    }
+
+    function def (value, defValue) {
+      return value !== undefined ? value : defValue;
+    }
+
+    class BinBuf {
+      constructor () {
+        this.buffer  = new ArrayBuffer(100000);
+        this.writer  = new DataView(this.buffer);
+        this.bufSize = 0;
+      }
+
+      writeByte (value, offset) {
+        this.writer.setUint8(def(offset, this.bufSize), value | 0, true);
+        offset !== undefined || (this.bufSize += 1);
+      }
+
+      writeWord (value, offset) {
+        this.writer.setUint16(def(offset, this.bufSize), value | 0, true);
+        offset !== undefined || (this.bufSize += 2);
+      }
+
+      writeDword (value, offset) {
+        this.writer.setUint32(def(offset, this.bufSize), value | 0, true);
+        offset !== undefined || (this.bufSize += 4);
+      }
+
+      writeVarInt (value, intSize, offset) {
+        switch (intSize | 0) {
+          case 1:
+            this.writeByte(value);
+            break;
+
+          case 2:
+            this.writeWord(value);
+            break;
+
+          case 4:
+            this.writeDword(value);
+            break;
+
+          default:
+            throw new Error('Invalid intSize: ' + intSize);
+        }
+      }
+
+      blobToDataURL (blob) {
+        let reader = new FileReader();
+
+        return new Promise ((resolve, reject) => {
+          reader.onload = function (e) { resolve(e.target.result); }
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      toDataUrl () {
+        return this.blobToDataURL(new Blob([this.buffer.slice(0, this.bufSize)]));
+      }
+    }
+
+    function convertUncToBin () {
+      let codeEditor       = $('#code-editor')[0];
+      let downloadLinkElem = $('#bin-link')[0];
+      let code             = codeEditor.value;
+
+      let matches    = code.matchAll(/C(0x[\da-fA-F]+|\d+)\/(\d+)\/(-?\d+)/g);
+      let result     = new BinBuf;
+      let numPatches = 0;
+
+      result.writeDword(0);
+
+      for (let match of matches) {
+        result.writeDword(match[1]);
+        result.writeDword(match[2]);
+        result.writeVarInt(match[3], match[2]);
+        numPatches++;
+      }
+
+      result.writeDword(numPatches, 0);
+
+      result.toDataUrl().then(function (url) {
+        downloadLinkElem.href = url;
+        downloadLinkElem.click();
+      });
+    } // .function convertUncToBin
+  </script>
+</body>
+
+</html>

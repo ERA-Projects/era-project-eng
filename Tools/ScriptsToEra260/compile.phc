@@ -1,0 +1,87 @@
+<?php
+/**
+ * Converts old-school ERM scripts to Era 2.60 supported scripts:
+ * - automatically replaces integer labels of SN:G with named labels [:name] and [name];
+ * - automatically replaces non-WoG 3.58 functions with named functions, using Era named events
+ * database and user-defined map of function => name in json format.
+ * - detects possible indirect function invocations like: !!FUv6:P; !!VRv6:S50000;
+ *
+ * Command line arguments:
+ * - path to ERM script file to convert (new file with '.compiled.erm') extension will be created;
+ * - [optional] path to destination directory. By default same directory;
+ * - [optional] replace WoG 3.58f functions as well (1..30000)? 0 or 1. Default: 0 (no).
+ */
+declare(strict_types=1);
+error_reporting(-1);
+
+require_once(__DIR__ . "/vendor/autoload.php");
+require_once(__DIR__ . "/lib/utils.php");
+require_once(__DIR__ . "/lib/ScriptCompiler.php");
+
+const COMPILED_SCRIPT_EXT = 'compiled.erm';
+const ARG_SCRIPT_PATH     = 1;
+const ARG_DST_DIR         = 2;
+const ARG_OPTS            = 3;
+
+is_dir(__DIR__ . "/../..") and chdir(__DIR__ . "/../..");
+
+$namedFuncs = \B\Json::decodeCommented(file_get_contents(__DIR__ . "/named funcs.json"), ['assoc' => true]);
+
+print("Current directory is: " . getcwd() . "\r\n");
+$scriptPath = trim(getArg(ARG_SCRIPT_PATH, 'Enter path to original script file: '), '\\/');
+$dstDirPath = !empty($argv[2]) ? trim(getArg(ARG_DST_DIR, 'Enter path to destination directory: '), '\\/') : dirname($scriptPath);
+$optsStr    = !empty($argv[3]) ? getArg(ARG_OPTS, 'Enter options string: ') : '';
+$opts       = [];
+
+foreach (explode(';', $optsStr) as $optPair) {
+  $optPair = trim($optPair);
+
+  if ($optPair !== '') {
+    $optTokens           = explode('=', $optPair, 2);
+    $opts[$optTokens[0]] = $optTokens[1] ?? '';
+  }
+}
+
+$replaceWogFuncs = (bool) ($opts['replaceWogFuncs'] ?? false);
+
+is_file($scriptPath) or fail("Failed to locate script file in '$scriptPath'");
+is_dir($dstDirPath)  or fail("Failed to locate destination directory: '$dstDirPath'");
+
+$customNamedFuncsJsonPath = \B\Str::stripFileExt($scriptPath) . ".funcs.json";
+$warningsFilePath         = \B\Str::stripFileExt($scriptPath) . ".warnings.txt";
+$customNamedFuncs         = is_file($customNamedFuncsJsonPath) ? \B\Json::decodeCommented(file_get_contents($customNamedFuncsJsonPath), ['assoc' => true]) : [];
+$mergedNamedFuncs         = \B\B::merge($namedFuncs, $customNamedFuncs);
+$script                   = file_get_contents($scriptPath);
+$funcsPrefix              = (string) ($opts['funcsPrefix'] ?? getAutoFuncPrefix($script));
+$scriptName               = (string) pathinfo($scriptPath)['filename'];
+$outScriptPath            = "{$dstDirPath}/{$scriptName}." . COMPILED_SCRIPT_EXT;
+$compiler                 = new ScriptCompiler($script, ['namedFuncs' => $mergedNamedFuncs, 'replaceWogFuncs' => $replaceWogFuncs, 'funcsPrefix' => $funcsPrefix]);
+
+file_put_contents($outScriptPath, $compiler->compile($customNamedFuncs, $warnings));
+file_put_contents($customNamedFuncsJsonPath, \B\Json::encode(array_diff($customNamedFuncs, $namedFuncs), ['flags' => \B\Json::DEF_ENCODE_FLAGS | JSON_PRETTY_PRINT]));
+is_file($warningsFilePath) and unlink($warningsFilePath);
+$warnings !== '' and file_put_contents($warningsFilePath, $warnings);
+
+print("Compiled script '{$scriptName}' of size " . filesize($scriptPath) . " to script of size " . filesize($outScriptPath));
+
+
+// === FUNCTIONS === //
+
+
+function getAutoFuncPrefix (string $script): string {
+  $prefixLen      = 4;
+  $alfPowerInBits = 6;
+  $scriptHash     = crc32($script);
+  $result         = '';
+  $alphabet       = join('', array_merge(range('a', 'z'), range('A', 'Z'), array_map('strval', range(0, 9)), ['_', '-']));
+  assert(strlen($alphabet) === 64);
+
+  for ($i = 0; $i < $prefixLen; $i++) {
+    $result .= $alphabet[$scriptHash & 63];
+    $scriptHash >>= $alfPowerInBits;
+  }
+
+  $result .= ".";
+
+  return $result;
+} // .function getAutoFuncPrefix

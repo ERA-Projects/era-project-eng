@@ -1,0 +1,1888 @@
+ZVSE2
+; Author:   igrik, Archer30, daemon_n and various authors
+; Engine:   ERM 2.0+
+; Requires: ERA 3.3+, Era Erm Framework
+
+; MAIN WOG Script
+
+
+; Manage default WoG Options selections
+!?FU(WOG_ManageWoGOptions);
+!!UN:P24/(TRUE);                        [Enhanced dwelling hint text]
+!!UN:P25/(TRUE);                        [Display hero Movement Points remaining]
+!!UN:P169/(TRUE);                       [Towns may be renamed]
+!!UN:P179/(TRUE);                       [Display hero Spell Points remaining]
+!!UN:P180/(TRUE);                       [Buy All Creature button]
+!!UN:P182/(TRUE);                       [Display hidden skills]
+!!UN:P185/(TRUE);                       [Script Message disabling]
+!!UN:P187/(TRUE);                       [Heroes may be renamed]
+!!UN:P240/(TRUE);                       [Warlord's Banner Quick-select options]
+!!UN:P244/(TRUE);                       [Hero and Town List Reordering]
+
+!#FU(WOG_ManageWoGOptions):P;
+; Set up variable for new combination artifacts from Enhanced Artifacts II, Eagle Eye II and Resistance II
+!#VRi^wog_newCombiArtEnabled^:S(TRUE);
+
+************************************ Start of igrik's Script ***************************************
+
+!?FU(OnAfterErmInstructions);   
+!!FU(WOG_StartGame):P0;
+
+!?FU(OnAfterLoadGame);
+!!FU(WOG_StartGame):P1;
+
+; UNIVERSAL TIMER INIT
+; (every color every day)
+!#TM1:S1/999/1/255;     
+!#TM2:S1/999/1/255;
+
+; **************************************************************************************************
+
+; CREATE WOG HOOKS (need plugin: erm_hooker.era)
+
+
+!?FU(WOG_StartGame);
+!!SN:L^erm_hooker.era^/?(hooker:y);
+!!FU&(hooker)=0:E;
+
+!!SN:A(hooker)/^SetHook^/?(hookingFuncAddress:y);
+!!FU(WOG_CreateERMHook):P(hookingFuncAddress);
+
+!?FU(WOG_CreateERMHook);
+!#VA(address:x);
+
+!!SN:E(address)/1/5013149/(WOG_OnNewDay);                            [trigger on start every day]
+!!SN:E(address)/1/5014608/(WOG_OnNewWeek);                           [trigger on start every week]
+!!SN:E(address)/1/5016587/(WOG_OnNewMonth);                          [trigger on start every month]
+!!SN:E(address)/1/5008601/(WOG_EndOfTurn);                           [trigger on every player end of turn]
+!!SN:E(address)/1/7710213/(WOG_PreBeforeBattle);                     [use only in exceptional cases]
+
+!!SN:E(address)/1/5968384/(WOG_OnUpdateHeroInteractionScreen);       [trigger WHILE hero meeting screen]
+!!SN:E(address)/1/5942672/(WOG_OnBeforeHeroSwap);                    [trigger AFTER OnBeforeHeroInteraction but BEFORE Dlg show (works in town screen)]
+!!SN:E(address)/1/4893738/(WOG_OnAfterHeroSwap);                     [trigger AFTER Dlg Closed but BEFORE OnAfterHeroInteraction(works in town screen)]
+!!SN&i^wog_149_legacyHD_on^:E(address)/1/4526215/(WOG_OnChangeWindowByResources);           [trigger WHEN counts what pic to display in status window for pickuped resource]
+
+!!SN:E(address)/1/4950122/(WOG_HOOK_OnResourceMineIncomeCalculation); [trigger right before not gold mine tries to add income from int[8] table at 0x677978 to player income]
+!!SN:E(address)/1/5010999/(WOG_HOOK_OnGoldMineIncomeCalculation);     [trigger right before gold mine tries to add income from int at 0x4C7647 to player income]
+
+!!SN:E(address)/1/4462998/(WOG_HOOK_AfterAttackMainFunc);            [Trigger after melee attack, before retaliation]
+!!SN:E(address)/1/4455129/(WOG_HOOK_AfterAttackMainFunc);            [Trigger after shooting]
+
+!!SN:E(address)/1/5131803/(WOG_OnSetHeroMovementPoints);             [Trigger on getting the final result of initial movement points]
+!!SN:E(address)/1/4445639/(WOG_HOOK_AfterStackInitParams);           [Trigger after initialising the stats of a stack on the battlefield] 43D5C7
+
+!!SN:E(address)/1/7780489/(WOG_OnNpcPlacesWarMachine);               [for tents with npc]
+!!SN:E(address)/1/7780731/(WOG_OnNpcPlacesWarMachine);               [for ballistas with npc]
+
+!!SN:E(address)/1/4928265/(WOG_HOOK_OnBattleStackCheckReachability); [for any wm in melee]
+
+; For Enhanced War Machines
+!!if|i^wog_54_enabled^/i^wog_55_enabled^/i^WOG_73_enabled^;
+  ; For WM I & II only
+  !!if|i^wog_54_enabled^/i^wog_55_enabled^;
+    !!SN:E(address)/1/4624060/(WOG_OnRemoveArtAfterWarMachineKilled); [prevent removing 124# artifact when catapult in non-siege battle is killed]
+  !!en;
+
+  !!SN:E(address)/1/4667500/(WOG_BattleTent_BeforeIterateLoses);
+  !!SN:E(address)/1/4687183/(WOG_BattleTent_PrepareHealing);
+!!en;
+
+!!SN:E(address)/1/6025347/(WOG_OnCaptureTown); [Trigger on a town got captured]
+
+; Prevent Spellbinder's Hat from removing when 124 War Machine is destroyed
+!?FU(OnGameEnter)|i^wog_54_enabled^/i^wog_55_enabled^;
+!!UN:C5084413/2/5867 C5084415/1/(OPCODE_NOP_1);
+
+; Prevent removing 124# artifact (Spellbinder's Hat) when catapult in non-siege battle is killed
+!?FU(WOG_OnRemoveArtAfterWarMachineKilled);
+!#VA(hook:x);
+
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EDX)/(UNC_INT)/?(monType:y);
+
+!!if&(monType)=(MON_NOT_USED_2);
+  !!SN:X?t/0;
+  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/(UNC_INT)/4624066;
+!!en;
+
+!?FU(WOG_HOOK_AfterAttackMainFunc);
+!!SN:X?(hook:y);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EDI)/(UNC_INT)/?(stackStructDefender:y);  
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_ESI)/(UNC_INT)/?(stackStructAttacker:y); 
+!!BG:A?(typeAttack:y);
+!!VR(stackAttackerID:y):S(NO_STACK);
+!!VR(stackDefenderID:y):S(NO_STACK);
+
+!!if&(stackStructAttacker);
+  !!UN:C(stackStructAttacker)/244/(UNC_INT)/?(attakerSide:y);
+  !!UN:C(stackStructAttacker)/248/(UNC_INT)/?(attakerStackIdInSide:y);
+  !!VR(stackAttackerID):S(attakerSide) *(BATTLE_STACKS_PER_SIDE) +(attakerStackIdInSide);
+!!en;
+
+!!if&(stackStructDefender);
+  !!UN:C(stackStructDefender)/244/(UNC_INT)/?(defenderSide:y);
+  !!UN:C(stackStructDefender)/248/(UNC_INT)/?(defenderStackIdInSide:y);
+  !!VR(stackDefenderID):S(defenderSide) *(BATTLE_STACKS_PER_SIDE) +(defenderStackIdInSide);
+!!en;
+
+!!FU(WOG_OnAfterMelee)&(typeAttack)=(BATTLE_ACTION_WALK_AND_ATTACK):P(stackAttackerID)/(stackDefenderID);
+!!FU(WOG_OnAfterShoot)&(typeAttack)=(BATTLE_ACTION_SHOOT):P(stackAttackerID)/(stackDefenderID);
+!!FU(WOG_OnAfterAttack)|(typeAttack)=(BATTLE_ACTION_WALK_AND_ATTACK)/(typeAttack)=(BATTLE_ACTION_SHOOT):P(stackAttackerID)/(stackDefenderID);
+
+!?FU(WOG_HOOK_AfterStackInitParams);
+!#VA(hook:x);
+
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBX)/4/?(stackStruct:y) C(stackStruct)/244/(UNC_INT)/?(side:y) C(stackStruct)/248/(UNC_INT)/?(stackPerSide:y);
+!!VR(stackId:y):S(side) *(BATTLE_STACKS_PER_SIDE) +(stackPerSide);
+!!FU(WOG_BattleStack_InitParams):P(stackId)/(side);
+
+
+
+!?FU(WOG_HOOK_OnResourceMineIncomeCalculation);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/?(gameMgr:y);                                             [game mgr]
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/?(mineOffset:y);                                          [iteratable mine ptr]
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(baseIncome:y);                                          [get bonus from table read]
+
+!!UN:C(gameMgr)/320396/4/?(mines:y);                                                           [get mines vector ptr]
+!#VA(pos[3]:y);
+
+!!re i/0/2;
+  !!VR(posOffset:y):Si +60 +(mineOffset:y);                                                    [find x/y/z coordinates this mine ptr offset]
+  !!UN:C(mines)/(posOffset)/-1/?(pos[i]);                                                      [read into array]
+!!en;
+!!VR(newIncome:y):S(baseIncome);
+
+!!FU(WOG_OnCalculateMineIncome):P(pos[0])/(pos[1])/(pos[2])/(baseIncome)/?(newIncome);         [@daemon_n recommends this for addition/subtraction]
+!!FU(WOG_OnCalculateMineIncome_Quit):P(pos[0])/(pos[1])/(pos[2])/(baseIncome)/?(newIncome);    [@daemon_n recommends this for multiplication/division]
+!!if&(baseIncome)<>(newIncome);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/(newIncome);
+!!en;
+
+!?FU(WOG_HOOK_OnGoldMineIncomeCalculation);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(mine:y) C(mine)/1/?(mineOwner:y) C(mine)/1/1/?(type:y); [cause of hook overriden default income value]
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(playerId:y);                        [I set it earlier and check owner and type manually]
+
+!!if&(mineOwner)=(playerId)/(type)=(RES_GOLD);                                                 [if owner and type are proper]
+  !#VA(pos[3]:y);
+  !!re i/0/2;
+    !!VR(posOffset:y):Si +60;                                                                  [find x/y/z coordinates this mine ptr offset]
+    !!UN:C(mine)/(posOffset)/-1/?(pos[i]);
+  !!en;
+  !!UN:C5011012/3/4/?(baseIncome:y);                                                           [1000 by default]
+  !!VR(newIncome:y):S(baseIncome);
+
+  !!FU(WOG_OnCalculateMineIncome):P(pos[0])/(pos[1])/(pos[2])/(baseIncome)/?(newIncome);       [@daemon_n recommends this for addition/subtraction]
+  !!FU(WOG_OnCalculateMineIncome_Quit):P(pos[0])/(pos[1])/(pos[2])/(baseIncome)/?(newIncome);  [@daemon_n recommends this for multiplication/division]
+
+  !!UN:C(ebp)/-4/4/d(newIncome);                                                               [repeat orignal bonus addition]
+!!en;
+
+!!SN:X?t/0;                                                                                    [an easter egg for Bersy] - Archer30: What the heck?
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/5011019;                                                  [return to next mine searching]
+
+
+
+// EXAMPLE OF USING
+*?FU(WOG_OnNpcPlacesWarMachine);
+  *!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-16/4/?(wmAmount:y);
+  *!UN:C(ebp)/16/4/?(side:y) C(ebp)/-12/4/?(restrainPlacement:y);
+  *!UN:C(ebp)/20/4/?(npc:y) C(npc)/12/4/?(npcType:y);
+
+; ******************************************************************************
+
+; GET SPECIAL VARIABLES
+!?FU(WOG_StartGame);
+
+; get count heroes
+!!UN:C4960750/(SIZEOF_UINT32)/?(heroesCount:y); 
+!!VRi^ERM_HEROWOG_COUNT^:S(heroesCount); 
+
+; get count creatures
+!!UN:C5093986/(SIZEOF_UINT32)/?(countCreatures:y); 
+!!VRi^ERM_CREATURES_COUNT^:S(countCreatures); 
+
+
+; ******************************************************************************
+; ****************************** Game Manager **********************************
+
+!?FU(WOG_GameMgr_GetPlayer_Team);
+; x1 - me player id
+; x2 - return team id
+!#VA(playerID:x) (teamID:x);
+!!UN:C(GAME_MANAGER)/(UNC_UINT32)/?(gm:y); 
+!!SN:E4871632/2/(gm)/(playerID);
+!!VR(teamID):Sv1;
+
+!?FU(WOG_GameMgr_GetPlayer_Me);
+; x1 - return me player id
+!#VA(playerID:x);
+!!UN:C(GAME_MANAGER)/(UNC_UINT32)/?(gm:y); 
+!!SN:E5039840/2/(gm);
+!!VR(playerID):Sv1;
+
+!?FU(WOG_GameMgr_GetPlayer_Name);
+; x1 - player id
+; x2 - return player name
+!#VA(playerID:x) (name:x);
+!!UN:C(GAME_MANAGER)/(UNC_UINT32)/?(gm:y); 
+!!SN:E5040160/(CALLCONV_THISCALL)/(gm)/(playerID);
+!!SN:Bv1/d/?z-1;
+!!VR(name):Zz-1;
+
+!?FU(WOG_GameMgr_Skill_isBanned);
+!#VA(skillId:x) (isBanned:x);
+!!UN:C(GAME_MANAGER)/(UNC_INT)/?(gameMgr:y);
+!!VR(skillBanPtr:y):S(gameMgr) +321112;
+!!UN:C(skillBanPtr)/(skillId)/(UNC_INT8)/?(isBanned);
+
+
+
+; get text by ptr string
+!?FU(WOG_GetTextByPtr);
+; x1 - ptr string
+; always returns to global s^result^
+!!SN:X?(save:y) Xx1 X?s^result^ X(save);
+
+; get dwelling name ptr (only type 20)
+!?FU(WOG_GameMgr_GetDwellingName);
+; string returns to global s^result^
+; x1 - dwelling type
+; x2 - dwelling subtype
+!#VA(dwType:x) (dwSType:x); 
+
+!!VR(adress:y):S4275821; dwType = 17
+!!VR(adress)&(dwType)=20:S4275891;
+!!UN:C(adress)/(UNC_UINT32)/?(ptr:y);
+!!VR(offset:y):S(dwSType) *4 +(ptr); 
+!!UN:C(offset)/4/?(ptrDwellingName:y);
+!!FU(WOG_GetTextByPtr):P(ptrDwellingName);
+
+; get object on map owner text
+!?FU(WOG_GameMgr_GetObjOwnerStr);
+; string returns to global s^result^
+; x1 - owner id
+!#VA(owner:x);
+!!if&(owner)>=(PLAYER_FIRST)/(owner)<=(PLAYER_LAST);  
+  !!VR(offset:y):S(owner) *4 +6969600; 
+  !!UN:C(offset)/4/?(ptrOwnerName:y);
+  !!FU(WOG_GetTextByPtr):P(ptrOwnerName);
+!!en;
+
+;
+!?FU(WOG_GameMgr_MapItem_ResetDef);
+; x1 - MapItem structure
+!#VA(mapItem:x);
+!!FU&(mapItem)=(FALSE):E;
+!!UN:C(GAME_MANAGER)/(UNC_UINT32)/?(gm:y); 
+!!SN:E5019216/(CALLCONV_THISCALL)/(gm)/(mapItem);
+
+; ******************************************************************************
+; *************************** Adventure Manager ********************************
+
+!#DC(ERM_REPLACE_NO_REDRAW) = 0;
+
+!?FU(OnAfterErmInstructions); 
+; deleting the sound in the delete object function
+; because it causes a crash
+!!UN:C4893167/2/?(patch:y);
+!!UN:C4893167/2/24555;
+; get size of the map
+!!UN:X?(mapSize:y)/?(hasUnderground:y); 
+; pass once through all cells of the map
+!!re l/0/(hasUnderground)/1;  coord z
+  !!re k/0/(mapSize)/1/-1;    coord y
+    !!re i/0/(mapSize)/1/-1;  coord x
+      !!OBi/k/l:T?(objType:y) U?(objSubtype:y);
+      !!TRi/k/l:E?(isYellowSquare:y) P?(isPassable:y); 
+      !!VR(isYellowSquare):X1;  reverse param isYellowSquare
+      !!FU(WOG_OnIterateAllMapObjects):Pi/k/l/(objType)/(objSubtype)/(isYellowSquare)/(isPassable);
+    !!en;
+  !!en;
+!!en;
+; restoring the source code of the sound
+; in the delete objects function
+!!UN:C4893167/2/(patch); 
+
+!?FU(WOG_AdvMgr_HideHero);
+!#VA(hero[3]:x);
+!!FU:A?(numArgs:y);
+!!if&(numArgs)>1;
+  !!HE(hero[0])/(hero[1])/(hero[2]):Z?(badHero:y);
+!!el;
+  !!HE(hero[0]):Z?(badHero:y);
+!!en;
+!!SN:E5077328/(CALLCONV_THISCALL)/(badHero);         [hide hero if it is there]
+
+!?FU(WOG_AdvMgr_ShowHero);
+!#VA(hero[3]:x);
+!!FU:A?(numArgs:y);
+!!if&(numArgs)>1;
+  !!HE(hero[0])/(hero[1])/(hero[2]):Z?(heroPtr:y) N?(heroId:y);
+!!el;
+  !!HE(hero[0]):Z?(heroPtr:y) N?(heroId:y);
+!!en;
+!!SN:E5077056/(CALLCONV_THISCALL)/(heroPtr)/(OBJ_HERO)/(heroId:y);         [show hero if it is there]
+
+!?FU(WOG_AdvMgr_HeroEnterObject);
+; x1, x2, x3 - coords (x/y/z)
+!#VA(x:x) (y:x) (z:x) (heroId:x) (mobilizeHero:x) (quiet:x);
+
+!!if&(mobilizeHero)=0;
+  !#VA(storedOpp[5]:y);
+  !!re i/0/4;
+    !!UN:Ci/4882831/(UNC_INT8)/?(storedOpp[i]) Ci/4882831/(UNC_INT8)/(NOP_1);
+  !!en;
+!!en;
+
+!!HE(heroId):Z?(hero:y);
+!!FU(WOG_PackedCoords):P(x)/(y)/(z)/?(packed:y);
+!!FU(WOG_AdvMgr_GetMapItem):P(x)/(y)/(z)/?(mapItem:y);
+!!UN:C(ADV_MANAGER)/(UNC_UINT32)/?(advMgr:y);
+!!UN:C(mapItem)/(UNC_UINT32)/?(objSetup:y) C(mapItem)/30/(UNC_UINT32)/?(objType:y);
+!!SN&(quiet)=0:E4894976/(CALLCONV_STDCALL)/(objType)/(objSetup);
+!!SN:E4882784/(CALLCONV_THISCALL)/(advMgr)/(hero)/(mapItem)/(packed); AdvMgr_Enter2Object_Player
+
+!!if&(mobilizeHero)=0;
+  !!re i/0/4;
+    !!UN:Ci/4882831/(UNC_INT8)/(storedOpp[i]);
+  !!en;
+!!en;
+
+
+!?FU(WOG_AdvMgr_EnterObject_AsPlayer);
+; x1, x2, x3 - coords (x/y/z)
+!#VA(x:x) (y:x) (z:x) (mobilizeHero:x);
+
+!!if&(mobilizeHero)=1;
+  !#VA(storedOpp[5]:y);
+  !!re i/0/4;
+    !!UN:Ci/4882831/(UNC_INT8)/?(storedOpp[i]) Ci/4882831/(UNC_INT8)/(NOP_1);
+  !!en;
+!!en;
+
+!!UN:C(ADV_MANAGER)/4/?(advMgr:y);
+!!FU(WOG_PackedCoords):P(x)/(y)/(z)/?(packed:y);
+!!FU(WOG_AdvMgr_GetMapItem):P(x)/(y)/(z)/?(mapItem:y);
+4882784
+
+!!SN:E4892432/(CALLCONV_THISCALL)/(advMgr)/(mapItem)/(packed);
+
+
+!!if&(mobilizeHero)=1;
+  !!re i/0/4;
+    !!UN:Ci/4882831/(UNC_INT8)/(storedOpp[i]);
+  !!en;
+!!en;
+
+!?FU(WOG_AdvMgr_SetObjectAsVisited);
+!#VA(x:x) (y:x) (z:x) (playerId:x);
+!!FU(WOG_AdvMgr_GetMapItem):P(x)/(y)/(z)/?(mapItem:y);
+!!SN:E5228064/(CALLCONV_THISCALL)/(mapItem)/(playerId);
+
+!?FU(WOG_AdvMgr_GetMapItem);
+; x1, x2, x3 - coords (x/y/z)
+;?x4 - return MapItem structure
+!#VA(x:x) (y:x) (z:x) (mapItem:x); 
+!!VRt:Sv1;                              [store v1]
+!!UN:C(ADV_MANAGER)/(UNC_UINT32)/?(am:y);
+!!UN:C(am)/92/(UNC_UINT32)/?(list:y);
+!!SN:E4228816/2/(list)/(x)/(y)/(z);
+!!VR(mapItem):Sv1;
+!!VRv1:St;                              [restore v1]
+
+
+!?FU(WOG_MapItem_GetRealType);
+!#VA(mapItem:x) (objectId:x);
+!!VRt:Sv1;                              [store v1]
+!!SN:E5231136/2/(mapItem);  
+!!VR(objectId):Sv1;  
+!!VRv1:St;                              [restore v1]
+
+
+!?FU(WOG_PackedCoords); 
+!#VA(x:x) (y:x) (z:x) (coords:x); 
+!!VRt:Sv1;                              [store v1]
+!!SN:E7413375/1/(x)/(y)/(z);  
+!!VR(coords):Sv1;
+!!VRv1:St;                              [restore v1]
+
+
+!?FU(WOG_UnPackedCoords);
+!#VA(x:x) (y:x) (z:x) (coords:x); 
+!!VRt:Sv1;                              [store v1]
+!!SN:E7413577/1/?(x)/?(y)/?(z)/(coords);
+!!VRv1:St;                              [restore v1]
+
+
+!?FU(WOG_AdvMgr_SetHintString);
+; x1 - z var number
+!!UN:C(ADV_MANAGER)/(UNC_UINT32)/?y1;
+!!UN:Cy2/68/(UNC_UINT32)/?y2;
+!!VRy3:Sx1 *512 +9597416;
+!!SN:E7408539/1/6911016/512/y3;
+!!SN:E6288384/2/y2/512/3/200/6911016;
+!!SN:E6288864/2/y2/0/200/200;
+!!UN:C4199503/2/?y4;
+!!UN:C4199496/2/?y5;
+!!VRy4:-44;  
+!!VRy5: :2 +382;
+!!UN:C6918864/(UNC_UINT32)/?y6;
+!!SN:E6304144/2/y6/8/y4/y5/14;
+
+
+; Note: There is a similar functions FU(WOG_ShowNewWoGObjectInfo) in this file
+; SN:H is replaced with IF:M as SN:H overrides the hint of the hero (should display hero when the hero and object are on the same tile)
+!?FU(WOG_NewWogObjects_GetVisitedText);
+!#VA(x:x) (y:x) (z:x) (optionId:x) (isRmc:x) (result:x);
+
+!!OW:C?(player:y)/?(interactPlayer:y);
+*!if&(player:y)=(interactPlayer:y); keep that for the future
+   *!OW:A(interactPlayer)/?(activeHero:y);
+   *!HE(activeHero):P?(hX:y)/
+*!en; 
+
+!!PM(x)/(y)/(z):V?(notVisited:y) P(interactPlayer)/?(visitedOnce:y);
+
+!!SN:T^wog.%(optionId).objName^/?(objName:z);
+
+!!if&(visitedOnce)<>(TRUE);
+  !!VR(str:z):S^%(objName)^;
+!!el;
+  !!if&(isRmc);
+    !!VR(objName):+^%T(wog.endl)%T(wog.endl)^;
+  !!el;
+    !!VR(objName):+^ ^;
+  !!en;
+  !!if&(notVisited)=(FALSE);
+    !!VR(str):S^%(objName)%T(wog.visited)^;
+  !!el;
+    !!VR(str):S^%(objName)%T(wog.notVisited)^;
+  !!en;
+!!en;
+
+!!VR(result):Z(str);
+
+!?FU(WOG_NewWogObjects_SetHint);
+!#VA(x:x) (y:x) (z:x) (objSubtype:x) (optionId:x);
+
+; Exit if the location has been occupied by a hero
+!!UN:P904/(TRUE) P905/(FALSE);
+!!HE(x)/(y)/(z):E?(exp:y);
+!!UN:P905/?(hasError:y);
+!!UN:P904/(FALSE);
+
+!!if&(hasError);
+  !!UN:P905/(FALSE);
+!!el;
+  !!FU:E;
+!!en;
+
+!!OB(x)/(y)/(z):T?(objType:y) U?s;
+
+!!if&(objType)=(OBJ_NEW_WOG_OBJECTS)/s=(objSubtype);
+  !!FU(WOG_NewWogObjects_GetVisitedText):P(x:x)/(y:x)/(z:x)/(optionId)/(FALSE)/?(str:z);
+  !!MM:M^%(str)^;
+!!en;
+
+!?FU(WOG_NewWogObjects_SetPopUp);
+!#VA(x:x) (y:x) (z:x) (objSubtype:x) (optionId:x);
+!!SN:E5210176/(CALLCONV_FASTCALL)/(x)/(y)/(z);
+!!VRv1:&1;
+!!FU&v1=0:E;
+; Exit if the location has been occupied by a hero
+!!UN:P904/(TRUE) P905/(FALSE);
+!!HE(x)/(y)/(z):E?(exp:y);
+!!UN:P905/?(hasError:y);
+!!UN:P904/(FALSE);
+
+!!if&(hasError);
+  !!UN:P905/(FALSE);
+!!el;
+  !!FU:E;
+!!en;
+
+!!OB(x)/(y)/(z):T?(objType:y) U?s;
+
+!!if&(objType)=(OBJ_NEW_WOG_OBJECTS)/s=(objSubtype);
+  !!FU(WOG_NewWogObjects_GetVisitedText):P(x:x)/(y:x)/(z:x)/(optionId)/(TRUE)/?(str:z);
+  *!SN:H^object^/(OBJ_NEW_WOG_OBJECTS)/(objSubtype)/^%(str)^;
+  !!CM:R0;
+  !!IF:M0/(MSG_TYPE_POPUP)/^%(str)^;
+!!en;
+
+
+; ******************************************************************************
+; ****************************** Town Manager **********************************
+
+; получение структуры города
+!?FU(WOG_Town_GetStruct);
+; x1 - town number on map (0...47)
+;?x2 - return: ptr structure town
+!#VA(townId:x) (town:x); 
+!!IF&(townId)<(MAP_TOWN_FIRST)|(townId)>(MAP_TOWN_LAST):M^{FU(Town_GetStruct)}: Wrong town id.^;
+!!UN:C(GAME_MANAGER)/(UNC_UINT32)/?(game:y); 
+!!UN:C(game)/136724/(UNC_UINT32)/?(ptr:y); 
+!!VR(town):S(townId) *360 +(ptr);
+!!IF&(town)<43200000:M^{FU(Town_GetStruct): Attention!}
+Error in getting town structure address. 
+The game may fall at any time.^; 
+
+
+; получить стоимость здания 
+; v10 - дерево, v11 - ртуть ... v16 - золото
+!?FU(WOG_Town_GetBuildingCost);
+; x1 - town number on map (0...47)
+; x2 - building id
+!#VA(townId:x) (buildId:x); 
+; return v10-v16: ptr array: int cost[6]
+!!FU(WOG_Town_GetStruct):P(townId)/?(town:y);
+!!VR(ptr:y):S8943244; ptr v10
+!!SN:E6034672/2/(town)/(buildId)/(ptr);
+
+; хватает ли денег на постройку (активный игрок только!)
+!?FU(WOG_Town_CanBuildingCost);
+; x1 - town number on map (0...47)
+; x2 - building id
+; x3 - return: bool (0-no, 1-yes)
+!#VA(townId:x) (buildId:x) (result:x); 
+!!FU(WOG_Town_GetStruct):P(townId)/?(town:y);
+!!SN:E4590864/3/(town)/(buildId);
+!!VR(result):Sv1;
+
+
+; разрешено ли впринципе построить это здание в городе?
+!?FU(WOG_Town_IsPossibleToBuildBuilding);
+; x1 - town number on map (0...47)
+; x2 - building id
+; x3 - return: bool (0-no, 1-yes)
+!#VA(townId:x) (buildId:x) (result:x); 
+!!FU(WOG_Town_GetStruct):P(townId)/?(town:y);
+!!CA0/(townId):R?(canBuildToday:y) R(FALSE);
+!!SN:E6033696/2/(town)/(buildId);
+!!VR(result):S(FALSE);    
+!!VR(result)&v1<>(FALSE):S(TRUE);
+!!CA0/(townId):R(canBuildToday);
+
+
+; построено ли здание в городе?
+!?FU(WOG_Town_IsBuildingBuilt);
+; x1 - town number on map (0...47)
+; x2 - building id
+; x3 - return: bool (0-no, 1-yes)
+!#VA(townId:x) (buildId:x) (result:x); 
+!!FU(WOG_Town_GetStruct):P(townId)/?(town:y);
+!!SN:E4392352/2/(town)/(buildId)/(TRUE);
+!!VR(result):Sv1;
+
+
+; показать как строится здание 
+; только внутри экрана города
+!?FU(WOG_Town_ShowBuildingConstructionAnimation);
+; x1 - town number on map (0...47)
+; x2 - building id
+!#VA(townId:x) (buildId:x); 
+!!UN:C(TOWN_MANAGER)/(UNC_UINT32)/?(tm:y);
+!!UN:C(tm)/440/(UNC_UINT32)/(buildId);
+!!SN:E6123136/2/(tm)/(buildId);
+
+
+; получить id нанимаемого монстра в городе 
+!?FU(WOG_Town_GetCreatureID);
+!#VA(townType:x) (monLevel:x) (monGrade:x) (result:x);
+; x1 - тип города: 0-9
+; x2 - уровень монстра: 0-6
+; x3 - не улучшенный или улучшенный: 0-1
+; ?x4 - результат: номер нанимаего монстра 
+!!VR(townType):*14;
+!!VR(monGrade):*7;
+!!VR(id:y):S(townType) + (monGrade) + (monLevel) * 4;
+!!UN:C4365236/4/?(ptrTable:y);
+!!UN:C(ptrTable)/(id)/4/?(result);
+
+
+; get and set building cost - daemon_n (c)
+*!FU(WOG_Town_Building_ResourceCost):P(towntype)/(buildingId:y)/?y1/?y1/?y1/?y1/?y1/?y1/?y1;
+!?FU(WOG_Town_Building_ResourceCost);
+!#VA(townType:x) (buildingId:x) (cost[7]:x);
+!!if|(buildingId)<0/(buildingId)>43;
+  *!IF:M^ERROR: %(buildingId) is out of range [0;43]^; [Debug msg is disabled for compatibility with new town plugin]
+  !!FU:E;
+!!en;
+!!if|(townType)<(TOWN_FIRST)/(townType)>(TOWN_LAST_WOG);
+  *!IF:M^ERROR: %(towntype) is out of range [0;8]^; [Debug msg is disabled for compatibility with new town plugin]
+  !!FU:E;
+!!en;
+!!if&(buildingId)>=30;                                 [dwellings]
+  !!VR(offset:y):S(townType)* 14 +(buildingId) -30 *28;
+  !!VR(srcArrayAddr:y):S6985856;
+!!el&(buildingId)>=17;                                 [spec building]
+  !!VR(offset:y):S(townType) *9 +(buildingId) -17 *28;
+  !!VR(srcArrayAddr:y):S6980420;
+!!el;                                                  [common buildiig]
+  !!VR(offset:y):S(buildingId) *28;
+  !!VR(srcArrayAddr:y):S6979936;
+!!en;
+!!re i/0/(RES_GOLD);
+  !!FU:S(@cost[i])/?(argType:y);
+  !!if&(argType)=(ARG_SYNTAX_GET);
+    !!UN:C(srcArrayAddr)/(offset)/(UNC_INT)/?(cost[i]);
+  !!el&(argType)=(ARG_SYNTAX_SET);
+    !!UN:C(srcArrayAddr)/(offset)/(UNC_INT)/(cost[i]);
+  !!en;
+  !!VR(offset):+(UNC_INT);  
+!!en;
+
+; ******************************************************************************
+; ***************************** Battle Manager *********************************
+; ******************************************************************************
+
+!?FU(OnBeforeBattleAction);
+!!VRi^wog_isBattleStackAction^:S(FALSE);
+
+!!BG:A?(actionType:y);
+
+!!if&(actionType)>=(BATTLE_ACTION_WALK_AND_ATTACK)/(actionType)<=(BATTLE_ACTION_TENT_HEAL)
+|(actionType)=(BATTLE_ACTION_WALK)/(actionType)=(BATTLE_ACTION_DEFEND);
+  !!VRi^wog_isBattleStackAction^:S(TRUE);  
+!!en;
+
+!?FU(WOG_Battle_GetMapItem);
+;?x1 - return MapItem structure in Battle
+!#VA(mapItem:x);   initializate
+!!UN:C(COMBAT_MANAGER)/4/?(bm:y);   
+!!UN:C(bm)/21436/4/?(mapItem);   
+
+!?FU(WOG_Battle_MR_N_GetStackID);
+; x1 - return: stack_id or -1
+!#VA(result:x);   initializate
+!!VR(result):S-1; reset x var to -1
+!!UN:C42231940/(UNC_UINT32)/?(ptr:y);
+!!UN:C(ptr)/56/(UNC_UINT32)/?(gex:y);
+!!FU|(gex)<(BATTLE_GEX_FIRST)/(gex)>(BATTLE_GEX_LAST):E;
+
+!!BU:E(gex)/?(stackId:y);
+!!VR(result)&(stackId)>=0/(stackId)<(BATTLE_MAX_STACKS):S(stackId);
+
+!?FU(WOG_Battle_GetSpellProtectionLvl);
+; x1 - spell_id
+; x2 - spell_bits
+; x3 - protection spell id (30...33)
+; x4 - stack target id
+;?x5 - return: protect spell lvl
+!#VA(spellId:x) (bits:x) (protecId:x) (target:x) (result:x);
+
+!!VR(result):S(NULL); 
+!!FU&(spellId)<0|(spellId)>69:E;
+
+!!SS(spellId):S?(spBits:y);  
+!!VR(spBits):&(bits);
+!!BM(target)&(spBits)=(bits):G(protecId)/?(duration:y)/?(power:y);
+!!VR(result)&(duration)>0:S(power);
+
+!?FU(WOG_Battle_GetHeroSpellSchoolLvl);
+!#VA(heroID:x) (spellID:x) (result:x);
+!!HE(heroID):Z?(hero:y);
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y) C(cmbMgr)/21440/4/?(ground:y);
+!!SN:E5133040/(CALLCONV_THISCALL)/(hero)/(spellID)/(ground);
+!!VR(result):Sv1;
+
+!?FU(WOG_Battle_CanCast);
+!#VA(side:x) (isHero:x) (result:x);
+!!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
+!!SN:E4323856/(CALLCONV_THISCALL)/(cmbMgr)/(side:x)/(isHero:x); [can cast this side]
+!!VR(result):Sv1;
+
+!?FU(WOG_Battle_CanStackReceiveSpell);
+!#VA(stackId:x) (spellID:x) (castingSide:x) (result:x);
+
+!!BM(stackId):Z?(stack:y); I?(side:y);
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y);
+!!SN:E5914512/(CALLCONV_THISCALL)/(cmbMgr)/(spellID)/(castingSide)/(stack)/1/1; [can stack apply buff/debuff] 5A3F90
+!!VR(result):Sv1;
+
+!?FU(WOG_Battle_CanStackBeAffectedBySpell);
+; This function checks the resistance of a stack with random roll, should be used in real casting process
+!#VA(stackId:x) (spellID:x) (castingSide:x) (result:x);
+
+!!BM(stackId):Z?(stack:y);
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y);
+!!SN:E5933392/(CALLCONV_THISCALL)/(cmbMgr)/(spellID)/(castingSide)/(stack)/1/1;
+!!VR(result):Sv1;
+
+!?FU(WOG_Battle_SetSideSpellEffects);
+!#VA(casterSide:x) (targetSide:x) (spell:x) (duration:x) (level:x) (ignoreImmunity:x);
+  !!VR(start:y):S(targetSide) *(BATTLE_STACKS_PER_SIDE);
+  !!VR(end:y):S(start) +20;
+  !!VR(result:y):S(TRUE);
+  !!re i/(start)/(end);
+    !!BMi:N?n T?t;
+    !!if&n>0/t>-1;
+      !!FU(WOG_Battle_CanStackReceiveSpell)&(ignoreImmunity:x)=0:Pi/(spell)/(casterSide)/?(result:y);
+      !!BMi&(result):M(spell)/(duration)/(level);
+    !!en;
+  !!en;
+
+; ******************************************************************************
+; ***************************** Another functions ******************************
+
+
+!?FU(WOG_DL_ChangeCoords);
+!#VA(dlgId:x) (x:x) (y:x);
+; x1 - WoG dialog id
+; x2 - coord X (-1 center)
+; x3 - coord Y (-1 center)
+
+!!VR(saveV1:y):Sv1;
+!!SN:E7510739/(CALLCONV_CDECL)/(dlgId);
+!!VR(ptrDlg:y):Sv1;
+
+!!if&(ptrDlg)<>(NULL);
+  !!UN:C(ptrDlg)/(UNC_UINT32)/?(strDlg:y);
+
+  !!if&(x)>=0;  
+    !!UN:C(strDlg)/32/(UNC_UINT32)/?(dlgWidth:y);
+    !!VR(centerX:y):S(dlgWidth) :2;
+    !!VR(x):-(centerX);
+
+    ; check for out of bounds X < 0
+    !!if&(x)<0;
+      !!VR(x):S0; 
+    !!el:  
+      ; check for out of bounds X > HD_X
+      !!UN:C(HD_X)/(UNC_INT16)/?(gameResolutionX:y);
+      !!VR(checkXmax:y):S(gameResolutionX) -16 -(dlgWidth);
+      !!VR(x)&(x)>(checkXmax):S(checkXmax);
+    !!en;
+
+    ; set x coord
+    !!UN:C(strDlg)/24/(UNC_UINT32)/(x);
+  !!en;
+
+
+  !!if&(y)>=0;  
+    !!UN:C(strDlg)/36/(UNC_UINT32)/?(dlgHight:y);
+    !!VR(centerY:y):S(dlgHight) :2;
+    !!VR(y):-(centerY);
+
+    ; check for out of bounds Y < 0
+    !!if&(y)<0;
+      !!VR(y):S0; 
+    !!el:  
+      ; check for out of bounds Y > HD_Y
+      !!UN:C(HD_Y)/(UNC_INT16)/?(gameResolutionY:y);
+      !!VR(checkYmax:y):S(gameResolutionY) -16 -(dlgHight);
+      !!VR(y)&(y)>(checkYmax):S(checkYmax);
+    !!en;
+    
+    ; set y coord
+    !!UN:C(strDlg)/28/(UNC_UINT32)/(y);  
+  !!en; 
+  
+!!en;
+!!VRv1:S(saveV1);
+
+
+
+; ******************************************************************************
+; ***************************** Player functions *******************************
+
+!?FU(WOG_Creature_GetCost);
+!#VA(creatureID:x) (wood:x) (mercury:x) (ore:x) (sulfur:x) (crystal:x) (gems:x) (gold:x);
+
+!!MA:C(creatureID)/(RES_WOOD)/?(wood);
+!!MA:C(creatureID)/(RES_MERCURY)/?(mercury);
+!!MA:C(creatureID)/(RES_ORE)/?(ore);
+!!MA:C(creatureID)/(RES_SULFUR)/?(sulfur);
+!!MA:C(creatureID)/(RES_CRYSTAL)/?(crystal);
+!!MA:C(creatureID)/(RES_GEMS)/?(gems);
+!!MA:C(creatureID)/(RES_GOLD)/?(gold);
+
+; -----------------------------------
+
+!?FU(WOG_Player_CheckEnoughResources);  [by Archer30]
+; Check if a player has enough for all the given amount of resources.
+
+; Supports two call syntaxes:
+;   P(result)/(player Id)/(wood)/(mercury)...
+;   P(result)/(player Id)/(ID of dynamical array, containing resounce amount)
+
+; Resouces must be provided with this sequence: Wood, Mercury, Ore, Sulfur, Crystal, Gems, Gold and Mithril (optional)
+!#VA(result:x) (playerId:x) (thirdArg:x);
+
+!!VR(result):S(FALSE);
+
+!!FU:A?(numArgs:y);
+; Exit if invalid amount of parameters
+!!FU&(numArgs)<=2:E;
+
+!!UN:P36/?(mithrilEnabled:y);
+
+!!if&(numArgs)>(@thirdArg);
+  !!VR(lastResInd:y):S(numArgs) -(@thirdArg);
+  !!VR(lastResInd)&(mithrilEnabled)/(numArgs)>=10:S(RES_MITHRIL);
+
+  !!re i/(RES_FIRST)/(lastResInd);
+    !!VR(argPtr:y):Si +3;               [The definition of resources amount starts from x3]
+    !!OW:R(playerId)/i/?(count:y);
+    !!VR(count):-x(argPtr); 
+    !!FU&(count)<0:E;
+  !!en;
+!!el;
+  !!SN:M(thirdArg)/?(size:y);
+
+  !!VR(lastResInd):S(size) -1;
+  !!VR(lastResInd)&(mithrilEnabled)/(size)>=8:S(RES_MITHRIL);
+
+  !!re i/(RES_FIRST)/(lastResInd);
+    !!SN:M(thirdArg)/i/?(cost:y);
+    !!OW:R(playerId)/i/?(count);
+    !!VR(count):-(cost);
+    !!FU&(count)<0:E;
+  !!en;
+!!en;
+
+!!VR(result):S(TRUE);
+
+; -----------------------------------
+
+!?FU(WOG_Player_RemoveResources);       [by Archer30]
+; Remove resouces from a given player, prevent any value to be negative.
+
+; Supports two call syntaxes:
+;   P(player Id)/(wood)/(mercury)...
+;   P((player Id)/ID of dynamical array, containing resounce amount)
+
+; Resouces must be provided with this sequence: Wood, Mercury, Ore, Sulfur, Crystal, Gems, Gold and Mithril (optional)
+!#VA(playerId:x) (secondArg:x);
+
+!!FU:A?(numArgs:y);
+; Exit if invalid amount of parameters
+!!FU&(numArgs)<=1:E;
+
+!!UN:P36/?(mithrilEnabled:y);
+
+!!if&(numArgs)>(@secondArg);
+  !!VR(lastResInd:y):S(numArgs) -(@secondArg);
+  !!VR(lastResInd)&(mithrilEnabled)/(numArgs)>=9:S(RES_MITHRIL);
+
+  !!re i/(RES_FIRST)/(lastResInd);
+    !!VR(argPtr:y):Si +2;               [The definition of resources amount starts from x2]
+    !!OW:R(playerId)/i/?(count:y);
+    !!VR(count):-x(argPtr) F0/(INT_MAX); 
+    !!OW:R(playerId)/i/(count);
+  !!en;
+!!el;
+  !!SN:M(secondArg)/?(size:y);
+
+  !!VR(lastResInd):S(size) -1;
+  !!VR(lastResInd)&(mithrilEnabled)/(size)>=8:S(RES_MITHRIL);
+
+  !!re i/(RES_FIRST)/(lastResInd);
+    !!SN:M(secondArg)/i/?(cost:y);
+    !!OW:R(playerId)/i/?(count);
+    !!VR(count):-(cost) F0/(INT_MAX);
+    !!OW:R(playerId)/i/(count);
+  !!en;
+!!en;
+
+
+; ******************************************************************************
+; ****************************** Hero functions ********************************
+
+
+!?FU(WOG_Hero_GetClassName);
+!#VA(heroID:x) (zStringID:x);
+
+!!VR(saveV1:y):Sv1;     
+!!HE(heroID):Z?(hero:y); 
+!!SN:E5083616/2/(hero);  
+!!SN:X?(saveParam:y) Xv1 X?z(zStringID) X(saveParam); 
+!!VRv1:S(saveV1); 
+; -----------------------------------
+!?FU(WOG_Hero_GetLuckLevel);                            in: x1=hero number, out: x2=current luck
+!#VA(heroId:x) (limit:x) (result:x);
+!!HE(heroId):Z?(hero:y);
+!!VR(float:e):S0;
+!!SN:E5126448/(CALLCONV_THISCALL)/(hero)/(float)/0/(limit:x);
+!!VR(result):Sv1;
+
+; Get the max spell points of a hero
+!?FU(WOG_Hero_GetFullSpellPoints);
+!#VA(hero:x) (result:x);
+
+!!HE(hero):Fd/d/d/?(knowledge:y);
+!!HE(hero):Z?(heroStruct:y);            [get hero structure]
+!!SN:E5131040/(CALLCONV_THISCALL_FLOAT)/(heroStruct); [get Intelligence power]
+!!VRe1:*10 *(knowledge);                [e1, emul to get max SP]
+!!VR(result):Se1;                       [return max hero SP]
+
+!?FU(WOG_Hero_GetScoutingRadius);
+!#VA(heroID:x) (result:x);
+
+  !!VR(saveV1:y):Sv1;     
+  !!HE(heroID):Z?(hero:y); 
+  !!SN:E5128928/(CALLCONV_THISCALL)/(hero);
+  !!VR(result):Sv1;     
+  !!VRv1:S(saveV1); 
+
+!?FU(WOG_Hero_GetObjectRange);
+!#VA(heroID:x) (x:x) (y:x) (z:x) (result:x);
+
+!!HE(heroID):P?(hX:y)/?(hY:y)/?(hZ:y);
+!!if&(z)=(hZ);
+  !!VR(dX:y):S(hX) -(x) Sd*(dX);          [(x1-x2)]
+  !!VR(dY:y):S(hY) -(y) Sd*(dY);
+  !!VR(result):S(dX) +(dY); [(y1-y2)]
+!!en;
+
+************************************** End of igrik's Script ***************************************
+
+
+******************************** Start of Era Project Team's Script ********************************
+; Set up global variables
+; Random seed
+!#VRi^WOG_RandomSeedValue^:T0/11/55;
+
+; HD mod
+!?FU(WOG_StartGame);
+!!SN:F^GetModuleHandleA^/^HD_WOG.dll^;
+
+!!if&v1<>(FALSE);
+  !!VRi^wog_hdMod_on^:S(TRUE);
+!!el;
+  !!VRi^wog_hdMod_on^:S(FALSE);
+!!en;
+
+; Screen offset
+; For mithril - monolith    [by wessonsm]
+!?FU(OnGameEnter)&i^wog_hdMod_on^;
+!!UN:C4199496/(UNC_INT16)/?(offsetX:y) C4199503/(UNC_INT16)/?(offsetY:y);  [resolution H, V]
+!!VR(offsetX):-736 :64;
+!!VR(offsetY):-600 :64;    [map center offset]
+!!VRi^wog_screenOffsetX^:S(offsetX);
+!!VRi^wog_screenOffsetY^:S(offsetY);
+
+; On visiting objects - Note that not all the visiting triggers an battle
+; Neutral battle - currently used in Karmic Battles
+!?OB(OBJ_MONSTER);
+!!VRi^wog_isNeutralBattle^:S(TRUE); ** set to True to show that a monster stack is visited
+
+; On Leaving objects
+!$OB(OBJ_MONSTER);
+!!VRi^wog_isNeutralBattle^:S(FALSE);
+
+!?FU(OnBeforeBattleUniversal);
+!!VRi^wog_isRetreated_0^:S(FALSE);        [Currently used in Metamorph]
+!!VRi^wog_isRetreated_1^:S(FALSE);
+!!VRi^wog_isSurrendered_0^:S(FALSE);      [Currently used in Hourglass of Asmodeus]
+!!VRi^wog_isSurrendered_1^:S(FALSE);
+
+; Set up variable for siege wall battle (Must be later than OnBeforeBattleUniversal to work)
+; Currently used in Enhanced War Machines
+; Note that in a battle vs a town without walls, i^wog_isSiege^ would be FALSE. For checking such kind of battle, use single UN:U instead (http://wforum.heroes35.net/showthread.php?tid=541&pid=125513#pid125513)
+!?FU(OnBeforeBattlefieldVisible);
+!!VRi^wog_isSiege^:S(FALSE);
+!!BA:S?(battleType:y);
+!!VRi^wog_isSiege^&(battleType)>0:S(TRUE);
+
+!?FU(OnSetupBattlefield);
+!!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y) C(cmbMgr)/21445/1/?i^wog_isCBBattle^;
+
+; Set up varible for the end of Tactics phase
+!?FU(OnSetupBattlefield);
+!!VRi^wog_tacticsIsEnded^:S(FALSE);
+
+!?FU(OnAfterTacticsPhase);
+!!VRi^wog_tacticsIsEnded^:S(TRUE);
+
+!?FU(OnBeforeBattleReplay);
+!!VRi^wog_tacticsIsEnded^:S(FALSE);
+
+!?FU(OnAfterBattleUniversal);
+!!VRi^wog_tacticsIsEnded^:S(FALSE);
+
+; Battle variables
+!?FU(OnBeforeBattleAction);
+!!BG:A?(action:y);
+
+!!if&(action)=(BATTLE_ACTION_RETREAT);  [Currently used in Metamorph]
+  !!VRi^wog_isRetreated_0^&i^battle_acting_side^=(BATTLE_LEFT):S(TRUE);
+  !!VRi^wog_isRetreated_1^&i^battle_acting_side^=(BATTLE_RIGHT):S(TRUE);
+!!el&(action)=(BATTLE_ACTION_SURRENDER);[Currently used in Hourglass of Asmodeus]
+  !!VRi^wog_isSurrendered_0^&i^battle_acting_side^=(BATTLE_LEFT):S(TRUE);
+  !!VRi^wog_isSurrendered_1^&i^battle_acting_side^=(BATTLE_RIGHT):S(TRUE);
+!!en;
+
+!?FU(OnAfterBattleUniversal);
+*!VRi^wog_isNeutralBattle^:S(FALSE);    [Have to use ! $OB as the battle might not trigger]
+!!VRi^wog_isCBBattle^:S(FALSE);
+
+!?FU(OnAfterLoadGame);
+!!VRi^wog_isNeutralBattle^:S(FALSE);
+!!VRi^wog_isCBBattle^:S(FALSE);
+
+; **************************************************************************************************
+// Archer30: It is recommended to put this section in a general mod like Game Enhancement Mod. They are useful with or without WoG scripts.
+// Gameplay changes
+; Don't allow to summon war machines in CB for Rampart and Stronghold commander
+; Archer30: Do we really need this? The commanders are nerfed a lot!
+!?FU(WOG_OnNpcPlacesWarMachine);
+!!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y) C(cmbMgr)/21445/1/?(isBank:y);
+
+!!if&(isBank);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-12/4/1;
+!!en;
+
+// Bug fixes
+; HD MOD WAR MACHINES SWAP FIX
+!?FU(WOG_OnBeforeHeroSwap)&1000;
+  !!SN:F^GetModuleHandleA^/^HD_WOG.dll^;
+  !!FU&v1<1:E;
+
+  !!FU&i^wog_54_enabled^<1/i^WOG_73_enabled^<1:E;                            [v591 is WM 1, i^WOG_73_enabled^ is WM 3]
+
+  !!UN:C6962576/(UNC_INT32)/?(heroSwapStructure:y);
+
+  !!UN:C(heroSwapStructure)/64/(UNC_INT32)/?(leftHeroStructure:y);
+  !!UN:C(heroSwapStructure)/68/(UNC_INT32)/?(rightHeroStructure:y);
+
+  !!UN:C(leftHeroStructure)/26/(UNC_INT32)/?i^swap_hero_0^;
+  !!UN:C(rightHeroStructure)/26/(UNC_INT32)/?i^swap_hero_1^;
+
+  !!re i/(ART_BALLISTA)/(ART_FIRST_AID_TENT);
+    !!HEi^swap_hero_0^:A2/i/d/?i^WM_Machine_%i_Hero_0^;
+    !!HEi^swap_hero_1^:A2/i/d/?i^WM_Machine_%i_Hero_1^;
+  !!en;
+  
+  !!VRi^WM_Machine_Before_Art_Swap^:S(TRUE);
+
+!?FU(OnUnequipArt)|i^swap_hero_0^/i^swap_hero_1^;
+  !!if&v998>=(ART_BALLISTA)/v998<=(ART_FIRST_AID_TENT)/i^WM_Machine_Before_Art_Swap^;
+    !!VRi^WM_Machine_Before_Art_Swap^:S(FALSE);
+  !!en;
+
+
+!?FU(WOG_OnUpdateHeroInteractionScreen)&i^WM_Machine_Before_Art_Swap^=(FALSE);
+  !!re i/(ART_BALLISTA)/(ART_FIRST_AID_TENT);
+    !!VR(artUnequip:y):Si *-1;
+    !!if&i^WM_Machine_%i_Hero_0^>i^WM_Machine_%i_Hero_1^;
+      !!HEi^swap_hero_0^:A4/i;
+      !!HEi^swap_hero_1^:A(artUnequip);
+    !!el&i^WM_Machine_%i_Hero_1^>i^WM_Machine_%i_Hero_0^;
+      !!HEi^swap_hero_0^:A(artUnequip);
+      !!HEi^swap_hero_1^:A4/i;
+    !!en;
+
+    !!VRi^WM_Machine_Before_Art_Swap^:S(TRUE);
+  !!en;
+
+!?FU(WOG_OnAfterHeroSwap)&1000;
+  !!re i/(ART_BALLISTA)/(ART_FIRST_AID_TENT);
+    !!VRi^WM_Machine_%i_Hero_0^:S(FALSE);
+    !!VRi^WM_Machine_%i_Hero_1^:S(FALSE);
+  !!en;
+
+  !!VRi^swap_hero_0^:S(FALSE);
+  !!VRi^swap_hero_1^:S(FALSE);
+  !!VRi^WM_Machine_Before_Art_Swap^:S(FALSE);
+
+; **************************************************************************************************
+; Get the real type and subtype of a map object
+!?FU(WOG_MapItem_GetRealTypeAndSubtype); 
+; Получение реального типа и подтипа объекта на карте (например, под героем)
+!#VA(x:x) (y:x) (z:x) (type:x) (subtype:x);
+; получаем MapItem
+!!UN:C6918840/(UNC_UINT32)/?(advMgr:y); 
+!!UN:C(advMgr)/92/(UNC_UINT32)/?(gameMap:y); 
+!!SN:E4228816/(CALLCONV_THISCALL)/(gameMap)/(x)/(y)/(z); 
+!!VR(mapItem:y):Sv1;
+; получить подтип объекта
+!!UN:C(mapItem)/34/(UNC_INT16)/?(subtype);
+; получить правильный тип объекта
+!!SN:E5231136/(CALLCONV_THISCALL)/(mapItem);
+!!VR(type):Sv1;
+!!UN&(type)=(NULL):C(mapItem)/30/(UNC_INT16)/?(type);
+
+; CHECK RANDOM MAP
+!?FU(WOG_CheckRandomMap);
+!#VA(result:x);
+
+!!VR(result):S(FALSE);
+!!UN:C(GAME_MANAGER)/4/?(gameMgr:y) C(gameMgr)/128980/1/?(value:y);
+!!VR(result)&(value)=114:S(TRUE);
+
+; Get current game random seed for VR:R and ingame rands;
+!?FU(WOG_GetRandomSeed);
+!#VA(seed:x);
+!!UN:C6814692/4/?(seed);
+
+!?FU(WOG_SetRandomSeed);
+!#VA(newSeed:x) (oldSeed:x);
+!!UN:C6814692/4/?(oldSeed); C6814692/4/(newSeed);
+!!SN:E5294000/(CALLCONV_THISCALL)/(newSeed);
+
+; Get random seed by coordinates
+!?FU(WOG_GetRandomSeedByCoord);
+!#VA(x:x) (y:x) (z:x) (seed:x);
+
+!!VR(x)|(x)<1/(x)>255:S255;
+!!VR(y)|(y)<1/(y)>255:S255;
+!!VR(z)&(z)<1:Si^WOG_RandomSeedValue^;
+!!VR(seed):Si^WOG_RandomSeedValue^ *255 *(x) *255 *(y) +(z); +v99
+
+;Safely generate value without changing original seed
+!?FU(WOG_SafeRand);
+!#VA(min:x) (max:x) (seed:x) (result:x);
+!!FU(WOG_GetRandomSeed):P?(oldSeed:y);
+!!VR(result):Rd/(seed) R0/(min)/(max) Rd/(oldSeed);
+; **************************************************************************************************
+// Preventclicks for the alien hero
+!?FU(OnHeroScreenMouseClick)&i^WOG_35_DisableHeroClick^;
+  !!if&i^mouse_action^>=(MOUSE_LMB_PRESSED)/i^mouse_action^<=(MOUSE_LMB_RELEASED);
+    !!if&i^mouse_item^>=0/i^mouse_item^<=138/i^mouse_item^<>77/i^mouse_item^<>78/i^mouse_item^<>19/i^mouse_item^<>107;
+      !!CM:R0;
+    !!en;
+  !!en;
+
+  !!SN:Q;
+
+// Get the string pointer to be used in battle
+!?FU(OnSetupBattlefield)&i^battle_isVisible^;
+; Recreate battle strings persistent storage
+!!SN:Mi^wog_battleStrings^;
+!!FU(NewStrArray):P?i^wog_battleStrings^/(M_TEMP);
+
+!?FU(OnAfterBattleUniversal)&i^wog_battleStrings^;
+; Free battle strings persistent storage
+!!SN:Mi^wog_battleStrings^;
+!!VRi^wog_battleStrings^:S0;
+
+!?FU(WOG_AllocBattleStr);
+; Stores string in a battle persistent memory and returns its raw address in memory
+!#VA(textPtr:x); string contents to get persistent address for
+!#VA(result:x);  result raw string address
+
+!!SN:Mi^wog_battleStrings^/?(strIndex:y);
+!!FU(Array_Push):Pi^wog_battleStrings^/z(textPtr);
+!!SN:Mi^wog_battleStrings^/?(result)/(strIndex);
+; **************************************************************************************************
+
+!?FU(WOG_HOOK_OnBattleStackCheckReachability);                            [blocking attk action by war machines]
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(stack:y);      [get current active stack]
+!!UN:C(stack)/52/4/?t;                                                    [get mon type]
+!!SN:E4696752/(CALLCONV_FASTCALL)/t;                                      [is mon a war machine]
+!!VRv1:&1;                                                                [check byte]
+!!if&v1;                                                                  [if true]
+  !!SN:X?t/0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4928298;                           [jump over adding near stack as reached target]
+!!en;
+
+; **************************************************************************************************
+; SKILL CLICK FUNCTION (get number of clicked skill in hero screen)
+!?FU(WOG_GetSkillInfoByClick);                            
+!#VA(itemId:x) (heroId:x) (skill:x) (skillArea:x) (skillSlot:x);
+!!re i/(@skill)/(@skillArea);
+  !!VRxi:S-1;
+!!en;
+!!if&(itemId);
+  !!SN:L^10SSkills.dll^/?(isPlugin:y);
+  !!VR(skilZone:y):S(FALSE);
+
+  !!if&(isPlugin);
+    !!VR(skilZone)&(itemId)>500/(itemId)<508:S2;
+  !!en;
+  !!VR(skilZone)&(itemId)>78/(itemId)<103:S1;
+
+  !!FU&(skilZone)=(FALSE):E;           [exit if not clicked on SS skill area]
+
+  !!if&(skilZone)=1;
+    !!VR(skillArea):S(itemId) -79 :8 +1;
+    !!VR(skillSlot):S(skillArea)*8 +(itemId) -79 %8 +1; 
+
+  !!el;
+    !!VR(skillSlot):S(itemId) -501 :3 +9;
+    !!VR(skillArea):S(itemId) -501 %3 +1;
+  !!en;
+
+  !!HE(heroId):S(skillSlot)/?(skill)/1;
+!!en;
+
+; **************************************************************************************************
+; Get strings from text resources
+; Note: In Era Erm Framework, there is a similar function FU(GetTextFileString)
+
+!?FU(WOG_Town_GetName);
+!#VA(townType:x) (string:x);
+!!VR(offset:y):S(townType) *4;
+!!UN:C6976860/(offset)/4/?(namePtr:y);
+!!SN:B(namePtr)/d/?(buildingName:z);
+!!VR(string):Z(buildingName:z);
+
+!?FU(WOG_GetColorOwnerString);
+!#VA(owner:x) (string:x);
+
+!!VR(line:y):S(owner) +23;
+
+!!FU(WOG_ReadTxtString):P6971564/(line);
+!!VR(string):Z^%z1^;
+
+!?FU(WOG_GetResourceName);
+!#VA(resType:x) (string:x);
+
+!!FU(WOG_ReadTxtString):P6968208/(resType);
+!!VR(string):Z^%z1^;
+
+!?FU(WOG_GetMineName);
+!#VA(mineType:x) (string:x);
+
+!!FU(WOG_ReadTxtString):P6968376/(mineType);
+!!VR(string):Z^%z1^;
+
+!?FU(WOG_GetObjectName);
+!#VA(objType:x) (string:x);
+
+!!FU(WOG_ReadTxtString):P6974640/(objType);
+!!VR(string):Z^%z1^;
+
+!?FU(WOG_GetGeneralText);
+!#VA(index:x) (string:x);
+
+!!FU(WOG_ReadTxtString):P6970820/(index);
+!!VR(string):Z^%z1^;
+
+!?FU(WOG_ReadTxtString);; @Master Of Puppets
+!#VA(txtLoadAddres:x) (stringNum:x);
+
+  !!UN:C(txtLoadAddres)/4/?y1;            
+  !!VRy1:+32;
+  !!UN:Cy1/4/?y2;
+  !!VR(stringNum):*4+y2;
+  !!UN:C(stringNum)/4/?y1;
+  !!SN:X?y4 Xy1 X?z1 Xy4;
+
+; **************************************************************************************************
+!?FU(WOG_SetupMultiResDlg);
+!#VA(text:x) (playerId:x) (chosenPicture:x) (chosenRes:x);
+; инициализируем главные переменные
+
+  !!FU(NewIntArray):P16/(NO_PIC_TYPE)/?(resurces:y);; инициализируем массивы дефолнтными значениями    ; заносим в массив тип картинки
+  !!VRf:S0;
+  !!re i/(RES_FIRST)/(RES_LAST_WOG);
+    ; проверяем жив или мертв игрок
+    !!OW:R(playerId)/i/?(value:y); 
+
+    ; если игрок жив, и это не Я 
+    !!if&(value);
+      !!SN:M(resurces)/f/i;
+      !!VRf:+1;
+      !!SN:M(resurces)/f/(value);
+      !!VRf:+1;
+    !!en;
+  !!en;
+  ; конфигурируем сообщение 
+  !!SN:M(resurces)/f;
+  !!FU(PrepareMultiPicDialog):P(resurces);
+  ; показать сообщение 
+  !!IF:N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/z(text)/?(chosenPicture);
+  !!if&(chosenPicture)=-1;; выходим, если нажата ОТМЕНА
+    !!VR(chosenRes):S(NO_RES); 
+  !!el;
+    !!VRf:S(chosenPicture)*2;
+    !!SN:M(resurces)/f/?(chosenRes);
+  !!en;
+
+
+!?FU(WOG_SetupMultiPlayerDlg);
+!#VA(text:x) (neutral:x) (chosenPicture:x) (chosenPlayer:x);
+!#VA(playerType:x);                     [Optional. -1 for Enemy, 0 for any, 1 for friendly]
+
+; инициализируем главные переменные
+!!FU:A?(numArgs:y);
+!!VR(playerType)&(numArgs)<5:S0;
+
+!!FU(NewIntArray):P16/(NO_PIC_TYPE)/?(flags:y);; инициализируем массивы дефолнтными значениями    ; заносим в массив тип картинки
+
+!!FU(WOG_GameMgr_GetPlayer_Me):P?(mePlayerId:y);
+!!OW:T(mePlayerId)/?(myTeam:y);
+
+!!VRf:S0;
+
+!!if&(neutral);
+  !!SN:M(flags)/0/(PIC_TYPE_FLAG);
+  !!SN:M(flags)/1/8;
+  !!VRf:S2;
+!!en;
+
+!!re i/(PLAYER_FIRST)/(PLAYER_LAST);
+  ; проверяем жив или мертв игрок
+  !!OW:Ii/?(isAI:y)/?(isDie:y); 
+
+  ; если игрок жив, и это не Я 
+  !!if&(isDie)<>(TRUE)/i<>(mePlayerId);
+    ; Check the player's team if needed
+    !!if&(playerType)<>0;
+      !!OW:Ti/?(playerTeam:y);
+
+      !!co&(playerType)=-1/(playerTeam)=(myTeam);
+      !!co&(playerType)=1/(playerTeam)<>(myTeam);
+    !!en;
+
+    ; Set up array
+    !!SN:M(flags)/f/(PIC_TYPE_FLAG);
+    !!VRf:+1;
+    !!SN:M(flags)/f/i;
+    !!VRf:+1;
+  !!en;
+!!en;
+
+; получаем название нейтрального игрока
+!!SN:T^wog.192.neutralName^/?z1;
+!!VR(ptrErmZ1Var:y):S9597928;
+!!VR(ptrNeutralPlayerNamePtr:y):S6979200;
+
+; патч памяти (подменяем название нейтрального игрока)
+!!UN:C(ptrNeutralPlayerNamePtr)/(UNC_UINT32)/?(saveMemory:y);
+!!UN:C(ptrNeutralPlayerNamePtr)/(UNC_UINT32)/(ptrErmZ1Var);
+
+; конфигурируем сообщение 
+!!SN:M(flags)/f;
+!!FU(PrepareMultiPicDialog):P(flags);
+; показать сообщение 
+!!IF:N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/z(text)/?(chosenPicture);
+
+!!if&(chosenPicture)=-1;; выходим, если нажата ОТМЕНА
+  !!VR(chosenPlayer):S(mePlayerId);
+!!el;
+  !!VRf:S(chosenPicture)*2 +1;
+  !!SN:M(flags)/f/?(chosenPlayer);
+  !!if&(chosenPlayer)=8;
+    !!VR(chosenPlayer):S(NO_PLAYER);
+  !!en;
+!!en;
+
+; патч памяти (возвращаем оригинальное название)
+!!UN:C(ptrNeutralPlayerNamePtr)/(UNC_UINT32)/(saveMemory:y);
+
+
+; **************************************************************************************************
+; Get a valid position for BU:S summoning or moving a stack to a new position
+!?FU(WOG_GetValidPositionForStack);     [by wessonsm & Archer30]
+!#VA(pos:x);                            [proposed position]
+!#VA(mon:x);                            [monster for summoning]
+!#VA(side:x);                           [side of summoning]
+!#VA(result:x);                         [nearest valid position for summoning. -1 for no position found]
+!#VA(maxDistance:x);                    [optional parameter, max distance between the proposed position and the nearest valid position]
+
+!!FU:A?(params:y);
+!!VR(maxDistance)&(params)<5:S19; by default
+
+!!MA:X(mon)/?(flags:y);
+!!VR(isDoubleWide:y):S(flags) &(MON_FLAG_WIDE);
+
+!!VR(result):S-1;
+
+!!FU(WOG_IfPosIsValid):P(pos)/(isDoubleWide)/(side)/?(isAvailPos:y);
+
+!!if&(isAvailPos);
+  !!VR(result):S(pos);
+!!el;
+  !!VR(posX:y):S(pos) %17;
+  !!VR(posY:y):S(pos) :17;
+
+  !!re (distance:y)/1/(maxDistance);
+    !!FU(NewIntArray):P?(validPosArray:y);
+    !!VR(steps:y):S(distance) *6 -1;
+
+    !!re i/0/(steps);
+      !!if&i=0;
+        !!VR(direction:y):S3;             [Upper Left]
+      !!el;
+        !!VR(direction):Si :(distance);
+      !!en;
+
+      !!FU(WOG_NextHex):P(direction)/?(pos)/?(posX)/?(posY);(posX) and (posY) are needed for next position calculation, if the current one is out of battlefield
+      !!FU(WOG_IfPosIsValid):P(pos)/(isDoubleWide)/(side)/?(isAvailPos:y);
+
+      !!if&(isAvailPos);
+        !!FU(Array_Push):P(validPosArray)/(pos);
+      !!en;
+    !!en;
+
+    !!SN:M(validPosArray)/?(arraySize:y);
+
+    !!if&(arraySize)>0;
+      !!VR(lastPos:y):S(arraySize)-1;
+      !!VR(resultPtr:y):R0/0/(lastPos);
+      !!SN:M(validPosArray)/(resultPtr)/?(result);
+
+      !!br;
+    !!en;
+  !!en;
+!!en;
+
+!?FU(WOG_NextHex);
+!#VA(direction:x) (hex:x) (x:x) (y:x);
+
+!!VR(rowParity:y):S(y) &1;
+
+!!if&(direction)=0;                     [Upper Right]
+  !!VR(x):+1-(rowParity);
+  !!VR(y):-1;
+!!el&(direction)=1;                     [Right]
+  !!VR(x):+1;
+!!el&(direction)=2;                     [Lower Right]
+  !!VR(x):+1-(rowParity);
+  !!VR(y):+1;
+!!el&(direction)=3;                     [Upper Left]
+  !!VR(x):-(rowParity);
+  !!VR(y):+1;
+!!el&(direction)=4;                     [Left]
+  !!VR(x):-1;
+!!el&(direction)=5;                     [Lower Left]
+  !!VR(x):-(rowParity);
+  !!VR(y):-1;
+!!en;
+
+!!if&(x)>-1/(x)<17/(y)>-1/(y)<11;
+  !!VR(hex):S(y) *17 +(x);
+!!el;
+  !!VR(hex):S-1;
+!!en;
+
+!?FU(WOG_IfPosIsValid);
+!#VA(pos:x) (isDoubleWide:x) (side:x) (isAvailPos:x);
+
+!!VR(isAvailPos):S(TRUE);
+!!FU(WOG_IfHexIsFree):P(pos)/?(isAvailPos);
+
+!!if&(isDoubleWide)/(isAvailPos);
+  !!VR(secPos:y)&(side)=(BATTLE_LEFT):S(pos) +1;
+  !!VR(secPos:y)&(side)=(BATTLE_RIGHT):S(pos) -1;
+  !!FU(WOG_IfHexIsFree):P(secPos)/?(isAvailPos);
+!!en;
+
+!?FU(WOG_IfHexIsFree);
+!#VA(pos:x) (isFree:x);
+
+!!VR(isFree):S(TRUE);
+!!VR(posX:y):S(pos) %17;
+
+!!if|(pos)<0/(pos)>186/(posX)=0/(posX)=16;
+  !!VR(isFree):S(FALSE);
+!!en;
+
+!!if&(isFree);
+  !!BU:E(pos)/?(stack:y) O(pos)/?(obstacleFlag:y);
+  !!VR(isFree)|(stack)>(NO_STACK)/(obstacleFlag)>0:S(FALSE);
+!!en;
+
+!!if&(isFree);
+  !!UN:C(COMBAT_MANAGER)/4/?(battleMgr:y);
+  !!SN:E4626848/2/(battleMgr)/(pos)/0;  defensive moat
+  !!VR(isFree)&v1=1:S(FALSE);
+  !!SN:E4625904/2/(battleMgr)/(pos);  if position prohibited
+  ; needed for positions 95 and 96 near the town gate
+  !!VR(isFree)&v1=1:S(FALSE);
+!!en;
+
+; **************************************************************************************************
+; Get a random valid monster, aka all except not-used, warmachines, emissaries and commanders
+!?FU(WOG_GetRandomMonster);             [by Archer30]
+!#VA(mon:x);                            [Return the random monster ID]
+!#VA(minLevel:x);                       [Optional. Min Monster level, including the level specified]
+!#VA(maxLevel:x);                       [Optional. Man Monster level, including the level specified]
+!#VA(maxFightValue:x);                  [Optional. Max fight value allowed, including the value specified]
+
+!!FU:A?(numArgs:y);
+
+!!if&(numArgs)<3;
+  !!VR(minLevel):S(MON_MIN_LEVEL);
+  !!VR(maxLevel):S(MON_MAX_LEVEL);
+!!en;
+
+!!MA&(numArgs)<4:F(MON_AZURE_DRAGON)/?(maxFightValue); [by default the max fight value is not greater than Azure Dragon's]
+
+!!VR(mon):S(NO_MON);
+!!FU(GetMaxMonsterId):P?(lastMon:y);
+
+!!re i;
+  !!VR(randMon:y):R0/(MON_FIRST)/(lastMon);
+  ; Skip invalid monsters
+  !!co|(randMon)=(MON_NOT_USED_1)/(randMon)=(MON_NOT_USED_2)/(randMon)=(MON_NOT_USED_3)/(randMon)=(MON_NOT_USED_4);
+  !!co&(randMon)>=(MON_CATAPULT)/(randMon)<=(MON_ARROW_TOWERS);
+  !!co&(randMon)>=(MON_EMISSARY_OF_WAR)/(randMon)<=(MON_EMISSARY_OF_LORE);
+  !!co&(randMon)>=(MON_COMMANDER_FIRST_A)/(randMon)<=(MON_COMMANDER_LAST_D);
+
+  ; Check if the level and fight value are ideal
+  !!MA:L(randMon)/?(level:y);
+
+  !!if&(level)>=(minLevel)/(level)<=(maxLevel);
+    !!MA:F(randMon)/?(fightValue:y);
+
+    !!if&(fightValue)>0/(fightValue)<=(maxFightValue);
+      !!VR(mon):S(randMon);
+
+      !!br;
+    !!en;
+  !!en;
+!!en;
+
+; **************************************************************************************************
+; Get a random unoccupied hero
+!?FU(WOG_GetRandomUnoccupiedHero);      [by Archer30]
+!#VA(randHero:x);                       [Out. Random Hero number]
+!#VA(player:x);                         [Optional. Check whether the player is eligible to recruite the hero. value other than -1 ~ 7 would skip the check]
+
+; Standarise variables
+!!FU:A?(numArgs:y);
+!!VR(player)&(numArgs)<2:S-2;
+!!VR(player)&(player)<(ANY_PLAYER)/(player)>(PLAYER_LAST):S-2;
+
+!!if&(player)>-2;
+  !!if&(player)>(ANY_PLAYER);
+    !!VR(playerBits:y):S1 Sd<<(player);
+  !!el;
+    !!VR(playerBits):S255;
+  !!en;
+!!en;
+
+!!VR(randHero):S(NO_HERO);
+
+; Check if Hourglass of Asmodeus is enabled
+!!UN:P106/?(hourglassOn:y);
+
+!!FU(NewIntArray):P?(availHeroes:y);
+
+; Loop through all the heroes
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  ; Skip if the hero is Asmodeus (When Hourglass of Asmodeus is enabled)
+  !!co&(hourglassOn)/i=i^wog_106_Asmodeus^;
+
+  ; Skip if the hero is not allowed for the player
+  !!if&(player)>-2;
+    !!HEi:R3/?(isEnabled:y)/(playerBits);
+
+    !!co&(isEnabled)<>(TRUE);
+  !!en;
+
+  ; Check if the hero has an owner or is in a prison
+  !!HEi:O?(owner:y) P?(x:y)/?(y:y)/?(z:y);
+
+  ; Check if the hero is in a tavern if both no owner and not in a prison
+  !!if&(owner)=(NO_OWNER)/(x)<0/(y)<0/(z)<0;
+
+    !!re j/(PLAYER_FIRST)/(PLAYER_LAST);
+      !!OW:Vj/?(leftHero:y)/?(rightHero:y);
+
+      !!br&i=(leftHero);
+      !!br&i=(rightHero);
+    !!en;
+
+      ; Push the hero to the available heroes array if all the criteria are matched
+    !!FU(Array_Push)&j>(PLAYER_LAST):P(availHeroes)/i;
+  !!en;
+!!en;
+
+; Get the random hero from the array
+!!SN:M(availHeroes)/?(size:y);
+
+!!if&(size)>0;
+  !!VR(lastIndex:y):S(size) -1;
+  !!VR(random:y):R0/0/(lastIndex);
+  !!SN:M(availHeroes)/(random)/?(randHero);
+!!en;
+
+; **************************************************************************************************
+; Check if the first character of z1 is a number
+!?FU(WOG_CheckIfZ1FirstCharIsNum);      [by Hawaiing]
+!#VA(result:x);
+
+!!VR(result):S(FALSE);
+!!UN:C9597928/1/?(firstChar:y);
+!!VR(result)&(firstChar)>=48/(firstChar)<=57:S(TRUE);
+
+; **************************************************************************************************
+; Play animation on a specific battlefield hex: (© feanor)
+!?FU(WOG_PlayAnimationOnHex);
+!#VA(animation:x) (hex:x) (delay:x);
+
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y);
+!!SN:E4810128/2/(cmbMgr)/(animation)/(hex)/(delay)/0;
+
+; **************************************************************************************************
+; Play a SPELL animation on multiple stacks at the same time (@feanor and Archer30)
+!?FU(WOG_PlayAnimationOnMultipleStacks);
+!#VA(stacksList:x);                     [Array of Stack numbers for animation]
+!#VA(animation:x);                      [Index of the animation (BM:V)]
+!#VA(playDamagedAnimation:x);           [Optional. Boolean. Whether to play the damaged animation]
+
+!!FU:A?(numArgs:y);
+!!VR(playDamagedAnimation)&(numArgs)<3:S(FALSE);
+
+; Initialise array and variables
+!!FU(NewIntArray):P10/?(stacksForAnimationList:y);
+!!SN:M(stacksList)/?(size:y);
+!!VR(bits[4]:y):C(BIT_0)/(BIT_8)/(BIT_16)/(BIT_24);
+
+; Loop through the array containing stack numbers and set up the array for animation
+!!re i/0/(size)/1/-1;
+  !!SN:M(stacksList)/i/?(stack:y);
+  ; Skip animation for the last stack of each side
+  !!co|(stack)=(BATTLE_ATTACKER_STACK_LAST)/(stack)=(BATTLE_DEFENDER_STACK_LAST);
+
+  ; Fix defender stack number
+  !!VR(stack)&(stack)>(BATTLE_ATTACKER_STACK_LAST):-1;
+
+  ; Set up the array for animation
+  !!VR(slotIndex:y):S(stack) :4;
+  !!VR(bitIndex:y):S(stack) %4;
+
+  *!SN:M(stacksForAnimationList)/(slotIndex)/d|(bits[bitIndex]); [This syntax doesn't work]
+  !!SN:M(stacksForAnimationList)/(slotIndex)/?(value:y);
+  !!VR(value):|(bits[bitIndex]);
+  !!SN:M(stacksForAnimationList)/(slotIndex)/(value);
+!!en;
+
+; Get the address of the array
+!!SN:M(stacksForAnimationList)/?(arrayAddress:y)/0;
+
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y);
+; first parameter - combatmanager
+; the second parameter is a pointer to an array of forty bytes: one per unit
+; third parameter - animation number
+; fourth parameter - whether to animate the damage (0 - not necessary, 1 - necessary)
+!!SN:E5925584/2/(cmbMgr)/(arrayAddress)/(animation)/(playDamagedAnimation);     [play animation]
+
+; **************************************************************************************************
+; Get the total exp required for reaching a hero level
+!?FU(WOG_GetExpRequirementOfLevel);     [by daemon_n]
+!#VA(lvl:x) (exp:x);
+
+!!VR(exp):S0;
+!!FU&(lvl)<1:E;
+!!VR(saveV1:y):Sv1;
+!!SN:E5088784/(CALLCONV_FASTCALL)/(lvl:x);
+!!VR(exp):Sv1;
+!!VRv1:S(saveV1);
+
+; **************************************************************************************************
+; Check if a monster is a normal monster, aka not war machine, not commander nor emissary
+!?FU(WOG_CheckIfMonsterIsValid);        [by Archer30]
+!#VA(mon:x) (result:x);
+
+!!VR(result):S(TRUE);
+!!VR(result)&(mon)<=(NO_MON):S(FALSE);
+!!VR(result)|(mon)=(MON_NOT_USED_1)/(mon)=(MON_NOT_USED_2)/(mon)=(MON_NOT_USED_3)/(mon)=(MON_NOT_USED_4):S(FALSE);
+!!VR(result)&(mon)>=(MON_CATAPULT)/(mon)<=(MON_ARROW_TOWERS):S(FALSE);
+!!VR(result)&(mon)>=(MON_EMISSARY_OF_WAR)/(mon)<=(MON_EMISSARY_OF_LORE):S(FALSE);
+!!VR(result)&(mon)>=(MON_COMMANDER_FIRST_A)/(mon)<=(MON_COMMANDER_LAST_D):S(FALSE);
+
+; **************************************************************************************************
+; Get the max primary skill value of the game
+!?FU(WOG_GetMaxPrimarySkillValue);         [by Archer30]
+!#VA(result:x);
+
+!!UN:C4342141/1/?(value:y);
+!!SN:F^PluginExists^/^prima^;
+
+; If display primary skills over 99.bin is enabeld, it overrides prima and set max primary skills at 126
+!!if&v1;
+  !!if&(value)<>127;
+    !!VR(result):S249;
+  !!el;
+    !!VR(result):S126;
+  !!en;
+!!el;
+  !!if&(value)=127;
+    !!VR(result):S127;
+  !!el;
+    !!VR(result):S99;
+  !!en;
+!!en;
+
+; **************************************************************************************************
+; Show new WoG Object (Pyramid) String
+!?FU(WOG_ShowNewWoGObjectInfo);         [by Archer30]
+!#VA(wogOptIndex:x);                    [WoG option number]
+!#VA(objSubtype:x);                     [Object subype]
+!#VA(x:x);                              [Optional. For hint mode only. The X coord. of the hovering object]
+!#VA(y:x);                              [Optional. For hint mode only. The Y coord. of the hovering object]
+!#VA(z:x);                              [Optional. For hint mode only. The Z coord. of the hovering object]          
+
+!!UN:P(wogOptIndex)/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!VR(mode:y):S0;
+!!FU:A?(numArgs:y);
+!!VR(mode)&(numArgs)<5:S1;
+!!CM&(mode)=1:P?(x)/?(y)/?(z);
+
+; Exit if the location has been occupied by a hero
+!!UN:P904/(TRUE) P905/(FALSE);
+!!HE(x)/(y)/(z):E?(exp:y);
+!!UN:P905/?(hasError:y);
+!!UN:P904/(FALSE);
+
+!!if&(hasError);
+  !!UN:P905/(FALSE);
+!!el;
+  !!FU:E;
+!!en;
+
+!!OB(x)/(y)/(z):T?(visitType:y) U?(visitSubtype:y);
+!!FU|(visitType)<>(OBJ_NEW_WOG_OBJECTS)/(visitSubtype)<>(objSubtype):E;
+
+!!SN:O?(x)/?(y)/?(z);
+!!PO(x)/(y)/(z):N?(isVisited:y);
+; Check if the object has been visited by the interacting player at least once
+!!OW:C?(player:y)/?(interactPlayer:y);
+!!PM(x)/(y)/(z):P(interactPlayer)/?(visitedOnce:y);
+
+!!SN:T^wog.%(wogOptIndex).objName^/?(objName:z);
+!!FU(WOG_GetMapObjectString):P(objName)/(visitedOnce)/(isVisited)/(mode)/?(string:z);
+
+!!if&(mode)=0;
+  !!MM:M^%(string)^;
+!!el;
+  *!SN:H^object^/(OBJ_NEW_WOG_OBJECTS)/(objSubtype)/^%(string)^;
+  !!CM:R0;
+  !!IF:M0/(MSG_TYPE_POPUP)/^%(string)^;
+!!en;
+
+; Set up string of map object to be displayed as hint or RMB dialog
+!?FU(WOG_GetMapObjectString);           [by Archer30]
+!#VA(nameInd:x);                        [String index of the name of the object]
+!#VA(visitedOnce:x);                    [Boolean. Whether the object has been visited once in the game by the interacting player]
+!#VA(isVisited:x);                      [Boolean. Whether the object is visited by someone at this time]
+!#VA(mode:x);                           [0 for hint, 1 for right-clicking]
+!#VA(result:x);                         [OUT. String index of the map object]
+
+!!VR(string:z):Sz(nameInd);
+
+!!if&(visitedOnce);
+  !!if&(mode)=0;
+    !!VR(separator:z):S^ ^;
+  !!el;
+    !!VR(separator):S^%T(wog.endl)%T(wog.endl)^;
+  !!en;
+
+  !!if&(isVisited);
+    !!VR(string):+^%(separator)%T(wog.visited)^;
+  !!el;
+    !!VR(string):+^%(separator)%T(wog.notVisited)^;
+  !!en;
+!!en;
+
+!!VR(result):Z(string);
+
+; Reset new WoG object for revisiting
+!?FU(WOG_ResetNewWoGObject);            [by Archer30]
+!#VA(wogOptIndex:x);                    [WoG option number]
+!#VA(objSubtype:x);                     [Object subype]
+
+!!UN:P(wogOptIndex)/?(wogOption:y); [Check if Summoning Stones is enabled in WoGify Options]
+!!FU&(wogOption)<>(TRUE):E; [Exit if script isn't enabled]
+
+!!VR(x:y):S-1;
+
+!!re i;
+  !!UN:U(OBJ_NEW_WOG_OBJECTS)/(objSubtype)/-1/(x)/(y:y)/(z:y);
+  !!br&(x)<0;
+
+  !!PO(x)/(y)/(z):N0;                   
+  !!PM(x)/(y)/(z)&i^timerWeekDay^=1:V(TRUE); [Reset to tell AI it can visit, for Monday only]
+!!en;
+
+; **************************************************************************************************
+; Calculate number of secondary skills a hero have
+; Usually this funciton is not needed if everything sets correctly. The number can be fetched by HE:S?#1
+!?FU(WOG_GetNumberOfSecSkills);        [by Archer30]
+!#VA(hero:x) (number:x);
+
+!!VR(number):S0;
+!!VR(warfarePlaced:y):S(FALSE);
+
+!!re i/(SEC_SKILL_FIRST)/(SEC_SKILL_LAST);
+  !!HE(hero):Si/?(learned:y);
+
+  !!if&(learned);
+    !!if|i=(SKILL_BALLISTICS)/i=(SKILL_ARTILLERY)/i=(SKILL_FIRST_AID);
+      !!if&i^wog_193_enabled^;
+        !!if&(warfarePlaced:y)=(FALSE);
+          !!VR(warfarePlaced:y):S(TRUE);
+          !!VR(number):+1;
+        !!en;
+
+        !!co;
+      !!en;
+    !!en;
+
+    !!VR(number):+1;
+  !!en;
+!!en;
+
+; **************************************************************************************************
+; Get the number of available wandering monster slots
+!?FU(WOG_GetNumberOfAvailWanderingMonsters); [by Archer30]
+!#VA(result:x);
+
+!!VR(result):S0;
+
+; Check how many wandering monster slot is available. Max = 48.
+!!re (wm:y)/1/48;
+  !!MW(wm):E?(wmExisted:y);
+  !!VR(result)&(wmExisted)<>(TRUE):+1;
+!!en;
+
+; **************************************************************************************************
+; Check if the neutral stack is eligible to be replaced (not a special one)
+!?FU(WOG_CheckIfMonIsEligibleToBeRepalced);
+; Alternative function arguments:
+;  (vIndex)/?(result)
+;  (x)/(y)/(z)/?(result)
+;  The number of arguments can be 2 or 4.
+!#VA(arg1:x);
+!#VA(arg2:x);
+!#VA(arg3:x);
+!#VA(arg4:x);
+
+; Get coordinates depending on the amount of arguments
+!!FU:A?(numArgs:y);
+
+!!if&(numArgs)<3;
+  !!VR(arg2):S(FALSE);
+
+  !!VR(x:y):Sv(arg1);
+  !!VR(yIndex:y):S(arg1) +1;
+  !!VR(y:y):Sv(yIndex);
+  !!VR(zIndex:y):S(yIndex) +1;
+  !!VR(z:y):Sv(zIndex);
+!!el;
+  !!VR(arg4):S(FALSE);
+
+  !!VR(x):S(arg1);
+  !!VR(y):S(arg2);
+  !!VR(z):S(arg3);
+!!en;
+
+!!UN:P904/1; [Disable Error Messages]
+!!UN:P905/0; [Initialize error-result flag to 0]
+
+!!MO(x)/(y)/(z):A?(art:y); [Check if monster has an artifact: y3]
+
+!!UN:P905/?(hasError:y) P905/(FALSE); [Check if an error occurred: y4=1 if there was an error]
+!!UN:P904/0; [Reenable Error Messages]
+!!FU&(hasError)=0:E; [Skip this monster if NO error occurred (because it has custom setup of text, artifact or resources)]
+
+!!MO(x)/(y)/(z):G?(num:y) O?(noGrow:y); [Check number (y5) and grow/no-grow (y6)]
+!!FU&(num)=1/(noGrow)=1:E; [Skip if only 1 monster and set to not grow]
+
+!!MO(x)/(y)/(z):R?(aggression:y)/1; [Check aggressions: y7]
+!!FU|(aggression)=0/(aggression)=10:E; [Skip if monster set to always join or always fight]
+
+!!if&(numArgs)<3;
+  !!VR(arg2):S(TRUE);
+!!el;
+  !!VR(arg4):S(TRUE);
+!!en;
+
+********************************* End of Era Project Team's Script *********************************

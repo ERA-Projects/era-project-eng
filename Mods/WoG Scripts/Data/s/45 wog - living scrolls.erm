@@ -1,0 +1,433 @@
+ZVSE2
+
+** Living Scrolls Script Version 2.1 Created by Timothy Pulver
+** option id = 33;
+**  Fully Rewritten: October 24, 2022 by daemon_n
+
+------------------------------------------------------------------------
+
+ [Start of Battle Trigger]
+
+!?FU(OnSetupBattlefield)&i^wog_isNeutralBattle^;/i^battle_human_0^; [i^battle_human_0^ - Prevent triggering when theoretical AI is disabled as it could show unwanted msg on the screen (when spell not working)]
+  !!UN:P33/?(wogOption:y);
+  !!FU&(wogOption)<>(TRUE):E;
+  !!FU(WOG_Battle_CanCast):P(BATTLE_LEFT)/0/?i^WOG_33_activated^;
+
+  !!VRi^WOG_33_cast_chance^:S0;
+  !!if&i^WOG_33_activated^;
+    !!FU(NewIntArray):P5/(NO_SPELL)/?i^WOG_33_spells_array_ID^/(M_TEMP);
+    !!VR(counter:y):S0;
+
+    !!re i/0/4;(ART_SLOT_MISC_5);
+      !!if&i<4;
+        !!VR(slotInd:y):Si +(ART_SLOT_MISC_1);
+      !!el;
+        !!VR(slotInd:y):S(ART_SLOT_MISC_5);
+      !!en;
+
+      !!FU(GetArtAtSlot):Pi^battle_hero_0^/(slotInd)/?(art:y)/?(spellID:y);
+
+      !!if&(art)=(ART_SPELL_SCROLL);
+        !!FU(WOG_33_CheckSpellIsValid):P(spellID)/?(isValid:y);
+
+        !!if&(isValid);
+          !!SN:Mi^WOG_33_spells_array_ID^/(counter)/(spellID);
+          !!VR(counter):+1;
+        !!en;
+      !!en;
+    !!en;
+
+    !!if&(counter);
+      !!VRi^WOG_33_cast_chance^:S(counter) *20;
+      !!SN:Mi^WOG_33_spells_array_ID^/(counter);
+    !!el;
+      !!FU(WOG_33_ClearCombatVariables):P;
+    !!en;
+  !!en;
+
+!?FU(OnAfterBattleUniversal);
+!!FU(WOG_33_ClearCombatVariables):P;
+
+!?FU(WOG_33_ClearCombatVariables);
+!!VRi^WOG_33_activated^:S0;
+!!VRi^WOG_33_cast_chance^:S0;
+!!VRi^WOG_33_this_round_cast_chance^:S0;
+!!SN:Mi^WOG_33_spells_array_ID^;
+
+
+!?FU(WOG_33_GetTargetStackId);
+!#VA(targetStackSide:x) (castingSide:x) (spellID:x) (targetStackId:x);
+  !!VR(targetStackId):S(NO_STACK);
+  !!VR(start:y):S(targetStackSide) *21;
+  !!VR(end:y):S(start) +20;
+  !!FU(NewIntArray):P20/?(targetStacks:y);
+  !!VR(counter:y);
+  !!re i/(start)/(end);
+    !!BMi:N?n;
+    !!if&n>0;
+      !!FU(WOG_Battle_CanStackReceiveSpell):Pi/(spellID)/(castingSide)/?(result:y); // check stack immunity
+      !!if&(result);
+        !!if&(castingSide:x)<>(targetStackSide:x); // just in case check the side skip check for allies 
+          !!BMi:Z?(stackPtr:y); // get stack ptr
+          !!UN:C(stackPtr)/656/(UNC_INT)/?(blindDur:y) C(stackPtr)/688/(UNC_INT)/?(stoneDur:y) C(stackPtr)/704/(UNC_INT)/?(paralyzDur:y);
+          !!co|(paralyzDur)/(blindDur)/(stoneDur); // if any status is on stack then skip it from targer stacks list
+        !!en;
+
+        !!SN:M(targetStacks)/(counter)/i;
+        !!VR(counter):+1;
+      !!en;
+    !!en;
+  !!en;
+  !!if&(counter);
+    !!VR(counter):-1;
+    !!VR(randomInd:y):R0/0/(counter);
+    !!SN:M(targetStacks)/(randomInd)/?(targetStackId);
+  !!en;
+
+!?FU(WOG_33_CastTargetSpellAtPos);
+!#VA(pos:x) (spellID:x) (schoolLvl:x) (checkStack:x);
+  *!BG:A?(oldAction:y) A(BATTLE_ACTION_MONSTER_CAST);
+  !!VR(schoolLvl)&(schoolLvl)>(SKILL_ADVANCED):S(SKILL_ADVANCED); // limit power by advanced 
+
+  !!HEi^battle_hero_0^:Z?(hero:y); Fd/d/?(power:y)/d;
+  !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y) C(cmbMgr)/21460/4/?(power:y)
+  C(cmbMgr)/78528/4/?(saveSide:y) C(cmbMgr)/78528/4/(BATTLE_LEFT);
+
+  !!BU:G?(isMagicPlant:y);                       [Battlefield: y7 (1=Magic Plains)]
+  !!BU&(isMagicPlant)=1:G-1;                     [Battlefield: y7 (1=Magic Plains)]
+
+  !!UN:C5898734/1/1/132; [jnz -> jz]
+  !!SN:E5898560/(CALLCONV_THISCALL)/(cmbMgr)/(spellID)/(pos)/0/-1/(schoolLvl)/(power);
+  !!UN:C5898734/1/1/133;[jz -> jnz]
+
+  !!BU&(isMagicPlant)=1:G1;
+  !!UN:C(cmbMgr)/78528/4/(saveSide);
+
+
+!?FU(WOG_33_CastSpellAtRandomPos);
+!#VA(availablePos:x) (spellID:x) (schoolLvl:x) (success:x);
+  !!SN:M(availablePos)/?(size:y);
+  !!if&(size);
+    !!VR(size):-1;
+    !!FU(WOG_GetRandomSeedByCoord):Pi^battle_x^/i^battle_y^/i^battle_z^/?(seed:y);
+    !!VR(randValue:y):Si^battle_hero_0^ *3 +i^battle_round^ *12 +i^WOG_33_this_round_cast_chance^ +i^battle_round^+1 *2; Sd*i^battle_current_stack^
+    !!VR(seed):+(randValue:y);
+    !!FU(WOG_SafeRand):P0/(size)/(seed)/?(randomInd:y);
+    !!SN:M(availablePos)/(randomInd)/?(position:y);
+    !!FU(WOG_33_CastTargetSpellAtPos):P(position)/(spellID)/(schoolLvl);
+    !!VR(success):S(TRUE);
+  !!el;
+    !!VR(success):S(FALSE);
+  !!en;
+
+!?FU(WOG_33_GetSpellTargetSide);
+!#VA(spellID:x) (side:x);
+  !!VR(side):S(NO_STACK);
+  !!SS(spellID):F?f;
+  !!VR(damageSpell:y):Sf &512;
+  !!VR(massBuff:y):Sf &2048;
+  !!VR(defendSpell:y):Sf &16384;
+
+  !!SS(spellID):O?(targetType:y);
+
+  !!if&(damageSpell)|(targetType)=-1;
+    !!VR(side):S(BATTLE_RIGHT);
+
+  !!el|(massBuff)/(defendSpell);
+    !!VR(side):S(BATTLE_LEFT);
+  !!en;
+
+
+
+!?FU(WOG_33_CastSpellProcedure);
+!#VA(spellArray:x); (atNum:x) (defNum:x);
+
+  !!SN:M(spellArray)/?(size:y);
+  !!VR(max:y):S(size) -1;
+  !!FU(WOG_GetRandomSeedByCoord):Pi^battle_x^/i^battle_y^/i^battle_z^/?(seed:y);
+  !!VR(randValue:y):Si^battle_current_stack^ *17 +i^battle_hero_0^ *3 +i^battle_round^ *2; Sd*i^battle_current_stack^
+  !!VR(seed):+(randValue:y);
+  !!FU(WOG_SafeRand):P0/(max)/(seed)/?(spellInd:y);
+
+  !!SN:M(spellArray)/(spellInd)/?(spellID:y);
+
+  !!HEi^battle_hero_0^:Z?(hero:y);
+  !!SN:E5133040/(CALLCONV_THISCALL)/(hero)/(spellID)/0;
+  !!VR(schoolLvl:y):Sv1;
+
+  !!FU(WOG_33_GetSpellTargetSide):P(spellID)/?(targetStackSide:y);
+  *!SN:H^spell^/(spellID)/0/?z-1;
+  !!VR(success:y):S(FALSE);
+
+  !!if&(targetStackSide)<>(NO_STACK);
+  *!IF:L^%z-1 %(side)^;  
+    !!FU(WOG_33_GetTargetStackId):P(targetStackSide)/(BATTLE_LEFT)/(spellID)/?(targetStackId:y);
+    !!if&(targetStackId)<>(NO_STACK);
+      *!IF:M^%z-1^;
+      !!BM(targetStackId):P?(position:y);
+      !!FU(WOG_33_CastTargetSpellAtPos):P(position)/(spellID)/(schoolLvl)/1;
+      !!VR(success):S(TRUE);
+    !!en;
+  !!el&(spellID)=(SPELL_DISPEL);
+
+    !!if&(schoolLvl)>1;
+      !!VR(randSide:y):R0/(BATTLE_LEFT)/(BATTLE_RIGHT);
+      !!FU(WOG_33_GetTargetStackId):P(randSide)/(BATTLE_LEFT)/(spellID)/?(targetStackId:y);
+      !!if&(targetStackId)=(NO_STACK);
+        !!VR(randSide):X1;
+        !!FU(WOG_33_GetTargetStackId):P(randSide)/(BATTLE_LEFT)/(spellID)/?(targetStackId:y);
+      !!en;
+    !!el;
+      !!FU(WOG_33_GetTargetStackId):P(BATTLE_LEFT)/(BATTLE_LEFT)/(spellID)/?(targetStackId:y);
+    !!en;
+
+    !!if&(targetStackId)<>(NO_STACK);
+      !!BM(targetStackId):P?(position:y);
+      !!FU(WOG_33_CastTargetSpellAtPos):P(position)/(spellID)/(schoolLvl)/1;
+      !!VR(success):S(TRUE);    
+    !!en;
+  !!el&(spellID)=(SPELL_TELEPORT); // any hex
+    !!FU(WOG_33_GetTargetStackId):P(BATTLE_LEFT)/(BATTLE_LEFT)/(spellID)/?(targetStackId:y);
+    !!if&(targetStackId)<>(NO_STACK);
+      !!FU(NewIntArray):P?(availablePos:y);
+      !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
+      !!BM(targetStackId):Z?(mon:y);
+      !!FU(WOG_33_GetAvailableToSpellHexArray):P(availablePos)/(WOG_33_CheckHexIsAvailableForTeleport)/(cmbMgr:y)/(mon);
+      !!SN:M(availablePos)/?(size:y);
+      !!if&(size);
+        !!VR(size):-1;
+        !!VR(randomInd:y):R0/0/(size);
+        !!SN:M(availablePos)/(randomInd)/?(position:y);
+        !!BM(targetStackId):P?(oldPos:y);
+        !!SN:E5898560/(CALLCONV_THISCALL)/(cmbMgr)/(spellID)/(oldPos)/1/(position)/(schoolLvl)/2;
+        !!VR(success:y):S(TRUE);
+      !!en;
+    !!en;
+
+  !!el|(spellID)=(SPELL_QUICKSAND)/(spellID)=(SPELL_LAND_MINE);
+    !!FU(WOG_33_CastTargetSpellAtPos):P0/(spellID)/(schoolLvl);
+    !!VR(success):S(TRUE);
+  !!el&(spellID)=(SPELL_REMOVE_OBSTACLE);
+    !!if&i^wog_isSiege^<>(TRUE)/i^wog_isCBBattle^=0;
+      !!FU(NewIntArray):P?(availablePos:y);
+      !!FU(WOG_33_GetAvailableToSpellHexArray):P(availablePos)/(WOG_33_CheckHexIsObstacle);
+      !!FU(WOG_33_CastSpellAtRandomPos):P(availablePos)/(spellID)/(schoolLvl)/?(success);
+      *!VR(success):S(TRUE);
+    !!en;
+  !!el|(spellID)=(SPELL_FIRE_WALL)/(spellID)=(SPELL_FORCE_FIELD);
+    !!FU(NewIntArray):P?(availablePos:y);
+    !!FU(WOG_33_GetAvailableToSpellHexArray):P(availablePos)/(WOG_33_CheckHexIsAvailableForWall)/(schoolLvl);
+    !!FU(WOG_33_CastSpellAtRandomPos):P(availablePos)/(spellID)/(schoolLvl)/?(success);
+    *!VR(success):S(TRUE);
+
+  !!el&(spellID)=(SPELL_EARTHQUAKE);
+
+    !!if&i^wog_isSiege^;
+      !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
+      !!re i/0/7;
+        !!SN:E4676976/(CALLCONV_THISCALL)/(cmbMgr)/i;
+        !!if&v1;
+          !!SN:E5930896/(CALLCONV_FASTCALL)/(cmbMgr)/(SPELL_EARTHQUAKE)/0;
+          !!VR(success):S(TRUE);
+          !!br;
+        !!en;
+      !!en;
+
+    !!el&(size)>1;
+      !!FU(Array_Clone):P(spellArray)/?(newArray:y);
+      *!VR(spellInd):X1;
+      !!if&(spellInd);
+        !!VR(otherSpellInd:y):S0;
+      !!el;
+        !!VR(otherSpellInd:y):S1;
+      !!en;
+      !!SN:V(newArray)/(otherSpellInd)/?(otherSpell:y);
+      !!SN:V(newArray)/(spellInd)/(otherSpell:y);
+      !!FU(Array_SortedUnique):P(newArray);
+      !!VR(success):S(TRUE);
+      !!FU(WOG_33_CastSpellProcedure):P(newArray);
+    !!en;
+
+  !!en;
+  !!if&(success)=(FALSE);
+    !!FU(WOG_33_ReportSpellCastFail):P(spellID);
+  !!en;
+  
+!?FU(WOG_33_ReportSpellCastFail);
+!#VA(spellID:x);
+!!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
+
+!!SN:E4628608/(CALLCONV_THISCALL)/(cmbMgr);
+!!VR(showIt:y):Sv1 X1;
+!!if&(showIt:y);
+  !!SN:H^spell^/(spellID:x)/0/?(spellName:z) T^wog.33.fail^/?(msg:z)/^spellName^/(spellName);
+  !!MM:S(msg);
+!!en;
+
+!?FU(WOG_33_CheckHexIsObstacle);
+!#VA(hexId:x) (result:x);
+  !!VR(result):S(FALSE);
+  !!BU:O(hexId)/?f;
+  !!VRf:&2;
+  !!if&f/f<4;
+    !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
+    !!VR(offset:y):S112 *(hexId) +20 +452;(obstArr);
+    !!UN:C(cmbMgr)/(offset)/4/?s;
+    !!if&s<>-1;
+      !!VR(result):S(TRUE);
+    !!en;
+  !!en;
+
+!?FU(WOG_33_CheckHexIsAvailableForTeleport);
+!#VA(hexId:x) (result:x) (cmbMgr:x) (mon:x);
+  !!SN:E5913104/(CALLCONV_THISCALL)/(cmbMgr)/(mon)/(hexId);
+  !!VR(result):Sv1;
+
+!?FU(WOG_33_CheckHexIsAvailableForWall);
+!#VA(hexId:x) (result:x) (spellLevel:x);
+  !!VR(result):S(FALSE);
+  !!FU(WOG_IfHexIsFree):P(hexId)/?f;
+  !!if&f=1;
+    !!VR(checkPos:y):S(hexId) -16;
+    !!VR(row:y):S(hexId):17 &1;
+    !!VR(checkPos):-(row);
+
+    !!FU(WOG_IfHexIsFree):P(checkPos)/?f;
+    !!if&f;
+      !!if&(spellLevel)<2;
+        !!VR(result):S(TRUE);
+      !!el;
+        !!VR(checkPos:y):S(hexId) -34;
+        !!FU(WOG_IfHexIsFree):P(checkPos)/?(result);
+      !!en;
+    !!en;
+  !!en;
+
+!?FU(WOG_33_GetAvailableToSpellHexArray);
+!#VA(hexArray:x) (callbackPtr:x) (customArgs[3]:x);
+
+  !!re i/0/(BATTLE_HEX_LAST);
+    !!FU(callbackPtr):Pi/?(result:y)/(customArgs[0])/(customArgs[1])/(customArgs[2]);
+    !!FU(Array_Push)&(result):P(hexArray)/i;
+  !!en;
+
+!?FU(OnBattleRound)&i^battle_round^>=0/i^WOG_33_activated^;
+  !!FU(WOG_GetRandomSeedByCoord):Pi^battle_x^/i^battle_y^/i^battle_z^/?(seed:y);
+  !!VR(seed):+i^battle_round^;
+  !!FU(WOG_SafeRand):P1/100/(seed)/?(random:y);
+
+  !!if&(random)<=i^WOG_33_cast_chance^;
+    !!VRi^WOG_33_this_round_cast_chance^:Si^WOG_33_cast_chance^;
+  !!el;
+    !!VRi^WOG_33_this_round_cast_chance^:S(NULL);
+  !!en;
+
+!?FU(OnAfterBattleAction)&i^WOG_33_this_round_cast_chance^/i^wog_isBattleStackAction^;
+!!BU:C?(isEnd:y);
+!!if&(isEnd)=(FALSE);
+
+  !!VR(divider:y):S0;
+  !!re i/0/(BATTLE_STACK_LAST);
+    !!BMi:N?n;
+    !!if&n>0;
+      !!VR(divider):+1;
+    !!en;
+  !!en;
+
+  !!VR(chance:y):R0/1/100;
+  !!if&(chance)<=i^WOG_33_this_round_cast_chance^;
+    !!FU(WOG_33_CastSpellProcedure):Pi^WOG_33_spells_array_ID^;
+    !!VRi^WOG_33_this_round_cast_chance^:S0;
+  !!el&(divider);
+    !!VR(step:y):S100 :(divider);
+    !!VRi^WOG_33_this_round_cast_chance^:+(step);
+  !!en;
+!!en;
+
+------------------------------------------------------------------------
+
+!?OB(OBJ_SPELL_SCROLL)&999;
+
+  !!UN:P33/?y-1;                        [Check if Living Scroll script is enabled in WoGify Options: y-1]
+  !!FU&y-1<>1:E;                        [Exit if script isn't enabled]
+  !!AR(CURRENT_OBJ):V?(spellID:y);               [get spell scroll spell]
+  !!FU(WOG_33_CheckSpellIsValid):P(spellID:y)/?(isValid:y);
+
+  !!if&(isValid);
+    !!UN:C6974640/4/?y2;
+    !!VRy2:+32;
+    !!UN:Cy2/4/?y1;
+    !!VRy3:S(OBJ_SPELL_SCROLL)*4 +y1; 
+    !!UN:Cy3/4/?i^WOG_33_old_name^;                            [get obj name ptr]
+    !!SN:Bi^WOG_33_old_name^/d/?s^WOG_33_old_name^;            [get native name]
+    !!SN:Bi^WOG_33_old_name^/d/^%T(wog.33.prefix)^;            [set new name]
+  !!en;
+
+!$OB(OBJ_SPELL_SCROLL)&i^WOG_33_old_name^;                       [restore name]
+  !!SN:Bi^WOG_33_old_name^/d/s^WOG_33_old_name^;
+  !!SN:W^WOG_33_old_name^;                                       [clear variable]
+------------------------------------------------------------------------
+ [Hero screen click trigger]
+!?FU(OnHeroScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED);
+
+  !!UN:P33/?y-1; [Check if Living Scroll script is enabled in WoGify Options: y-1]
+  !!FU&y-1<>1:E; [Exit if script isn't enabled]
+
+  !!CM:I?v2; [v1=type of click, v2=area clicked]
+  !!VRv3:Sv2 -2;  [v3=equip position for use with HE:A1 command]
+  !!VRv4:Sv2 -21; [v4=backpack position for use with HE:A1 command]
+  !!FU(WOG_33_SetScrollDecription)&v2>=2/v2<=20:Pv3/-1; [Equipped slot]
+  !!FU(WOG_33_SetScrollDecription)&v2>=40/v2<=44:Pv4/-1; [Backpack slot]
+
+------------------------------------------------------------------------
+
+ [Hero Meeting Screen click trigger]
+!?FU(OnHeroesMeetScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED);
+
+  !!UN:P33/?y-1; [Check if Living Scroll script is enabled in WoGify Options: y-1]
+  !!FU&y-1<>1:E; [Exit if script isn't enabled]
+
+  !!CM:I?v2; [v1=type of click, v2=area clicked]
+  !!VRv3:Sv2 -27;  [v3=equip position for left hero to use with HE:A1 command]
+  !!VRv4:Sv2 -70; [v4=backpack position for left hero to use with HE:A1 command]
+  !!VRv5:Sv2 -46;  [v5=equip position for right hero to use with HE:A1 command]
+  !!VRv6:Sv2 -75; [v6=backpack position for right hero to use with HE:A1 command]
+
+  !!CM:H?v7/?v8; [Left hero: v7, Right hero: v8]
+
+  !!FU(WOG_33_SetScrollDecription)&v2>=27/v2<=45:Pv3/v7; [Equipped slot for left hero]
+  !!FU(WOG_33_SetScrollDecription)&v2>=89/v2<=93:Pv4/v7; [Backpack slot for left hero]
+  !!FU(WOG_33_SetScrollDecription)&v2>=46/v2<=64:Pv5/v8; [Equipped slot for right hero]
+  !!FU(WOG_33_SetScrollDecription)&v2>=94/v2<=98:Pv6/v8; [Backpack slot for right hero]
+
+
+------------------------------------------------------------------------
+
+ [Spell is an equipped spell scroll: check if it's a Living Scroll]
+!?FU(WOG_33_SetScrollDecription);
+  !!HEx2:A1/?y1/x1;
+
+  !!if&y1>1000;
+    !!VRy1:-1001;
+    !!FU(WOG_33_CheckSpellIsValid):Py1/?y2;
+    !!VRy2:X1;
+    !!SN:H^spell^/y1/0/?(spellName:z) T^wog.33.desc_%y2^/?(msg:z)/^spellName^/(spellName);
+    !!IF:Q1/9/y1/4/(msg);
+    !!CM:R0; [Disable standard right-click info. for Living Scroll]
+  !!en;
+
+---------------------------------------------------------------------------------------
+
+** End of Script **
+
+!?FU(WOG_33_CheckSpellIsValid);
+!#VA(spellID:x) (result:x);
+  !!SS(spellID):F?f;
+  !!VRf:&(BIT_17);                                             [AI Armag/ Destroy undead / Death Ripple;]
+  !!if&(spellID)>=(SPELL_FIRST_BATTLE)/(spellID)<(SPELL_CLONE)
+    /(spellID)<>(SPELL_SACRIFICE)/(spellID)<>(SPELL_RESURRECTION)
+    /(spellID)<>(SPELL_ANIMATE_DEAD)/f=0;
+    !!VR(result):S(TRUE);
+  !!el;
+    !!VR(result):S(FALSE);
+  !!en;

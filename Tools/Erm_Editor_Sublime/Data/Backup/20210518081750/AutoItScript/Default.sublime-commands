@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "AutoIt - Tidy",
+        "command": "autoittidy"
+    },
+    {
+        "caption": "AutoIt - IncludeHelper",
+        "command": "autoitincludehelper"
+    }
+]

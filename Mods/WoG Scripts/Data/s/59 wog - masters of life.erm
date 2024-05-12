@@ -1,0 +1,55 @@
+ZVSE2
+
+**  Updated to support experience system: 25 august 2004
+**  Rewritten to improve compatiblity: Apr 2022
+
+** "Masters of Life" v1.8 - Sir Four
+**  Upgrade at te beginning of each turn
+**  peasants & 1st level creatures of the same town that hero
+**  into upgraded 1st level creatures of that town
+**  in all hero armies (except Necromancers)
+
+** Modified by Thomas Franz (samot) 19.10.04
+** - rewrote the upgrade-routine to work with Extension Heroes
+** - do not upgrade if Town=Conflux and Neutral Town is active,
+**   otherwise it would upgrade the shooting Halflings to not shooting Rogues
+** - set the costs of Halflings and Rogues equal if Neutral town is active to give
+**   the same changes to the Neutral town
+
+** Rewritten by Archer30 Apr 2022
+** - Used faster looping method
+
+** To use this code, put it into a Global Event, set to never happen.
+
+
+; Allows to upgrade your Halfings for free (to give the neutral town the same chances as any other)
+; Neutral town heroes does not upgrade automatically (otherwise it would upgrade the shooting Halflings to not shooting Rogues)
+!?FU(OnAfterErmInstructions);
+!!UN:P19/?(masterOfLife:y);
+!!UN:P67/?(neutralTown:y);              [check if Masters of Life and Neutral town are both active]
+!!MA&(masterOfLife)/(neutralTown):C(MON_HALFLING)/(RES_GOLD)/?(cost:y) C(MON_ROGUE)/(RES_GOLD)/(cost); [if yes set costs of Halfing and Rogue to the same if script active]
+
+!?FU(OnEveryDay)&i^timerOnce^; [one times daily]
+!!UN:P19/?(masterOfLife:y);
+!!UN:P67/?(neutralTown:y);
+
+!!if&(masterOfLife);
+  !!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+    !!HEi:B2/?(class:y);                [get class of the hero]
+    !!VR(townType:y):S(class):2;        [divide by 2 to get the town typ]
+    !!IF|(townType:y)<0/(townType:y)>8:M^%(class) %(townType) %i^;
+    ; Upgrade the non-upgraded level 1 troops to upgraded for non-Necropolis and non-Neutral Town Heroes
+    !!if&(townType)<>(TOWN_NECROPOLIS);
+      !!if|(townType)<>(TOWN_CONFLUX)/(neutralTown)<>(TRUE);
+        !!UN:T(townType)/0/0/?(lv1Mon:y);
+
+        !!VR(upgLv1Mon:y):S(lv1Mon) +1;
+        ; The new experience will be the old experience multiplied by the Upgrade Multiplier
+        !!HEi:C1/(lv1Mon)/(upgLv1Mon)/d/d/0/5; [upg 1st level creatures]
+        !!HEi:C1/139/(upgLv1Mon)/d/d/0/5; [upg peasants]
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+!!SN:D;

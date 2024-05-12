@@ -1,0 +1,586 @@
+ZVSE2
+
+** Secondary Skills Boost ERM script v1.6 - Donald X. Vaccarino. Right-click hint text added by Timothy Pulver for v1.6.
+** Requires WOG version 3.58
+** Updated Sep. 19. 2004 by Hermann the Weird
+** Updated Sep 2022 by Archer30
+** Improves weak secondary skills.
+** WoGify Name: script03.erm
+
+** eagle eye - gain a choice of spell when going up a level (1-2, 2-3, 3-4)
+** scouting - gain rogues every day (1, 3, 5)
+** resistance - lowers 1-3 defending enemy creature stacks to unupgraded form
+** learning - chance of extra primary skill point each level - 20%/35%/50%
+** tactics - gives +1/+2/+3 speed per skill level, disables normal tactics
+
+** eagle eye offers lower level spells instead of higher ones if you don't have enough wisdom
+** the speculum and spyglass increase the number of rogues gained with scouting
+** resistance's effect wears off if defenders aren't beaten
+
+** To use this code, put it into a Global Event, set to never happen.
+
+** Variables Used: v487-v489, v587-v589, v900-v916, v920-v934, v35, v36
+** Strings Used: z470-z472, z430-z431, z70-73
+** Flags Used: 2, 270-271
+** Hero variables: 43
+** v487-v489, v587-v589, v35, v36 and z430-z431 must not be modified elsewhere!
+
+** Flags 270-271 are shared with other scripts that use Fnord's network detection function.
+** The other variables may be used elsewhere but will be trashed by this code.
+** Use caution; this code may take place in the middle of another script, if a hero gains a level or a battle is provoked
+
+** Functions Used: 649-650, 653, 666-668, 8166
+** Timers Used: 74
+
+** ERM numbers: Eagle Eye: 103
+**              Scouting: 215
+**              Resistance: 216
+**              Learning: 217
+**              Tactics: 218
+
+!?FU(OnAfterErmInstructions);           [Initialization function]
+!!UN:P215/?(wogOption:y);               [Check if Scouting is enabled in WoGify Options]
+
+** Hint text for spyglass/speculum
+!!if&(wogOption);
+  !!SN:H^art^/(ART_SPECULUM)/1/z103024;
+  !!SN:H^art^/(ART_SPYGLASS)/1/z103025;
+!!en;
+** End of Initialization Code
+
+!#UN:P218/?i^wog_218_enabled^;
+
+
+; Hooks
+!?FU(WOG_CreateERMHook);
+!#VA(address:x);
+
+; Learning I
+!!UN:P217/?(learningI:y);               [Check if Learning is enabled in WoGify Options]
+!!SN&(learningI):E(address)/1/5214729/(WOG_Dlg_HeroLvlUp_PrimarySkillText);
+
+; Tactics
+!!SN&i^wog_218_enabled^:E(address)/1/5137385/(WOG_218_OnMonGetSpec); [hook for the artifacts giving mon stats]
+
+-------------------------------------------------------------------------
+
+
+*************************************************************************
+     Scouting
+*************************************************************************
+
+!?FU(OnEveryDay)&i^timerDay^>1;
+
+!!UN:P215/?(scoutingI:y);               [Check if Scouting I is enabled in WoGify Options]
+!!FU&(scoutingI)<>(TRUE):E;             [Exit if it isn't]
+
+!!OW:Hi^timerOwner^/1;                  [get current heroes to v-array]
+
+!!re i/2/v1/1/1;
+  !!HEvi:S(SKILL_SCOUTING)/?(scoutingLvl:y);
+
+  !!if&(scoutingLvl);
+    !!HEvi:A2/(ART_SPECULUM)/0/?(isSpec:y); [check for Speculums]
+    !!HEvi:A2/(ART_SPYGLASS)/0/?(isSpy:y); [check for Spyglasses]
+    !!VR(roguesAmount:y):S(scoutingLvl) *2 -1 +(isSpy) +(isSpec);
+
+    !!if&i^timerIsAi^;
+      !!HEvi:C2/(MON_ROGUE)/(roguesAmount)/0; [Same for AI]
+    !!el;
+      !!IF:Wvi;
+      !!HEvi&w43=0:C2/(MON_ROGUE)/(roguesAmount)/1; [Give rogues to a free or rogue slot, else ask player]
+    !!en;
+  !!en;
+!!en;
+
+!?FU(OnHeroScreenMouseClick)&999/i^mouse_action^=(MOUSE_RMB_PRESSED);
+
+!!UN:P215/?(scoutingI:y);               [Check if Scouting I is enabled in WoGify Options]
+!!FU&(scoutingI)<>(TRUE):E;             [Exit if it isn't]
+
+!!FU(WOG_GetSkillInfoByClick):Pi^mouse_item^/(CURRENT_HERO)/?(skill:y)/?(skillArea:y);
+
+!!if&(skill)=(SKILL_SCOUTING)/(skillArea)>1;
+  !!CM:R0;                            [Disable standard r-click info]
+  !!HE(CURRENT_HERO):S(SKILL_SCOUTING)/?(scoutingLvl:y); [Check for scouting level]
+  !!IF:W(CURRENT_HERO);               [w vars refer to current hero]
+
+  !!VRz-1:Sz103035+^.^;               [z-1, Set strings]
+  !!VRz-1&w43=1:Sz103036+^.^;
+  !!VRz-2:Sz103036;
+  !!VRz-2&w43=1:Sz103035;
+
+  ; Ask for enabling/disabling rogues
+  !!if&(scoutingLvl)>(SKILL_NOT_LEARNED);
+    !!SN:H^secskill^/(SKILL_SCOUTING)/(scoutingLvl)/?z2;
+
+    !!if&(scoutingLvl)=(SKILL_BASIC);
+      !!IF:Q2/20/12/2/z103037;
+    !!el&(scoutingLvl)=(SKILL_ADVANCED);
+      !!IF:Q2/20/13/2/z103038;
+    !!el&(scoutingLvl)=(SKILL_EXPERT);
+      !!IF:Q2/20/14/2/z103039;
+    !!en;
+
+    !!VRw43&2:X1;                     [Set w var for enabling/disabling daily rogues, 0=enabled (default)]
+  !!en;
+!!en;
+
+
+-------------------------------------------------------------------------
+
+
+*************************************************************************
+     Eagle Eye
+*************************************************************************
+
+!#UN:P103/?(wogOption:y);
+!#VRi^wog_103_removeEagleEye^&(wogOption):S(TRUE);
+
+!?FU(OnHeroGainLevel);                  [Level up trigger for eagle eye]
+
+  !!UN:P103/?(wogOption:y);             [Check if Eagle Eye I is enabled in WoGify Options]
+  !!FU&(wogOption)<>(TRUE):E;           [Exit if it isn't]
+
+  !!UN:C6915152/(UNC_INT)/?(gameNotStarted:y); [igrik: isGameNotYetStarted]
+  !!FU&(gameNotStarted):E;
+
+  !!HE(CURRENT_HERO):S(SKILL_EAGLE_EYE)/?(eeLvl:y); [get eagle eye level]
+  !!FU&(eeLvl)=(SKILL_NOT_LEARNED):E;   [Exit if no eagle eye]
+
+  ** get hero name and sex, prepare strings
+  !!HE(CURRENT_HERO):B0/?z70;
+  !!HE(CURRENT_HERO):R2/?(gender:y);
+
+  !!if&(gender)=0;
+    !!VRz71:Sz103040;
+    !!VRz72:Sz103041;
+    !!VRz73:Sz103044;
+  !!el;
+    !!VRz71:Sz103042;
+    !!VRz72:Sz103043;
+    !!VRz73:Sz103045;
+  !!en;
+
+  !!VR(showMsg:y):S(FALSE);             [assume AI]
+  !!HE(CURRENT_HERO):O?(owner:y);            [get owner of this hero]
+
+  !!if&(owner)<>(NO_OWNER);
+    !!OW:I(owner)/?(isAi:y);    [get AI (1) or human (0)]
+    !!VR(showMsg)&(isAi)<>(TRUE):S(TRUE);[human if has owner and that owner is human]
+  !!en;
+
+  !!HE(CURRENT_HERO):A2/(ART_SPELL_BOOK)/?(has:y)/?(equipped:y);  [see if hero has a spell book]
+
+  !!if&(equipped)<=0;
+    !!IF&(showMsg):M1/z103026;          [Message if no spell book]
+    !!FU:E;                             [exit, if no spellbook]
+  !!en;
+  
+  **daemon_n: begin
+  !!HE(CURRENT_HERO):S(SKILL_WISDOM)/?(wisLvl:y); [wisdom/e.eye skill level]
+  !!VR(maxWisSpellLvl:y):S(wisLvl) +2 F2/4;
+  !!VR(maxSpellLvl:y):S1 +(eeLvl) F2/(maxWisSpellLvl); [wisdom req. for e.eye]
+
+  !!FU(NewIntArray):P?(avSpells:y);     [create spells arr;]
+
+  !!re (spell:y)/(SPELL_FIRST)/(SPELL_LAST_WOG); [go through all]
+    !!HE(CURRENT_HERO):M(spell)/?(isLearned:y); [for known spell]
+    !!SS(spell):L?(spellLvl:y);         [spell level]
+
+    !!if&(isLearned)=(FALSE)/(spellLvl)<=(maxSpellLvl);
+      !!FU(WOG_CHECK_SPELL_BAN):P(spell)/?(result:y);
+
+      !!if&(result)=(FALSE);            [is not banned and not disabled]
+        !!FU(Array_Push):P(avSpells)/(spell);
+      !!en;
+    !!en;
+  !!en;
+
+  !!SN:M(avSpells)/?(size:y);           [check spell amount]
+
+  !!if&(size)>0;                          [if there is any spell]
+    !!VR(leftSpell:y):S(NO_SPELL);
+    !!VR(rightSpell:y):S(NO_SPELL);
+
+    !!if&(size)>1;                      [if we have several spells]
+      !!if&(size)>2;                    [if we have more 2 spells, shuffle them]
+        !!FU(Array_Shuffle):P(avSpells);
+      !!en;
+
+      !!SN:M(avSpells)/0/?(leftSpell) M(avSpells)/1/?(rightSpell);
+
+    !!el;                               [if we have only 1 spell]
+      !!SN:M(avSpells)/0/?(leftSpell) M(avSpells)/0/?(rightSpell);
+    !!en;
+
+    !!IF:V2/0;
+
+    !!if&(size)>1;
+      !!VR(string:z):Sz103027 +z103028;
+      !!IF&(showMsg):Q2/(PIC_TYPE_SPELL)/(leftSpell)/(PIC_TYPE_SPELL)/(rightSpell)/(MSG_TYPE_CHOOSE_PIC)/(string);
+    !!el;
+      !!VR(string:z):Sz103027;
+      !!IF&(showMsg):Q2/(PIC_TYPE_SPELL)/(leftSpell)/(MSG_TYPE_MES)/(string);
+    !!en;
+
+    !!HE(CURRENT_HERO)&2:M(leftSpell)/1;[learn left spell]
+    !!HE(CURRENT_HERO)&-2:M(rightSpell)/1; [learn right spell - is default]
+
+  ; if all spells known & Eagle Eye II, Elem. Suppression is disabled, check if it is really required to remove Eagle Eye
+  !!el&i^wog_103_removeEagleEye^;
+    ; Check if the hero can advance the level of Wisdom (and learn more spell with Eagle Eye)
+    ; Advanced and Expert Wisdom doesn't count here
+    !!VR(canAdvanceWisdom:y):S(FALSE);
+
+    !!if&(wisLvl)=(SKILL_BASIC);
+      !!VR(canAdvanceWisdom):S(TRUE);
+    !!el&(wisLvl)=(SKILL_NOT_LEARNED);
+      !!VR(counter:y):S0;
+      !!UN:C4881872/(UNC_INT8)/?(skillLimit:y);
+
+      !!re i/(SEC_SKILL_FIRST)/(SEC_SKILL_LAST);
+        !!HE(CURRENT_HERO):Si/?(sslevel:y);
+        !!VR(counter)&(sslevel)>(SKILL_NOT_LEARNED):+1;
+      !!en;
+
+      !!VR(canAdvanceWisdom):S(skillLimit) -(counter) B;
+    !!en;
+
+    ; If it's not possible for the hero to get higher level of Wisdom, remove Eagle Eye
+    !!if&(canAdvanceWisdom)=(FALSE);
+      !!VR(eagleEyePic:y):S0 +(eeLvl) +35;          [Get pic for message]
+      !!IF&(showMsg)=1:Q2/20/(eagleEyePic)/1/z103046;
+      !!HE(CURRENT_HERO):S(SKILL_EAGLE_EYE)/(SKILL_NOT_LEARNED); [Remove eagle eye]
+    !!en;
+  !!en;
+**daemon_n: end
+
+
+*************************************************************************
+     Learning
+*************************************************************************
+
+
+!?FU(WOG_Dlg_HeroLvlUp_PrimarySkillText)&i^wog_217_skillId^;
+!!HE(CURRENT_HERO):N?n;
+!!if&n=i^wog_217_heroId^;
+  !!SN:B6911016/d/?z1;
+  !!VR(skillId:y):Si^wog_217_skillId^ -1 *(SIZEOF_INT);
+  !!UN:C6968312/(skillId)/(SIZEOF_INT)/?(skillNamePtr:y);
+  !!SN:B(skillNamePtr)/d/?(skillName:z);
+  !!SN:T^wog.217.bonusName^/?(addMsg:z)/^skillName^/(skillName);
+  !!VRz1:+(addMsg:z);
+  !!SN:B6911016/d/z1;
+!!en;
+
+!!VRi^wog_217_skillId^:S0;
+!!VRi^wog_217_heroId^:S0;
+
+!?HL-1;                                 [Level up trigger for learning]
+!!UN:P217/?y-1;                         [Check if Learning is enabled in WoGify Options]
+!!FU&y-1<>1:E;                          [Exit if it isn't]
+
+!!HE(CURRENT_HERO):S(SKILL_LEARNING)/?(skillLvl:y);
+!!if&(skillLvl);
+  !!VR(bonus:y):S(skillLvl) *15 +5;
+  !!VR(random:y):R0/1/100;
+  !!if&(bonus)>=(random);
+    !#VA(ps[4]:y);
+    !!re i/0/3;(end_value);
+      !!VR(ps[i]):S0;
+    !!en;
+    !!VRr:R0/0/3;
+    !!VR(ps[r]):S1;
+    !!HE(CURRENT_HERO):Fd(ps[0])/d(ps[1])/d(ps[2])/d(ps[3]) N?i^wog_217_heroId^; [give appropriate bonus]
+    !!VRi^wog_217_skillId^:Sr+1;
+  !!en;
+!!en;
+
+** End of function to give learning bonus to hero -1
+
+-------------------------------------------------------------------------
+
+
+*************************************************************************
+     Resistance
+*************************************************************************
+
+; This script works in all the battles (mostly, it could make the degraded troops lose stack exp after battle). 
+; Yet as for balance purpose, it's decided to be active only in battles against neutral creatues.
+; If &i^wog_isNeutralBattle^ and VR(numDegradeUnits[0]):S0; are taken out, this script will work with all the battles (Stack exp after battle has to be fixed though).
+; FU(OnAfterBattleSetup) seems to be the only valid timing.
+!?FU(OnAfterBattleSetup)&i^wog_isNeutralBattle^;
+!!UN:P216/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+; Initialization
+!!UN:P(WOG_OPT_STACK_EXPERIENCE)/?(stackExp:y);
+
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!re k/0/2;
+    !!VRi^wog_216_monData_%i_%k^:S0;
+  !!en;
+!!en;
+
+!!VR(numDegradeUnits[2]:y):C0/0;
+
+; Check if any side would be downgraded by Resistance
+!!re i/(BATTLE_LEFT)/i^battle_hero_vs_hero^;
+  !!HEi^battle_hero_%i^:S(SKILL_RESISTANCE)/?(resLevel:y);
+
+  !!if&(resLevel)>(SKILL_NOT_LEARNED);
+    !!VR(oppSide:y):Si X(TRUE);
+    !!VR(numDegradeUnits[oppSide]):S(resLevel);
+  !!en;
+!!en;
+
+; Prevent the attacking hero to be degraded
+!!VR(numDegradeUnits[0]):S0;
+
+; Exit if no one has Resistance
+!!FU&(numDegradeUnits[0])=0/(numDegradeUnits[1])=0:E;
+
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  ; Create the array of cost difference (between the original monster and the degraded monster times number) and another array for slots in the army
+  !!FU(NewIntArray):P?(totalCostDiffList:y) P?(armySlotList:y);
+
+  ; Loop through all the troops of the side and store valid monsters' total cost
+  !!if&(numDegradeUnits[i])>0;
+    !!re j/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+      !!BA:Mi/j/?(type:y)/?(num:y);
+
+      ; Check if the monster has a degraded monster
+      !!if&(type)>(NO_MON)/(num)>0;
+        !!FU(GetDegradedMonCandidates):P(type)/?(degradesList:y);
+        !!SN:M(degradesList)/?(size:y);
+
+        ; Check the cost difference between the degraded monster and the original one
+        !!if&(size)>0;
+          !!SN:M(degradesList)/0/?(degradeType:y);
+          !!MA:C(type)/(RES_GOLD)/?(cost:y) C(degradeType)/(RES_GOLD)/?(degradeCost:y);
+          !!VR(costDiff:y):S(cost) -(degradeCost);
+
+          ; Get the total cost difference and slot ID, store in the arrays
+          !!if&(costDiff)>0;
+            !!VR(totalCostDiff:y):S(num) *(costDiff);
+            !!VR(totalCostDiff)&(totalCostDiff)<0:S(INT_MAX) -1; [Correct the total cost difference if it overflows]
+            !!FU(Array_Push):P(totalCostDiffList)/(totalCostDiff) P(armySlotList)/j;
+          !!en;
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+
+  ; Check how many monsters are with valid degrades
+  !!SN:M(totalCostDiffList)/?(size);
+
+  !!if&(size)>0;
+    ; Fix the number of monster to be degraded
+    !!VR(numDegradeUnits[i]):F0/(size);
+
+    ; Find out the monsters with lowest cost difference
+    !#VA(lowestCostDiffInd[3]:y);
+
+    !!if&(numDegradeUnits[i])=1;
+      !!FU(WOG_216_Array_IndexOfMinimumValues):P(totalCostDiffList)/?(lowestCostDiffInd[0]);
+    !!el&(numDegradeUnits[i])=2;
+      !!FU(WOG_216_Array_IndexOfMinimumValues):P(totalCostDiffList)/?(lowestCostDiffInd[0])/?(lowestCostDiffInd[1]);
+    !!el&(numDegradeUnits[i])=3;
+      !!FU(WOG_216_Array_IndexOfMinimumValues):P(totalCostDiffList)/?(lowestCostDiffInd[0])/?(lowestCostDiffInd[1])/?(lowestCostDiffInd[2]);
+    !!en;
+
+    ; Set up new monster type
+    !!re k/0/(numDegradeUnits[i])/1/-1;
+      ; Get the array index of the lowest cost difference, in order to get the army slot
+      !!SN:M(armySlotList)/(lowestCostDiffInd[k])/?(slot:y);
+      !!BA:Mi/(slot)/?(type)/?(num);
+
+      ; Get the degraded monster of the army slot
+      !!FU(GetDegradedMonCandidates):P(type)/?(degradesList);
+      ; Fail safe - in some cases the size of degradesList may be 0, use the original type instead
+      !!SN:M(degradesList)/?(size);
+
+      !!if&(size)>0;
+        !!SN:M(degradesList)/0/?(degradeType);
+      !!el;
+        !!VR(degradeType):S(type);
+      !!en;
+
+      ; Change the monster type to the degraded one
+      !!BA:Mi/(slot)/(degradeType)/?(num);
+
+      ; Store slot ID, monster type before changing, type after chagning in the variable
+      !!FU(PackUnion):P(slot)/4/(type)/14/(degradeType)/14/?i^wog_216_monData_%i_%k^;
+    !!en;
+  !!en;
+!!en;
+
+** End of pre-battle trigger for resistance
+
+
+!?FU(OnBattlefieldVisible)&i^battle_isVisible^/i^wog_isNeutralBattle^;
+!!UN:P216/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+; Initialization
+!!SN:Mi^wog_216_sideDowngraded^;
+!!FU(NewIntArray):P?(stacksList:y) P2/?i^wog_216_sideDowngraded^/(M_TEMP);
+!!VR(hasDowngraded:y):S(FALSE);
+
+; Check if there is any stack downgraded by Resistance. Add in stack ID to the array for playing animation later
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!re k/0/2;
+    !!if&i^wog_216_monData_%i_%k^>0;
+      !!FU(UnpackUnion):Pi^wog_216_monData_%i_%k^/?(slot:y)/4/?(type:y)/14/?(degradeType:y)/14;
+
+      !!VR(stack:y):Si *(BATTLE_DEFENDER_STACK_FIRST) +(slot);
+      !!FU(Array_Push):P(stacksList)/(stack);
+
+      !!SN:Mi^wog_216_sideDowngraded^/i/(TRUE);
+      !!VR(hasDowngraded):S(TRUE);
+    !!en;
+  !!en;
+!!en;
+
+; Exit and remove the array if there was no stack downgraded
+!!if&(hasDowngraded)=(FALSE);
+  !!SN:Mi^wog_216_sideDowngraded^;
+  !!VRi^wog_216_sideDowngraded^:S0;
+  !!FU:E;
+!!en;
+
+; Play sound, animation
+!!SN:P^Resurect^;
+!!FU(WOG_PlayAnimationOnMultipleStacks):P(stacksList)/57;
+
+; Show battle log on the first round, as tactics phase could break it
+!?FU(OnBattleRound)&i^battle_round^=0/i^battle_isVisible^/i^wog_isNeutralBattle^/i^wog_216_sideDowngraded^;
+; Set up text - ert legacy
+!!VRz3:S^^;
+
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!SN:Mi^wog_216_sideDowngraded^/i/?(isDowngraded:y);
+
+  !!if&(isDowngraded);
+    !!VR(oppSide:y):Si X(TRUE);
+    !!HEi^battle_hero_%(oppSide)^:B0/?z2 R2/?(gender:y);
+
+    ; Set up text depending on whether it's hero vs hero or vs neutrals
+    !!if&i^battle_hero_vs_hero^;
+      !!HEi^battle_hero_%i^:B0/?z4;
+      !!VR(endStr:z):Sz4 +^%T(wog.216.hero)^;
+    !!el;
+      !!VR(endStr):S^%T(wog.216.neutral)^;
+    !!en;
+
+    !!SN:T^wog.whom%(gender)^/?(whom:z);
+    !!SN:T^wog.216.msg^/?z3/^hero^/z2/^whom^/(whom)/^endStr^/(endStr);
+  !!en;
+!!en;
+
+!!MM:Sz3;
+
+; Remove the array
+!!SN:Mi^wog_216_sideDowngraded^;
+!!VRi^wog_216_sideDowngraded^:S0;
+
+** End of battle trigger for resistance
+
+
+!?FU(OnAfterBattleUniversal)&i^wog_isNeutralBattle^;
+!!UN:P216/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!re k/0/2;
+    !!if&i^wog_216_monData_%i_%k^>0;
+      !!FU(UnpackUnion):Pi^wog_216_monData_%i_%k^/?(slot:y)/4/?(type:y)/14/?(degradeType:y)/14;
+      !!BA:Mi/(slot)/?(currType:y)/?(num:y);
+
+      ; If the stack got transformed by Werewolves, it won't get transformeed back to its upgraded form
+      !!BA&(currType)=(degradeType):Mi/(slot)/(type)/?(num);
+    !!en;
+  !!en;
+!!en;
+
+** End of post-battle trigger for resistance
+
+
+; Get the indexes of minimum value items from the array
+!?FU(WOG_216_Array_IndexOfMinimumValues);
+!#VA(list:x);                           [Id of Array to find the index of minimum values]
+!#VA(firstItem:x);                      [OUT. Up to 15 indexes of minimun values]
+
+; Check if requesting more items than size of the array
+!!SN:M(list)/?(size:y);
+!!FU:A?(numArgs:y);
+!!VR(maxIndOut:y):S(numArgs) -1;
+
+!!if&(maxIndOut)>(size);
+  !!SN:F^ShowErmError^/^WOG_216_Array_IndexOfMinimumValues: invalid arguments number. Expected at most %(size) arguments^;
+  !!FU:E;
+!!en;
+
+; Initialization
+!!VR(minValues[15]:y):C(INT_MAX)/(INT_MAX)/(INT_MAX)/(INT_MAX)/(INT_MAX)
+  /(INT_MAX)/(INT_MAX)/(INT_MAX)/(INT_MAX)/(INT_MAX)
+  /(INT_MAX)/(INT_MAX)/(INT_MAX)/(INT_MAX)/(INT_MAX);
+
+!!VR(maxValueFromMins:y):S(INT_MAX);
+!!VR(maxIndexFromMins:y):S0;
+
+; Loop through the array
+!!re i/0/(size)/1/-1;
+  !!SN:M(list)/i/?(value:y);
+
+  ; If the value of the array is smaller than (or equals to) the biggest number from the mins, update the output value
+  !!if&(value)<=(maxValueFromMins);
+    !!VR(minValues[maxIndexFromMins]):S(value);
+    !!VR(index:y):S(maxIndexFromMins) +(@firstItem);
+    !!VRx(index):Si;
+
+    ; Update max value / index from the minimum values
+    !!VR(maxValueFromMins):S(INT_MIN);
+
+    !!re j/0/(numArgs)/1/-2;              [-2: -1 -@list]
+      !!if&(minValues[j])>(maxValueFromMins);
+        !!VR(maxValueFromMins):S(minValues[j]);
+        !!VR(maxIndexFromMins:y):Sj;
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+** End of function for resistance
+-------------------------------------------------------------------------
+
+
+*************************************************************************
+     Tactics
+*************************************************************************
+
+!?FU(WOG_218_OnMonGetSpec);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/?(hero:y) C(hero)/26/2/?(heroId:y);
+!!HE(heroId):S(SKILL_TACTICS)/?(speedBon:y);
+
+!!if&(speedBon);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(monInfo:y);
+  !!UN:C(monInfo)/80/4/?s;
+
+  !!if&s;
+    !!UN:C(monInfo)/80/4/d(speedBon);
+  !!en;
+!!en;
+
+!?FU(OnBeforeBattleUniversal)&i^wog_218_enabled^;
+!!re i/0/i^battle_hero_vs_hero^;(end_value);
+  !!HEi^battle_hero_%i^:R4/0;
+!!en;
+
+; Disable Tactics button from hero screen
+!?FU(OnGameEnter)&i^wog_218_enabled^;
+!!UN:C5120034/1/?i^wog_218_patch^ C5120034/1/235; 4E2022
+
+!?FU(OnGameLeave)&i^wog_218_patch^;
+!!UN:C5120034/1/i^wog_218_patch^;

@@ -1,0 +1,67 @@
+>> Command line syntax: Key1 Arg1Name=Arg1Value "Arg 2 Name"="Arg 2 Value" Key2
+>> Keys differ from arguments in that they don't have values
+
+TYPES
+  TPatchType  = (Text, Binary, Autodetect); DEFAULT "Autodetect";
+  >> Autodetect bases on file extension (txt - for Text, other - for Binary)
+
+
+ARGUMENTS
+  Cmd             = (ConvertPatch, MakePatch, ApplyPatch); COMMAND;
+  SourcePatch     = [Path to source patch. If mask is specified then all found patches are joined into single one];
+  >> Example: "C:\Program Files\Patches\r*.txt"
+  SourcePatchType = TPatchType;
+  ResultPatch     = [Path to result patch file];
+  >> Example: "D:\Res.bin"
+  ResultPatchType = TPatchType;
+  OrigFile        = [Path to the original file];
+  ModifiedFile    = [Path to the modified version of original file];
+  Patch           = [Path to the single patch];
+  ApplyTo         = [Path to file to which the patch will be applied];
+  ToleranceDist   =
+  [
+    If the distance between two adjacent patches is less or equal to this value,
+    the whole range of bytes will be treated as changed part.
+    Example: abxc => 12x3. [12]x[3] => [12x3]
+  ]; DEFAULT "7";
+
+
+OPTIONS
+  PatchFor      = (Memory, File); REQUIRES AddrConverter;
+  AddrConverter =
+  [
+    Path to dynamic library which implements the following interface.
+    <<
+    SetPatchDomain (Domain: INTEGER(0 - File, 1 - Memory)); STDCALL;
+    ConvertAddr (OrigAddr: INTEGER): INTEGER; STDCALL;
+    >>
+  ]; DEFAULT "DefaultAddrConverter.dll";
+
+
+COMMANDS
+  ConvertPatch  (SourcePatch, SourcePatchType, ResultPatch, ResultPatchType);
+  MakePatch     (OrigFile, NewFile, ResultPatch, ResultPatchType, ToleranceDist);
+  ApplyPatch    (Patch, PatchType, ApplyTo);
+
+
+KEYS
+  Optimize  = [Performs sorting patch blocks by addresses in ascending order and joins sequential blocks];
+  StripTags = [Removes all tags from text patch];
+
+
+EXAMPLES
+  BinMagic.exe
+    Cmd=MakePatch
+    OrigFile="C:\First.exe"
+    NewFile="C:\Second.exe"
+    ResultPatch="C:\FirstToSecond.txt"
+    ResultPatchType=Text
+    PatchFor=Memory
+
+  BinMagic.exe
+    Cmd=ConvertPatch
+    SourcePatch="C:\Patches\*.bin"
+    ResultPatch="D:\JoinedPatch.txt"
+    PatchFor=File
+    AddrConverter=WoG.dll
+    Optimize

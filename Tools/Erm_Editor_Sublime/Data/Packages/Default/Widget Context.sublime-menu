@@ -1,0 +1,21 @@
+[
+    {
+        "caption": "Копировать", 
+        "command": "copy"
+    }, 
+    {
+        "caption": "Вырезать", 
+        "command": "cut"
+    }, 
+    {
+        "caption": "Вставить", 
+        "command": "paste"
+    }, 
+    {
+        "caption": "-"
+    }, 
+    {
+        "caption": "Выделить всё", 
+        "command": "select_all"
+    }
+]

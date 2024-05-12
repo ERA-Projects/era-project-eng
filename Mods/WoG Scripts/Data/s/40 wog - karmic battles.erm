@@ -1,0 +1,267 @@
+ZVSE2
+
+** UPDATED: July 29, 2004
+** Karmic Battles Script version 1.2 by Dieter Averbeck  for WoG 3.58
+** (Version 1.2 updated by Bonizag and Timothy Pulver)
+** (Version 1.3 updated by Archer30 and daemon_n)
+
+** This script summons for every battle against wandering monster
+** some additional stacks of creatures. This Script can`t be used
+** as predone. If you want to, just send me a mail:
+** dieter@byteware.de
+
+** Version 1.1 will work with script54.erm (War Machines) and fixes a bug
+** with stacks appearing on top of obstacles. It also corrects a potential
+** problem with human vs. human online battles where the script sometimes
+** activated when it shouldn't have.
+
+** Here's how the number of Karmic creatures is calculated:
+** The first battle, the Karmic Battle Counter for a hero starts at two.
+** Each additional Karmic Battle that hero fights adds 1 to his or her Karmic
+** Battle Counter.
+** 1. A random number between 0 and 9 (inclusive) is generated for each battle.
+** 2. If the number isn't 0, 1 is added to this hero's Karmic Battle count which
+** starts the game at 1 (so the first Karmic Battle is always at 2).
+** 3. The number and type of stacks is determined at follows:
+**  a) If the number is 0 there's no Karmic stacks.
+**  b) If the number is 1..3, there's 6 random stacks.
+**  c) If the number is 4..5, there's 3 random stacks.
+**  d) If the number is 6..7, there's 1 random stack.
+**  e) If the number is 8..9, there's 2 *calculated* stacks.
+** 3. The number in each stack is determined as follows:
+**  a) If there's 6 random stacks, it's 1 times the Karmic Battle Count
+**  b) If there's 3 random stacks, it's 2 times the Karmic Battle Count
+**  c) If there's 1 random stack, it's 4 times the Karmic Battle Count
+**  d) If it's 2 calculated stacks, it's 1 times the Karmic Battle Count
+
+** Calculated stacks determine the monster type depending on the hero's Karmic
+** Battle Count with a random choice of two types for each Karmic Battle Count
+** range, whereas random stacks are determined more randomly but level is based
+** on the hero's Karmic Battle Count.
+
+
+** Variables Used: w49
+
+
+** before battle
+!?FU(OnBeforeBattleUniversal)&i^wog_isNeutralBattle^;
+!!UN:P38/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!VRi^wog_38_karmaType^:R0/0/9;  ** set random parameter for battle script (0-9): i^wog_38_karmaType^
+!!IF:Wi^battle_hero_0^;
+!!VRw49:F1/(INT_MAX);   ** prevent 0-stacks if hero gets attacked by Tim`s WM
+
+; Set up variables if the karma type is not 0 (type 0 has no karmic battles)
+!!if&i^wog_38_karmaType^<>0;
+  !!VRw49:+1; ** count w49 up, if battlescript called
+
+  !!if&i^battle_human_0^;
+    !!VR(minValue:y):Sw49 + 1000000;
+    !!VRi^wog_38_randomSeed^:R0/(minValue:y)/(INT_MAX); [generate a random seed to ensure the results are the same on battle replay - for human only]
+  !!en;
+!!en;
+
+
+** manage stacks to be summoned after tactics phase
+!?FU(OnAfterTacticsPhase)&i^wog_isNeutralBattle^/i^battle_human_0^;
+!!IF:Wi^battle_hero_0^; ** all the function calls below will use w49 - @daemon_n: wrong, it requires reinit
+
+; x1=Karmic Battle Counter x2=multiplier x3=startPos x4=increase
+!!if&i^wog_38_karmaType^>=1/i^wog_38_karmaType^<=3;
+  !!DO(WOG_38_SummonRandomStacks)/1/6/1:Pw49/1/5/34;     ** summon 6 random stacks
+!!el&i^wog_38_karmaType^>=4/i^wog_38_karmaType^<=5;
+  !!DO(WOG_38_SummonRandomStacks)/1/3/1:Pw49/2/39/34;    ** summon 3 random stacks
+!!el&i^wog_38_karmaType^>=6/i^wog_38_karmaType^<=7;
+  !!DO(WOG_38_SummonRandomStacks)/1/1/1:Pw49/4/91/0;     ** summon 1 random stack
+
+; x1=Karmic Battle Counter
+!!el&i^wog_38_karmaType^>=8;
+  !!FU(WOG_38_SummonCalculatedStacks):Pw49/i^wog_38_randomSeed^;             ** summon 2 calculated stacks
+!!en;
+
+
+** summon random stacks
+!?FU(WOG_38_SummonRandomStacks);
+!#VA(counter:x) (multiplier:x) (proposedPos:x) (posOffset:x);
+
+!!VR(num:y):S(counter:x) *(multiplier);        ** number per stack
+!!VR(num)&i^Tougher_Karmic_Battles_on^:*2;      [Multiply by two if Tougher Karmic Battles is enabled]
+
+!!VR(level:y):S(counter:x) :10 F0/13;        ** set Level
+!!VR(randomSeed:y):S(proposedPos:x) *2 -(posOffset:x) *x16 -10000000 +i^wog_38_randomSeed^;
+!!FU(WOG_SafeRand):P(TOWN_CASTLE)/(TOWN_FORTRESS)/(randomSeed)/?(type:y);
+!!VR(type):*14 +(level);
+
+!!VR(type)&(type)=102:S(MON_SERPENT_FLY);       [Correct Serpent Fly number]
+!!VR(type)&(type)=103:S(MON_DRAGON_FLY);        [Correct Dragon Fly number]
+!!VR(type)&(type)=104:S(MON_BASILISK);          [Correct Basilisk number]
+!!VR(type)&(type)=105:S(MON_GREATER_BASILISK);  [Correct Greater Basilisk number]
+!!VR(type)&(type)=106:S(MON_GORGON);            [Correct Gorgon number]
+!!VR(type)&(type)=107:S(MON_MIGHTY_GORGON);     [Correct Mighty Gorgon number]
+
+!!MA:X(type)/?(monFlags:y);  ** Check monster Flags
+!!VR(isWide:y):S(monFlags) &(MON_FLAG_WIDE);     ** Check for 2-hex creature
+
+!!FU(WOG_38_FindValidPos):P(proposedPos)/(isWide)/(randomSeed:y)/?(pos:y); ** find a position with no obstacles
+
+!!BU:S(type)/(num)/(pos)/1/-1/0;
+!!VR(proposedPos):+(posOffset);          ** increase position number: (pos)
+
+
+** find a position with no obstacles
+!?FU(WOG_38_FindValidPos);
+!#VA(proposedPos:x) (isWide:x) (randomSeed:x) (result:x);
+
+!!VR(result):S(NO_STACK);
+!#VA(pos[2]:y);
+!#VA(flags[2]:y);
+!#VA(stack[2]:y);
+
+!!FU(NewIntArray):P?(availPosList:y);
+
+!!re i/0/7;
+  !!VR(pos[0]):S(proposedPos) +i;
+  !!BU:O(pos[0])/?(flags[0]) E(pos[0])/?(stack[0]);
+  !!co|(flags[0])>0/(stack[0])>(NO_STACK);
+
+  !!if&(isWide);
+    !!VR(pos[1]):S(pos[0]) -1;    ** check for 2-hex creature. Position
+    !!BU:O(pos[1])/?(flags[1]) E(pos[1])/?(stack[1]);
+    !!co|(flags[1])>0/(stack[1])>(NO_STACK);
+  !!en;
+
+  !!FU(Array_Push):P(availPosList)/(pos[0]);
+!!en;
+
+!!SN:M(availPosList)/?(size:y);
+
+!!if&(size)>0;
+  !!VR(lastItem:y):S(size) -1;
+  !!FU(WOG_SafeRand):P0/(lastItem)/(randomSeed)/?(random:y);
+  !!SN:M(availPosList)/(random)/?(result);
+!!en;
+
+
+** summon calculated stacks
+!?FU(WOG_38_SummonCalculatedStacks);
+!#VA(counter:x) (randomSeed:x);
+
+!!VR(type:y):S(MON_PIKEMAN);
+!!FU(WOG_SafeRand):P0/1/(randomSeed:x)/?(random:y);
+
+!!if&(counter)>0/(counter)<10;
+  !!VR(type)&(random)=0:S(MON_PEASANT);
+  !!VR(type)&(random)=1:S(MON_PIXIE);
+
+!!el&(counter)>=10/(counter)<20;
+  !!VR(type)&(random)=0:S(MON_SPRITE);
+  !!VR(type)&(random)=1:S(MON_HALFLING);
+
+!!el&(counter)>=20/(counter)<110;
+  !!VR(random):R0/0/2;
+
+  !!if&(counter)>=20/(counter)<30;
+    !!VR(type)&(random)=0:S(MON_AIR_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_BOAR);
+    !!VR(type)&(random)=2:S(MON_ROGUE);
+  !!el&(counter)>=30/(counter)<40;
+    !!VR(type)&(random)=0:S(MON_STORM_ELEMENTAL);
+    !!VR(type)&(random)>=1/(random)<=2:S(MON_GHOST);
+  !!el&(counter)>=40/(counter)<50;
+    !!VR(type)&(random)=0:S(MON_WATER_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_MUMMY);
+    !!VR(type)&(random)=2:S(MON_NOMAD);
+  !!el&(counter)>=50/(counter)<60;
+    !!VR(type)&(random)=0:S(MON_ICE_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_AIR_MESSENGER);
+    !!VR(type)&(random)=2:S(MON_SYLVAN_CENTAUR);
+  !!el&(counter)>=60/(counter)<70;
+    !!VR(type)&(random)=0:S(MON_FIRE_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_FIRE_MESSENGER);
+    !!VR(type)&(random)=2:S(MON_SHARPSHOOTER);
+  !!el&(counter)>=70/(counter)<80;
+    !!VR(type)&(random)=0:S(MON_ENERGY_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_EARTH_MESSENGER);
+    !!VR(type)&(random)=2:S(MON_WATER_MESSENGER);
+  !!el&(counter)>=80/(counter)<90;
+    !!VR(type)&(random)=0:S(MON_EARTH_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_ARCTIC_SHARPSHOOTER);
+    !!VR(type)&(random)=2:S(MON_WEREWOLF);
+  !!el&(counter)>=90/(counter)<100;
+    !!VR(type)&(random)=0:S(MON_MAGMA_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_LAVA_SHARPSHOOTER);
+    !!VR(type)&(random)=2:S(MON_TROLL);
+  !!el&(counter)>=100/(counter)<110;
+    !!VR(type)&(random)=0:S(MON_PSYCHIC_ELEMENTAL);
+    !!VR(type)&(random)=1:S(MON_WAR_ZEALOT);
+    !!VR(type)&(random)=2:S(MON_SORCERESS);
+  !!en;
+
+!!el&(counter)>=110/(counter)<120;
+  !!VR(random):R0/0/3;
+
+  !!VR(type)&(random)=0:S(MON_MAGIC_ELEMENTAL);
+  !!VR(type)&(random)=1:S(MON_NIGHTMARE);
+  !!VR(type)&(random)=2:S(MON_ENCHANTER);
+  !!VR(type)&(random)=3:S(MON_HELL_STEED);
+
+!!el&(counter)>=120;
+  !!if&(counter)>=120/(counter)<130;
+    !!VR(type)&(random)=0:S(MON_FIREBIRD);
+    !!VR(type)&(random)=1:S(MON_GORYNYCH);
+  !!el&(counter)>=130/(counter)<140;
+    !!VR(type)&(random)=0:S(MON_PHOENIX);
+    !!VR(type)&(random)=1:S(MON_GORYNYCH);
+  !!el&(counter)>=140;
+    !!VR(type)&(random)=0:R0/(MON_SUPREME_ARCHANGEL)/(MON_SACRED_PHOENIX); **Random Level 8
+
+    !!if&(random)=1;
+      !!VR(type):R0/(MON_AZURE_DRAGON)/(MON_ENCHANTER); **Random Powerful Neutral Dragon
+      !!VR(type)&(type)=(MON_ENCHANTER):S(MON_DRACOLICH);  **Dracolich
+    !!en;
+  !!en;
+!!en;
+
+!!MA:X(type)/?(monFlags:y);  ** Check monster Flags
+!!VR(isWide:y):S(monFlags) &(MON_FLAG_WIDE);     ** Check for 2-hex creature
+
+!!VR(num:y):S(counter);
+!!VR(num)&i^Tougher_Karmic_Battles_on^:*2;
+
+!!DO(WOG_38_FindValidPos)/1/200/1:P73/(isWide)/(randomSeed:x)/?(pos:y); ** find a position with no obstacles
+!!BU:S(type)/(num)/(pos)/1/-1/0;
+!!DO(WOG_38_FindValidPos)/1/200/1:P107/(isWide)/(randomSeed:x)/?(pos); ** find a position with no obstacles
+!!BU:S(type)/(num)/(pos)/1/-1/0;
+
+
+** store the last battle action (to check if surrender or retreat)
+!?FU(OnBeforeBattleAction);
+!!UN:P38/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!BG:A?i^wog_38_lastBattleAction^;
+
+
+** after battle - Reset w49 if hero defeated without retreat or surrender / give AI exp if won
+!?FU(OnAfterBattleUniversal);
+!!UN:P38/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+; Reset w49 if hero defeated without retreat or surrender
+!!HEi^battle_hero_0^:O?(owner:y);
+
+!!if&(owner)=(NO_OWNER);
+  !!if&i^wog_38_lastBattleAction^<>(BATTLE_ACTION_RETREAT)/i^wog_38_lastBattleAction^<>(BATTLE_ACTION_SURRENDER);
+    !!IF:Wi^battle_hero_0^;
+    !!VRw49:S1;
+  !!en;
+
+; give AI experience (only in Neutral battle. AI don't fight the karmic troops, they just got exp for free)
+!!el&i^wog_isNeutralBattle^/i^battle_ai_0^;
+  !!IF:Wi^battle_hero_0^;
+  !!VR(value:y):Sw49 :10 + 1 *(value);
+  !!VR(exp:y):S(value) *100;
+  !!VR(exp)&i^Tougher_Karmic_Battles_on^:*2;
+  !!HEi^battle_hero_0^:Ed(exp)/?(level:y)/1;
+!!en;

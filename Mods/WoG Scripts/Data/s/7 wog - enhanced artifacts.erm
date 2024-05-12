@@ -1,0 +1,535 @@
+ZVSE2
+
+** ENHANCED ARTIFACTS  -  ERM script 71
+
+** By Arstahd
+** Version 1.21   updated July 18 2004 by Arstahd
+** Updated August 23, 2004 by Fnord to disable in MP network battles and
+** September 16, 2004 to correct some y variables that should have been y- variables.
+** Special thanks to Fnord for help with bug fixing and script maintenance
+** Artifact descriptions transferred to script75 on Jul. 18. 2004 by Hermann the Weird
+** Updated Jan 2023 by daemon_n with perfect optimization and nativization kek 
+** Updated Feb 2024 by Archer30
+
+
+** Improves many weak artifacts
+** Some artifacts have changed class.
+** Any spells cast are at Basic level unless otherwise noted.
+
+** Pendant Of Life gives living troops health based on their level squared  {Major}
+** Pendant Of Death gives undead +5 Att, +5 Def, +1 Spd                     {Major}
+** Pendant Of Total Recall casts mass Basic Precision                       {Minor}
+** Pendant Of Second Sight casts mass Basic Air Shield                      {Minor}
+** Pendant Of Holiness casts mass Basic Bless                               {Major}
+** Pendant Of Dispassion casts mass Basic Bloodlust                         {Minor}
+** Pendant Of Free Will casts mass Basic Stoneskin                          {Minor}
+** Orb Of Vulnerability casts mass Disease
+** Orb Of the Firmament casts mass Basic Prot. from Air
+** Orb Of Silt casts mass Basic Prot. from Earth
+** Orb Of Tempestuous Fire casts Basic mass Prot. from Fire
+** Orb Of Driving Rain casts mass Basic Prot. from Water
+** Collar of Conjuring increases spell damage by 5%
+** Ring of Conjuring increases spell damage by 10%
+** Cape of Conjuring increases spell damage by 15%
+** Ring of the Magi increases spell damage by 20% (total of 50%)
+** Sphere Of Permanence adds 10 health to hero's non-living non-undead troops
+** Dead Man's Boots upgrade Skeletons
+** Vampire's Cowl upgrades Vampires
+** Amulet of the Undertaker upgrades Walking Dead
+** Centaur's Axe upgrades Centaurs
+** Shield of the Dwarven Lords upgrades Dwarves
+** Breastplate of Petrified Wood upgrades Dendroid Guards
+** Helm of the Alabaster Unicorn upgrades Unicorns
+** New combination artifact (above 4 artifacts)
+**    Garb of the Forest Lord: gives 1 War Unicorn, 2 Dendroid Soldiers, 4 Battle Dwarves, 8 Centaur Captains each week
+** Commander artifacts can be worn by heroes granting two random abilities (as well as functioning normally)
+**    +1 to +5 Primary Stat bonus (1, 2, or all 4 stats)
+**    add one rank to a random secondary skill (if this puts you at expert, the bonus is permanent)
+** Statesman's Medal reduces monster aggression by 1                       {Treasure}
+** Ring of the Diplomat reduces monster aggression by 1                    {Treasure}
+** Ambassador's Sash reduces monster aggression by 1                       {Treasure}
+** New combination artifact (above 3 artifacts)
+**     The Vestments of Authority: monster aggression is further reduced by 1
+** Ring of Life                                                            {Treasure}
+** Vial of Lifeblood                                                       {Treasure}
+
+** All artifacts function for the AI if worn.
+
+
+** Initialization Code
+!#UN:P71/?i^wog_71_enabled^;  [Check if Enhanced Artifacts II is enabled in WoGify Options]
+!#UN:P219/?i^wog_219_enabled^; [Check if Enhanced Commander Artifacts is enabled in WoGify Options]
+
+!?FU(WOG_CreateERMHook)&i^wog_71_enabled^;
+!!SN:Ex1/1/4288967/(WOG_71_OnMonsterClickDiplomacy); [hooks for the artifacts decreasing mon gression]
+!!SN:Ex1/1/4879500/(WOG_71_OnMonsterAttackDiplomacy);
+!!SN:Ex1/1/4355710/(WOG_71_OnGetArmyDiplomacyValue);
+
+!!SN:Ex1/1/5137385/(WOG_71_OnMonGetSpec);[hook for the artifacts giving mon stats]
+
+!?FU(OnAfterErmInstructions);
+!!if&i^wog_219_enabled^;
+
+  !#VA(artSlots[10]:y);
+  !#VA(skillBitSet[10]:y);
+
+  !!VR(artSlots[0]):C4/6/4/1/3/8/5/7/5/7;[set axe of smashing etc right slots ]
+  !!VR(skillBitSet[0]):C1/2/1/2/4/8/1/12/2/15;
+
+  ; Set up the array for random skills in order to generate different skills - Archer30
+  ; If Warfare is enabled, War Machines skills will be skipped (fewer issues and less imba)
+  !!FU(NewIntArray):P?(secondarySkillList:y);
+  !!UN:P193/?(warfareEnabled:y);
+
+  !!re i/(SEC_SKILL_FIRST)/(SEC_SKILL_LAST);
+    !!if&(warfareEnabled);
+      !!co|i=(SKILL_BALLISTICS)/i=(SKILL_ARTILLERY)/i=(SKILL_FIRST_AID);
+    !!en;
+
+    !!FU(Array_Push):P(secondarySkillList)/i;
+  !!en;
+
+  !!FU(Array_Shuffle):P(secondarySkillList);
+
+  ; Generate details of the 10 commander artifacts
+  !!re i/0/9;(ART_SLAVAS_RING_OF_POWER);
+    !!VR(artId:y):Si +(ART_AXE_OF_SMASHING);
+    !!VR(randomPSval:y):R0/1/5;
+    ; Pop and get the skill from the array
+    !!FU(Array_Pop):P(secondarySkillList)/?(randomSS:y);
+
+    !!SN:H^secskill^/(randomSS)/0/?(skillName:z);
+    !!UN:A(artId:y)/2/(artSlots[i]);
+    !!FU(PackUnion):P(randomPSval)/8/(skillBitSet[i])/8/(randomSS)/8/?(result:y);
+    !!VRi^wog_219_art_%(artId:y)^:S(result:y);
+    !!SN:T^wog.219.%(artId:y).description^/?(artDesc:z)/^value^/(randomPSval)/^skillName^/(skillName);
+    !!SN:H^art^/(artId:y)/0/?(artName:z);
+    *!SN:T^wog.219.%(artId:y).name^/?(artName:z)/^value^/(randomPSval)/^skillName^/(skillName); [Archer30: Why did we disable the custom commander artifact name feature?]
+    !!SN:H^art^/(artId:y)/1/^{%(artName:z)}%T(wog.endl)%T(wog.endl)%(artDesc:z)^;
+  !!en;
+!!en;
+
+!!if&i^wog_71_enabled^;
+  !!UN:A66/3/2;                                 [set class to treasure - statesman's medal]
+  !!UN:A67/3/2;                                 [set class to treasure - diplomat's ring]
+  !!UN:A68/3/2;                                 [set class to treasure - ambassador's sash]
+  !!UN:A95/3/2;                                 [set class to treasure - ring of life]
+  !!UN:A96/3/4;                                 [set class to minor - vial of lifeblood]
+
+  *****
+  !!UN:A103/3/8;                                [set class to major - pendant of life]
+  !!UN:A103/1/5000;                             [set cost]
+  *****
+  !!UN:A104/3/8;                                [set class to major - pendant of death]
+  !!UN:A104/1/4000;                             [set cost]
+  *****
+  !!UN:A107/3/4;                                [set class to minor - pendant of true aim (total recall)]
+  *****
+  !!UN:A101/3/4;                                [set class to minor - pendant of second sight]
+  *****
+  !!UN:A102/3/8;                                [set class to major - pendant of holiness]
+  *****
+  !!UN:A100/3/4;                                [set class to minor - pendant of focused rage (dispassion)]
+  *****
+  !!UN:A105/3/4;                                [set class to minor - pendant of resolve (free will)]
+!!en;
+
+** end of Initialization Code
+
+!?FU(OnBeforeBattleUniversal);
+!!VRi^wog_219_inCombat^:S(TRUE);
+!?FU(OnAfterBattleUniversal);
+!!VRi^wog_219_inCombat^:S(FALSE);
+
+!?FU(OnEquipArt)&v998>=(ART_AXE_OF_SMASHING)/v998<=(ART_SLAVAS_RING_OF_POWER)/i^wog_219_enabled^;
+!!FU(WOG_219_ArtProc):Pv998/1;
+
+!?FU(OnUnequipArt)&v998>=(ART_AXE_OF_SMASHING)/v998<=(ART_SLAVAS_RING_OF_POWER)/i^wog_219_enabled^;
+!!FU(WOG_219_ArtProc):Pv998/-1;
+
+!?FU(WOG_219_ArtProc);
+!#VA(artId:x) (value:x);
+!#VA(pSkills[4]:y);
+
+!!FU(UnpackUnion):Pi^wog_219_art_%(artId)^/?(psValue:y)/8/?(psBitSet:y)/8/?(sSkill:y)/8;
+
+!!re i/0/3;
+  !!VR(bitMask:y):S1 Sd<<i &(psBitSet:y);
+
+  !!if&(bitMask);
+    !!VR(pSkills[i]):S(psValue:y) *(value);
+  !!en;
+!!en;
+
+!!HE(CURRENT_HERO):Fd(pSkills[0])/d(pSkills[1])/d(pSkills[2])/d(pSkills[3]) S(sSkill)/?(lvl:y);
+!!FU&i^wog_219_inCombat^:E;
+!!if&(value)>0;
+  !!HE(CURRENT_HERO)&(lvl)<(SKILL_EXPERT):S(sSkill)/d1;
+!!el&(lvl:y)>(SKILL_NOT_LEARNED)/(lvl)<(SKILL_EXPERT); [Arcerh30: if the hero granted Expert level SS by equipping the art, he/she granted the SS on Expert level permantely - same as in the original WoG Script]
+  !!HE(CURRENT_HERO):S(sSkill)/d-1;
+!!en;
+
+; Update for Secondary skills and spell points - Why haven't these be updated in AE triggers like Primary skills?
+!?FU(OnHeroScreenMouseClick)&i^mouse_action^=(MOUSE_LMB_RELEASED);
+!!VR(screenUpdate:y):S(FALSE);
+!!VR(screenUpdate)&i^mouse_item^>=2/i^mouse_item^<=10:S(TRUE);
+!!SN&(screenUpdate):D;
+
+** end of function
+
+
+** Timer routine
+!?FU(OnEveryDay)&i^timerWeekDay^=1/i^timerDay^>1/i^wog_71_enabled^; [Continue trigger if script is enabled, starting from the second week]
+
+** check hero for creature artifacts
+!!OW:Hi^timerOwner^/1;
+!!FU&v1<=0:E;
+
+!!re j/2/v1/1/1;
+  !!VRi:Svj;
+
+  !!HEi:A2/(ART_DEAD_MANS_BOOTS)/?y10/?y1; [check for Dead Man's Boots]
+  !!HEi:A2/(ART_VAMPIRES_COWL)/?y10/?y2; [check for Vampire's Cowl]
+  !!HEi:A2/(ART_AMULET_OF_THE_UNDERTAKER)/?y10/?y3; [check for Amulet of the Undertaker]
+  !!HEi:A2/(ART_CLOAK_OF_THE_UNDEAD_KING)/?y10/?y4; [check for Cloak of the Undead King]
+
+  !!FU(WOG_71_UpgradeMonsterWithArtifact)|y1>0/y4>0:Pi/(ART_DEAD_MANS_BOOTS)/(MON_SKELETON); [handle Dead Man's Boots if found]
+  !!FU(WOG_71_UpgradeMonsterWithArtifact)|y2>0/y4>0:Pi/(ART_VAMPIRES_COWL)/(MON_VAMPIRE); [handle Vampire's Cowl if found]
+  !!FU(WOG_71_UpgradeMonsterWithArtifact)|y3>0/y4>0:Pi/(ART_AMULET_OF_THE_UNDERTAKER)/(MON_WALKING_DEAD); [handle Amulet of the Undertaker if found]
+
+  !!HEi:A2/(ART_CENTAUR_AXE)/?y10/?y5;                   [check for Centaur's Axe]
+  !!FU(WOG_71_UpgradeMonsterWithArtifact)&y5>0:Pi/(ART_CENTAUR_AXE)/(MON_CENTAUR); [handle Centaur's Axe if found]
+
+  !!HEi:A2/(ART_SHIELD_OF_THE_DWARVEN_LORDS)/?y10/?y6;   [check for Shield of the Dwarven Lords]
+  !!FU(WOG_71_UpgradeMonsterWithArtifact)&y6>0:Pi/(ART_SHIELD_OF_THE_DWARVEN_LORDS)/(MON_DWARF); [handle Shield of the Dwarven Lords if found]
+
+  !!HEi:A2/(ART_BREASTPLATE_OF_PETRIFIED_WOOD)/?y10/?y7; [check for Breastplate of Petrified Wood]
+  !!FU(WOG_71_UpgradeMonsterWithArtifact)&y7>0:Pi/(ART_BREASTPLATE_OF_PETRIFIED_WOOD)/(MON_DENDROID_GUARD); [handle Breastplate of Petrified Wood if found]
+
+  !!HEi:A2/(ART_HELM_OF_THE_ALABASTER_UNICORN)/?y10/?y8; [check for Helm of the Alabaster Unicorn]
+  !!FU(WOG_71_UpgradeMonsterWithArtifact)&y8>0:Pi/(ART_HELM_OF_THE_ALABASTER_UNICORN)/(MON_UNICORN); [handle Helm of the Alabaster Unicorn if found]
+
+  !!if&y5>0/y6>0/y7>0/y8>0;
+    !!if&999;
+      !!FU(NewIntArray):P8/(PIC_TYPE_MONSTER)/?(monsters:y);
+      !#VA(monType[4]:y);
+      !!VR(monType[0]):C(MON_WAR_UNICORN)/(MON_DENDROID_SOLDIER)/(MON_BATTLE_DWARF)/(MON_CENTAUR_CAPTAIN); 
+
+      !!VR(bit:y):S1;
+
+      !!re k/0/(monType[SIZE])/1/-1;
+        !!VR(monAmount:y):S(bit) *65536 +(monType[k]); Sd<<16 |(monType[k]);
+        !!VR(ind:y):Sk*2+1;
+        !!SN:M(monsters)/(ind)/(monAmount);
+        !!VR(bit):Sd<<1;
+      !!en;
+
+      !!FU(PrepareMultiPicDialog):P(monsters);
+      !!HEi:B0/?(heroName:z);
+      !!SN:T^wog.71.join^/?(msg:z)/^heroName^/(heroName);
+      !!IF:N1/(msg:z);
+
+      !!HEi:C25/1/23/2/17/4/15/8/-1/0/-1/0/-1/0; [give 1 war unicorn, 2 dendroid soldiers, 4 battle dwarves, 8 centaur captains - use HE:C in order to manage them altogether]
+    !!el&i^timerIsAi^;
+      !!HEi:C2/25/1/0; [offer AI war unicorn]
+      !!HEi:C2/23/2/0; [offer AI dendroid soldiers]
+      !!HEi:C2/17/4/0; [offer AI battle dwarves]
+      !!HEi:C2/15/8/0; [offer AI centaur captains]
+    !!en;
+  !!en;
+!!en;
+
+!!SN&1000:D;                            [redraw screen to show upgraded creatures]
+
+
+!?FU(OnBeforeBattleUniversal)&i^wog_71_enabled^;
+!!re i/(BATTLE_LEFT)/i^battle_hero_vs_hero^;
+  !!VR(bonus:y):S(NULL);
+  !!HEi^battle_hero_%i^:A2/(ART_RING_OF_THE_MAGI)/?y-4/?(isRingOfMagi:y);
+
+  !!if&(isRingOfMagi:y);
+    !!VR(bonus:y):S50;
+  !!el;
+    !!re j/0/2;
+      !!VR(artId:y):Sj +(ART_COLLAR_OF_CONJURING);
+      !!HEi^battle_hero_%i^:A2/(artId:y)/?y-4/?(isEqipped:y);
+
+      !!if&(isEqipped);
+        !!VR(bonusAdd:y):Sj*5 +5;
+        !!VR(bonus):+(bonusAdd);
+      !!en;
+    !!en;
+  !!en;
+
+  !!VRi^wog_71_hero_%i_spellDamageBonus^:S(bonus);
+!!en;
+
+!?FU(OnMagicBasicResistance)&i^wog_71_enabled^/i^wog_71_hero_%i(battle_current_side)_spellDamageBonus^>0;
+!!BG:A?(action:y);                      [get active stack #, action type]
+
+!!if&(action)=(BATTLE_ACTION_HERO_CAST);
+  !!MR:D?(basicDmg:y);                  [get spell damage]
+  !!VR(newDmg:y):S(basicDmg) *i^wog_71_hero_%i(battle_current_side)_spellDamageBonus^ :100 +(basicDmg);
+  !!MR&(newDmg)>(basicDmg):D(newDmg);
+!!en;
+
+!?FU(OnAfterBattleUniversal)&i^wog_71_enabled^;
+!!re i/(BATTLE_LEFT)/i^battle_hero_vs_hero^;
+  !!VRi^wog_71_hero_%i_spellDamageBonus^:S(NULL);
+!!en;
+
+
+** end of function
+
+** function to handle creature artifacts for a hero who has one
+!?FU(WOG_71_UpgradeMonsterWithArtifact);                          x2=artifact number  x3=creature type
+!#VA(hero:x) (art:x) (monster:x);
+
+!!VR(index:y)&(art)=(ART_CENTAUR_AXE):S0;
+!!VR(index)&(art)=(ART_SHIELD_OF_THE_DWARVEN_LORDS):S1;
+!!VR(index)&(art)=(ART_HELM_OF_THE_ALABASTER_UNICORN):S2;
+!!VR(index)&(art)=(ART_BREASTPLATE_OF_PETRIFIED_WOOD):S3;
+!!VR(index)&(art)=(ART_AMULET_OF_THE_UNDERTAKER):S4;
+!!VR(index)&(art)=(ART_VAMPIRES_COWL):S5;
+!!VR(index)&(art)=(ART_DEAD_MANS_BOOTS):S6;
+
+!!VR(bit:y):S1 Sd<<(index);
+!!VR(isDisabled:y):Si^wog_71_disabledUpgrades^ &(bit);
+!!FU&(isDisabled):E;
+
+!!VR(monCount:y):S0;
+
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!HE(hero):C0/i/?(heroMon:y)/?(num:y);
+  !!VR(monCount)&(heroMon)=(monster):+(num);
+!!en;
+
+!!if&(monCount)>0;
+  !!if&1000;
+    !!HE(hero):B0/?(heroName:z);        [get hero name]
+    !!HE(hero):R2/?(gender:y);          [get hero sex]
+    !!SN:T^wog.whose%(gender)^/?(whose:z);     
+    !!SN:H^art^/(art)/0/?(artName:z);   [get artifact name]
+    !!VR(isPlural:y):S(monCount) -1 B;  [get creature name]
+    !!SN:H^monname^/(monster)/(isPlural)/?(monName:z);
+    !!SN:T^wog.71.upgrade^/?(msg:z)/^monName^/(monName:z)/^heroName^/(heroName)/^whose^/(whose)/^artName^/(artName);
+    !!IF:Q1/(PIC_TYPE_ART)/(art)/(MSG_TYPE_MES)/(msg:z);
+  !!en;
+
+  !!VR(upgMon:y):S(monster) +1;         [set for upgrade]
+  !!HE(hero):C1/(monster)/(upgMon)/d/0/3;[upgrade creatures without changing stack exp.]
+!!en;
+
+** end of function
+
+
+** start of battlefield start trigger
+!?FU(OnSetupBattlefield)&i^wog_71_enabled^;
+
+!#VA(arts[10]:y) (spells[10]:y) (sides[10]:y);
+
+!!VR(arts[0]):C(ART_PENDANT_OF_DISPASSION)/(ART_PENDANT_OF_SECOND_SIGHT)/(ART_PENDANT_OF_HOLINESS)/(ART_PENDANT_OF_FREE_WILL)/(ART_PENDANT_OF_TOTAL_RECALL)/
+(ART_ORB_OF_VULNERABILITY)/(ART_ORB_OF_THE_FIRMAMENT)/(ART_ORB_OF_SILT)/(ART_ORB_OF_TEMPESTUOUS_FIRE)/(ART_ORB_OF_DRIVING_RAIN);
+!!VR(spells[0]):C(SPELL_BLOODLUST)/(SPELL_AIR_SHIELD)/(SPELL_BLESS)/(SPELL_STONE_SKIN)/(SPELL_PRECISION)/
+73/(SPELL_PROTECTION_FROM_AIR)/(SPELL_PROTECTION_FROM_EARTH)/(SPELL_PROTECTION_FROM_FIRE)/(SPELL_PROTECTION_FROM_WATER);
+!!VR(sides[0]):C0/0/0/0/0/1/0/0/0/0;
+
+!!re i/0/i^battle_hero_vs_hero^;
+  !!re j/0/(arts[SIZE])/1/-1;
+    !!FU(WOG_71_CheckIfHeroHasArt):Pi^battle_hero_%i^/(arts[j])/?(equipped:y); [For mod compatibility, here we use a function]
+
+    !!if&(equipped);
+      !!VR(targetSide:y):Si X(sides[j]);
+      !!FU(WOG_Battle_SetSideSpellEffects):Pi/(targetSide)/(spells[j])/50/(SKILL_NOT_LEARNED)/(FALSE);
+    !!en;
+  !!en;
+!!en;
+
+!!FU(WOG_CleanUpSpells):P73/(WOG_StackIsLiving);
+
+; Function for mod compatibility
+!?FU(WOG_71_CheckIfHeroHasArt);
+!#VA(hero:x) (art:x) (result:x);
+
+!!HE(hero):A2/(art)/?t/?(result);
+
+!?FU(WOG_StackIsLiving);
+!#VA(stackId:x) (result:x);
+!!BM(stackId):F?f;
+!!VR(result):Sf &(MON_FLAG_ALIVE);
+
+!?FU(WOG_CleanUpSpells);
+!#VA(spellId:x) (callback:x);
+!!re i/0/(BATTLE_STACK_LAST);
+  !!BMi:N?n T?t;
+  !!if&n/t<>(NO_MON);
+    !!FU(callback):Pi/?(result:y);
+    !!if&(result)=(FALSE);
+      !!BMi:Z?(stack:y);
+      !!SN:E4473392/(CALLCONV_THISCALL)/(stack)/(spellId);
+    !!en;
+  !!en;
+!!en;
+
+!?FU(WOG_71_OnMonGetSpec);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/?(hero:y) C(hero)/26/2/?(heroId:y);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y)  C(ebp)/8/4/?(monType:y);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(monInfo:y);
+
+
+!!HE(heroId:y):A2/(ART_PENDANT_OF_LIFE)/?y99/?(isEqipped:y);            [see if hero has a Pendant of Life]
+!!if&(isEqipped:y);
+  !!MA:X(monType)/?f;
+  !!VRf:&(MON_FLAG_ALIVE);
+  !!if&f;
+    !!MA:L(monType)/?l;
+    !!if&l<5;
+      !!VR(saveL:y):Sl +1;
+      !!VRl:S1 +(saveL:y) *(saveL:y) :2;
+    !!el;
+      !!VRl:-5 *25 +25;
+    !!en;
+    !!UN:C(monInfo)/76/4/dl;                                            [add hit points to hero's living troops]
+  !!en;
+!!en;
+!!HE(heroId:y):A2/(ART_SPHERE_OF_PERMANENCE)/?y99/?(isEqipped:y);       [see if hero has a Sphere of Permanence]
+!!if&(isEqipped:y);
+  !!MA:X(monType)/?f;
+  !!VRf:&262160;                                                        [just look at alive & undead bits]
+  !!if&f=0;
+    !!UN:C(monInfo)/76/4/d10;                                           [ add 10 health to hero's non-living non-undead troops]
+  !!en;
+!!en;
+!!HE(heroId:y):A2/(ART_PENDANT_OF_DEATH)/?y99/?(isEqipped:y);           [see if hero has a Pendant of Death]
+!!if&(isEqipped:y);
+  !!MA:X(monType)/?f;
+  !!VRf:&(MON_FLAG_UNDEAD);
+  !!if&f;
+    !!UN:C(monInfo)/80/4/d1 C(monInfo)/84/4/d5 C(monInfo)/88/4/d5;      [to add attack,defense and speed to hero's undead troops]
+  !!en;
+!!en;
+
+
+!?FU(WOG_71_GetDiploBonus);
+!#VA(heroId:x) (result:x);
+
+!!VR(result):S(NULL);
+
+!!re i/0/2;
+  !!VR(artId:y):Si +(ART_STATESMANS_MEDAL);
+  !!HE(heroId):A2/(artId)/?(has:y)/?(equipped:y);
+  !!VR(result)&(equipped):+1;
+!!en;
+
+; Diplomacy artifacts
+!?FU(WOG_71_OnMonsterClickDiplomacy);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(hero:y) C(hero)/26/4/?(activeHeroId:y);
+!!FU&(activeHeroId)=(NO_HERO):E;
+
+!!FU(WOG_71_GetDiploBonus):P(activeHeroId:y)/?(result:y);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/?(diplo:y);
+!!VR(diplo):+(result) F0/3;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/(diplo);
+
+!?FU(WOG_71_OnMonsterAttackDiplomacy);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDI)/4/?(hero:y) C(hero)/26/4/?(activeHeroId:y);
+!!FU&(activeHeroId)=(NO_HERO):E;
+
+!!FU(WOG_71_GetDiploBonus):P(activeHeroId:y)/?(result:y);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/?(diplo:y);
+!!VR(diplo):+(result) F0/3;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/(diplo);
+
+!?FU(WOG_71_OnGetArmyDiplomacyValue);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(hero:y) C(hero)/26/4/?(heroId:y);
+!!FU(WOG_71_GetDiploBonus):P(heroId)/?(result:y);
+
+; Multiply the army's diplomacy value by 3 times if having all three diplomacy artifacts
+!!if&(result)>=3;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(value:y);
+
+  !!if&(value)<0;
+    !!VR(value):S(INT_MAX);
+  !!el;
+    !!VR(value):*3;
+    !!VR(value)&(value)<0:S(INT_MAX);
+  !!en;
+
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/(value);
+!!en;
+
+// Enable/Disable artifact creature upgrades on Monday
+!?FU(OnHeroScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED)/999;
+!!UN:P71/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!VR(slot:y):S(NO_ART_SLOT);
+!!VR(item:y):Si^mouse_item^;
+
+!!if&(item)>=2/(item)<=14|(item)=20;
+  !!VR(slot):S(item) -2;
+!!en;
+
+!!FU&(slot)=(NO_ART_SLOT):E;
+
+!!HE(CURRENT_HERO):N?(hero:y);
+!!FU(WOG_71_PrepareToDisableArt):P(hero)/(slot);
+
+!?FU(OnHeroesMeetScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED)/999;
+!!UN:P71/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!VR(hero:y):S(NO_HERO);
+!!VR(item:y):Si^mouse_item^;
+
+!!if&(item)>=27/(item)<=39|(item)=45;
+  !!VR(slot:y):S(item) -27;
+  !!CM:H?(hero)/?(otherHero:y);
+!!el&(item)>=46/(item)<=58|(item)=64;
+  !!VR(slot):S(item) -46;
+  !!CM:H?(otherHero)/?(hero);
+!!en;
+
+!!FU&(hero)=(NO_HERO):E;
+
+!!FU(WOG_71_PrepareToDisableArt):P(hero)/(slot);
+
+!?FU(WOG_71_PrepareToDisableArt);
+!#VA(hero:x) (slot:x);
+
+!!HE(hero):A1/?(art:y)/(slot);
+
+; This script works for all 7 artifact upgrades, but here we enable only Dead Man's Boots 
+; as it seems to be the only case we want to disable (cause raising Skeletons are sometimes stronger)
+; Note that right-click menu here could conflict with the interaction of combination artifacts
+; It is allowed only for Dead man's boots also for this reason
+*!if|(art)=(ART_CENTAUR_AXE)/(art)=(ART_SHIELD_OF_THE_DWARVEN_LORDS)/(art)=(ART_HELM_OF_THE_ALABASTER_UNICORN)/(art)=(ART_BREASTPLATE_OF_PETRIFIED_WOOD)
+  /(art)=(ART_AMULET_OF_THE_UNDERTAKER)/(art)=(ART_VAMPIRES_COWL)/(art)=(ART_DEAD_MANS_BOOTS);
+!!if&(art)=(ART_DEAD_MANS_BOOTS);
+
+  !!CM:R0;
+
+  !!VR(index:y)&(art)=(ART_CENTAUR_AXE):S0;
+  !!VR(index)&(art)=(ART_SHIELD_OF_THE_DWARVEN_LORDS):S1;
+  !!VR(index)&(art)=(ART_HELM_OF_THE_ALABASTER_UNICORN):S2;
+  !!VR(index)&(art)=(ART_BREASTPLATE_OF_PETRIFIED_WOOD):S3;
+  !!VR(index)&(art)=(ART_AMULET_OF_THE_UNDERTAKER):S4;
+  !!VR(index)&(art)=(ART_VAMPIRES_COWL):S5;
+  !!VR(index)&(art)=(ART_DEAD_MANS_BOOTS):S6;
+
+  !!VR(bit:y):S1 Sd<<(index);
+  !!VR(isDisabled:y):Si^wog_71_disabledUpgrades^ &(bit);
+
+  !!if&(isDisabled)=(FALSE);
+    !!VR(stat:z):S^%T(wog.102.on)^;
+    !!VR(rstat:z):S^%T(wog.102.off)^;
+  !!el;
+    !!VR(stat):S^%T(wog.102.off)^;
+    !!VR(rstat):S^%T(wog.102.on)^;
+  !!en;
+
+  !!SN:H^art^/(art)/1/?(artDesc:z) T^wog.71.switch^/?(msg:z)/^art_name^/(artDesc)/^stat^/(stat)/^rstat^/(rstat);
+
+  !!IF:Q1/(PIC_TYPE_ART)/(art)/(MSG_TYPE_QUESTION)/(msg);
+  !!VRi^wog_71_disabledUpgrades^&1:X(bit);
+!!en;

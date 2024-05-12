@@ -1,0 +1,167 @@
+ZVSE2
+
+** secondary skills Scrolling 
+** Idea and original script - Berserker
+** Reworked to support the mod "10 Secondary Skills" от igrik'а - Algor
+** Rewritten in ERM 2 to support "Warfare" WoG-option - daemon_n
+** fixed warfare blinks, fixed empty page display
+** Added Tactics button correction by Archer30
+
+
+!#UN:P182/(FALSE);                      [Disable Display Hidden Skills as it's no longer needed]
+
+!?FU(OnHeroScreenMouseClick)&i^mouse_action^=(MOUSE_LMB_RELEASED)/i^mouse_flags^=(NO_MOUSE_FLAGS);           // при клике в окне героя
+  !!SN:F^GetButtonID^/^sss_next^;
+
+  !!if&v1/i^mouse_item^=v1;
+    !!VRi^sss_CurrentPage^:+1;
+    !!FU(sss_SwitchPage):Pi^sss_CurrentPage^;
+    !!FU(sss_DoNotRefreshHeroScreenTwice):P;
+  !!en;
+
+  !!SN:F^GetButtonID^/^sss_pre^;
+
+  !!if&v1/i^mouse_item^=v1;
+    !!VRi^sss_CurrentPage^:-1;
+    !!FU(sss_SwitchPage):Pi^sss_CurrentPage^;
+    !!FU(sss_DoNotRefreshHeroScreenTwice):P;
+  !!en;
+
+
+!?FU(OnOpenHeroScreen);
+  !!HEx1:O?(owner:y);
+  !!VRi^sss_CurrentPage^:S1;
+  !!FU(sss_SwitchPage):Pi^sss_CurrentPage^;
+
+
+!?FU(OnPreHeroScreen)&i^sss_do_not_update_screen^=(FALSE);
+!!FU(sss_SwitchPage):Pi^sss_CurrentPage^;
+
+!?FU(OnPostHeroScreen)&i^sss_do_not_update_screen^=(FALSE);   
+!!FU(sss_SwitchPage):Pi^sss_CurrentPage^;
+
+!?FU(OnCloseHeroScreen);
+  !!HEx1:O?(owner:y);
+  !!FU(sss_FixPlayerHeroesData):P(owner);
+  !!VRi^sss_CurrentPage^:S0;
+
+!?FU(sss_FixPlayerHeroesData);
+  !#VA(playerID:x);
+
+  !!UN:C4881872/(UNC_INT8)/?(secSkillLimit:y);
+  !!OW:H(playerID)/1;
+
+  !!re i/2/v1/1/1;
+    !!FU(sss_SetUpSSArray):Pvi/?(skillsList:y)/?(skills:y);
+    !!VR(skills):F0/(secSkillLimit);
+    !!HEvi:S(skills);
+  !!en;
+
+
+!?FU(OnKeyPressed_HeroScreen)&i^key^=(KEY_PRIOR)|i^key^=(KEY_NEXT);
+  !!VRi^sss_CurrentPage^&i^key^=(KEY_PRIOR):-1;
+  !!VRi^sss_CurrentPage^&i^key^=(KEY_NEXT):+1;
+  !!FU(sss_SwitchPage):Pi^sss_CurrentPage^;
+
+  !!FU(sss_DoNotRefreshHeroScreenTwice):P;
+
+!?FU(sss_SwitchPage);                // отображение x1 страницы втор.навыков в экране героя
+!#VA(page:x);
+
+  !!FU(sss_SetUpSSArray):P(CURRENT_HERO)/?(skillsList:y)/?(skills:y);
+  !!FU&(skills)=0:E;
+
+  !!UN:C7620583/1/?(maxToShow:y);                    // y6 - максимальное количество втор.навыков отображаемых в окне героя
+
+  !!VR(totalPages:y):S(skills) :(maxToShow); F1/(maxToShow);
+  !!VR(remainder:y):S(skills) %(maxToShow);
+  !!if&(remainder);
+    !!VR(totalPages):+1;
+  !!en;
+  !!if&(page)>(totalPages);
+    !!VRi^sss_CurrentPage^:S1;
+  !!el&(page)<1;
+    !!VRi^sss_CurrentPage^:S(totalPages);
+  !!en;
+
+  !!VR(startSkill:y):Si^sss_CurrentPage^ -1 *(maxToShow);
+  !!VR(lastSkill:y):Si^sss_CurrentPage^ *(maxToShow);
+
+  !!VR(lastSkill)&(lastSkill)>(skills):S(skills) %(maxToShow) +(startSkill);
+  !!VR(skillsToShow:y):S(lastSkill) -(startSkill);
+
+  !!HE(CURRENT_HERO):S(skillsToShow);
+
+  !!re i/(startSkill)/(lastSkill)/1/-1;
+    !!SN:M(skillsList)/i/?(skill:y);
+    !!VR(slot:y):Si -(startSkill) +1;
+    !!HE(CURRENT_HERO):S(slot)/(skill)/1;
+  !!en;
+
+  *!UN:C(hero)/257/4/(storedSkills);
+
+!?FU(sss_SetUpSSArray);
+!#VA(hero:x) (skillsList:x) (skills:x);
+
+  !!FU(NewIntArray):P?(skillsList);
+  !!UN:P193/?(warfare:y);
+  !!VR(warfarePlaced:y):S(FALSE);
+  !!re i/(SEC_SKILL_FIRST)/(SEC_SKILL_LAST);
+    !!HE(hero):Si/?(learned:y);
+
+    !!if&(learned);
+      !!if|i=(SKILL_BALLISTICS)/i=(SKILL_ARTILLERY)/i=(SKILL_FIRST_AID);
+        !!if&(warfare);
+          !!if&(warfarePlaced:y)=(FALSE);
+            !!VR(warfarePlaced:y):S(TRUE);
+            !!IF:W(hero);
+            !!FU(Array_Push):P(skillsList)/w48;
+          !!en;
+
+          !!co;
+        !!en;
+      !!en;
+
+      !!FU(Array_Push):P(skillsList)/i;
+    !!en;
+  !!en;
+
+  !!SN:M(skillsList)/?(skills);
+  !!SN:F^ExtendArrayLifetime^/(skillsList);
+
+!?FU(sss_DoNotRefreshHeroScreenTwice);
+!!VRi^sss_do_not_update_screen^:S(TRUE);
+!!UN:R3/-1;                             // обновление окна текущего героя
+!!VRi^sss_do_not_update_screen^:S(FALSE);
+
+
+// Tactics button correction
+; If Tactics skill is not in the current page, Tactics button would be disabled. 
+; This script fixes it. Now it checks whether the hero learns Tactics instead of just current page.
+!?FU(OnGameEnter);
+!!FU(sss_CheckIfTacticsDeploymentIsEnabled):P?(result:y); [Some scripts may disable the original effect of Tactics]
+!!FU&(result)=(FALSE):E;
+
+!!SN:L^erm_hooker.era^/?(hooker:y);
+!!FU&(hooker)=0:E;
+
+!!SN:A(hooker)/^SetHook^/?(setHook:y);
+!!SN:E(setHook)/1/5120095/(sss_OnDisableTacticsButton); 4E205F
+
+!?FU(sss_OnDisableTacticsButton);
+!#VA(hook:x);
+
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EAX)/4/?(heroStruct:y);
+!!UN:C(heroStruct)/26/4/?(heroId:y);
+!!HE(heroId):S(SKILL_TACTICS)/?(tacticsLevel:y);
+
+!!if&(tacticsLevel)>(SKILL_NOT_LEARNED);
+  !!SN:X?t/0;
+  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/5120036;
+!!en;
+
+!?FU(sss_CheckIfTacticsDeploymentIsEnabled);
+!#VA(result:x);
+
+!!VR(result):S(TRUE);
+!!VR(result)&i^wog_218_enabled^:S(FALSE);

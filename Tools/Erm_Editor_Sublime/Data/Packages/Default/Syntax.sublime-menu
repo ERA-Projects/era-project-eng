@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "Синтаксис", 
+        "children": [
+            {
+                "command": "$file_types"
+            }
+        ]
+    }
+]

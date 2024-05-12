@@ -1,0 +1,3158 @@
+Version 3.9.10 (01/2024)
+------------------------
+[*] Introduced "OnAbnormalGameLeave" event to be called by plugins or HD mod in case of extreme game loop (0x4B0BA0) breaking using goto and manual stack cleaning. Improved compatibility with current HD mod versions: "OnGameLeave" event will be called for ERM correctly.
+
+
+Version 3.9.9 (01/2024)
+------------------------
+[+] Added the following functions to Era Erm Framework:
+
+  !?FU(Hash32);
+  ; Calculates int32 digest (hash sum) of arbitrary sequence of bytes.
+  !#VA(data:x);    Pointer to data first byte or string
+  !#VA(dataLen:x); Length of data in bytes
+  !#VA(result:x);  Result hash
+
+  !?FU(MakeRngSeed);
+  ; Generates deterministic int32 seed for pseudo random number generator, consuming up to 15 arbitrary int32 parameters.
+  ; Example: FU(MakeRngSeed):P(x)/(y)/(z)/(heroId)/?(seed:y); get prng seed, which will be the same for given coordinates and hero
+  !#VA(firstArg:x);
+
+  !?FU(SplitMix32);
+  ; Generates new random value using SplitMix32 algorithm and modifies input seed value.
+  ; Possible syntaxes:
+  ;  FU:P?(seed:y) ?(result:y);             Generate random int32 value (negative or positive)
+  ;  FU:P?(seed:y)/(min)/(max) ?(result:y); Generate random int32 value in [min..max] range
+  !#VA(seed:x);   OUT. Previous generator seed. Pass by reference (using ?), because this value will change after generation
+  !#VA(min:x);    Minimum value.
+  !#VA(max:x);    Maximum value.
+  !#VA(result:x); OUT. Result number
+
+  Examples:
+
+  !?FU(OnAfterErmInstructions);
+  !!FU(MakeRngSeed):P1/2/3/?(seed:y); generate deterministic seed from coordinates 1/2/3
+  !!IF:M^Seed: %(seed)^;
+
+  !!FU(SplitMix32):P?(seed)/-10/10/?(value:y); generate 3 random values in -10..10 range using SplitMix32 algorithm and generated seed
+  !!IF:M^Random value: %(value)^;
+
+  !!FU(SplitMix32):P?(seed)/-10/10/?(value:y);
+  !!IF:M^Random value: %(value)^;
+
+  !!FU(SplitMix32):P?(seed)/-10/10/?(value:y);
+  !!IF:M^Random value: %(value)^;
+
+  !!VR(text:z):S^apple^ M4/?(strLen:y);
+  !!SN:B(text)/?(textAddr:y);
+  !!FU(Hash32):P(textAddr)/(strLen)/?(hash:y);
+  !!IF:M^The hash of "%(text)" [%(strLen)] is %(hash)^;
+
+[+] Added the following exported function to era.dll:
+  // Calculates data hash sum of arbitrary length
+  function Hash32 (Data: pchar; DataSize: integer): integer; stdcall;
+
+  // Generates new random value using SplitMix32 algorithm and provided Seed value. Seed is passed by reference and modified on return.
+  function SplitMix32 (var Seed: integer; MinValue, MaxValue: integer): integer; stdcall;
+
+[*] Era now uses SplitMix32 algorithm for seeding Xoroshiro128 PRNG.
+
+
+Version 3.9.8 (01/2024)
+------------------------
+[*] Improved network PvP battles stability. The game will always send original (unmodified) battle stack action info to remote side, thus no desynchronization will occur when any script or plugin alters battle action parameters.
+
+
+Version 3.9.7 (12/2023)
+------------------------
+[+] Added support for arrays and primitive types in language json files, because they are often used as config files. Numbers are converted to strings, booleans are converted to "0" and "1", null values are ignored (the same, as key-value pair didn't exist at all). Arrays are treated as objects with monotonically increasing string keys ("0", "1", "2").
+
+  Example json:
+
+  {
+    "creatures": [
+      {
+        "id": 2000
+      },
+
+      {
+        "id":       150,
+        "name":     "SuperRobot",
+        "isGod":    true,
+        "power":    77.345,
+        "copyFrom": null
+      }
+    ]
+  }
+
+  Example script:
+
+  !?FU(OnAfterErmInstructions);
+  !!IF:M^%T(creatures.0.id) %T(creatures.1.id) %T(creatures.1.name) %T(creatures.1.isGod) %T(creatures.1.power) %T(creatures.1.copyFrom)^;
+
+[-] Fixed bug: png resources where cached forever, causing visual glitches in mods like Random Wallpaper.
+[-] Fixed bug: battle obstacles placement differed from SoD.
+
+
+Version 3.9.6 (12/2023)
+------------------------
+[+] Added support for multiple language files in a single mod. Json files from Lang\[Language] directory have priority over files in Lang directory root. Current language is stored in heroes3.ini in "Era" section under "Language" key and defaults to "en".
+
+It's recommended to keep any mod main language data in root "Lang" directory and alternative localizations in appropriate subdirectories (en, pl, ru, fr).
+
+[+] Added new exported function to era.dll:
+  // Changes current language code in memory without altering ini files or reloading already loaded data
+  SetLanguage (NewLanguage: pchar): TDwordBool; stdcall;
+
+  // Reloads all json files from "Lang" directory and current language subdirectory.
+  ReloadLanguageData; stdcall;
+
+[-] Fixed "SN:H" command and "OnAdvMapTileHint" event behavior. No hint is applied and no event is generated if tile is not visible by current player.
+
+
+Version 3.9.5 (07/2023)
+------------------------
+[*] Updated patcher_x86.dll to version 4.17.2.0.
+[*] Updated game bug fixes plugin by igrik to latest version.
+[*] Updated wog native dialogs plugin by igrik to latest version.
+[*] Updated Era Erm Framework to the one from H3 Launcher 2.927.
+[*] Updated vfs.dll to the one from H3 Launcher 2.927.
+[*] Updated Erm Editor Sublime to version 4143.
+[-] Fixed h3era.exe: the executable has no more zdraw.dll dependency.
+[-] Fixed memory leak in LoadPcx8/LoadPcx16 functions, occuring for pcx images, having corresponding png replacements.
+[@] Thanks to Panda, daemon_n and Archer for hints and recommendations.
+
+
+Version 3.9.4 (03/2023)
+------------------------
+[+] ERA finally got new icon. Credits: Nikt, suftfree, Elmore.
+[-] Fixed map description truncation in scrollbar text dialogs without scroll bars.
+
+[+] Added the following functions to Era ERM Framework:
+
+  !?FU(BattleStack_MakeActive);
+  ; Makes specified stack active/acting.
+  !#VA(stackId:x); Stack ID to pass control to.
+
+  !?FU(PrepareMultiPicDialog);
+  ; Initializes IF:N dialog pictures. Call IF:N to show it afterwards.
+  ; Automatically skips pairs with NO_PIC_TYPE type and pairs with PIC_TYPE_MONSTER type and negative subtype.
+  ; Ignores more than 8 non-empty pairs. Always safe to call.
+  ;
+  ; Supports three call syntaxes:
+  ;   P; dialog without pictures
+  ;   P(first picture type)/(first picture subtype)/(second picture type)...
+  ;   P(ID of dynamic array, containing picture pairs)
+
+  !?FU(Array_CountValue);
+  ; Returns number of array items, equal to specified value.
+  !#VA(list:x);            Array ID.
+  !#VA(value:x);           Value to count. Strings are supported.
+  !#VA(result:x);          Result.
+  !#VA(caseInsensitive:x); Optional. If true, strings will be compared case insensitively. Default: false.
+
+  !?FU(Array_IndexOf);
+  ; Returns index of the first array item with specified value or -1 in case of failure.
+  !#VA(list:x);            Array ID.
+  !#VA(value:x);           Value to search for.
+  !#VA(result:x);          Result index or -1 in case of failure.
+  !#VA(caseInsensitive:x); Optional. If true, strings will be compared case insensitively. Default: false.
+
+  !?FU(Array_Find);
+  ; Returns index of the first array item, for which custom callback function returns (TRUE) or -1 in case of failure.
+  !#VA(list:x);      Array ID.
+  !#VA(callback:x);  Callback function F(itemValue, ?result, [listId], [customArg]), where result is (TRUE) or (FALSE). (FALSE) is passed by default.
+                  ;  listID is array ID and customArg is anything, specified as custom argument to Array_Find. Zero by default.
+  !#VA(result:x);    Result index or -1 in case of failure.
+  !#VA(customArg:x); Custom argument to pass to callback as the 4-th parameter.
+
+  Examples:
+
+  !?PI;
+  !!FU(NewStrArray):P?(list:y);
+  !!FU(Array_Push):P(list)/^banana^/^daemon^/^apple^/^juice^/^Apple^/^orange^/^apple^;
+  !!FU(Array_CountValue):P(list)/^apple^/?(numOccurencies:y)/(TRUE);
+  !!IF:M^%(numOccurencies)^; displays 3, because 'apple' occured 3 times in the array
+
+  !!FU(NewStrArray):P?(list:y);
+  !!FU(Array_Push):P(list)/^banana^/^daemon^/^juice^/^Apple^/^orange^/^apple^;
+  !!FU(Array_IndexOf):P(list)/^apple^/?(itemIndex:y);
+  !!IF:M^%(itemIndex)^; displays 5, index of the last array item
+
+  !!FU(NewStrArray):P?(list:y);
+  !!FU(Array_Push):P(list)/^banana^/^daemon^/^juice^/^Apple^/^orange^/^apple^;
+  !!FU(Array_Find):P(list)/(edu_FilterDaemons)/?(itemIndex:y);
+  !!IF:M^%(itemIndex)^; displays 1, because function edu_FilterDaemons returns (TRUE) only for 'daemon_n' and 'daemon' strings.
+
+  !?FU(edu_FilterDaemons);
+  !#VA(strPtr:x);
+  !#VA(result:x);
+
+  !!VR(result)|z(strPtr)=^daemon_n^/z(strPtr)=^daemon^:S(TRUE);
+
+[*] Increased ERM engine static memory buffer size from 3 MB to 10 MB. The buffer is used for temporary strings storage during events and commands execution.
+[*] Debug.LogDestination setting value in heroes3.ini became case insensitive.
+[*] Removed '$OnGameLeave' private event support, used by HD-mod earlier. Added support for 'OnGameLeave' event as a replacement.
+[-] Fixed bug, causing 'TServiceMemAllocator.Alloc failed. No page allocated' error. Memory was leaking if interpolated conditions where used in ERM event conditions.
+[-] Fixed bug: x-variables modifications in "_Quit" events were not transferred to the results of original events.
+[-] Fixed bug: custom network events and FU:D didn't work in battle.
+[-] Fixed issues with HD-mod way of loading game from battle. OnGameEnter/OnGameLeave counter will not be corrupted if HD mod generates "OnGameLeave" event for ERA before quitting game loop. No more need in dollar prefix for event name.
+
+
+Version 3.9.3 (09/2022)
+------------------------
+[+] Rewrote game random number generator (RNG) engine.
+
+  Main changes:
+  - All RNGs are not thread safe now. They should be used in the main thread only.
+  - There are two main RNGs: the global one (rand/srand/VR:R) and the unique one (VR:T).
+  - ERA uses 3 different engines for the global RNG and switches them dynamicly to provide qualitative outputs, the same battle obstacles, as they are in original Heroes 3, and network PvP battles stability.
+  - VR:T generator cannot be seeded anymore. It serves as the source of unpredictable randomness.
+  - At the start of game process, all generators are seeded with cryptographically safe random seeds.
+  - Most of the time Xoroshiro128** engine is used for global RNG. It has both excellent speed and qualitative output.
+  - The global generator engine is switched to native C rand implementation only for the phase of placing battle obstacles.
+  - In network PvP battles the global generator is switched to deterministic one. Deterministic generator uses only the following information: unique battle ID, combat round ID, combat action ID, minimum and maximum value to generate. Thus any attempt to generate a sequence of numbers in the same range will produce the same result for each generation. It's recommended to replace dwarf-style resistence mechanics with golem-style resistence mechanics.
+  - Global RNG is seeded with unique value at battle start/replay, thus the first action and autocasted spells are not deterministic anymore.
+  - Using random functions in before battle and before battlefield visible phases does not influence battle obstacles placing anymore.
+  - Extended "Debug.Rng" setting in "heroes 3.ini". 0 means no debugging, 1 is for seeding, 2 is for seeding and random_range, 3 enables debugging of all rand/srand/random_range calls.
+  - rand() is guaranteed to return 0..32767 value, as it does in original Heroes 3. But random_range (VR:R/VR:T) call can return any value in int32 range (-2147483648..2147483647).
+  - ERA intercepts all rand/srand calls. Previously a few functions were not tracked.
+  - Deterministic RNG for network PvP battles is enabled for the whole battle (excluding obstacles placing stage). Bad morale probability and magic resistence additionaly depend on stack ID, thus producing different results for different stacks. Stack damage calculation additionally depends on iteration counter (game generates up to 10 random values for each stack damage event).
+
+[+] Added new event: "OnBeforePlaceBattleObstacles", occuring after "OnBeforeBattlefieldVisible" event. Global RNG is switched to the native one before calling ERM event and the generator is seeded with the following value: (110291 * map_tile_x + 167801 * map_tile_y + 81569). Thus the same obstacle types and positions are guaranteed for each particular map tile. Using RNG functions in this event will influence obstacles generation. Modder may implement unique obstacles for each battle at this phase or use custom deterministic seed formula.
+
+[+] Added new event "OnAfterPlaceBattleObstacles", occuring after all obstacles are placed on battlefield. Random number generated is switched back to the qualitative one. New custom obstacles may be added in this phase.
+
+[+] Implemented easy-to-use means to generate remote Era events with arbitrary data. The whole process of data compressing/decompressing/splitting/joining is hidden from clients. Support for progress callbacks is implemented. The following exported function was added to era.dll:
+
+  (* Generates remote Era event. Returns 1 if at least an attempt to call remote event was done. False for invalid/empty/too long event name *)
+  function FireRemoteNetworkEvent (
+    DestPlayerId:                   integer; // Destination player ID or -1 for all players
+    EventName:                      pchar;   // Event name like "OnSomethingHappened"
+    {n} Data:                       pointer; // Pointer to buffer with data to send
+    DataSize:                       integer; // Size of the buffer with data
+    {n} ProgressHandler:            TNetworkStreamProgressHandler; // Progress handler function or null
+    {n} ProgressHandlerCustomParam: pointer                        // Custom parameter for progress handler function
+  ): TDwordBool; stdcall;
+
+  Big amounts of data are divided into smaller packets and sent one by one. In this case ProgressHandler function is called after successful packet sending, allowing to abort the stream or update interface. Small packets will be joined automatically on remote side and single event will be generated. Moreover, the data is sent in compressed form, increasing transferring speed. HD Mod Lobby is fully supported.
+
+  TNetworkStreamProgressHandler = function (BytesSent, TotalBytes: integer; {n} CustomParam: pointer): TDwordBool; stdcall;
+
+[+] Erm "FU:D" command was fully rewritten. Fixed bug: HD mod used to disable FU:D on adventure map. From now FU:D supports arbitrary string parameters and d-modifiers.
+[+] Map editor uses "*.msk" files instead of "*.msg" files now.
+[+] ERA will retrieve final addresses to monster, spell, artifact and skill structures in OnAfterStructRelocations event using native pointers to those structures. Credits: Xeromant.
+
+[-] Fixed issues with HD-mod way of loading game from battle. OnGameEnter/OnGameLeave counter will
+    not be corrupted if HD mod generates "$OnGameLeave" event for ERA before quitting game loop.
+
+
+Version 3.9.2 (12/2021)
+------------------------
+[+] Implemented palette colorization support for def png frames.
+    The rules are the same, as for pcx png replacements. Png file should either use special 32 reserved colors or there should exist alternative png file named "groupInd_frameInd_p[player index].png". Example: "dialgbox.def/0_0_p3.png". Alternative files are not used if single png frame redirection is used.
+
+[+] Added new "OnAfterBuildTownBuilding" event, occuring right after town building was built.
+    x-parameters: Town ID, Building ID.
+
+[+] Added new "OnKeyReleased" event, occuring on keyboard key release.
+    Parameters: keyCode, preventDefault.
+
+    Example:
+
+    !?FU(OnKeyReleased);
+    !#VA(key:x) (preventDefault:x);
+    !!IF:M^Released key %(key)^;
+
+[+] Added new events to Era Erm Framework: "OnKeyReleased_AdvMap", "OnKeyReleased_Battle", "OnKeyReleased_HeroScreen",
+    "OnKeyReleased_HeroMeetingScreen", "OnKeyReleased_Town", occuring right after "OnKeyReleased" events and taking two arguments:
+    x1 - key code
+    x2 - prevent default reaction (0 - no, 1 - yes).
+
+    Example:
+
+    !?FU(OnKeyReleased_Battle)&x1=(KEY_F1):;
+    !#VA(key:x) (preventDefault:x);
+
+    !!VR(preventDefault):S(TRUE);
+    !!IF:M^Released F1 in battle!^;
+
+[+] Added the following functions to Era Erm Framework:
+
+  !?FU(H3Dlg_GetCurrentDlgId);
+  ; Returns topmost dialog unique ID (DLG_XXX constant). It may be message box, custom dialog or any in-game dialog.
+  !#VA(result:x);
+
+  !?FU(AddArtToHero);
+  ; Adds artifact to hero, trying to equip it first and fallbacking to putting in backpack. Returns success flag.
+  ; Automatically builds combo arts and checks scenario win conditions.
+  !#VA(hero:x);   ID of hero to equip artifact to.
+  !#VA(art:x);    ID of artifact to equip.
+  !#VA(artMod:x); Artifact modifier or (NO_ART_MOD). For spell scrolls its spell ID. For other artifacts the value is usually ignored.
+                ; Custom artifact modifiers may be implemented. Artifact modifier is always carried with artifact by game functions.
+  !#VA(result:x); Boolean. Success flag.
+
+  !?FU(GetArtAtSlot);
+  ; Returns hero artifact and artifact modifier at given slot.
+  !#VA(hero:x);   Hero ID or (CURRENT_HERO)
+  !#VA(slot:x);   Slot ID (backpack is supported).
+  !#VA(artId:x);  OUT. Artifact ID.
+  !#VA(artMod:x); OUT. Artifact modifier.
+
+  !?FU(ChangeArtModAtSlot);
+  ; Changes artifact modifier in specified hero slot. Usually modifier is spell ID for spell scrolls or (NO_ART_MOD).
+  !#VA(hero:x);   Hero ID or (CURRENT_HERO)
+  !#VA(slot:x);   Slot ID (backpack is supported).
+  !#VA(artMod:x); Artifact modifier.
+
+[+] The following functions were changed in Era Erm Framework:
+
+  !?FU(EquipArtToSlot);
+  ; Tries to put artifact to specified hero doll slot, triggering OnEquipArt event. Returns success flag.
+  !#VA(hero:x);   ID of hero to equip artifact to.
+  !#VA(art:x);    ID of artifact to equipt.
+  !#VA(artMod:x); Artifact modifier or (NO_ART_MOD). For spell scrolls it's spell ID. For other artifacts the value is usually ignored.
+                ; Custom artifact modifiers may be implemented. Artifact modifier is always carried with artifact by game functions.
+  !#VA(slot:x);   ID of hero doll slot to put artifact in or (NO_ART_SLOT) for autodetection.
+  !#VA(result:x); Boolean. Success flag.
+
+  !?FU(GetHeroPrimarySkillsWithoutArts);
+  ; ...
+  The function correctly handles artifact modifiers now, including spell IDs of magic scrolls.
+
+[+] Added KEY_ENTER constant to Era Erm Framework, as alias to KEY_RETURN.
+
+[+] Added new exported functions to era.dll:
+  - PcxPngExists (const PcxName: pchar): integer; stdcall;
+    Tries to load PNG replacement for pcx file name and returns success flag (0 or 1).
+
+[+] Added support for LMB popup dialogs positioning at click coordinates.
+[+] Included updated zutorial.tut file by Archer.
+[-] Fixed crash in OnAICalcStackAttackEffect event, occuring on attempt to get tower stack ID by invalid position (251, 254, 255). Credits: daemon_n.
+[-] Fixed bug: composite images with pcx16 background didn't use to respect pcx redirections.
+
+
+Version 3.9.1 (09/2021)
+------------------------
+[+] Improved RMB popups positioning in all game screens for dialogs with text and 0..3 pictures.
+
+[+] Added "Tools/PngCrush" utility to optimize png images and "optimize_png.bat" script for batch image optimization.
+    Either copy "pngcrush.exe" and "optimize_png.bat" to root directory with png files and subdirectories or run "optimize_png.bat", passing path to png directory as the only argument.
+
+[+] acredit.smk coordinates, specified in "era.acredit_pos.x" and "era.acredit_pos.y" json config keys can be out of 800x600 bounds now.
+    Set them to -1/-1 to disable main menu smk video at all.
+
+[*] PNG replacements will not be used for any fallback resources (resources specified as values in "Data\Redirections\Missing\*.json" configs).
+    Use WoG resource names instead. Example: 'zpic1005.png' for main menu background instead of "gamselbk.png".
+
+[-] Fixed SoD bug: text and pictures were not properly centered in dialogs with text and 0-3 pictures.
+[-] Fixed bug: special shadows colors didn't work for adventure map objects without flags.
+[-] Fixed bug: it was not possible to use WoG resource names if resources were redirected to another resources using "Data\Redirections\Missing\*.json" mechanism.
+[-] Fixed bug: png palette colorization in player colors was invalid. Multiple player colors were used for the same image.
+[-] Fixed bug: composite images didn't work with zip archives.
+
+
+Version 3.9 (09/2021)
+------------------------
+[+] Added support for zip archives. All zip archives from "Data" directory are automatically scanned for PNG files at game start.
+    The inner structure of zip archives should be the same as if all files/directories were stored directly in game root directory.
+    For instance, zip archive "Mods/TestMod/Data/test_archive.zip" could have the following contents:
+    -  Data/Defs/cefres.def/0_0.png
+    -  Data/Defs/cefres.def/0_1.png
+    -  Data/Defs/cefres.def/0_2.png
+
+    The best approach is to compress each PNG image using tools like "pngcrush" and create zip archives with 0-level compression.
+    Non-zero zip-compression will increase total files size and will slow down the process of resources loading.
+    Files in real directories have priority over files in zip-archives and thus should be avoided.
+
+[+] Added PNG support for battle creatures, including support for clone/blood lust/petrification effects.
+
+[+] Added support for shadows in PNG frames for adventure map objects and battle creatures. Shadow can now be implemented not only in the form of black color with alpha channel,
+    but using the following opaque reserved colors:
+    - #FF00FF (50%   shadow opacity)
+    - #FF96FF (37.5% shadow opacity)
+    - #FF64FF (25%   shadow opacity)
+    - #FF32FF (12.5% shadow opacity)
+
+[+] Added support for separate DEF PNG frames redirections.
+    Command template: SN:R^defname.def:groupIndex_frameIndex.png^/^new path to png, relative to root directory.png^.
+    Prefer to use single backslashes as path separators in order to avoid "a\test.png" and "a/test.png" to be loaded and cached as different images.
+
+  Example:
+  !!SN:R^cefres.def:1_0.png^/^Data\Defs\cefres.def\5_6.png^;
+
+[+] Added the following functions to Era Erm Framework:
+
+  !?FU(ShowAnimatedDefDlg);
+  ; Displays message dialog with OK button, text and leading animated def.
+  !#VA(textPtr:x);    Text to show
+  !#VA(defNamePtr:x); Optional. Name of def to show animation for or empty string.
+
+  !?FU(GetHeroPrimarySkillsWithoutArts);
+  ; Returns hero real primary skills without artifacts. Enequips all artifacts to get values and reequipts afterwards,
+  ; thus triggering OnEquipArt and OnUnequipArt events.
+  !#VA(hero:x);      Hero ID or (CURRENT_HERO).
+  !#VA(attack:x);    Out. Attack value.
+  !#VA(defense:x);   Out. Defense value.
+  !#VA(power:x);     Out. Power value.
+  !#VA(knowledge:x); Out. Knowledge value.
+
+  !?FU(EquipArtToSlot);
+  ; Tries to put artifact to specified hero doll slot, triggering OnEquipArt event. Returns success flag.
+  !#VA(hero:x);   ID of hero to equip artifact to.
+  !#VA(art:x);    ID of artifact to equipt.
+  !#VA(slot:x);   ID of hero doll slot to put artifact in or (NO_ART_SLOT) for autodetection.
+  !#VA(result:x); Boolean. Success flag.
+
+  !?FU(UnequipArtFromSlot);
+  ; Tries to unquip artifact from specified hero doll slot, triggering OnUnequipArt event.
+  !#VA(hero:x);   ID of hero to equip artifact to.
+  !#VA(slot:x);   ID of hero doll slot to put artifact in.
+
+[+] Increased number of battle rounds before fast finish in quick battles from 30 to 100.
+
+[+] Restored default positioning of adventure map hint dialogs. They will not be centered anymore, but appear at the place of mouse click.
+    In addition most of popup dialogs with text and 1..3 pictures will appear
+    at the place of mouse click, but only in adventure map screen, town screen, hero screen, hero meeting screen and battle screen.
+
+[+] Updated Mod Manager to v.0.96.6.16 beta. Credits: SyDr.
+[*] Changed dpwsockx.dll library to v4.07.00.0700, used in Era Launcher Edition assembly.
+[-] Fixed WoG bug: Blood Dragons used to have only 20% aging chance instead of 40%.
+[-] Removed all *.msg files from hmm35wog.pac.
+[-] Removed heroscr3.pcx and heroscr4.pcx from hmm35wog.pac.
+[-] Fixed pskl32.def wrong icons ordering. Credits: Archer.
+
+
+Version 3.8.10 (08/2021)
+------------------------
+[+] Added artifact level constants to Era Erm Framework. See ART_LEVEL_XXX.
+[-] Fixed one more mirrored png rendering issue.
+
+
+Version 3.8.9 (08/2021)
+------------------------
+[-] Fixed mirrored png pictures rendering issues.
+
+
+Version 3.8.8 (08/2021)
+------------------------
+[+] Png def frames/pcx replacements honor def/pcx redirections (SN:R) from now.
+[-] Fixed possible crash in png drawing functions.
+
+
+Version 3.8.7 (08/2021)
+------------------------
+[+] Fixed spell animation png frames positioning for non 800x600 game window resolutions.
+
+
+Version 3.8.6 (07/2021)
+------------------------
+[+] Added def png support for spell animations.
+
+
+Version 3.8.5 (07/2021)
+------------------------
+[+] Added new event "OnBattleActionEnd", occuring right after battle action, but before checking if battle is ended, before selecting next active stack and before starting new round or autoclosing the moat.
+
+  Events order is the following:
+  "OnBeforeBattleAction"
+  >>> "OnBattleActionEnd" <<<
+  "OnBattleRound"
+  "OnBeforeBattleStackTurn"
+  "OnBattleStackObtainsTurn"
+  "OnAfterBattleAction"
+
+[+] The following changes were made to Era Erm Framework:
+  - Added (DLG_CMD_SET_DEF) constant.
+
+[*] Updated Erm editor.
+
+
+Version 3.8.4 (07/2021)
+------------------------
+[+] Era uses two separate Mersenne Twister generators now.
+  The first one is used as native rand()/srand()/VR:R replacement for all cases except of pre-battle configuration, network PvP battle and VR:T command.
+  The second one is used for VR:T and always produces unique values, not influenced by game generator reseeding.
+  Pre-battle configuration uses original rand() implementation in order to keep battlefield obstacles the same, as mapmaker saw them during development. During network PvP battle fully deterministic random generator is used as was described earlier in changelog with additional unique integer field for each battle. That generator depends mostly on round and action counters.
+
+[+] Added "Debug.Rng" option to heroes3.ini, allowing to debug random number generator.
+
+[-] Fixed WoG bug: NoMoreTactic function was not called for opposite side in battle, which could lead to wrong round numbers and desynchronization.
+
+
+Version 3.8.3 (06/2021)
+------------------------
+[-] Fixed HE:P command. Previosly if new coordinates were the same as previous hero coordinates, no visual update was performed.
+
+
+Version 3.8.2 (06/2021)
+------------------------
+[+] Updated patcher_x86.dll patching library. Credits: baratorch.
+[+] Updated "wog native dialogs.era" plugin. Credits: igrik.
+[+] Updated "game bug fixes extended.era" plugin. Credits: igrik.
+
+[*] The following changes were made to Era Erm Framework:
+  - (MON_ANTICHRIST) constant was renamed to (MON_HELL_BARON). Credits: Archer30.
+  - Changed "GetMaxMonsterId" function to use SoD address instead of WoG for better compatibility with other plugins.
+
+[+] Updated Erm Editor.
+[-] Fixed "disable darkness dragons map shadowing.bin.off" patch. Credits: Hawaiing.
+[-] Removed "campaign heroes as start heroes.bin.off" binary patch, which was incompatible with HD mod.
+
+
+Version 3.8.1 (06/2021)
+------------------------
+[+] Implemented composite png images support.
+    When any png image is loaded, a background from another pcx8/pcx16 (or their png replacement) image may be applied to form final composite image.
+    This behavior is controlled via json configs. Example, making all "Load Game" button frames composite images:
+
+    {
+      "era": {
+        "png_backs": {
+          "data/defs/zmenulg.def/0_0.png": {
+            "file": "zpic1005.pcx16",
+            "x": "533",
+            "y": "132",
+          },
+
+          "data/defs/zmenulg.def/0_1.png": {
+            "file": "zpic1005.pcx16",
+            "x": "533",
+            "y": "132",
+          },
+
+          "data/defs/zmenulg.def/0_2.png": {
+            "file": "zpic1005.pcx16",
+            "x": "533",
+            "y": "132",
+          },
+
+          "data/defs/zmenulg.def/0_3.png": {
+            "file": "zpic1005.pcx16",
+            "x": "533",
+            "y": "132",
+          },
+        }
+      }
+    }
+
+    Here "era.png_backs" is config section. Specify relative path to png image in a lower case as subkey and the following parameters in value:
+    - "file": pcx file name of background. Use "*.pcx" extension for pcx8 (256 colors with transparency) and "*.pcx16" for pcx16 (65536 colors without transparency).
+              The real resource name for "*.pcx16" extension is "*.pcx", but the extension tells Era, which image format to use. If there is png replacement for pcx
+              image, it will be used instead.
+    - "x":    x-coordinate in background image to start drawing from.
+    - "y":    y-coordinate in background image to start drawing from.
+
+    Composite images allow to have semi-transparency in game buttons. Original game buttons frames were made with pre-applied background like main menu background (zpic1005.pcx).
+    Thus all skin makers had to apply fixed background to each button frame. From now we are able to release skins, which will suit any backgrounds. We are also able to apply
+    fixed background for icons, monster portraits and skills, supplying foreground images in png format with transparent areas.
+
+[+] Implemented real png cropping in memory. Memory consumption was highly reduced for images with large perimeter transparent areas.
+
+[+] Implemented stable multiplayer battles support by introducing deterministic pseudo random number generator in PvP battles. Thanks to ZVS for idea.
+    Deterministic generator influences all calls to rand() function, including native creature abilities, stack experience abilities and VR:R command.
+    The state of generator is formed by the following values: [Combat round, Min value to generate, Combat ID, Max value to generate, Combat action ID], where Combat ID is truly random value for each combat, Combat round is round counter and Combat action ID is action counter.
+
+[+] Added "DebugRng" option to heroes3.ini. If set to 1, rand/srand/VR:R commands will generate debug messages.
+
+[+] acredit.smk main menu animation position does not depend on Rus/Eng switch in zmess00.txt. The coordinates are not hardcoded anymore and are stored in
+    json config file in "era.acredit_pos.x" and "era.acredit_pos.y" keys.
+
+[+] Added new Javascript utility to convert UN:C patches into binary patches. See "Tools/UncToBin/index.html".
+[+] Included optional binary patch "disable darkness dragons map shadowing.bin.off" in WoG mod.
+[+] Added missing constants to Era Erm Framework. New constants for hero classes: HERO_CLASS_XXX.
+[+] Updated Erm Editor.
+[*] "no prisons on random maps.bin" binary patch is on by default.
+[-] Fixed game random number generator behavior: reseeding does not influence Mersenne Twister generator state anymore. VR:T will not return the same values after battle.
+
+
+Version 3.8.0 (05/2021)
+------------------------
+[+] Improved png support for def frames. Fixed known bugs and added support for adventure map objects.
+
+    For shadows use 12.5%..75% transparent black color. The most often used shadow is 50% transparent black.
+    For adventure map objects with flags use $FFFF00 (yellow) color as flag color placeholder.
+
+    Png frames may have different sizes, but it's recommended to keep their dimensions in def bounds. For EML texts png frames may have any sizes.
+    F12 clears png frames cache, allowing to test changes immediately.
+
+    Png images without transparency are drawn at least 4X faster than images with at least single transparent pixel.
+
+[+] Added support for pcx replacement with png images. Replaced pcx files may not exist if corresponding png file exists.
+    To replace pcx image with png image place png file in the following location:
+    "Mods/YourMod/Data/Pcx/[any directories, possibly nested...]\[pcx file name without extension].png".
+    Example: "Heroes 3/Mods/Mixed Neutrals/Data/Pcx/Test/zpic1005.png" for main menu background (zpic1005.pcx).
+
+    Many interface pcx images in game are colorized with current player color using 32-color pal-palettes.
+    For instance, town interface background (hd_towns.pcx in HD mod). Era supports two ways of png image colorization.
+    The first one using single image for all player colors, like it's done in original game resources.
+    Use special 32 colors from the following files to draw colorizable areas:
+
+      - Help/player interface palette.pal
+      - Help/player interface palette.png
+
+    The second way it to provide unique image for specific player color, for instance for purple (ID: 5).
+    In this case your png image should have the following name:
+    "Mods/YourMod/Data/Pcx/[any directories, possibly nested...]\[pcx file name without extension]_p[player ID].png".
+    Example: "Heroes 3/Mods/Mixed Neutrals/Data/Pcx/Test/HD_TownS_p5.png" for purple player.
+
+      0 red
+      1 blue
+      2 tan
+      3 green
+      4 orange
+      5 purple
+      6 teal
+      7 pink
+
+    Both methods may be combined. If Era does not find a separate image for particular player, it tries to use common png,
+    replacing fixed 32 color codes with player palette colors.
+
+[+] Doubled Era associative arrays performance, affecting most Era and VFS code. Updated vfs.dll.
+
+
+Version 3.7.0 (04/2021)
+------------------------
+[+] Added new SN:H syntax to work with spell texts.
+
+    !!SN:H^spell^/#spell_id/#spell_text_type/$text
+
+    where #spell_text_type is one of SPELL_TEXT_XXX constants.
+
+    This command deprecates SS usage for texts.
+    Deletion syntax works partially. The settings are reset, but text will be restored on savegame load only.
+
+    Example:
+
+    !?FU(OnAfterErmInstructions);
+    ; List all spell, displaying all texts
+    !!re i/(SPELL_FIRST)/(SPELL_LAST_WOG);
+      !!SN:H^spell^/i/(SPELL_TEXT_NAME)/?(text0:z);
+      !!SN:H^spell^/i/(SPELL_TEXT_SHORT_NAME)/?(text1:z);
+      !!SN:H^spell^/i/(SPELL_TEXT_DESCR)/?(text2:z);
+      !!SN:H^spell^/i/(SPELL_TEXT_DESCR_BASIC)/?(text3:z);
+      !!SN:H^spell^/i/(SPELL_TEXT_DESCR_ADVANCED)/?(text4:z);
+      !!SN:H^spell^/i/(SPELL_TEXT_DESCR_EXPERT)/?(text5:z);
+      !!SN:H^spell^/i/(SPELL_TEXT_SOUND)/?(text6:z);
+      !!IF:M^Spell %i:
+    %(text0)
+    %(text1)
+    %(text2)
+    %(text3)
+    %(text4)
+    %(text5)
+    %(text6)^;
+    !!en;
+
+[+] SN:V#1/#2/#3 command now applies "mod 32" operation to argument #2, allowing to use commands on XXL maps without errors.
+
+[+] Added global exported functions to work with ERA global named ERM variables (i^..^ and s^...^):
+
+  int (__stdcall) GetAssocVarIntValue (const char *VarName);
+  char* (__stdcall) GetAssocVarStrValue (const char *VarName);
+  void (__stdcall) SetAssocVarIntValue (const char *VarName, int NewValue);
+  void (__stdcall) SetAssocVarStrValue (const char *VarName, const char *NewValue);
+
+  Do not forget to call (__stdcall) MemFree (void* Addr) to release memory, returned by string functions.
+
+[+] Added global exported functions to work with ERA shared global in-memory registry.
+    The registry can be used by plugins to exchange config values and signals.
+
+  int (__stdcall) GetEraRegistryIntValue (const char *VarName);
+  char* (__stdcall) GetEraRegistryStrValue (const char *VarName);
+  void (__stdcall) SetEraRegistryIntValue (const char *VarName, int NewValue);
+  void (__stdcall) SetEraRegistryStrValue (const char *VarName, const char *NewValue);
+
+  Do not forget to call (__stdcall) MemFree (void* Addr) to release memory, returned by string functions.
+
+[+] Added missing crtrait0.txt and crtraits.txt to hmm35wog.pac.
+[*] "Failed to load image at %s" message will not be displayed anymore for missing images in wog native dialogs.
+[*] Updated Erm Editor and Era Erm Framework.
+
+
+Version 3.6.0 (04/2021)
+------------------------
+[+] Implemented def frames replacement with png images. Replacement occurs on the fly when game asks to draw def frame.
+    Real def frame may be missing, but a def file itself must exist. It may have any dimensions, but preferrable height should
+    be greater or equal to maximum height of all frames. Png frame may have different size, but will be always drawn at (0, 0) def coordinates.
+
+    Current supported def types: interface defs, interface defs with multiple frame groups.
+    Supported features: horizontal mirroring.
+
+    Png frame path template: "Data/Defs/[defname.def]/[group_index]_[frame_index].png".
+    Group and frame indexes are counted from 0.
+    Example: "Data/Defs/zmenulg.def/0_2.png". It's a "Load Game" menu item, group 0, frame 2.
+
+    All png formats are supported, including all types of transparency.
+    The fastest drawing is performed for png without transparency and 32 bit HD mode.
+
+    Era Markup Language (EML) fully supports defs with png frames. Thus any png image can be displayed in almost any place, where text is output.
+    Frames are automatically trimmed before displaying.
+    Example: "{~>cndrgn.def:12:2 block mirror}"
+
+    Note: Heroes 3 engine redraws dialog buttons on every mouse move, thus buttons with partial transparency are drawn many times on the same background.
+
+[!] The only recommended way of providing changed artifacts/spells/monster icons in mods is png frames usage.
+    Png frames have priority over def files even if frame is located in a mod with a lower priority.
+
+[+] Added global resource manager, which is used currently for def frames png caching. Specify maximum cache size in heroes3.ini
+    in the "ResourceCacheSize" key.
+
+[*] ERA does not provide "heroes3.ini" anymore. Instead it comes with "default heroes3.ini" file, which is
+    a fallback for any key, missing in "heroes3.ini". Thus "heroes3.ini" will never be overwritten and will
+    preserve user settings. "heroes 3.ini" will be automatically created when any in-game setting is changed.
+
+
+Version 3.5.1 (04/2021)
+------------------------
+[-] Fixed bug: spaces after comparison operators (<, >, =, <>) were still not ignored.
+
+
+Version 3.5.0 (04/2021)
+------------------------
+[+] Rewritten part of old ERM engine, which was responsible for conditions evaluations.
+
+  - It's now possible to use spaces and line feeds to decorate complex conditions.
+
+  Example:
+
+  !!if|i^Master_Warrior_Hero%(hero)^         <> (prevWasMasterWarrior)/
+       i^Master_Mage_Hero%(hero)^            <> (prevWasMasterMage)/
+       i^Master_Adventurer_Hero%(hero)^      <> (prevWasMasterAdventurer)/
+       i^Grandmaster_Warrior_Hero%(hero)^    <> (prevWasGrandmasterWarrior)/
+       i^Grandmaster_Mage_Hero%(hero)^       <> (prevWasGrandmasterMage)/
+       i^Grandmaster_Adventurer_Hero%(hero)^ <> (prevWasGrandmasterAdventurer);
+    ; ...
+  !!en;
+
+  - It's now possible to use numbers in the left side of comparisons. Previosly they were treated as flags.
+
+  Example 1:
+
+  !!IF&1000>=(goldLeft):M^You have enough gold to buy the map^;
+
+  Example 2:
+
+  !#DC(EDU_MOD_VERSION) = 317;
+
+  !!if & (EDU_MOD_VERSION) < 320;
+    !!IF:M^You use old version of Edu mod. Please, update it^;
+  !!en;
+
+  - Single numeric or string values are casted to boolean now. For numbers it's the same as <> 0. For strings it's the same as <> ^^ (empty string).
+
+  Examples:
+
+  !!HE(CURRENT_HERO):W?(movePoints:y);
+  !!IF&(movePoints):M^Ok, you have some movement points^; same as &(movePoints)<>0
+  ; Please, use >= operator in real code for anything, that can become negative. It's just an example
+
+  !!VR(inputText:z):S^test^;
+  !!IF&(inputText)/(inputText)<>^secret password^:M^You have entered wrong password!^; same as &(inputText)<>^^/(inputText)<>^secret password^
+
+Version 3.4.3 (04/2021)
+------------------------
+[+] Added new ERM command VR:B. It converts any number to boolean (1 or 0). Any non-zero value becomes 1.
+
+  Example:
+
+  !!OW:R(CURRENT_PLAYER)/(RES_GOLD)/?(goldAmount:y);
+  !!VR(hasGold:y):S(goldAmount) B; now hasGold = (TRUE) or (FALSE)
+
+  !!if&(hasGold)=(TRUE);
+    !!IF:M^I know you have some gold in your pockets!^;
+  !!en;
+
+
+Version 3.4.2 (04/2021)
+------------------------
+[+] Added the following functions to Era Erm Framework:
+
+  !?FU(RadioDlg_GetNumItems);
+  ; Returns number of items, added to dialog
+  !#VA(result:x);
+
+  !?FU(RadioDlg_GetItemValue);
+  ; Returns value of specified item or throws error in case of invalid index.
+  !#VA(itemInd:x);
+  !#VA(result:x);
+
+  !?FU(RadioDlg_GetItemTag);
+  ; Returns tag of specified item or throws error in case of invalid index.
+  !#VA(itemInd:x);
+  !#VA(result:x);
+
+[+] Updated ERM Editor.
+[-] Fixed black background in Credits menu.
+
+Version 3.4.1 (04/2021)
+------------------------
+[+] (CURRENT_HERO) constant (-1) can be safely used in triggers from now. Previosly this global value could be overwritten by nested events.
+
+  Example:
+  !?HM0; current hero is Orrin
+  !!HE(HERO_XERON):Ed100000;     Level up for Xeron, current hero used to become Xeron in previous Era versions
+  !!HE(CURRENT_HERO):N?(hero:y); (hero) is always (HERO_ORRIN), starting from Era 3.4.1
+
+[+] Implemented high level API for WoG radio dialogs (IF:G). Configure dialog before showing. Optionally assign value and tag to each item.
+    Optionally add special "cancel" item. The result is item index, value and tag. No need to convert bits anymore.
+
+    Example 1:
+
+    !?FU(OnAfterErmInstructions);
+    !!FU(RadioDlg_Reset):P;
+    !!FU(RadioDlg_SetTitle):P^What primary skill would you like to increase?^;
+    !!FU(RadioDlg_AddCancelButton):P;
+
+    !!FU(RadioDlg_AddItem):P^Attack^/(SKILL_ATTACK)/^attack^;
+    !!FU(RadioDlg_AddItem):P^Defense^/(SKILL_DEFENSE)/^defense^;
+    !!FU(RadioDlg_AddItem):P^Knowledge^/(SKILL_KNOWLEDGE)/^knowledge^;
+    !!FU(RadioDlg_AddItem):P^Power^/(SKILL_POWER)/^power^;
+
+    !!FU(RadioDlg_SelectItemByTag):P^knowledge^;
+    !!FU(RadioDlg_Show):P?(item:y)/?(value:y)/?(tag:z);
+    !!IF:M^Item: %(item). Value: %(value). Tag: %(tag)^;
+
+    Example 2:
+
+    !?FU(OnAfterErmInstructions);
+    !!FU(RadioDlg_Reset):P;
+    !!FU(RadioDlg_SetTitle):P^Select your starting hero:^;
+    !!FU(RadioDlg_AddCancelButton):P;
+
+    !!FU(RadioDlg_AddItem):P^Orrin^/(HERO_ORRIN);
+    !!FU(RadioDlg_AddItem):P^Xeron^/(HERO_XERON);
+    !!FU(RadioDlg_AddItem):P^Gird^/(HERO_GIRD);
+    !!FU(RadioDlg_AddItem):P^Valeska^/(HERO_VALESKA);
+
+    !!FU(RadioDlg_SelectItemByValue):P(HERO_GIRD); Preselect Gird from start
+    !!FU(RadioDlg_Show):P?(item:y)/?(hero:y);
+
+    !!if&(hero)>=(HERO_FIRST);
+      !!IF:M^Selected hero: %(hero)^;
+    !!en;
+
+    API:
+
+    !?FU(RadioDlg_Reset);
+    ; Resets all radio dialog settings to empty values.
+
+    !?FU(RadioDlg_SetTitle);
+    ; Changes radio dialog title.
+
+    !?FU(RadioDlg_AddCancelButton);
+    ; Adds cancel button to dialog. Decreases maximum number of items in dialog by one.
+
+    !?FU(RadioDlg_SelectItem);
+    ; Sets new selected item by its index.
+    !#VA(itemInd:x);
+
+    !?FU(RadioDlg_SelectItemByValue);
+    ; Finds the first item with specified value and selects it.
+    !#VA(itemValue:x);
+
+    !?FU(RadioDlg_SelectItemByTag);
+    ; Finds the first item with specified tag and selects it.
+    !#VA(itemTagPtr:x); Tag string
+
+    !?FU(RadioDlg_AddItem);
+    ; Adds new item to radio dialog.
+    !#VA(itemCaptionPtr:x); Optional. New item caption. Empty/spacy captions are valid. Default: ^^.
+    !#VA(itemValue:x);      Optional. Numeric value, associated with item. Default: 0.
+    !#VA(itemTagPtr:x);     Optional. String tag, associated with item. Default: ^^.
+    !#VA(selectItem:x);     Optional. Boolean. If TRUE, item will be selected. Default: FALSE.
+
+    !?FU(RadioDlg_AddItems);
+    ; Adds up to 5 items to radio dialog. For detailed arguments description see (RadioDlg_AddItem).
+    !#VA(firstItemCaptionPtr:x);
+    !#VA(firstItemValue:x);
+    !#VA(firstItemTagPtr:x);
+
+    !?FU(RadioDlg_Show);
+    ; Display previously configured radio dialog with single possible choice.
+    ; Currently maximum RADIO_DLG_MAX_ITEMS (-1 for cancel button) items can be added to the dialog.
+    ; Returns selected item index, value and tag. Item index is (NO_RADIO_DLG_ITEM) if no items are present for selection
+    ; or Cancel button was pressed.
+    !#VA(resultItem:x);   Default: (NO_RADIO_DLG_ITEM).
+    !#VA(resultValue:x);  Default: -1.
+    !#VA(resultTagPtr:x); Default: ^^.
+
+Version 3.4.0 (04/2021)
+------------------------
+[+] Added possibility to use animated defs in DL-dialogs. Just append " animated" to dialog item name to make it animated. Example: "Def" => "Def animated".
+    Up to 10 animated defs are supported for each dialog. Animation speed is 10 frames per second. One single DEF group of frames is used.
+
+[+] Added possibility to specify frames group index for defs in DL-dialogs. Write frame index as GROUP_INDEX * 100000 + FRAME_INDEX. Group indexes are counted from 0.
+
+[+] Implemented horizontal text alignment support in Era Markup Language (EML).
+
+  To specify alignment use either regular color tags with new align=xxx attribute or new tag "text".
+  Possible alignment values: "left", "center", "right".
+
+  Examples:
+
+  {~RosyBrown align=right}Some text with(out) images{~}
+  {~text align=center}Some text with(out) images{~}
+  {~RosyBrown align="left"}Some text with(out) images{~}
+  {~text color="RosyBrown" align="left"}Some text with(out) images{~}
+
+  Attribute values without spaces and special chars may be written without double quotes.
+
+[+] Implemented block-style images support for Era Markup Language (EML).
+
+  Use "block" attribute to mark image in text as block-style. New line before and after image will be forced automatically.
+  Vertical space in text is also automatically reserved for block images. Moreover, they can be partially scrolled without vanishing effect, occuring for inline images.
+
+  Examples:
+
+  !!IF:M^{~text align=center}{~Orange}Fire camping{~}
+
+  ----
+  {~>CDEVIL.def:0:0 valign="middle" block}
+  ----
+
+  {~>cndrgn.def:12:2 block}{~}^;
+
+[+] Added support for 65536-color pcx images (pcx16) in DL-dialogs. Default loading mode is 256 colors (pcx8). To load image as pcx16 change its name in dialogs editor to '****.pcx.pcx16'. Real file name in lod/pac archive should be left as is. The engine will recognise new extension, transform it into '.pcx' and load image as pcx16.
+
+[+] Improved ERM 2 compiler. It became possible to use named local variables and quick variables (f..t) as arrays subscripts.
+  Syntax: (array[index]) or (array[i]).
+  Index value is evaluated BEFORE current receiver, thus do not change it in receiver itself like "!!MO998:G?i G(array[i])".
+
+  A new magic constant 'SIZE' was added to return array size. Usage: (array[SIZE]). It's compiled into count of array items.
+  Thus looping through all array items became easy:
+
+  !!re i/0/(array[SIZE])/1/-1; Note the last -1, meaning loop from index 0 to SIZE - 1
+    !!IF:M^%(array[i])^;
+  !!en;
+
+  Note, that regular constants are also supported:
+  !!IF:M^%(array[PLAYER_TEAL])^;
+
+[+] Implemented automatical static and dynamic index checking for ERM 2.0 arrays. Invalid indexes are reported and forced to valid range.
+
+  Example:
+
+  !#VA(msgType[7]:y) (msgColor[7]:y);
+
+  !!re i/(PLAYER_FIRST)/(PLAYER_LAST);
+    !!VR(msgType[i]):S(PIC_TYPE_FLAG); Here we get error. Array size is 7, while number of game players is 8. i = 7 is outside of valid 0..6 range
+    !!VR(msgColor[i]):Si;              Here we get error. Array size is 7, while number of game players is 8. i = 7 is outside of valid 0..6 range
+  !!en;
+
+  Let's rewrite the example without bugs:
+
+  !#VA(msgType[NUM_PLAYERS]:y) (msgColor[NUM_PLAYERS]:y);
+
+  !!re i/(PLAYER_FIRST)/(PLAYER_LAST);
+    !!VR(msgType[i]):S(PIC_TYPE_FLAG);
+    !!VR(msgColor[i]):Si;
+  !!en;
+
+[+] Event DL/(OnCustomDialogEvent) now receive all mouse/keyboard parameters, accessible via !!CM and tracks clicks outside dialogs main area.
+    Check CM:T or i^dlg_action^ value for:
+      (DLG_ACTION_INDLG_CLICK)
+      (DLG_ACTION_OUTDLG_CLICK)
+      (DLG_ACTION_MOUSE_WHEEL)
+      (DLG_ACTION_KEY_PRESSED)
+
+    Example:
+
+      !?DL&i^dlg_action^=(DLG_ACTION_OUTDLG_CLICK);
+      !!IF:M^You clicked outside dialog!^;
+
+    For (DLG_ACTION_MOUSE_WHEEL) action CM:S or i^mouse_action^ can be one of:
+      (MOUSE_WHEEL_UP)
+      (MOUSE_WHEEL_DOWN)
+
+    Example:
+
+      !?DL&i^dlg_action^=(DLG_ACTION_MOUSE_WHEEL);
+      !!IF:M^Wheel: %i(mouse_action)^; display 1/-1 for wheel up/down
+
+    Keyboard presses in dialog can be handled now using Era Erm Framework:
+
+      !?DL&i^dlg_action^=(DLG_ACTION_KEY_PRESSED)/i^key^=(KEY_Q);
+      !!IF:M^Good buy any dialog!^;
+      !!DLi^dlg_id^:C(TRUE);
+
+    Added two global variables to Era Erm Framework:
+    - i^dlg_action^ with CM:T value (action type). Specially useful for DL-dialog events. See DLG_ACTION_XXX constants.
+    - i^dlg_id^ with active DL-dialog ID.
+
+[+] !!VR:F command can be called with 3 parameters now: !!VR(var):F(minValue)/(maxValue)/(showErrors);
+    If the third parameter is specified and not (FALSE), values outside specified range are reported using regular ERM error reporting dialog.
+
+[+] Added new ERM events:
+  - "OnWinGame"  occurs when human player wins scenario.
+  - "OnLoseGame" occurs when human player loses scenario.
+
+  - "OnTransferHero" occurs when hero data from the previous campaign scenario is transferred to the next zone.
+                     The events occurs after instructions but before PI (OnAfterErmInstructions).
+                     The only argument is ID of hero, which is transferred from the previous scenario.
+
+  - "OnAfterHeroGainLevel" occurs after AI/Human hero level-up. Dialog is already closed. Use (ERM_FLAG_IS_HUMAN) and (CURRENT_HERO) constants.
+                           The only argument is Hero ID.
+
+[+] Added extra parameter to "OnKeyPressed" event. "OnKeyPressed" occurs multiple times, when you hold the key, while it's sometimes necessary to catch only the first time, when key state changes to DOWN and ignore other events until key state changes to UP. The third event argument serves this purpose and is TRUE only when the key changes its state to DOWN.
+
+ !?FU(OnKeyPressed);
+ !#VA(key:x) (preventDefault:x) (isDown:x);
+
+[+] Implemented two universal events for handling human local events: "OnBeforeLocalEvent" and "OnAfterLocalEvent". They occur before any !?LE/!$LE trigger respecively
+    and receive 3 parameters: x, y and z coordinates.
+
+    Example:
+
+    !?FU(OnBeforeLocalEvent);
+    !#VA(x:x) (y:x) (z:x);
+    !!IF:M^OnBeforeLocalEvent %(x) %(y) %(z)^;
+
+    !?FU(OnAfterLocalEvent);
+    !#VA(x:x) (y:x) (z:x);
+    !!IF:M^OnAfterLocalEvent %(x) %(y) %(z)^;
+
+[+] Added the following new functions to Era Erm Framework:
+
+  !?FU(IsDllLoaded);
+  ; Returns (TRUE) is specified DLL is loaded. The check is fast and does not lead to loading dll.
+  !#VA(dllFileNamePtr:x); DLL file name with extension (*.dll, *.era, *.ani, etc).
+  !#VA(result:x);         Boolean. (TRUE) if DLL is loaded.
+
+  !?FU(FileExists);
+  ; Returns true if file (not directory) exists.
+  !#VA(filePathPtr:x); Absolute or relative path to file
+  !#VA(result:x);      Boolean. (TRUE) if file exists and is not a directory
+
+  !?FU(DirExists);
+  ; Returns true if a directory (not a file) exists.
+  !#VA(dirPathPtr:x); Absolute or relative path to directory
+  !#VA(result:x);     Boolean. (TRUE) if directory exists and is not a directory
+
+  !?FU(DeleteFile);
+  ; Deletes specified file and returns success flag.
+  !#VA(filePathPtr:x); Absolute or relative path to directory
+  !#VA(result:x);      Boolean. (TRUE) if file existed and was deleted.
+
+  !?FU(ClearIniCache);
+  ; Erases all cached ini file data from memory. You can safely delete ini file afterwards.
+  !#VA(filePathPtr:x); Absolute or relative path to ini file
+
+  !?FU(CreateDir);
+  ; Creates new directory if it does not exist.
+  !#VA(dirPathPtr:x); Absolute or relative path to directory
+
+[+] The following improvements were introduced in "Era Erm Framework" mod:
+
+  - Added new globally saved parameters for "OnKeyPressed" event:
+  i^key_down^: boolean. TRUE only when the key changes its state from UP to DOWN the first time until being released.
+
+[+] Added the following exported functions to era.dll:
+
+  - function IsCampaign: TDwordBool;
+
+  !!SN:F^IsCampaign^; v1 = (TRUE) or (FALSE)
+
+  - procedure GetCampaignFileName (Buf: pchar);
+
+  !!SN:F^GetCampaignFileName^/?(campaignFileName:z); will crash if it's not campaign
+
+  - procedure GetMapFileName (Buf: pchar);
+
+  !!SN:F^GetMapFileName^/?(mapFileName:z);
+
+  - function GetCampaignMapInd: integer;
+    Returns campaign map zone index (index in original zone maps list, starting from 0).
+
+  !!SN:F^GetCampaignMapInd^;  will crash if it's not campaign
+  !!IF:M^%v1^;
+
+[+] Fixed transferring of WoG commanders with heroes in campaigns. Previously transferring didn't work if hero was inactive in transition zone.
+    "OnTransferHero" is called for all transferred heroes, even for inactive ones, which will be used in other zones.
+
+[+] Added support for 32-bit colors in backgrounds of text items (rewritten Pcx16_FillRect).
+[+] Disabled ALT + KEY system menu triggering in windowed mode. ALT key combinations can be freely used by scripts.
+[+] Updated ERM editor.
+
+[*] Fixed non-working "OnBeforeBattleReplay" and "OnAfterBattleReplay events". Newest "BattleReplay" plugin by igrik is required.
+    After battle end when user clicks "Cancel" button, "OnBeforeBattleReplay" is generated. Battle state is reset and "OnBattleReplay" event
+    is generated, where you can revert global variables to pre-battle state, because OnBeforeBattleUniversal will not be called twice.
+
+[*] Renamed "OnTownHallMouseClick" to more accurate "OnTownFortMouseClick".
+
+[!] SN:Q is deprecated and shoudn't be used for new scripts because it may break any ERM library/mod/script functionality.
+    ERM interpreter and Era Erm Framework were updated to support SN:Q in old scripts.
+    If an event has at least single Lua/Erm/plugin handler, whenever it ends or SN:Q is called, an "OriginalEventName_Quit" trigger is called with the same x-arguments.
+    In quit triggers SN:Q works as FU:E.
+
+    Example:
+
+    !?FU(OnAfterErmInstructions);
+    !!FU(ex_OnSomeCustomEvent):P;
+
+    !?FU(ex_OnSomeCustomEvent);
+    !!IF:M^Trigger 1^;
+    !!SN:Q; skip Trigger 2, trigger "ex_OnSomeCustomEvent_Quit" event
+
+    !?FU(ex_OnSomeCustomEvent);
+    !!IF:M^Trigger 2^;
+
+    !?FU(ex_OnSomeCustomEvent_Quit);
+    !!IF:M^Quit Trigger Handler^;
+    !!SN:Q; works as FU:E here
+
+    !?FU(ex_OnSomeCustomEvent_Quit);
+    !!IF:M^Another Quit Trigger Handler^;
+
+[-] Fixed bug with random input delay in text input controls.
+[-] Fixed bug in Era Erm Framework: NewIntArray and NewStrArray function were ignoring (storageType) argument.
+[-] Fixed bug in Era Erm Framework: mouse/keyboard event data was not restored on trigger end.
+[-] Fixed invalid spells count for Thunder Lord in zcrtrait.txt. Credits: Archer30.
+
+
+Version 3.3.0 (01/2021)
+------------------------
+[+] Implemented support for colored texts and Era Markup Language in general for all HD mod modes now.
+[+] It became possible to enter invisible tags in edit fields using "{" and "}". This behavior may be changed in future.
+
+[+] Implemented transparency support for colored texts using {~RRGGBBAA}...{~} tags, where AA stands for alpha channel, which determines text opacity. 0 means transparant, 255 is fully opaque, $80 is 50% transparent. Old-style tags in {~RRGGBB} format works as fully opaque.
+
+Example: !!IF:L^{~FF0000}{~FF0000C0}{~FF000080}{~FF000040}You've{~} found{~} some{~} gold{~}^;
+
+[+] Greatly improved European, Asian and mixed language colored texts support, including valid characters/words/lines width calculation and word-wrapping.
+[+] Chinese font detection depends on H3 font size from now, not on H3 font file name.
+
+[+] Added support for displaying inline def-images right in texts as a part of Era Markup Language (EML).
+
+  To embed image in text use the following tags:
+  {~>def_name.def}                          Will display the first frame from the first group of def_name.def image in place of text cursor.
+  {~>def_name.def:frame_index}              Will display specified frame from the first group of def_name.def image or nothing if index is invalid.
+  {~>def_name.def:group_index:frame_index}  Will display specified frame from specified group of def_name.def image or nothing if index is invalid.
+
+  Frames and frame groups are counted from 0. Frames are automatically trimmed.
+  By default images are rendered "inline". It means, that they are treated as non-wrapping sequence of white space characters. Images do not allocate
+  vertical space except the height of current font. But they automatically allocate necessary width.
+
+  Images can be aligned vertically using the following attribute: valign=top|middle|bottom.
+  Examples:
+    {~>ava0037.def valign=bottom}
+    {~>smalres.def:5}
+
+  Vertical alignment modes:
+  - 'top'.    Image is drawn from the top left pixel of current character box.
+  - 'middle'. Image is vertically centered relative to current text line height. This is the default mode for inline images.
+  - 'bottom'. Image is drawn so, that it's bottom edge matches current text line bottom edge.
+
+  It's possible to display image in a horizontally mirrored form. Just add "mirror" attribute.
+  Example: {~>ava0037.def mirror}
+
+[+] Updated "game bug fixes extended" plugin by igrik:
+  - Removed screen redraw when AI visits teleports if "do not show enemy movement" option is on.
+  - Stack experience marks are drawn in leave/join creature dialogs, but only for hero slots.
+  - Fixed bugs caused by ALT usage during stack combining in leave/join creature dialogs.
+  - Other fixes.
+
+[+] Updated "wog native dialogs" by igrik:
+  - Removed possibility to show settings window from main menu by F5 key. Removed automatical MAX selection in creature recruiting dialogs.
+  - It's possible to select pictures in native H3 selection dialogs using keyboard arrow keys LEFT and RIGHT.
+  - Leaving monsters/artefacts on map is trigged by CTRL + RMB instead of single RMB now.
+
+[+] Included "monprt44.def" def with 44x44 monster portraits, sorted by monster ID. Credits: Bes.
+
+[+] Event "OnKeyPressed" now handles ALT key.
+
+[+] Added "Runtime" directory to Heroes 3 directory. Mods should read/write data, created or modified at runtime there.
+    If you need config, that player will be able to alter using GUI interface, read data from "Runtime\you mod.ini", fallbacking to json config values from "Lang" directory. Thus cleaning "Runtime" directory will have the same effect as reinstalling all mods from scratch.
+
+[+] 'Runtime', 'Games' and 'Random_Maps' directories are recreated automatically on game start.
+
+[+] ERM syntax can be safely beautified for all Era 3.X versions by skipping trailing ":" before ";".
+  !!re 0/7/1;
+    ...
+  !!en;
+
+  !!if&(heroId)=(HERO_XERON);
+    ...
+  !!en;
+
+[+] Restored VR:S?$ syntax support from Era 2.
+
+[+] Extended !!OW:C command with the following syntax: OW:C?(owner)/?(thisPcOwner).
+    It became possible to get not only current player, who may play at remote PC, but also this PC human player, who possibly waits for his turn and triggers interface events.
+
+[+] Added new ERM command SN:B to work with binary buffers on a low level. It allows to:
+    - get address of local or static global ERM variable;
+    - read/write integer/string from/to specific address.
+
+    !!SN:B(intAddress) or ?(intVar) or (strVar) or ?(strVar)[/?(addressValue) or (dummy)/$valueAtAddress]
+
+    The first argument determines variable address to work with. For strings it's always first string character address, regardless GET/SET syntax.
+    For floats/ints SET syntax mean value of variable as address. GET syntax means address of specified variable.
+
+    !!VR(test:y):S8943200;
+    !!SN:B(test);  means use 8943200 as address
+    !!SN:B?(test); means use address of (test) y-variable.
+
+    !!VR(text:z):S^hello world^;
+    !!SN:B(text);  means use address of (text) first character
+    !!SN:B?(text); means use address of (text) first character too.
+
+    Example:
+    Let us declare integer y-variable and determine its address to use with external API function.
+    !!VR(fileHandle:y):S(INVALID_HANDLE_VALUE);
+    !!SN:B?(fileHandle)/?(fileHandleAddr:y); (fileHandlerAddr) is now address of (fileHandle) variable.
+
+    Let us read last savegame name from H3 static buffer
+    !!SN:B(ADDR_MARKED_SAVEGAME_NAME)/d/?(lastSavegameName:z);
+    !!IF:M^You last savegame name was %(lastSavegameName)^;
+
+[+] Added new events to "Era Erm Framework" mod:
+
+  - "OnStartOrLoad": occures after map start or savegame is loaded. Safe alternative to "OnGameStart", which is triggered before adventure map display.
+  The event occurs after (OnAfterErmInstructions, OnAfterErmInited) and after (OnAfterLoadGame) event.
+  The only argument is (isNewGame:x), which is (TRUE) for map start and (FALSE) for map loading.
+
+[+] Added many new constants to "Era Erm Framework" mod for bits, bit masks, game managers addresses, dialog item ids, etc.
+
+[+] The following improvements were introduced in "Era Erm Framework" mod:
+
+  - "OnKeyPressed" event and all mouse click events were improved, storing keyboard special keys in global variables.
+  i^key^:            Pressed key virtual key code (not scan code) for "OnKeyPressed" event only. Use KEY_XXX constants for it.
+  i^key_leftAlt^:    TRUE if left ALT is pressed.
+  i^key_rightAlt^:   TRUE if right alt is pressed.
+  i^key_alt^:        TRUE if any alt is pressed.
+  i^key_leftCtrl^:   TRUE if left control is pressed.
+  i^key_rightCtrl^:  TRUE if right control is pressed.
+  i^key_ctrl^:       TRUE if any control is pressed.
+  i^key_leftShift^:  TRUE if left shift is pressed.
+  i^key_rightShift^: TRUE if right shift is pressed.
+  i^key_shift^:      TRUE if any shift is pressed.
+
+  - All mouse click events were improved, storing event parameters in global variables.
+  i^mouse_x^:         Cursor x-coordinate in game window.
+  i^mouse_y^:         Cursor y-coordinate in game window.
+  i^mouse_battleHex^: Battle hex ID for battle clicks.
+  i^mouse_flags^:     Mouse flags mask: set of MOUSE_FLAG_XXX constants.
+  i^mouse_hero_0^:    Hero screen hero ID or hero meeting screen left hero ID.
+  i^mouse_hero_1^:    Hero meeting screen right hero ID.
+  i^mouse_item^:      Clicked dialog item ID (CM:I). See ITEM_XXX constants.
+  i^mouse_mapX^:      Map tile x-coordinate.
+  i^mouse_mapY^:      Map tile y-coordinate.
+  i^mouse_mapZ^:      Map tile z-coordinate.
+  i^mouse_action^:    Action ID. One of MOUSE_XXX constants like MOUSE_LMB_RELEASED or MOUSE_RMB_PRESSED.
+
+  Examples:
+  !?FU(OnKeyPressed_AdvMap)&i^key^=(KEY_F)/i^key_ctrl^=(TRUE);
+  !!IF:M^CTRL+F on adventure map!^;
+
+  !?FU(OnAdventureMapRightMouseClick)&i^mouse_item^=(ITEM_ADVMAP_HERO_LIST_MOVE_BAR_2)/i^mouse_action^=(MOUSE_RMB_PRESSED)/i^key_ctrl^=(TRUE);
+  !!IF:N(NO_PIC_TYPE)/(NO_PIC_TYPE)/(NO_PIC_TYPE)/(NO_PIC_TYPE) N(MSG_TYPE_POPUP)/^ctrl + RMB on the second hero move bar!^;
+
+[+] Added the following functions to "Era Erm Framework" mod:
+
+  !?FU(GetTimeMsec);
+  ; Returns current time in milliseconds (time from computer start, overflowing each 49.71 days)
+  !#VA(result:x);
+
+  !?FU(PackUnion);
+  ; Safely packs union fields into single 32-bits integer, allowing to store multiple values in a single variable.
+  ; Arguments are pairs of (field value, field size in bits). The first field is written at bit 0-th position.
+  ; The last argument is result.
+  ; Example: P(x)/8/ (y)/8/ (z)/8/ (heroId)/8/ ?(result:y);
+
+  !?FU(UnpackUnion);
+  ; Safely unpacks single 32-bits integer value into multiple field values.
+  ; The first argument is packed value.
+  ; Other arguments are pairs of (?field value, field size in bits). The first field is read at bit 0-th position.
+  ; Example: P45683/ ?(x:y)/8/ ?(y:y)/8/ ?(z:y)/8/ ?(heroId:y)/8;
+
+  !?FU(Array_Shuffle);
+  ; Randomly shuffles all items in the list.
+  !#VA(list:x); Array ID.
+
+  !?FU(Array_Merge);
+  ; Given destination array and arbitrary number of source arrays. Appends all items from all source arrays
+  ; to the destination array.
+  ; Example. Given listA = [100, 200, 300], listB = [500, 600]. P(listA)/(listB) => [100, 200, 300, 500, 600]
+  !#VA(dstArray:x);          Destination array to append new items to.
+  !#VA(firstArrayToMerge:x); ... Arrays to merge with the first one
+
+  Examples:
+  !!FU(NewStrArray):P?(listA:y);
+  !!FU(Array_Push):P(listA)/^one^/^two^/^three^;
+  !!FU(NewStrArray):P?(listB:y);
+  !!FU(Array_Push):P(listB)/^wog^/^era^;
+  !!FU(Array_Merge):P(listA)/(listB)/(listB);
+  !!FU(Array_Join):P(listA)/?(text:z)/^ ^;
+  !!IF:M^%(text)^; "one two three wog era wog era"
+
+  !?FU(Array_Slice);
+  ; Returns part of original array as new trigger-local array.
+  !#VA(list:x);   Array to get slice of.
+  !#VA(start:x);  Initial index, starting from zero. Negative offset means 'from the end'.
+  !#VA(count:x);  Number of items to copy. Negative value means "skipping" that number of items from list end.
+  !#VA(result:x); Result array.
+  !#VA(arrayStorageType:x); OPT. Special storage type for result like M_STORED. Default: M_TRIGGER_LOCAL.
+
+  Examples:
+  !!FU(NewStrArray):P?(listA:y);
+  !!FU(Array_Push):P(listA)/^one^/^two^/^three^/^four^/^five^;
+  !!FU(Array_Slice):P(listA)/-4/-1/?(listB:y);
+  !!FU(Array_Join):P(listB)/?(text:z)/^ ^;
+  !!IF:M^%(text)^; "two three four"
+
+  !?FU(Substr);
+  ; Returns substring from existing string.
+  !#VA(strPtr:x); Original string.
+  !#VA(start:x);  Initial offset, starting from zero. Negative offset means 'from the end'.
+  !#VA(count:x);  OPT. Number of characters to copy. Negative value means "skipping" that number of characters from string end.
+  !#VA(result:x); Result substring.
+
+  Examples:
+  !!VRs^message^:S^Have a nice day dear Perry^;
+  !!FU(Substr):Ps^message^/-5/(INT_MAX)/?s^submessage^; copy up to 5 characters from the end
+  !!IF:M^%s(submessage)^; "Perry"
+
+  !!VRs^message^:S^Have a nice day dear Perry^;
+  !!FU(Substr):Ps^message^/5/(INT_MAX)/?s^submessage^; copy, skipping the first 5 characters
+  !!IF:M^%s(submessage)^; "a nice day dear Perry"
+
+  !!VRs^message^:S^Have a nice day dear Perry^;
+  !!FU(Substr):Ps^message^/5/-6/?s^submessage^; copy from 6-th character to the end, not including the last 6 characters
+  !!IF:M^%s(submessage)^; "a nice day dear"
+
+  !?FU(ScanDir);
+  ; Reads directory contents, filling specified list with file names.
+  ; Example: P^Np3^/(fileList)/(SCAN_FILES_ONLY);
+  !#VA(dirPathPtr:x); Absolute or relative path to directory to scan.
+  !#VA(fileList:x);   ID of array to store file names in.
+  !#VA(itemsType:x);  OPT. Type of items to collect: files, directories or both. One of SCAN_XXX constants. Default: SCAN_FILES_AND_DIRS.
+  !#VA(fullPaths:x);  OPT boolean. If true, result items will be have dirPath predended. Default: false.
+
+  !?FU(SaveIni);
+  ; Saves ini file, if it was earlier cached in memory (any read/write operation was performed).
+  !#VA(filePathPtr:x); Absolute or relative path to ini file
+
+  !?FU(WriteIniInts);
+  ; Writes multiple integer values to ini file in memory, but postpones saving data to disk. Call "SaveIni" to flush cached data.
+  ; Example: P^Runtime/my mod.ini^/^hero levels^/(HERO_ORRIN)/13/(HERO_XERON)/41;
+  !#VA(filePathPtr:x);    Absolute or relative path to ini file
+  !#VA(sectionNamePtr:x); Section name in ini file.
+  !#VA(firstKeyPtr:x);    ... Up to 7 key, value pairs to write.
+  !#VA(firstValue:x);
+
+  !?FU(WriteIniStrings);
+  ; Writes multiple string values to ini file in memory, but postpones saving data to disk. Call "SaveIni" to flush cached data.
+  ; Example: P^Runtime/my mod.ini^/^custom hero names^/^%(HERO_ORRIN)^/^Perrin R^/^%(HERO_XERON)^/^Berson^;
+  !#VA(filePathPtr:x);    Absolute or relative path to ini file
+  !#VA(sectionNamePtr:x); Section name in ini file.
+  !#VA(firstKeyPtr:x);    ... Up to 7 key, value pairs to write.
+  !#VA(firstValue:x);
+
+  !?FU(ReadIniStrings);
+  ; Reads multiple string values from ini file or from memory if ini file was read/written to earlier.
+  ; Example: P(filePath)/(sectionName)/^%(HERO_ORRIN)^/?(orrinName:z)/^Orrin^/^%(HERO_XERON)^/?(xeronName:z)/^Xeron^;
+  !#VA(filePathPtr:x);    Absolute or relative path to ini file
+  !#VA(sectionNamePtr:x); Section name in ini file.
+  !#VA(firstKeyPtr:x);    ... Up to 4 (key, ?value, defaultValue) tripples to read.
+  !#VA(firstValue:x);
+  !#VA(firstValueDefault:x);
+
+  !?FU(ReadIniInts);
+  ; Reads multiple integer values from ini file or from memory if ini file was read/written to earlier.
+  ; Example: P(filePath)/^hero levels^/^%(HERO_ORRIN)^/?(orrinLevel:y)/1/^%(HERO_XERON)^/?(xeronLevel:y)/1;
+  !#VA(filePathPtr:x);    Absolute or relative path to ini file
+  !#VA(sectionNamePtr:x); Section name in ini file.
+  !#VA(firstKeyPtr:x);    ... Up to 4 (key, ?value, defaultValue) tripples to read.
+  !#VA(firstValue:x);
+  !#VA(firstValueDefault:x);
+
+  !?FU(GetMaxMonsterId);
+  ; Returns ID of the last supported monster in game.
+  !#VA(result:x);
+
+  !?FU(GetUpgradedMonster);
+  ; Returns ID of upgraded monster or NO_MON if no upgrade exists.
+  !#VA(monId:x);  ID of monster to get upgrade for.
+  !#VA(result:x); OUT. ID of upgraded monster or -1.
+
+  !?FU(GetDegradedMonCandidates);
+  ; Returns temporary list of all monsters, which can be upgraded to specified monster.
+  ; There may exist multiple monster, upgrading to the same type. Function performance is low.
+  !#VA(monId:x);        Upgraded monster ID.
+  !#VA(degradesList:x); ID of temporary SN:M array with degraded monster candidates.
+
+  !?FU(BattleStack_Shoot);
+  ; Forces one stack to shoot at another one.
+  !#VA(attackerStackId:x) (defenderStackId:x);
+  !!BM(attackerStackId):Z?(attackerStackStruct:y);
+  !!BM(defenderStackId):Z?(defenderStackStruct:y);
+  !!SN:E4453920/(CALLCONV_THISCALL)/(attackerStackStruct)/(defenderStackStruct);
+
+  !?FU(GetMaxHeroId);
+  ; Returns ID of the last supported hero in game.
+  !#VA(result:x);
+
+  !?FU(LoadIntGlobalsFromJson);
+  ; Loads global mod/script settings from json config right into prefixed named global variables.
+  ; Supports usage of any constant name instead of numbers in JSON. For example, you want to load
+  ; json values "umt.randomizationIntervalDays" and "umt.playAltThemesSequently" to global variables
+  ; i^umt_randomizationIntervalDays^ and i^umt_playAltThemesSequently^ and want to be able to write in json:
+  ; "umt.playAltThemesSequently": "TRUE".
+  ;
+  ; Example: P^umt.^/^umt_^/^randomizationIntervalDays^/^playAltThemesSequently^;
+  !#VA(jsonKeysPrefixPtr:x);   Name of json keys prefix like ^mix.globals.^ for {"mix": {"globals": { ... }}}
+  !#VA(globalVarsPrefixPtr:x); Name of global variables prefix. Usually mod prefix like "mix_" or "umt_".
+  !#VA(firstKeyNamePtr:x);     ... Up to 14 json key names to read and convert into global variables
+
+  !?FU(SaveGame);
+  !#VA(fileNamePtr:x);     File name without extension to save game to.
+  !#VA(appendExtension:x); OPT boolean. If true, automatical extension will be appended to file name. Default: TRUE.
+  !#VA(compressFile:x);    OPT boolean. If true, saved file is gzipped. Otherwise the file is written without compression. Default: TRUE.
+  !#VA(saveToData:x);      OPT boolean. If true, saving is performed to Data directory instead of "Games" directory. Default: FALSE.
+  !#VA(markInList:x);      OPT boolean. If true, saved game will be marked in Save/Load dialogs as selected. Default: TRUE.
+
+  !?FU(ClearScreenLog);
+  ; Clears green screen log messages
+
+  !?FU(H3Dlg_GetRootDlg);
+  ; Returns root dialog object or NULL. Most of the time it's Adventure Map dialog.
+  !#VA(result:x);
+
+  !?FU(H3Dlg_GetCurrentDlg);
+  ; Returns topmost dialog object or NULL. It may be message box, custom dialog or any in-game dialog.
+  !#VA(result:x);
+
+  !?FU(H3Dlg_SendCmdToItem);
+  ; Sends command to h3 dialog item like DL:A.
+  !#VA(h3Dlg:x);      H3 dialog object address.
+  !#VA(itemId:x);     Dialog item ID.
+  !#VA(cmdSubtype:x); Command subtype. See DLG_CMD_XXX constants.
+  !#VA(param:x);      User-specified value. Some numeric parameter or string in case of DLG_CMD_SET_TEXT.
+  !#VA(cmdType:x);    Optional. Type of command/action. Default: (DLG_CMD_TYPE_DEFAULT)
+
+  !?FU(H3Dlg_DrawItemOnScreen);
+  ; WoG function, drawing dialog item or the whole dialog on the screen.
+  !#VA(h3Dlg:x);
+  !#VA(itemId:x); Dialog item ID or (ALL_ITEMS).
+
+  !?FU(H3Dlg_UpdateItemRange);
+  ; Sends update command (0/0) to dialog items in specified range. Additionally forces dialog to update its internal state.
+  ; Use the function after sending commands to native H3 dialogs and before trying to redraw them.
+  !#VA(h3Dlg:x);     H3 dialog object address
+  !#VA(minItemId:x); Minimal item ID to update
+  !#VA(maxItemId:x); Maximal item ID to update
+
+  !?FU(AdvMap_SetHint);
+  ; Immediately shows adventure map hint with new text. Chat box text may become hidden until new character input.
+  !#VA(newHint:x); New hint string.
+
+[+] OnKeyPressed event does not occur anymore in dialogs where an input element has focus. It became possible to handle keyboard safely without routine checks for chat enter/leave events.
+
+[+] Added GetProcessGuid exported function, allowing to retrieve unique 32-character ID of game process run.
+    Each game process start will generate different value. Modders can use this value to check, whether player restarted the game process or not.
+
+    procedure GetProcessGuid (Buf: pchar); stdcall;
+
+    Usage:
+    !!SN:F^GetProcessGuid^/?(processGuid:z);
+    !!IF:M^%(processGuid)^;
+
+[!] Be sure not to use stack experience commands for battle stacks in OnBeforeBattle(Universal) triggers. Use them starting from "OnSetupBattlefield" event.
+[!] Starting from version 5.2 RC 14 HD mod does not influence Era "OnGameEnter" and "OnGameLeave" events, which work reliably now.
+
+[!] HE:L command was rewritten to support #/^...^ Era 3 syntax. Automatical adventure map redrawing was removed.
+    From now command supports any ERM string. HE:L3 does not need the second argument.
+
+[!] Improved "OnAdvMapTileHint" event. It will not occur on RMB popup anymore and will have extended arguments:
+
+  !?FU(OnAdvMapTileHint);
+  !#VA(x:x) (y:x) (z:x);             Object entrance coordinates
+  !#VA(objType:x) (objSubtype:x);    Type and subtype of object. For active hero it's object under hero.
+  !#VA(tileX:x) (tileY:x) (tileZ:x); Real tile coordinates.
+
+[*] "OnAdvMapTileHint" event objSubtype argument is -1 for no object instead of previous 65535.
+[*] Exported function WriteStrToIni creates empty ini in memory if no file exists on disk.
+
+[-] Fixed FU/DO argument skipping handling. Previosly continuous slashes were ignored and Px1/x2/x3//////x9/x10 didn't work as it was expected.
+[-] Fixed Era 2.0 bug: calling SN:E with floating point result used to leave garbage value in FPU stack.
+[-] Fixed WoG 3.58 bug: CO:A used to automatically execute CO:N# due to missing final 'break' keyword in the source code.
+[-] Fixed Era bug: %Dm and %Dd results were displayed in place of each other.
+[-] Fixed bug in Array_CustomSort, causing invalid final list items ordering.
+
+[-] Fixed EA:E, command, used to return on the first GET-parameter. From now E?(exp:y)/d/?(monType:y)/?(monNum:y) returns valid data.
+    Use either SET syntax for all 4 commands to change data or GET/mixed syntax to get data.
+
+[-] Removed ini option "Debug.TrackErm.IgnoreRealTimeTimers". ERA does no trace triggers without handlers anyway.
+[-] Fixed missing "botcasw.pcx" file by redirecting it to existing "botcastw.pcx" resource.
+[-] Fixed un44.def dragon specialty frame.
+
+
+Version 3.2.0 (11/2020)
+------------------------
+[@] Special thanks to Andarium for project support.
+
+[+] Updated "wog native dialogs" plugin. Added support to override any zsetup00.txt part using json config files.
+    See example of full WoG Options tabs/pages replacement in Mods/WoG/Lang/wog options.json.example.
+    Added support for controlling, which pictures may be selected in IF:N-like dialogs.
+    Fixed possible crashes, related to usage freed language data buffers. Credits: igrik.
+
+[+] Updated "game bug fixes extended.dll" plugin by igrik. Fixed stack block damage ability bug and WoG experience creature cloning bug.
+
+[+] Updated events and constants autocompletion files in Sublime Text Erm Editor.
+
+[+] Included reworked un44.def file by Bes.
+
+[+] Added support for d- syntax in function parameters.
+    !!FU(edu_Test):Pd-200; will pass -200, previously 200
+
+[+] Added locale settings to Lang/era.json:
+
+  "era.locale.decimal_separator"  - separator of fractional part in numbers (like dot in 3.14 for English)
+  "era.locale.thousand_separator" - separator of each 3 digits group in decorated numbers. It's recommended to use universal space for that. Example: "19 841".
+  "era.locale.non_breaking_space" - space character, that is treated as part of the word and is not word-wrapped.
+  "era.locale.metric_suffixes.0"  - quantity metric suffix for thousands like "K". Example number: "15.3K" for "15 300".
+  "era.locale.metric_suffixes.1"  - quantity metric suffix for millions like  "M". Example number: "1.2M" for "1 200 000".
+  "era.locale.metric_suffixes.2"  - quantity metric suffix for billions like "G". Example number: "1.06G" for "1 060 000 000".
+
+[+] Improved Heroes 3 complex dialogs support. Credits: Berserker, igrik.
+    IF:N(msgType)/^text^[/?result/(textAlignment)/(preselectedPicId)/(selectablePicsMask)].
+      selectablePicsMask - bit mask of pictures, allowed for selection. Default value is -1 (all pictures).
+
+    To make the first and the forth pictures selectable only specify mask 1 ^ 0 + 1 ^ 3 = 1 + 8 = 9.
+    This setting allows some pictures to act as decoration only and the others to act as selectable items.
+
+    Example:
+    ; Let's display selection of two army types in the center and two resource costs at the edges.
+    ; Monster pictures will be selectable, resource pictures will not be selectable.
+    !!FU(ConstructBitMask):P(DLG_RESULT_PIC_2)/(DLG_RESULT_PIC_3)/?(selectablePicsMask:y);
+    !!IF:N(PIC_TYPE_RES_CRYSTAL)/100/(PIC_TYPE_MONSTER)/(MON_CYCLOPS)/(PIC_TYPE_MONSTER)/(MON_EFREETI)/(PIC_TYPE_RES_SULFUR)/100;
+    !!IF:N(MSG_TYPE_CHOOSE_PIC)/^What army do you want to call?^/?(choice:y)/(TEXT_ALIGN_CENTER)/(DLG_NO_SELECTION)/(selectablePicsMask);
+
+[+] Added new events "OnBeforeBattleReplay" and "OnAfterBattleReplay", depending on third-party plugins like "BattleReplay" by igrik.
+    The engine now handles "OnBeforeBattleReplay" to fix issues with battlefield obstacles generation.
+
+[+] Duplicate constant declarations with the same value are allowed from now.
+
+  !#DC(TRUE) = 1;
+  !#DC(TRUE) = 1; does not produce error
+  !#DC(TRUE) = 3; error: constant TRUE is already defined with value 1
+
+[+] Added new ERM command VR:F in the form of !!VR(numericVar):F(minValue)/(maxValue).
+    It's used to force value to be in specific range and can be used instead of ToRange, Min and Max math functions.
+    All arguments must be of the same type.
+
+    (numericVar) - any integer or float variable.
+    (minValue)   - minimum range value (integer or float).
+    (maxValue)   - maximum range value (integer or float).
+
+    If range is invalid (minValue) > (maxValue), the result is (minValue).
+
+    Examples:
+    !!VR(value:y):S77 F10/100; force 77 to be in 10..100 range
+    !!IF:M^%(value)^;          displays 77
+
+    !!VR(value:y):S444 F10/100; force 444 to be in 10..100 range
+    !!IF:M^%(value)^;           displays "100" (maximum possible value)
+
+    !!VR(value:y):S-7 F10/100; force -7 to be in 10..100 range
+    !!IF:M^%(value)^;           displays "10" (minimum possible value)
+
+    !!VR(value:y):S4 F6/2; force 4 to be in invalid 6..2 range
+    !!IF:M^%(value)^;      displays "6" (range start value is used in case of invalid range)
+
+    !!VR(value1:y):S93;
+    !!VR(value2:y):S50;
+    !!VR(value1):F(INT_MIN)/(value2); value1 = minimum of (value1, value2)
+    !!IF:M^%(value)^;                 displays "50" (the smallest of 2 values)
+
+    !!VR(value1:y):S93;
+    !!VR(value2:y):S50;
+    !!VR(value1):F(value2)/(INT_MAX); value1 = maximum of (value1, value2)
+    !!IF:M^%(value)^;                 displays "93" (the biggest of 2 values)
+
+[+] Added possibility to call functions, returning float values using SN:F. Simply prepend dot (".") before function name.
+
+[+] Added possibility to return strings from functions using P?(someStr) syntax.
+    If (someStr) is string variable, then an appropriate x-argument is set to 0 before function execution.
+    It's expected, that function will assign z-string index of result to x-argument. It can be local string,
+    global string, trigger local string, ERT string. The value of this string will be assigned to (someStr) variable
+    on function exit.
+
+    Example:
+
+    !?FU(test_AppendHeroName);
+    !#VA(introTextPtr:x); text to append hero name to
+    !#VA(resultPtr:x);    result string
+    !!VR(result:z):Sz(introTextPtr) +^Corwin^;
+    !!VR(resultPtr):Z(result); create trigger local variable with result and assign its index to resultPtr argument
+
+    !?FU(OnAfterErmInstructions);
+    !!VR(greetingBeginning:z):S^Hello, ^;
+    !!FU(test_AppendHeroName):P(greetingBeginning)/?(greeting:z);
+    !!IF:M^%(greeting)^; display "Hello, Corwin"
+
+[+] Implemented saving and loading global constants in savegames.
+
+[+] Added new ERM command SN:C(constantName)/?(constantValue)[/?(constantExists)]
+  It allows to get constant value by name in runtime. It's possible to use constants in json configs, for instance.
+
+  Short example:
+  !!SN:C^OBJ_MONSTER^/?(constValue:y)/?(constExists:y);
+  !!IF:M^OBJ_MONSTER = %(constValue). Constant exists: %(constExists)^; OBJ_MONSTER = 54. Constant exists: 1
+
+  Let's allow to use constants in json configuration file for key 'edu.banned_obj_type'.
+  !!VR(key:z):S^edu.banned_obj_type^;            Prepare key to load from json
+  !!SN:T(key)/?(valueStr:z);                     Load translation for given key as string
+  !!SN:C(valueStr)/?(value:y)/?(constExists:y);  Try to find constant with the same name as value
+  !!VR(value)&(constExists)=(FALSE):V(valueStr); If no constant is found, convert string value to integer
+  !!IF:M^edu.banned_obj_type = %(value)^;        Display loaded config value
+
+[+] Added new constants to "Era Erm Framework" mod:
+  - ARG_SYNTAX_GET, ARG_SYNTAX_SET, ARG_SYNTAX_ADD for FU:S argument syntax types.
+  - Numerous other new constants.
+
+[+] Added new events to "Era Erm Framework" mod:
+
+  - "OnAfterBattleSetup", occuring right after "OnBeforeBattle" and "OnBeforeBattleUniversal" events.
+  New event allows to be sure, that basic battle parameters (heroes, quick battle, coordinates) are set up.
+
+[+] The following improvements were introduced in "Era Erm Framework" mod:
+
+  - "OnBeforeBattle" and "OnBeforeBattleUniversal" events were improved, storing most of prebattle parameters in global variables.
+  i^battle_isQuick^:       (TRUE) if quick battle is enabled, (FALSE) otherwise
+  i^battle_x^:             Battle x-coordinate
+  i^battle_y^:             Battle y-coordinate
+  i^battle_z^:             Battle z-coordinate
+  i^battle_owner_0^:       Left side owner or (NO_OWNER)
+  i^battle_owner_1^:       Right side owner or (NO_OWNER)
+  i^battle_hero_0^:        Left side hero or (NO_HERO)
+  i^battle_hero_1^:        Right side hero or (NO_HERO). Any negative value is normalized into (NO_HERO)
+  i^battle_ai_0^:          (TRUE) if left side is controlled by AI, (FALSE) otherwise.
+  i^battle_ai_1^:          (TRUE) if right side is controlled by AI, (FALSE) otherwise.
+  i^battle_human_0^:       (TRUE) if left side is controlled by human, (FALSE) otherwise.
+  i^battle_human_1^:       (TRUE) if right side is controlled by human, (FALSE) otherwise.
+  i^battle_remote_0^:      (TRUE) if left side is controlled by remote human, (FALSE) otherwise.
+  i^battle_remote_1^:      (TRUE) if right side is controlled by remote human, (FALSE) otherwise.
+  i^battle_local_0^:       (TRUE) if left side is controlled by local human or AI, (FALSE) otherwise.
+  i^battle_local_1^:       (TRUE) if right side is controlled by local human or AI, (FALSE) otherwise.
+  i^battle_localHuman_0^:  (TRUE) if left side is controlled by local human, (FALSE) otherwise.
+  i^battle_localHuman_1^:  (TRUE) if right side is controlled by local human, (FALSE) otherwise.
+  i^battle_hasHuman^:      (TRUE) if least one side is controlled by human, (FALSE) otherwise.
+  i^battle_humanOnly^:     (TRUE) if all sides are controlled by humans, (FALSE) otherwise.
+  i^battle_aiOnly^:        (TRUE) if all sides are controlled by AI, (FALSE) otherwise.
+  i^battle_isVisible^:     (TRUE) if at least one side is human and quick battle is off, (FALSE) otherwise.
+  i^battle_isNetwork^:     (TRUE) if it's network human vs human battle, (FALSE) otherwise.
+  i^battle_type^:          Battle type bit mask: a collection of BATTLE_TYPE_FLAG_XXX constants.
+  i^battle_current_side^:  Current/active stack battle side (BATTLE_LEFT = 0 or BATTLE_RIGHT = 1). Changes in "OnBeforeBattleStackTurn" and "OnBattleStackObtainsTurn" events.
+  i^battle_current_stack^: Current/active stack ID. Changes in "OnBeforeBattleStackTurn" and "OnBattleStackObtainsTurn" events.
+  i^battle_acting_stack^:  ID of stack, performing action. It's set in "OnBeforeBattleAction" only.
+  i^battle_acting_side^:   Side (BATTLE_LEFT = 0 or BATTLE_RIGHT = 1) of stack, performing action. It's set in "OnBeforeBattleAction" only.
+
+  - i^battle_round^ keeps current valid round and can be used throughout battle triggers and in OnBattleRound condition
+  like !?FU(OnBattleRound)&i^battle_round^=0 instead of v997.
+
+[+] Added the following functions to "Era Erm Framework" mod:
+
+  !?FU(NewIntArray);
+  ; Creates and returns trigger local array of integers.
+  ; Alternative function arguments:
+  ;  (?result)                     The result array will have 0 items.
+  ;  (size)/(?result)              The result array will have (size) items with 0 value.
+  ;  (size)/(fillValue)/(?result)  The result array will have (size) items will (fillValue) value
+  ;  You may optionally specify (storageType) parameter after (?result) argument with value like M_STORED or M_TEMP.
+
+  !?FU(NewStrArray);
+  ; Creates and returns trigger local array of strings.
+  ; Alternative function arguments:
+  ;  (?result)                     The result array will have 0 items.
+  ;  (size)/(?result)              The result array will have (size) items with ^^ value.
+  ;  (size)/(fillValue)/(?result)  The result array will have (size) items will (fillValue) value
+  ;  You may optionally specify (storageType) parameter after (?result) argument with value like M_STORED or M_TEMP.
+
+  !?FU(Array_Push);
+  ; Adds new items to the end of the array, resizing it automatically.
+  !#VA(list:x);      ID of array to push items to
+  !#VA(firstItem:x); ... Up to 15 arguments to append to list
+
+  !?FU(Array_Pop);
+  ; Removes items from the end of the array one by one, returning their values and resizing array automatically.
+  ; At least single item is removed from the array, if possible.
+  ; Example: P{list}/?{lastItem}/?{beforeLastItem}.
+  !#VA(list:x);      ID of array to pop items from.
+  !#VA(firstItem:x); OUT parameters... Up to 15 arguments to pop from the list. If item cannot be popped, it will be assigned zero value or empty string.
+
+  -------- EXAMPLES ---------
+
+  !!FU(NewStrArray):P?(list:y);                                            create trigger-local string array
+  !!FU(Array_Push):P(list)/^igrik^/^PerryR^/^Panda^;                       fill it with 3 values
+  !#VA(items[4]:z);                                                        declare array of 4 local z-strings
+  !!FU(Array_Pop):P(list)/?(items[0])/?(items[1])/?(items[2])/?(items[3]); pop items from array one by one
+  !!IF:M^%(items[0]) %(items[1]) %(items[2]) %(items[3])^;                 displays "Panda PerryR igrik "
+                                                         ;                 now (list) contains no items
+  ------ END EXAMPLES -------
+
+  !?FU(H3Dlg_StopAnimation);
+  ; Stops current dialogs animation
+
+  !?FU(H3Dlg_ResumeAnimation);
+  ; Resumes stopped dialogs animation
+
+  !?FU(H3Dlg_ShowPopup);
+  ; Shows H3 dialog as RMB popup.
+  !#VA(h3Dlg:x); H3 dialog object address
+
+  !?FU(H3Dlg_Coords);
+  ; Allows to access H3 dialog display coordinates. Automatically fixed invalid coordinates.
+  !#VA(h3Dlg:x); H3 dialog object address.
+  !#VA(x:x);     X-coordinate, supports GET/SET/ADD syntax
+  !#VA(y:x);     Y-coordinate, supports GET/SET/ADD syntax
+
+  !?FU(DL_FindById);
+  ; Returns DL dialog object address by DL id or (NULL) .
+  !#VA(dlgId:x);
+  !#VA(result:x);
+
+  !?FU(DL_Destroy);
+  ; Destroys DL dialog object.
+  !#VA(dlgObj:x);
+
+  !?FU(DL_ShowPopup);
+  ; Shows DL dialog as RMB popup.
+  ; The dialog will be destroyed after showing. Call DL:N again to recreate it.
+  ; © GrayFace
+  !#VA(dlgId:x); DL dialog ID.
+
+  Example:
+  !?FU(OnAdventureMapRightMouseClick);
+  !!CM:R(FALSE);           disable default reaction
+  !!DL89:N^cmenu.txt^;     load custom DL dialog
+  !!FU(DL_ShowPopup):P89;  display DL dialog while right mouse button is holded
+
+  !?FU(DL_Coords);
+  ; Allows to access DL-dialog display coordinates. Call DL:N before trying to access coordinates.
+  ; © igrik
+  !#VA(dlgId:x); DL dialog ID
+  !#VA(x:x);     X-coordinate, supports GET/SET/ADD syntax
+  !#VA(y:x);     Y-coordinate, supports GET/SET/ADD syntax
+
+  !?FU(DL_GetSize);
+  ; Returns DL-dialog width and height.
+  !#VA(dlgId:x);  DL dialog ID
+  !#VA(width:x);  OUT. Dialog width
+  !#VA(height:x); OUT. Dialog height
+
+  !?FU(DL_AlignDlg);
+  ; Aligns dialog display position. Call DL:N before trying to use this function.
+  !#VA(dlgId:x);     DL dialog ID
+  !#VA(alignment:x); Bit-mask of TEXT_ALIGN_XXX constants.
+
+  !?FU(DecorateInt);
+  ; Converts integer to string, separating each three digit group by "era.locale.thousand_separator" characer.
+  ; Example: P74276689 => "74 276 689"
+  !#VA(value:x);              Number to decorate.
+  !#VA(resultPtr:x);          OUT. Result string.
+  !#VA(ignoreSmallNumbers:x); Optional boolean. If set to DONT_DECORATE_SMALL_INTS, values <= 9999 are not decorated. Default: false.
+
+  !?FU(FormatQuantity);
+  ; Formats given positive or negative quantity to human-readable string with desired constraints on length and maximal number of digits.
+  ; Uses game locale settings and metric suffixes like "K", "M" and "G".
+  ; Example: P-1234567890/6/4 => "-1.23G"
+  !#VA(value:x);     Quantity to format.
+  !#VA(resultPtr:x); OUT. Result string.
+  !#VA(maxLen:x);    Optional. Maximum desired string length in logical characters. Default: 5.
+  !#VA(maxDigits:x); Optional. Maximum number of digits to use in result (the more digits to display, the slower the number is read by humans). Default: 4.
+
+[+] Changed the following functions in "Era Erm Framework" mod:
+
+  !?FU(Array_Join);
+  ; Concatenates array items into single string, using passed glue string. Works with both numeric and string arrays.
+  ; Example: ['one', 'two', 'three'] with glue ' --- ' become 'one --- two --- three'.
+  !#VA(list:x);      Array ID.
+  !#VA(resultPtr:x); OUT. Result string
+  !#VA(gluePtr:x);   Optional. Glue string. Default: ''.
+
+  !?FU(GetStrAtAddr);
+  ; Reads null terminated string at specified address into s^result^ variable.
+  ; Null address (0) results in empty string.
+  !#VA(strAddr:x);   Address of null-terminated string in memory or 0.
+  !#VA(resultPtr:x); String variable, to copy string contents to.
+
+  !?FU(StrToUpper);
+  ; Converts given string to upper case.
+  !#VA(strPtr:x);    Source string.
+  !#VA(resultPtr:x); OUT. Result string.
+
+  !?FU(StrToLower);
+  ; Converts given string to lower case.
+  !#VA(strPtr:x);    Source string.
+  !#VA(resultPtr:x); OUT. Result string.
+
+  !?FU(MonCountToFuzzyText);
+  ; Converts monster quantity to stringish value range like "50-99" or "2K+" with maximum length restriction.
+  ; Example P777/?{result}/(MON_FUZZY_COUNT_SHORT) => "500-999".
+  !#VA(monNum:x);         Number of monsters to convert to text.
+  !#VA(resultPtr:x);      OUT. Result string
+  !#VA(maxTextLength:x);  Optional. Result length restriction in the form of MON_FUZZY_COUNT_XXX constant. Default: MON_FUZZY_COUNT_SHORT
+
+[+] Added exported function "ToStaticStr" ({n} Str: pchar): {n} pchar;
+    It accepts pointer to null-terminated string or null. Returns null on null argument. Otherwise returns permanent static string address for given string contents.
+    The result is always the same for the same string contents. The result is read only and will never be deallocated.
+
+    The function serves two purposes:
+    - Convert string from temporary buffer into static buffer with endless lifetime without wasting memory for
+      multiple calls for the same string contents.
+    - The result can be treated as unique string hash/ID. Thus comparing two results of "ToStaticStr" can be
+      performed using pointers only.
+
+    For instance, you write plugin, where you need static string addresses for dialog items, hints, in-game structures.
+    You get those string from json language file and want to support F12 reloading key.
+    Simply use ToStaticStr(tr(...)). If translation is not changed during the game, ToStaticStr will return the same buffer
+    addresses for the same string contents. Otherwise memory cunsumption will be growing, but F12 key will work well.
+    No crashes, no dangling pointers.
+
+[+] Added exported function "DecorateInt", which converts integer to string, separating each three digit group by "era.locale.thousand_separator" character.
+    function DecorateInt (Value: integer; Buf: pchar; IgnoreSmallNumbers: integer): integer; stdcall;
+
+    Returns final string length in bytes.
+    Specify IgnoreSmallNumbers to leave values <= 9999 as is. Uses game locale settings.
+    Example: 2138945 => "2 138 945"
+
+[+] Added exported function "FormatQuantity", which formats given positive or negative quantity to human-readable string with desired constraints on length
+    and maximal number of digits. Uses game locale settings and metric suffixes like "K", "M" and "G".
+
+    function FormatQuantity (Value: integer; Buf: pchar; BufSize: integer; MaxLen, MaxDigits: integer): integer;
+
+    Returns final string length in bytes;
+    MaxLen    - maximum desired string length in logical characters.
+    MaxDigits - maximum number of digits to use in result (the more digits to display, the slower the number is read by humans).
+    Optimal settings, for damage or neutrals quantity, for instance, will be MaxLen = 5, MaxDigits = 4.
+
+    Examples:
+     FormatQuantity(1234567890, 10, 10) = '1234567890'
+     FormatQuantity(-1234567890, 6, 4)  = '-1.23G'
+     FormatQuantity(123, 2, 4)          = '0K'
+     FormatQuantity(1234567890, 6, 2)   = '1G'
+     FormatQuantity(1234567890, 1, 2)   = '9'
+     FormatQuantity(1234567890, 1, 0)   = ''
+
+[*] Restored old IF:Q functionality for message types MSG_TYPE_CHOOSE_PIC and MSG_TYPE_CHOOSE_PIC_OR_CANCEL: the third picture cannot be selected.
+[*] Trigger-local strings and array lifetime was increased. Such items are disposed only after the whole chain of same trigger handlers is processed.
+[*] Changed zcrtrait.txt: Santa Gremlin Fight Value and AI Value changed from 500 to 300. Removed "Can gift" from description.
+
+[*] Totally disabled old buggy "OnBattleRound" event behavior. From now "OnBattleRound" is an alias of "OnCombatRound".
+    v997 contains valid battle round throughout the whole battle. Do not use "OnCombatRound" in plugins, it's an alias for
+    ERM only. Use "OnBattleRound" instead.
+
+[*] (TRUE) and (FALSE) ERM constants are now predefined.
+
+[-] Fixed re/FU/DO/OB/...dozens of commands... didn't support global named variables in receiver parameters.
+    Examples:
+    !!FUi^edu_someFunc^:P;
+    !!OBi^edu_x^/i^edu_y^/i^edu_z^:T?(objType:y);
+
+[-] Fixed bug: FU:S used to return corrupted values.
+[-] Fixed bug in HookCode: hooking short jumps resulted in memory corruption.
+[-] Fixed IF:Q with message type 7 (MSG_TYPE_CHOOSE_PIC): result is now valid 1/0 flag, not 1/2 value, as it was before.
+[-] Fixed "Cornucopia" artefact name in artevent.txt. Credits: Valery (Salamandre).
+
+
+Version 3.1.2 (10/2020)
+------------------------
+[*] Fixed Json library to allow sequential comment lines. Example:
+  {
+    "mix": {
+      // comment line 1
+      // comment line 2
+
+      "global": {
+        "test":"best"
+      }
+    }
+  }
+
+
+Version 3.1.1 (10/2020)
+------------------------
+[+] Included updated "game bug fixes extended" plugin with many crash/overflow/bug fixes. Game stability increased. Credits: Ben, igrik, RoseKavalier and others.
+    Old "game bug fixes" plugin by RoseKavalier was removed.
+
+[+] Added "no prisons on random maps.bin.off" and "one slot combo arts.bin.off" patches by igrik.
+    The first one disables prison generation on random maps. The second one makes combo artifacts to occupy one slot without possibility of further disassembling.
+
+[+] Santa Gremlins now become a regular unit with normal weekly growth (16 per week), without gifts and with the following Ice Bold spell power:
+    (Number of santas - 1) / 2 + Random(0, 1) if number of santas is even.
+
+    Table of santa gremlin quantity and final damage:
+    1 - 10
+    2 - 10 or 30
+    3 - 30
+    4 - 30 or 50
+    5 - 50
+    6 - 50 or 70
+    etc.
+
+[+] Replaced Heroes 3 pseudo random number generator with high quality Mersenne Twister generator.
+    Native generator is still used for battle obstacles generation and in multiplayer battles, excluding Hot Seat.
+
+[+] Added new functions to "Era Erm Framework" mod:
+
+  !?FU(Array_Copy);
+  ; Resizes destination array to match source array size and copies all source items into destination array.
+  ; Both arrays must have the same items type.
+  !#VA(srcArray:x); ID of array to copy items from (source).
+  !#VA(dstArray:x); ID of array to copy items to (destination).
+
+  !?FU(Array_Clone);
+  ; Creates trigger local copy of array.
+  !#VA(srcArray:x); ID of array to clone.
+  !#VA(result:x);   ID of result trigger local array.
+
+  !?FU(Tm32Encode);
+  ; Fast and reversable int32 hashing. Link: https://stackoverflow.com/questions/664014/what-integer-hash-function-are-good-that-accepts-an-integer-hash-key
+  !#VA(value:x) (result:x);
+
+  !?FU(Tm32Decode);
+  !#VA(value:x) (result:x);
+
+[+] Updated the following functions of "Era Erm Framework" mod:
+
+  !?FU(MonCountToFuzzyText);
+  ; Converts monster quantity to stringish value range like "50-99" or "2K+" of maximum 7 characters length.
+  ; Returns result in s^result^
+  !#VA(monNum:x);
+  !#VA(withDescription:x); ?boolean. If true, the result will be native H3 text like "A pack (10-19) of". Default: false.
+
+  !?FU(DeconstructBitMask);
+  ; Deconstructs bit mask into list of bit/flag positions (each with 0..31 value).
+  ; For example, P137/(list) will fill the list with [0, 3, 7] values, because
+  ; 2 ^ 0 + 2 ^ 3 + 2 ^ 7 = 1 + 8 + 128 = 137. It means, that bits 0, 3 and 7 are set.
+  !#VA(mask:x);   Bit mask.
+  !#VA(result:x); Will contain new trigger local array ID with bit/flag positions.
+
+[*] Removed type checking from SN:M(array)/(itemIndex)/(value), allowing to use integer addresses to set string item values.
+
+[-] Fixed crash in "quest log" plugin by igrik.
+
+Version 3.1.0 (10/2020)
+------------------------
+[+] Updated "wog native dialogs" plugin. Added support for IF:B/P dialogs and extended IF:Q/IF:N dialogs.
+    Implemented advanced battle log dialog. To open it press "H" or click LMB on log bar in battle.
+    Improved compatibility with majaczek's plugins. Credits: igrik.
+
+[+] Updated "quest dialog" plugin. Provided compatibility with improved Heroes 3 dialogs. Credits: igrik.
+
+[+] Implemented support for IF:Q with message type 7 (MSG_TYPE_CHOOSE_PIC) and 3-picture selection. The result is 1, 2, 3 or 0 for cancel.
+    Prefer to use IF:N instead for better dialog control.
+
+[+] Implemented extended complex dialogs support in ERM. Credits: igrik, Berserker.
+    IF:N(msgType)/^text^[/?result/(textAlignment)/(preselectedPicId)].
+    Display dialog with up to selectable 8 pictures.
+
+    msgType           is one of MSG_TYPE_XXX constants (message, question, popup, picture selection with optional cancel button).
+    textAlignment     is bit mask of TEXT_ALIGN_XXX flags. Both vertical and horisontal alignment are supported. -1 means "use default".
+    preselectedPicId  is preselected picture index: 0-7 or -1 for none
+    result            will contain -1 in most cases, (TRUE) or (FALSE) for questions, 0-7 (picture index) for picture selection and -1 for cancelled selection.
+
+    Example:
+
+    !?FU(OnAfterErmInstructions);
+    !!IF:N(PIC_TYPE_SPELL)/(SPELL_TOWN_PORTAL)/(PIC_TYPE_RES_GOLD)/300/
+          (PIC_TYPE_RES_WOOD)/5/(PIC_TYPE_RES_MERCURY)/10/(PIC_TYPE_RES_ORE)/15/
+          (PIC_TYPE_RES_SULFUR)/20/(PIC_TYPE_RES_CRYSTAL)/25/(PIC_TYPE_MONEY)/5000;
+
+    !!IF:N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/^Take anything you need, bro!^/?(chosenItem:y)/(TEXT_ALIGN_LEFT);
+
+    !!IF:M^%(chosenItem)^;
+
+[+] IF:N and IF:Q dialogs with pictures now support special picture type flag: (PIC_TYPE_FLAG_DISPLAY_ZEROS).
+    If it's set, zero quantities (resources, monsters, experience, etc) will be displayed like "0 Archangels" instead of "Archangels" or empty caption.
+
+    Example:
+    !!VR(picType:y):S(PIC_TYPE_EXPERIENCE) |(PIC_TYPE_FLAG_DISPLAY_ZEROS);
+    !!VR(picSubtype:y):S0;
+    !!IF:Q2/(picType)/(picSubtype)/(MSG_TYPE_QUESTION)/^Wanna nothing?^;
+
+[+] Updated "Era Erm Framework" mod constants: data types, wog flags and options, town constants, game limits,
+    magic levels, battle actions, hero artifact slots, dialog IDs, picture types, text alignment and many others.
+
+[+] Added file "9999 era - key codes.erm" to "Era Erm Framework" with 150+ key codes constants.
+
+[+] Added "OnAfterErmInited" event to "Era Erm Framework", occuring right in the end of !?PI / "OnAfterErmInstructions" event.
+    The event allows to perform actions after most scripts initialized their variables and performed basic map/memory configuration.
+
+[+] Added new events to "Era Erm Framework": "OnKeyPressed_AdvMap", "OnKeyPressed_Battle", "OnKeyPressed_HeroScreen",
+    "OnKeyPressed_HeroMeetingScreen", "OnKeyPressed_Town", occuring right after "OnKeyPressed" events and taking two arguments:
+    x1 - key code
+    x2 - prevent default reaction (0 - no, 1 - yes).
+
+    Example:
+    !?FU(OnKeyPressed_Battle)&x1=(KEY_F1):;
+    !#VA(key:x) (preventDefault:x);
+    !!VR(preventDefault):S(TRUE);
+    !!IF:M^Pressed F1 in battle!^;
+
+[+] SN:F now supports 'user32.dll' functions.
+
+[+] Added new functions to "Era Erm Framework".
+  !?FU(Array_SortedUnique);
+  ; Leaves only unique sorted integer items in the array.
+  ; Calling on [15, 4, 3, 3, 1, 20, 15] list will rearrange and truncate list to the following:
+  ; [1, 3, 4, 15, 20]
+  !#VA(list:x); Array ID
+
+  !?FU(Array_EnsureMinSize);
+  ; Checks, if array has at least specified minimal size and increasing the size if not, filling new items
+  ; with optional default value.
+  !#VA(list:x);      Array ID.
+  !#VA(minSize:x);   Minimal desired array size.
+  !#VA(fillValue:x); Optional. Fill value for new items. Default: ^^ or 0.
+
+  !?FU(ConstructBitMask);
+  ; Accepts up to 15 bit/flag positions (0..31). Returns mask with corresponding bit flags set.
+  ; Actually, given Xi arguments, returns Sum(2 ^ xi).
+  ; For example, P0/3/7/?(mask:y) will give 2 ^ 0 + 2 ^ 3 + 2 ^ 7 = 1 + 8 + 128 = 137.
+  !#VA(args:x);   ... Up to 15 bit/flag positions.
+  !#VA(result:x); The last argument will contain the result mask.
+
+  !?FU(DeconstructBitMask);
+  ; Deconstructs bit mask into list of bit/flag positions (each with 0..31 value).
+  ; For example, P137/(list) will fill the list with [0, 3, 7] values, because
+  ; 2 ^ 0 + 2 ^ 3 + 2 ^ 7 = 1 + 8 + 128 = 137. It means, that bits 0, 3 and 7 are set.
+  !#VA(mask:x); Bit mask.
+  !#VA(list:x); Array ID to fill with bit/flag positions.
+
+  !?FU(MonCountToFuzzyText);
+  ; Converts monster quantity to human readable value range like "50-99" or "2K+".
+  ; Returns result in s^result^
+  !#VA(monNum:x);
+
+  !?FU(DisableErrors);
+  ; Disables ERM error messages and resets error option.
+
+  !?FU(EnableErrors);
+  ; Enables ERM error messages and returns last error flag (TRUE or FALSE).
+  !#VA(result:x);
+
+  !?FU(StrToUpper);
+  ; Converts given string to upper case. Result is returned in s^result^.
+  !#VA(strPtr:x);
+
+  !?FU(StrToLower);
+  ; Converts given string to lower case. Result is returned in s^result^.
+  !#VA(strPtr:x);
+
+  !?FU(GetStrAtAddr);
+  ; Reads null terminated string at specified address into s^result^ variable.
+  ; Null address (0) results in empty string.
+  !#VA(strAddr:x);
+
+[+] Added Era exported function ShowErmError (Error: pchar); stdcall;
+    The function shows regular ERM error dialog and can be used for ERM scripts error reporting and debugging.
+
+    Example:
+
+    !!if|(baseFaction)<(NO_TOWN)/(baseFaction)>(MIX_MAX_POSSIBLE_FACTION_ID):;
+      !!SN:F^ShowErmError^/^Invalid "baseFaction" argument: %(baseFaction)^;
+      !!FU:E;
+    !!en;
+
+[+] Added possibility to extend lifetime of trigger-local SN:M array to parent scope. It's now possible to return
+    trigger-local arrays to caller function without necessity to free that array afterwards. Thus automatical memory
+    management is preserved.
+
+    Example:
+    ; Deep level function returns trigger-local array of 3 strings to another function, which in its case returns the same array
+    ; to "OnAfterErmInstructions" trigger. The array will be freed after "OnAfterErmInstructions" execution block ends.
+
+    !?FU(FuncB);
+    !#VA(result:x);
+    !!SN:M(M_AUTO_ID)/3/(M_STR)/(M_TRIGGER_LOCAL)/?(result);
+    !!SN:V(result)/0/^one^/^two^/^three^;
+    !!SN:F^ExtendArrayLifetime^/(result);
+
+    !?FU(FuncA);
+    !#VA(result:x);
+    !!FU(FuncB):P?(result);
+    !!SN:F^ExtendArrayLifetime^/(result);
+
+    !?(OnAfterErmInstructions);
+    !!FU(FuncA):P?(arr:y);
+    !!FU(Array_Join):P(arr)/^ ^;
+    !!IF:M^%s(result)^; Display "one two three"
+
+    !?(OnAfterErmInstructions);
+    ; here the (arr) array is already deleted
+
+[+] Added support for local z-strings as function parameters. They will be converted to temporary read-only z-variable indexes.
+
+    Example:
+    !!VR(str:z):S^haVe A nIce day!^;
+    !!FU(StrToUpper):P(str); here z-1 will be converted into something like "10000002" which is z10000002 index
+    !!IF:M^%s(result)^; Display "HAVE A NICE DAY!"
+
+[+] Added possibility to define ERM 2 constant aliases.
+    Example:
+
+    !#DC(PIC_TYPE_RES_FIRST) = (PIC_TYPE_RES_WOOD);
+    !#DC(PIC_TYPE_RES_LAST)  = (PIC_TYPE_RES_MITHRIL);
+
+    Now (PIC_TYPE_RES_FIRST) will have the same value as (PIC_TYPE_RES_WOOD) constant.
+
+[+] Added possiblity to use constants in local array declarations. Previously array size could be number only.
+    Now it's possible to specify constant name instead of number without parenthesis.
+
+    Example:
+    !#DC(MAX_DWELLING_ALT_CREATURES) = 4;
+
+    !#VA(dwellingMonTypes[MAX_DWELLING_ALT_CREATURES]:y); Define array of 4 items to hold dwelling monster types
+
+[+] Added support for e-variables in VR:C. !!VR(floats[3]:e):C0/0/0;
+    Do not forget, that no integer-float conversion is performed in VR:C, all values are copied as is. The only safe constant
+    for e-variables is 0.
+
+[+] Improved TR:T to allow any number of arguments.
+
+[+] Improved UN:U command. It does not raise error if no more objects are found, but sets x-coordinate to -1 instead. Thus no premature
+    objects counting is required. A new syntax with 6 parameters was added to allow using arbitrary integer variables instead of v-variables.
+    !!UN:U(objectType)/(objectSubtype)/(direction like -1/-2 or object index)/(x)/(y)/(z).
+
+    Example:
+    ; Let's traverse through all map monsters, doubling their quantity
+
+    !#VA(x:y) (y:y) (z:y); define variables to store object coordinates
+    !!VR(x):S-1;           setting x-coordinate to -1 will force to start search from scratch
+
+    !!re i; endless loop
+      !!UN:U(OBJ_MONSTER)/(ANY_OBJ)/-1/(x)/(y)/(z); find next monster, (x) = -1 on failure
+      !!br&(x)<0:;                                  exit loop if nothing found
+      !!MO(x)/(y)/(z):Gd*2;                         double monsters quantity
+    !!en:;
+
+[+] Heroes 3 "DisplayComplexDialog" function (4F7D20) was improved. The last argument "closeTimeoutMsec" was overloaded to "Opts".
+    Opts is:
+    16 bits for closeTimeoutMsec,
+    4 bits for msgType (1 - ok, 2 - question, 4 - popup, etc), // 0 is treated as 1.
+    4 bits for text alignment bit mask (0..15),
+    8 bits for internal H3 usage, usually 0
+
+    Thus it's became possible to display dialogs with up to 8 images and of any type (message, question, popup, picture selection).
+
+[+] Added exported function FindNextObject (ObjType, ObjSubtype: integer; var x, y, z: integer; Direction: integer): integer; stdcall;
+    It works the same as UN:U with fast search syntax, but does not raise error on no more objects, returns success flag and allows
+    to use non-v variables to store coordinates. You won't need to count objects before searching for them anymore.
+
+    Direction is -1 for FORWARD and -2 for BACKWARD.
+
+    Example:
+    ; Let's traverse through all map monsters, doubling their quantity
+
+    !#VA(x:y) (y:y) (z:y); define variables to store object coordinates
+    !!VR(x):S-1;           setting x-coordinate to -1 will force to start search from scratch
+
+    !!re i; endless loop
+      !!SN:F^FindNextObject^/(OBJ_MONSTER)/(ANY_OBJ)/?(x)/?(y)/?(z)/-1; find next monster, v1 is (TRUE) on success
+      !!br&v1=(FALSE):;                                                 exit loop if nothing found
+      !!MO(x)/(y)/(z):Gd*2;                                             double monsters quantity
+    !!en:;
+
+[*] Local named e-variables are allocated from index 2 to preserve e1 for functions result.
+
+[*] x16 can now be allocated as local named variable. Previosly the following code would lead to error:
+    !!VA(args[16]:x);
+
+[*] SN:G is DEPRECATED and may be removed in future versions.
+
+[-] Fixed SN:O. No more boat/hero hiding.
+[-] Fixed HE receiver to support any ERM variable like !!HEi^heroId^.
+[-] Fixed VR:C indexes checking, allowing to override protected memory by commands like VRy-99:C1/2/3;
+
+[-] Fixed ERM 2 compiler part, responsible for local z-arrays indexes allocation.
+    Previosly !#VA(names[3]:z) used to allocate array of [z-3, z-4, z-5] (decreasing indexes).
+    Now the appropriate array will be [z-5, z-4, z-3] (increasing indexes). Thus it's possible to use
+    safely index arithmetics like:
+
+    !#VA(names[3]:z);
+    !!VR(names[2]):S^Have a nice day!^;
+    !!VRi:S2;                     i is array item logical index
+    !!VR(itemPtr:y):S(@array) +i; itemPtr holds real z-index of array item
+    !!IF:M^%z(itemPtr)^;          display i-th item value
+
+[-] Fixed UN:C. It didn't accept negative size argument, while -1, -2 and -4 are valid sizes.
+    Prefer to use (UNC_XXX) constants to specify valid data type.
+
+[-] Fixed creature experience overflow after battle. Credits: igrik.
+
+[-] Fixed check for multiplayer in attack type selection dialog, causing wrong
+    "This feature does not work in Human vs Human network baced battle" message.
+
+[-] Removed rest files from "Animated Trees" mod. Credits: Archer30.
+
+[!] Note, that SN:O does not work with global named variables.
+
+[!] Note, that v1 must not be used to store anything non-temporal, because from Era 2.X it's changed in every SN:E/SN:F call.
+    It's a dirty variable for fast result return. Use v2/v3/v4 instead.
+
+
+Version 3.0.5 (09/2020)
+------------------------
+[+] Updated "wog native dialogs" plugin. All localized string were moved to json file.
+    Added possibility to tune fonts, used in different dialogs. Credits: igrik.
+
+[+] Updated "skeleton transformer fix.bin" patch. Hell Hydra is transformed into Bone Dragon.
+    Returned original transformation for mummies. Credits: Bes.
+
+[+] SN:V now supports negative indexes, meaning n-th from end, the same as SN:M.
+
+[+] Added possibility to query SN:M arrays information.
+    !!SN:M#1/(?)$2/(?)$3/?($4)[/?$5];
+    #1 - array ID
+    $2 - items count
+    $3 - items type (0 - integers, 1 - strings)
+    $4 - items storage type (-1 - trigger local, 0 - temporary, 1 - with savegame stored contents)
+    $5 - unsafe temporary address of array first item in memory
+    At least single #2..#4 parameter should use GET syntax. SET-syntax parameters are ignored in this case.
+
+    Example:
+    !!SN:M(array)/d/?(itemsType:y)/d; check if it's array of integers or strings
+    !!if&(itemsType)=(M_INT):; ...
+
+[+] Added new constants to "Era Erm Framework" mod:
+  - TOWN_XXX constants for each town type in the game.
+  - CALLCONV_XXX constants for possible SN:E calling conventions.
+  - BATTLE_XXX constants for battle sides and stack limits.
+  - FLOAT_INF and FLOAT_NEG_INF, representing infinity values for float numbers.
+  Usage:
+  !!VR(inf:e):C(FLOAT_INF);                   Assign positive infinity to (inf) variable without type conversion
+  !!IF&(someValue)=(inf):M^Value is too big^; Check some e-var for positive infinity
+
+[+] Extended OnEveryDay trigger in "Era Erm Framework" mod. The following global variables are automatically set:
+    - i^timerDay^:        1..+inf
+    - i^timerWeekDay^:    1..7
+    - i^timerMonthDay^:   1..28
+    - i^timerWeek^:       1..+inf
+    - i^timerMonthWeek^:  1..4
+    - i^timerMonth^:      1..+inf
+    - i^timerOnce^:       0..1
+    - i^timerOwner^:      0..7
+    - i^timerIsAi^:       0..1
+    - i^timerIsHuman^:    0..1
+
+[+] Added mathemetical functions to "Era Erm Framework" mod.
+
+  !?FU(Pow);
+  ; Raises value to specified power. All arguments and result are floats.
+  ; Example: 2^3 = 8, i.e. 2 * 2 * 2 = 8
+  !#VA(base:x) (power:x) (result:x);
+
+  !?FU(Sqrt);
+  ; Returns value square root. All arguments and result are floats.
+  !#VA(value:x) (result:x);
+
+  !?FU(IntLog2);
+  ; Returns Ceil(Log2(N)) or 0 for invalid values (<= 0).
+
+  Examples:
+
+  !!FU(IntLog2):P100/?(res:y);
+  !!IF:M^%(res)^; displays 7, because 2^7 = 128 and 2^6 = 64
+  ; It means that 7 bits are necessary to hold data with 100 possible values.
+  ; It also means, that if one value is 100x greater than the other one, then
+  ; it would take 7 multiplications by 2 before the second value will become >= the first one.
+
+
+  !!VR(base:e):S123 :10; base = 12.3
+  !!VR(power:e):S35 :10; power = 3.5
+  !!FU(Pow):P(base)/(power)/?(float:e);
+  !!IF:M^%(float)^; 12.3 ^ 3.5 = 6526.31287
+
+
+  !!VR(value:e):S123 :10;
+  !!FU(Sqrt):P(value)/?(float:e);
+  !!IF:M^%(float)^; 12.3 ^ 0.5 = 3.507. I.e. 3.507 * 3.507 = 12.3
+
+[+] Added functions for SN:M arrays handling to "Era Erm Framework" mod.
+
+  !?FU(Array_Join);
+  ; Concatenates array items into single string, using passed glue string. Works with both numeric and string arrays.
+  ; Example: ['one', 'two', 'three'] with glue ' --- ' become 'one --- two --- three'.
+  ; Returns s^result^
+  ; Uses s^_^
+  !#VA(list:x);    Array ID.
+  !#VA(gluePtr:x); Optional. Glue string. Default: ''.
+
+  Example:
+
+  ; Create list with names of the first 10 heroes
+  !!SN:M(M_AUTO_ID)/10/(M_STR)/(M_TRIGGER_LOCAL)/?(names:y);
+
+  !!re i/0/10/1/-1:;
+    !!HEi:B0/?(heroName:z);
+    !!SN:V(names)/i/(heroName);
+  !!en:;
+
+  ; Display joined list items
+  !!FU(Join):P(names)/^
+  ^;
+  !!VR(textPtr:y):Zs^result^;
+  !!IF:M^%z(textPtr)^;
+
+
+  !?FU(Array_Sort);
+  ; Sorts array items in ascending order. Allows to sort specific array subrange.
+  !#VA(list:x);     Array ID.
+  !#VA(startInd:x); Optional Start index of array subrange to sort. Default: 0.
+  !#VA(endInd:x);   Optional End index of array subrange to sort. Default: numItems - 1.
+
+  Example:
+  ; Let (names) variable hold SN:M array ID with heroes names (see example with Join function)
+  !!FU(Array_Sort):P(names); will sort it
+
+
+  !?FU(Array_CustomSort);
+  ; Sorts array items in ascending order user custom comparator function. Allows to sort specific array subrange.
+  ; It's possible to perform any complex sorting in any direction and by unlimited number of criteria, using this method.
+  ; It's a stable sorting method, i.e. items, which we be reported as equal, will retain their relative position to each other.
+  ; For example, if sorting 'Ann', 'David' and 'Ken' by name length, the result will be 'Ann', 'Ken', 'David' and not 'Ken', 'Ann', 'David'.
+  ; When sorting string array, comparator function will receive z-indexes of strings as arguments.
+  !#VA(list:x);        Array ID.
+
+  !#VA(compareFunc:x); Comparison ERM function ID. It will be called multiple times with the following arguments:
+                     ; (value1, value2, state), where 'state' is any custom value, you specify on call to Array_CustomSort.
+                     ; Usually state is some array ID or external structure address, that client use to compare items.
+                     ;
+                     ; The function must return value:
+                     ; < 0 if value1-item should be placed before value2-item
+                     ; > 0 if value1-item should be placed after value2-item
+                     ; 0 if the ordering between two items should be left as is.
+
+  !#VA(state:x);    Optional. Custom value to be always passed to comparison function as the third argument. Default: 0.
+  !#VA(startInd:x); Optional. Start index of array subrange to sort. Default: 0.
+  !#VA(endInd:x);   Optional. End index of array subrange to sort. Default: numItems - 1.
+
+  Example 1. Sorting monsters IDs array by HP of each monster
+
+  !!SN:M(M_AUTO_ID)/10/(M_INT)/(M_TRIGGER_LOCAL)/?(mons:y);
+  !!SN:V(mons)/0/39/12/20/92/78/17/13/43/6/32;
+  !!FU(Array_CustomSort):P(mons)/(tst_CompareByMonHp);
+  !!FU(Array_Join):P(mons)/^ ^;
+  !!IF:M^Monster IDs: %s(result)^;
+
+  !?FU(tst_CompareByMonHp);
+  !#VA(mon1:x) (mon2:x) (state:x) (result:x);
+  !!VR(result):S0;
+
+  !!MA:P(mon1)/?(hp1:y);
+  !!MA:P(mon2)/?(hp2:y);
+
+  !!if&(hp1)>(hp2):;
+    !!VR(result):S1;
+  !!el&(hp1)<(hp2):;
+    !!VR(result):S-1;
+  !!en;
+
+  Example 2. Sorting visitor names by name length
+
+  !!SN:M(M_AUTO_ID)/4/(M_STR)/(M_TRIGGER_LOCAL)/?(visitors:y);
+  !!SN:V(visitors)/0/^Laura^/^Den^/^Agriel^/^Ken^;
+  !!FU(Array_CustomSort):P(visitors)/(tst_CompareByStrLen);
+  !!FU(Array_Join):P(visitors)/^ ^;
+  !!IF:M^Visitors: %s(result)^;
+
+  !?FU(tst_CompareByStrLen);
+  !#VA(str1Ptr:x) (str2Ptr:x) (state:x) (result:x);
+  !!VRz(str1Ptr):M4/?(str1Len:y);
+  !!VRz(str2Ptr):M4/?(str2Len:y);
+  !!VR(result):S(str1Len) -(str2Len);
+
+
+  !?FU(Array_Revert);
+  ; Reverts order of itmes in the array. Allows to reverse the order of specific array subrange only.
+  !#VA(list:x);     Array ID.
+  !#VA(startInd:x); Optional Start index of array subrange. Default: 0.
+  !#VA(endInd:x);   Optional End index of array subrange. Default: numItems - 1.
+
+  Example:
+  ; Let (names) variable hold SN:M array ID with heroes names (see example with Join function)
+  !!FU(Array_Revert):P(names); will revert items order
+
+
+  !?FU(Array_Fill);
+  ; Fills array or arrays subrange with incrementing/decrementing values.
+  ; Example: FU(Array_Fill):P(array)/100/2; Will fill items with 100, 102, 104, 106...
+  !#VA(list:x);       Array ID.
+  !#VA(startValue:x); Starting value to fill with.
+  !#VA(step:x);       Value to add to increase filler on each step. Default: 0.
+  !#VA(startInd:x);   Optional. Start index of array subrange. Default: 0.
+  !#VA(endInd:x);     Optional. End index of array subrange. Default: numItems - 1.
+
+  Example:
+  ; Let (array) is some array of integer numbers. Let's fill it with 100, 98, 96...
+  !!FU(Array_Fill):P(array)/100/-2;
+
+[*] Creating array using SN:M with 5 parameters does not change v1 anymore.
+[*] Extracted all Era supplied ERM scripts into "Era Erm Framework" mod.
+[*] Extracted ERM testing code into separate mod "Era Erm Tests".
+[*] Updated ERM editor snippets and autocompletion files. Added fast 'ifm', 'ifl' and 'snm' snippets.
+
+[-] Applied fixes to ERM constants (Era Erm Framework mod):
+  Fixed constant name: MON_SUPREMEARCHANGEL => MON_SUPREME_ARCHANGEL.
+  Fixed constant MON_LAST_WOG => 196 instead of 197. Credits: igrik.
+  Fixed primary skills constants. Credits: Algor.
+
+[-] Fixed crash on !#VA(-varName) syntax usage.
+[-] Fixed ERM memory dump generation: slots reporting use to contain information about reserved items.
+[-] Fixed x-variables reporting in ERM tracking module. Previosly garbage x0 value was output as the first one.
+[-] Fixed Nagash portrait name in game and map editor executables. No more "missing hpsz001.pcx" error.
+
+
+Version 3.0.4 (09/2020)
+------------------------
+[+] Extended town income limits from -32768..32767 to -2147483648..+2147483648 and added new event OnCalculateTownIncome
+    with three parameters: Town ID, Income (gold amount), Account resource silo? (0 or 1).
+
+[+] Introduced extended !!re syntax: !!re counter/start/stop/step/stop_modifier, where stop_modifier is any integer value,
+    that will be added to stop value. New syntax allows to express such loops as FROM 0 to SOME_VAR - 1, for instance.
+
+    Example:
+    !!re i/0/(numStacks)/1/-1:;
+      ...
+    !!en:;
+
+[+] !!re allows to use any variables now, including global named s/i variables.
+
+[+] Improved ERM stability. Now all non-specified parameters are treated as 0 in X# syntax and ignored in X$ syntax.
+    As a result, !!DL:A without the 4-th parameter will not randomly crash anymore and !!TR may be used with any number of parameters,
+    while exactly 8 were required previously. Note, that many ERM commands still require exact number of obligatory parameters.
+
+[+] !!DL:A was improved, accepting any string including string literal as the 3-d parameter.
+
+[+] Included updated "wog native dialogs" plugin by igrik. From now plugins exports function __cdecl int UseWin32InputControl (int newState).
+    The function allows to switch between Heroes 3 native input control and Windows input control. The latter allows to input Asian and '{', '}' characters.
+    Mode can be switched any time even using ERM. UseWin32InputControl returns previous state.
+
+[*] Fully restored Nagash and Jeddite original portraits, descriptions and specialties.
+
+[*] Changed ERM error report generating: not only ERM memory dump is made, but the whole debug information is saved, like
+    if you press F11 manually.
+
+[-] Fixed WoG bug, disallowing to set dialog hints twice using DL:H command. Credits: gamecreator.
+[-] Fixed bug in ERM caching engine: GET-syntax could produce garbage values on cache hit.
+[-] Fixed bug in ERM engine, causing crashes in !!UR:S and a few other possible commands.
+[-] Fixed bug: IF:N$ used to cause ERM errors and crashes. Credits: helgtla.
+[-] Fixed bug: HE:P used to return unsigned 65535 instead of signed -1.
+[-] Fixed bug: ERM compiler didn't process post-triggers.
+[-] Fixed bug, causing many Era commands to return garbage after valid string contents. Credits: PerryR.
+[-] Fixed map editor => WoG tools menu shortcuts to actual programs. Credits: Archer30.
+
+
+Version 3.0.3 (07/2020)
+------------------------
+[+] Added command SN:H^art^/art ID/0 (name) or 1 (description)/$text
+    allowing to get/set any artifact name/description without z-variables dependency.
+
+[+] ERS-files parser was rewritten. No more H3 bugs, caused by 12-character path length restriction.
+    Any ers file name like "some loooooong script.ers" is supported.
+
+[+] Added OnBeforeBattleStackTurn event. It occurs right before OnBattleRegenerationPhase event.
+    Parameters: Stack ID (0..41). Change the first parameter to give turn to another stack.
+
+    Note, that similar OnBattleStackObtainsTurn event occurs when stack becomes active and is not related to regeneration phase at all.
+    Normally OnBattleStackObtainsTurn occurs after OnBattleRegenerationPhase but may also be triggered manually by calling
+    464F10 (THISCALL, ecx = CombatManager, Side 0..1, StackInd 0..20).
+
+[-] HE:P without 4-th parameter now works as in WoG 3.58f for compatibility reasons. If hero belongs to current player,
+    teleport sound is played and screen redrawn. Otherwise teleportation is silent without visual update.
+
+[-] Fixed bug: each reloading reduced ERT strings length by one. Credits: ArnoVanClaire.
+[-] Included missing ztower1.def in hmm35wog.pac. Credits: ArnoVanClaire.
+[-] Fixed invalid Sorceress fight value in zcrtraits.txt. Credits: Archer30.
+[-] ztport01.def monolith will not be used on random maps anymore (removed from zaobjts.txt).
+[*] IF:N fix was improved. Credits: igrik.
+[*] Era exported functions with boolean results now return int32 0 or 1 (0 or -1 previously).
+
+
+Version 3.0.2 (06/2020)
+------------------------
+[+] Added new ERM event 'OnAdvMapTileHint', allowing to get/set hint for any tile, mouse is currently over.
+    Parameters: x, y, z, object type, object subtype. All parameters are given for object entrance.
+    Example:
+
+    !?FU(OnAdvMapTileHint); display tile coordinates and original hint
+    !#VA(x:x) (y:x) (z:x) (objType:x) (objSubtype:x);
+    !!MM:M?(existingHint:z);
+    !!MM:M^%(x) %(y) %(z) %(objType) %(objSubtype): %(existingHint)^;
+
+[+] Added support for %Vf..t syntax in interpolated strings, that was present in WoG 3.58.
+[+] Restored short !!HE:X6 syntax support and fixed ERM HE:X7 bug: short syntax worked as X7/a/d/0/0/0/0 instead of X7/0/a/d/0/0/0.
+[+] Updated VFS.dll to version 1.0.5.
+[-] Fixed bug in "era - testlib.erm": !?FU(et_ExpectError) didn't restore error suppression option.
+
+
+Version 3.0.1 (06/2020)
+------------------------
+[+] Added first ERA ERM tests. Tests library in "Tests/1000 era - testlib.erm" and tests, covering found
+    bugs and part of new functionality in "Tests/era - tests.erm".
+
+[+] Added new 3 magic constants. All are safe to use inside strings and as parameters:
+    (FILE) expands into current script file name.
+    (LINE) expands to current line number in script file.
+    (CODE) expands to excerpt of escaped current line source code.
+    These constants are specially useful for debugging, bug reporting and automated tests. See
+    "Tests/era - tests.erm" for examples.
+
+[+] Added new constants: TRUE, FALSE, SN_M_* (for SN:M parameters).
+
+[+] Added new escape sequences for string literals (^...^):
+    '%\:' expands into ';' (usually forbidden character for literals, marking receiver end).
+    '%\"' expands into '^' (usually forbidden character for literals, marking end of literal).
+    '%%'  expands into '%' (used to prevent possible variable interpolation, %%y5 => %y5, not y5 value).
+
+[+] !!FU/DO receivers can now be really called without arguments.
+    For all WoG 3.58 ERM receivers except SN/MP calling subcommand without parameters actually passes single
+    parameter with 0 value.
+    Example:
+    !!CM:R; is the same as !!CM:R0;
+
+    This is not suitable for functions, which could rely on arguments counting to implement default parameter values
+    and optional parameters.
+    From now !!FU:P; passes no parameters and !!FU:P6; passes single parameter.
+
+[!] Old-style ERM macros ($...$) are deprecated, though improved and fully working.
+    Note, that macro names are not cleared until game process is restarted, so prefer not to use them at all.
+
+[*] !!SN:U was renamed to !!SN:V (Vector).
+
+[+] !!SN:M was greatly improved. Negative indexes allow to access elements from the end of array.
+    -1 - the last element
+    -2 - the one before last, etc.
+    It became easy to access list tail like !!SN:M(arrayId)/-1/^New value^;
+
+    SN:M arrays resizing was improved so, that from now they can be used as lists without performance penalty.
+    Memory is allocated by blocks, growing exponentially, so most of the time no allocation is really performed,
+    just remembering new number of items.
+
+    Examples:
+    ; Create new list with 3 items, stored in saved games. Put its ID in i^heroNames^ global variable.
+    !!SN:M(SN_M_AUTO_ID)/3/(SN_M_STR)/(SN_M_STORED)/?i^heroNames^;
+
+    ; Set all items values at once
+    !!SN:Vi^heroNames^/0/^Corwin^/^Deo^/^Bers^;
+
+    ; Wait, forgot about 'Salamandre', add him too
+    !!SN:Mi^heroNames^/d1;              increased list size by 1
+    !!SN:Mi^heroNames^/-1/^Salamandre^; and written new item to the end
+
+[+] Updated ERM Editor, based on Sublime Text.
+[!] !!FU:C is deprecated and not supported anymore. It may be reused in future.
+
+[*] ErmLegacySupport is set to 0 by default in heroes3.ini. It was introduced for old scripts, relying on
+    negative y-vars automatical zeroing.
+
+[+] All function x-parameters, which were not passed, are now initialised with zeroes. This behavior is suitable for
+    optional arguments. Just don't pass odd arguments in !!FU:P/!!DO:P/etc, and they will have 0 value.
+
+[+] Added new syntax to !!FU:A command. Set default values for parameters.
+    !!FU:A#1/[#2.../#3...];
+    #1 - default value for the first parameter (x1)
+    #2 - default value for the second parameter...
+    The command changes values only if the are not specified during function call.
+
+    Example:
+    ; Find object with given type and subtype
+    !?FU(acl_FindObj);
+    ; Declare two optional parameters
+    !#VA / (objType:x) (objSubtype:x);
+    ; Provide default -1 value for both parameters
+    !!FU:A(NO_OBJ)/(NO_OBJ);
+    ...
+
+    Another example with string parameters.
+    'Ptr' means 'pointer', index of z-variable.
+
+    !?FU(acl_ShowMessage);
+    !#VA / (messagePtr);
+
+    !!FU:A?(numArgs:y);    get number of passed arguments
+    !!VR(message:z):S^OK^; set up default message text
+    !!VR(message)&(numArgs)>=(@messagePtr):Sz(messagePtr); override message text with provided value, if it's passed
+
+    !!IF:M^%(message)^;    display message
+
+    The last line works, because @messagePtr for the first argument (x1) will return 1.
+    This is handy way to check if particular parameter was passed.
+
+[+] It's proposed to decorate functions declarations in the following variants:
+
+  ; Bried function description like:
+  ; Hides rectangular area on the map.
+  !?FU(es_HideMapSquare);
+  !#VA(x1:x) (y1:x) (x2:x) (y2:x) (level:x); fast declare all parameters without description
+
+  ; Alternative declaration with arguments explained:
+  !?FU(es_HideMapSquare);
+  !#VA(x1:x); top-left x-coordinate
+  !#VA(y1:x); top-left y-coordinate
+  !#VA(x2:x); bottom-right x-coordinate
+  !#VA(y2:x); bottom-right y-coordinate
+
+  Remember, that everything in !#VA before closing ';' and except of (variableName) is simply deleted
+  from compiled code.
+
+  For functions with optional arguments it's proposed to separate optional arguments from required ones by '/'.
+
+  ; Adds monsters stack to hero army. Default quantity is 1.
+  !?FU(es_AddMonster);
+  !#VA(hero:x) (monType:x) / (monNum:x);
+  !!FU:A0/0/1; specify default argument values
+  !!HE(hero):C2/(monType)/(monNum)/1;
+
+  Alternatively argument optionality may be specified in its description.
+  !?FU(es_AddMonster);
+  !#VA(hero:x);    hero ID
+  !#VA(monType:x); monster type
+  !#VA(monNum:x);  optional. Default: 1
+
+[-] Added missing 1000 era - const.erm and 1000 era - stdlib.erm files to WoG mod.
+[-] Fixed bug: z-variables with invalid negative indexes were considered mutable. Credits: gamemaster.
+[-] Unknown macro names $...$ are now reported as errors, same as it was in ERA 2.x.
+[-] Fixed bug: ERM must stop evaluating cached receiver parameters after first error.
+
+
+Version 3.0.0 (06/2020)
+------------------------
+[+] Introduced advanced ERM precompilation mode, called ERM 2.0 and activated via "ZVSE2" first line signature.
+  Main features:
+    - Named local variables to write human readable code instead of cryptic one.
+      Example: !!HE-1:C0/0/?(monType:y)/?(monNum:y) instead of !!HE-1:C0/0/?y23/?y24;
+
+    - Global named constants instead of magic numbers to write self-explaining code:
+      Example: !?FU(OnKeyPressed)&x1=(KEY_1) instead of !?FU(OnKeyPressed)&x1=49; what is 49???
+
+    - Strict distinguishing naming for functions, local variables and constants. No way to mix up.
+      Example: thisIsVariable, THIS_IS_CONSTANT, ThisIsFunction and era_ThisIsFunctionAgain.
+
+  ==== Named global constants ====
+  Constant is named value, that is defined once and never changes. Like 13 (Archangel monster type).
+  Constant can be used anywere, where numbers can be used. Era currently supports only integer numeric
+  constants, written in all capitals: (MON_ARCHANGEL), (OBJ_MINE), (PLAYER_RED).
+  Allowed characters are: [A-Z0-9_].
+  To define a constant use the following instruction !#DC(CONSTANT_NAME) = 777; where 777 is arbitrary number.
+  Examples:
+  !#DC(PLAYER_BLUE)     = 1;
+  !#DC(SKILL_FIRST_AID) = 27;
+
+  To use a constant simply write its name in parentheses:
+  !!OW:R(CURRENT_PLAYER)/(RES_GOLD)/d1000; give 1000 gold to current player
+
+  will be compiled to
+
+  !!OW:R-1/6/d1000; give 1000 gold to current player
+
+  --- Naming ---
+  Scripts writers must use unique prefix before constant names to prevent names collisions. Any constants without prefix
+  may be added to ERA in the future and break your script.
+  Example:
+  ; for mod Battle Heroes let's use prefix "BH_"
+  !#DC(BH_ART_RING_OF_POWER) = 160;
+
+  !#DC(BH_CLASS_WARRIOR) = 1;
+  !#DC(BH_CLASS_MAGE)    = 2;
+  !#DC(BH_CLASS_RANGER)  = 3;
+
+  --- Globality ---
+  Constants are global. It means, that one script can use constants of another script. To ensure, that your constants
+  are always loaded before other scripts, place them in the script with high priority (ex. "1000 - phoenix consts.erm").
+
+  --- Standard constants ---
+  ERA provides file "1000 - era consts.erm" with many predefined constants, covering most values, mentioned in ERM help.
+  Look through it before defining your own constant for secondary skill, monster or player color.
+
+
+  ==== Named local variables ====
+  Each ERM trigger (!?XX before next !?XX) can now declare and use own named local variables, allocated from
+  x1..x16, y1..y100, z-1..z-10, e1..e100 sets.
+  Named variables are replaced with regular variables during scripts compilation and do not influence the performance at all.
+  Example: (day) may be compiled to y5;
+
+  --- Naming ---
+  Names of variables must be in so called "camelCase" and contain only [a-zA-Z0-9] characters. They must be wrapped
+  in parantheses the same way, as function names are wrapped.
+  Example of valid variables: (hero), (monNum), (isAutocombatMode), (specialObject7).
+
+  --- Declaration ---
+  Variables must be declared on the first usage: i.e their type (x, y, z, e, v) and array length (for arrays) must be specified.
+  If you write '[some number]' after variable name, variable will become an array (sequence of variables) with specified length.
+  If you write ':e' after variable name or array length, it will mean, that variable type is "e" (floating point numbers).
+
+  Examples:
+  !!HE-1:N?(hero:y); give some y-variable name "hero" and write current hero ID to it
+  !#VA(arts[4]:y);   allocate 4 y-variables with sequential indexes and name the array "arts"
+
+  !#VA instruction is pseudo-command, that is dropped from final compiled code and that can be used to hold variables declarations.
+  Example:
+  !?FU(acm_Sum);
+  ; The function calculates sum of two numbers
+  !#VA(first:x) (second:x) (result:x); [bind "first" to x1, "second" to x2, "result" to x3]
+  !!VR(result):S(first) +(second);     [calculate result]
+
+  --- Usage ---
+  It's allowed to specify the same type and array length for variables in every variable usage place, but it's not necessary.
+  After you declared variable, there is no more any need to write its type/length.
+  Example:
+  !!HE-1:N?(hero:y);
+  !!HE(hero):K1; kill hero with ID in (hero) variable.
+
+  will be compiled to something like that:
+  !!HE-1:N?y5;
+  !!HEy5:K1;
+
+  --- Arrays ---
+  If you need not a single variable, but sequence of variables, for instance to hold [x, y, l] coordinates of objects,
+  then you need an array. Specify array length in square brackets right after variable name during declaration.
+  !#VA(coords[3]:y); allocate 3 y-variables named 'coords'
+
+  Items or elements of arrays are zero-indexed and can be accessed by direct index.
+  For 3-items array possible indexes are 0, 1, 2.
+  Example:
+  !!CM:P?(coords[0])/?(coords[1])/?(coords[2]);
+
+  will be compiled to something like that:
+  !!CM:P?y50/?y51/?y52;
+
+  If you don't specify array index, the first array element will be used. It means that
+  (test) and (test[0]) have the same sense. Regular variables are considered arrays of length 1.
+
+  --- Negative array indexes ---
+  Negative array index means n-th item from the end. -1 will point to the last item, -2 to the one before the last one and so on.
+  Example:
+  ; allocate array of 10 y-variables and assign the last one value 2000
+  !#VA(array[10]:y);
+  !!VR(array[-1]):S2000;
+
+  will be compiled to something like that:
+  ; allocate y1..y10
+  !!VRy10:S2000;
+
+  --- Releasing local variables ---
+  If you don't need large variable array anymore, but want to declare another big array, then free the previous one.
+  Syntax: !#VA(-variableName); will forget about specified variableName, allowing to reuse indexes, allocated for that variable.
+
+  Example:
+  !#VA(myArts[100]:y); allocate y1..y100 to hold artifact IDs
+  ...;                 use them
+  !#VA(-myArts);       release 'myArts' name and y1..y100 indexes.
+  !#VA(coords[3]:y);   allocate y1..y3 as 'coords' variable
+
+  --- Getting variable address (real index) ---
+  It's often necessary to get real index of variable or even array element. When you want to output "2" instead of
+  y2, use address operator '@'.
+
+  Example:
+  ; Initialize array with 3 artifacts
+  !#VA(arts[3]:y);
+  !!VR(arts):C(ART_SKULL_HELMET)/(ART_HELM_OF_CHAOS)/(ART_DEAD_MANS_BOOTS);
+
+  ; Select one artifact randomly
+  ; same as R0/0/2, generates random number in 0..2 range and assigns it to artPtr variable.
+  !!VR(artPtr:y):R0/(@arts)/(@arts[-1]);
+
+  ; Give artifact to hero
+  !!HE-1:Ay(artPtr);
+
+  will be compiled to something like that:
+
+  !!VRy1:C20/21/56;
+  !!VRy4:R0/0/2;
+  !!HE-1:Ayy4;
+
+  Address operator "@" compiles to real (final) variable index. For instance, for array "test[10]:y" mapped to y50..y59
+  (@test[1]) will compile to "51".
+
+  Example of declaring array of 10 y-variables and initializing all of them with -1.
+  !#VA(monTypes[10]:y);
+
+  !!re i/(@monTypes)/(@monTypes[-1]):; repeat from i = first array index to i = last array index
+    !!VRyi:S-1; set -1 for current array item
+  !!en:;
+
+  In other programming languages variables, holding other variables addresses/indexes are usually called "pointers"
+  and abbreviated as "ptr" or "Ptr". We will rewrite the previous example with named variable in place of quick "i" var
+  just for learning purposes.
+
+  !!re (monTypePtr:y)/(@monTypes)/(@monTypes[-1]):; repeat from (monTypePtr) = first array index to (monTypePtr) = last array index
+    !!VRy(monTypePtr):S-1; set -1 for current array item
+  !!en:;
+
+  --- Naming function arguments ---
+  Indexes for named local variables are allocated starting from the smallest possible value.
+  It means, that we can name even function arguments if we declare them in the same order, as arguments will be passed.
+  Example:
+
+  !?FU(BH_GetHeroSecSkill);
+  !#VA(hero:x) (skill:x) (result:x); now hero = x1, skill = x2, result = x3
+  !!HE(hero):S(skill)/?(result);
+
+  !?FU(...); some event
+  !!FU(BH_GetHeroSecSkill):P(HERO_XERON)/(SKILL_FIRST_AID)/?(xeronFirstAidLevel:y); so what's the level of First Aid skill Xeron has? )
+
+  --- Redeclaration ---
+  If you need to declare variable in both branches of if-then block, specify type/length in both of them.
+
+  !!if&(day)>90:;
+    !!VR(price:y):S(day) *100;
+    ...
+  !!el:;
+    !!VR(price:y):S(day) *(difficultyLevel) +300;
+    ...
+  !!en:;
+
+  --- Reusing same name in other trigger ---
+  Variable names are local to nearest trigger only. New trigger starts with no declared variables.
+  Example:
+
+  !?FU(OnHeroScreenMouseClick);
+  !!CM:F?(flags:y); flags = y1
+
+  !?FU(OnHeroScreenMouseClick);
+  !#VA(flags[23]:e); flags is array, binded to e1..e23
+
+  --- Interpolation ---
+  To substitute local variables in string literals use %(varName) syntax. Example:
+  !!VR(price:y):S600;
+  !!VR(heroName:z):S^Robin Hood^;
+  !!IF:Q2/^Would you like to hire %(heroName) for %(price) gold only?^;
+
+  %y(varName) syntax is also supported and compiles to something like %yy5.
+
+
+  ==== Named functions ====
+  Function names must consist of [A-Za-z0-9_] characters only, start with letter and contain at least
+  single lower case letter (a-z).
+  There are two allowed naming methods:
+  1) Start function with capital letter. (CalcHeroArmyPower), (ShowUpgradeDialog).
+  ERA reserves right to declare prefixless functions, starting with "On" for events. This method is not
+  recommended, due to possible names collisions in different mods. Two mods may declare functions
+  will the same names and thus produce hard to debug bugs.
+
+  2) Start function with any case unique prefix with '_' character. Prefix is usually mod abbreviation.
+  For instance, for "Dwellings Extended" mod the following functions are used:
+  !?FU(dex_SetDwellingSlotByTownType);
+  !?FU(dex_DwellingPopulation);
+  ...
+
+  --- Generating new events ---
+  You can call function, even if it has no handlers. For instance, in Upgrade All Creatures mod you
+  want to allow other scripts to be able to notify, what monster can be upgraded to in particular town.
+  Just call not existing function like !!FU(auc_OnDetermineMonsterUpgrade):P... in your script with all
+  necessary parameters and other scripts will be able to write new event handlers like:
+
+  !?FU(auc_OnDetermineMonsterUpgrade);
+  ...
+
+  --- Passing function as handlers or callbacks ---
+  You can use function as ordinary constant, compiled to number. You can assign it to variable or pass to
+  another function.
+  !!VR(spellHandler:y):S(newmagic_DesintegrationSpellHandler);
+  !!FU(spellHandler):P;
+
+  will compile to something like that
+
+  !!VRy20:S95003;
+  !!FUy20:P;
+
+[+] Added 1000 era - stdlib.erm script, which will contain safe for all extra ERM functionality.
+    Currently !?FU(OnEvenyDay) event is enhanced. Its handlers will receive 5 parameters:
+
+    !?FU(OnEveryDay);
+    !#VA(day:x1) (weekDay:x) (once:x) (owner:x) (isAi:x);
+    !!IF:M^%(day) %(weekDay) %(once) %(owner) %(isAi)^;
+
+[+] Added 1000 era - consts.erm script with lots of constants to be used in ERM 2.0 scripts.
+    ERM Editor, based on Sublime Text, supports constants autocompletion.
+    Remember, that constants without mod name prefix are reserved for ERA.
+    Prefer BH_GOLD_PER_VICTORY to GOLD_PER_VICTORY for Battle Heroes mod, for instance.
+
+[+] Floating point variables (e-variables) are passed to ERM commands as raw 4 bytes value,
+    treated by most commands as integer, which may cause many bugs, unless you know, what you are doing.
+    The exception is !!VR:S command, allowing transparent conversion integer-float. To copy float value,
+    stored in raw format in integer variable to e-variable and vice versa use !!VR:C command. It acts same
+    as VR:S, but without data conversion.
+
+[+] New command !!VR$1:S#2/#3. Convert float to integer using specific rounding mode.
+    $1 - integer variable.
+    #2 - float variable
+    #3 - rounding mode:
+      < 0 for floor operation (round towards negative infinity),
+      0 for normal round (round half away from zero),
+      > 0 for ceil operation (round towards positive infinity).
+
+[+] !!VR: +/-/*/:/% convert both arguments to float if any is float before calculation and convert back
+    to base var type on return.
+    Thus
+    !!VR(koef:e):S25 :10; koef = 2.5
+    !!VR(gold:y):S2 *koef; gold = 5, not 4
+
+[+] New command !!VR$1:~#2
+    Unsets bits #2 in $1 integer variable.
+    Example:
+    !!VR(flags):~17; unset bits/flags 1 + 16 from (flags) variable.
+
+[+] New command !!VR$1:Z#2. Creates trigger local temporary z-variable with given contents and assigns its index to integer variable.
+    $1 - integer variable.
+    #2 - any string.
+
+    The command can be used to create temporal z-variables to change, for example, artifact description,
+    show message and restore description.
+
+[+] ^....^ literal in any ERM command is interpolated and replaced by temporal z-variable index before receiver
+    execution. This z-variable is released right after receiver is executed.
+    Don't use string literals in WoG 3.58 hint/description setting commands, because such descriptions have short life time.
+
+    From now it's possible to pass strings to functions.
+
+    !?FU(ES_Ask);
+    ; Shows question dialog with caption. Returns boolean (1 on success and 0 on failure).
+    !#VA(captionPtr:x) (questionPtr:x) (result:x);
+    !!IF:Q1/^{%z(captionPtr)}
+
+    %z(questionPtr)^;
+    !!VR(result):S0;
+    !!VR(result)&1:S1;
+
+    !?OB(OBJ_TOWN)/(ANY_OBJ);
+    !!FU(ES_Ask):P^Sphinx asks you:^/^Do you really want to die, fighting my guards?^/?(answer:y);
+    !!HE(CURRENT_HERO)&(answer)=1:K1; let him die )))
+
+[+] Only regular ERT variables are interpolated automatically.
+    Regular z-variables and temporal ert variables are not interpolated in receivers.
+    It means, that !!VRz2:S^%%y5^; z2 is now really "%y5"
+
+    Previously interpolation would be performed again and again recursively, converting %y5 into y5 value like 0.
+    and even later using z2 in any command would run interpolation again.
+
+    !!IF:M1/z2; will display "%y5", not y5 value.
+
+[+] New VR$1:R/T syntax: 0/min/max - generates random value in given range and assignes it to $1 integer variable.
+[+] VR:R/T now both support syntaxes with 1/2/3 arguments.
+[+] VR:T uses Mersenne Twister qualitive generator, but it's not synchronized in multiplayer.
+[+] VR:M1. -1 as length means "till string end".
+
+[+] VR:M2 does not store token index in global variable anymore. Token index, that was ignored earlier, works now as expected.
+   Token delimiters are [#1..#31, ' ', ',', '.']. Don't use for huge text, because performance is O(n^2), where n is tokens number.
+
+[+] VR:M3 Base/radix is enforced to be in 2..16 range.
+
+[+] ERM interpolation (expanding variables starting with % in string literals ^...^ and ERT strings) was fully rewritten.
+    Upper case registry for old ERM variables is supported, but deprecated.
+    %X1 is good, but %x1 is better.
+
+    All new s^...^, i^...^ and named local variables are supported.
+    Indirect references is supported.
+
+    %s(named global variable)
+    %i(named global variable)
+    %xy7
+    %zi^named global variable^
+    %z(namedLocalVar)
+    %(namedLocalVar)
+
+    Quick vars are supported:
+    %i %g %k
+
+    Interpolation of %Vf...t is the same as in WoG 3.58, but %vf...t means real v-indexing
+    %vi means v-var with i-index.
+    %f means quick 'f' var.
+    %i means quick 'i' var.
+
+    %F5 means flag 5
+    %Fx16 means flag with x16 index
+
+    Function IDs and constants can be interpolated in the same way, as named local variables:
+    %(CONST_NAME), %(era_FuncName), %(money), %y(moneyPtr)
+
+[+] IF:M# now works with any string
+[+] IF:N1/# now works with any string, not z1 only.
+[+] IF:N# now works with any string.
+[+] BA:B now can work with any string and integer.
+
+[+] Call SN:F^GenerateDebugInfo^ to generate Debug directory contents, the same way as F11 does.
+
+[+] Exported "NameTrigger" function (void NameTrigger(int TriggerId, const char* Name)), allowing plugins to
+    give name to any ERM trigger, which can be used in ERM like !?FU(OnYourNewEvent).
+
+[+] Updated "wog native dialogs" plugin by igrik. From now it's possible to select item in message dialogs
+    using mouse double click.
+
+[+] s^...^, ^...^, i^...^ can now be freely used in conditions.
+
+[+] New d-modifiers (d~, d%, d|, d&, d<<, d>>) work with all receivers.
+
+[+] Rewritten ert-strings storage implementation. Removed limit on 50000 strings. Increased add/delete operations
+    performance (from linear search to binary tree search). Savegames format was changed.
+
+[+] Added VR:C alternative for SN:M arrays. New command !!SN:V#1/#2/$3...up to $21 allows to set/check/get/modify
+    many items of dynamic array (working with Vector).
+    #1 - SN:M array ID.
+    #2 - starting index
+    $3... - items at starting index, starting index + 1, starting index + 2, etc.
+
+[+] Added new command !!VR:R0/#min/#max, generating random value in specified range and assigning its to variable.
+    Example: !!VRy1:R0/100/300; set y1 to random value in 100..300 range
+
+[*] The following exported functions now return 4-bytes LONGBOOL value, 0 for false, -1 (0xFFFFFFFF) for true.
+    "ReadStrFromIni", "WriteStrToIni", "SaveIni", "PatchExists", "PluginExists", "Ask".
+
+[+] Added "1000 - era consts.erm" script to WoG mod with standard Era constants, including players,
+    player bits, heroes, resources, objects, monsters, artifacts, spells. The file contents may be corrected
+    and widened in the future. All constants were registered in Erm Editor, based on Sublime Text.
+
+[+] Added "1000 - era stdlib.erm" script with universal ERM functions and events. Currently "OnEveryDay"
+    event is enhanced with the following x-arguments: day, week day, once(0..1), owner (color), isAi (0..1).
+
+[*] Fixed WoG bug with tactics detection on the very first round. Do not use BU:R in !?BR or !?FU(OnCombatRound) for zero round,
+    because a few structures are not initialized at this moment and random crash may occur. First round code was moved after
+    combat theme initialization and tactics popup message appearance.
+
+[+] All *.ers files are loaded without name/quantity constraints. Previously only script00.ers..script99.ers were processed.
+
+[+] HE:P command behavior was fixed. Teleport function with sound is called only if any coordinate
+    was really changed. Advanced d-modifiers are supported for the first three parameters.
+
+[+] HE:C0 command was rewritten.
+    -1 and -2 values for creature type are not treated as "upgrade"/"degrade" anymore. Command supports any d-modifiers now.
+    Exp. modifier parameter is now SET-only. Previosly !!HE:C0/0/?y1/?y2/d5000/2 would not increase slot experience.
+    In fact, any GET syntax used to make ERM engine ignore stack experience at all. This bug was fixed.
+    Creature Type < 0 or Number <= 0 will be normalized to Type -1, Number 0 automatically.
+    Note, that in all cases the returned stack experience value is the one before applying any changes.
+
+[+] Rewritten HE:X command to accept any number of parameters and understand any d-modifiers.
+    Example: !!HE-1:X0/27 Xd1; become master of gold dragons
+
+[+] Introduces many new d-modifiers for all ERM commands, except for GE:E/N, LE:E/N.
+    d+# - integer addition
+    d-# - integer substraction
+    d*# - integer multiplication
+    d:# - integer division
+    d|# sets bits from # (bitwise OR operation)
+    d& leaves only # bits, if any (bitwise AND operation)
+    d~ unsets bits, specified in #. d~17 unsets bits 1 and 16
+    d%# calculates division modulo. 10%4 = 2, for instance.
+    d<<# shifts original value bits to the left by # positions (bitwise logical shift left).
+    d>># shifts original value bits to the right by # positions (bitwise logical shift right).
+
+[+] Function parameters (FU:P, DO:P), which were passed using GET-syntax, are now initialized with
+    original variable value. The behavior is similar to pass-by-reference in other programming languages.
+    Example:
+    !?FU(Add3):;
+    ; (value:x)
+    !!VR(value:x):+3;
+
+    !?CM0;
+    !!VR(numHeads:y):S10;
+    !!FU(Add3):P?(numHeads:y); 10 is passed to function as the first argument, 13 is result
+
+[+] Enhanced !!RD:I with new named parameters syntax.
+    !!RD:I^parameter name^/?$parameter_value;
+    ============================== Featured parameters: ==============================
+    ^dlgId^        - Unique recruit dialog ID. Used to distinguish between nested dialogs (yep, it's possible). Reusable.
+    ^townId^       - ID of town, for which dialog is opened or -1.
+    ^dwellingId^   - ID of town dwelling, for which dialog is opened or -1. 0..6 non upgraded, 7..13 for upgraded.
+                     Horde buildings (+X population) are treated as dwellings, they influence.
+    ^slot^         - Active logical slot index.
+    ^cost^         - Cost of single monster in current slot in gold.
+    ^resource^     - Special resource for monster in current slot.
+    ^resourceCost^ - Cost of single monster in current slot in special resource.
+    ^quantity^     - Number of monsters, currently selected for recruitment.
+    ^maxQuantity^  - Maximal number of monsters, the player can afford.
+
+    Example:
+    !?FU(OnRecruitDlgMouseClick);
+    !!RD:I^dlgId^/?(dlgId:y) I^townId^/?(townId:y) I^dwellingId^/?(dwellingId:y) I^slot^/?(slot:y) I^cost^/?(cost:y);
+    !!RD:I^resource^/?(resource:y) I^resourceCost^/?(resourceCost:y) I^quantity^/?(quantity:y) I^maxQuantity^/?(maxQuantity:y);
+    !!IF:M^(dlgId:y) (townId:y) (dwellingId:y) (slot:y) (cost:y) (resource:y) (resourceCost:y) (quantity:y) (maxQuantity:y)^;
+
+[+] Enhanced !!UN:C command. It supports all d-modifiers now. New syntax with offset from address is available:
+    !!UN:C#addr/#offset/#size/$value;
+    Era always calls GetRealAddr for #addr, thus !!UN:C supports all extended/relocated game structures.
+
+[+] WoG interface and WoG campaigns were extracted to appropriate standalone mods. ERA is now mostly Vanilla game with
+    enhanced ERM engine and other modding capabilities.
+
+[+] Added !!BM:Z?$addr command to get battle stack structure address.
+[+] Added !!HE:Z?$addr command to get hero structure address.
+[+] Introduced ERM 2.0 support for scripts, beginning with 'ZVSE2'.
+[+] Doubled stack size for h3era.exe executable to allow trigger depth level up to 150, but better avoid such depth.
+
+[+] WoG Campaign editor loads resources from hmm35wog.pac and uses virtual file system. No more Campaign Fix required.
+[+] Added extended resources redirection support with wav/bik/smk files, including missing resources redirection.
+
+[+] Added new plugins events "OnAfterLoadLods", occured right after lods/pacs are loaded and "OnAfterLoadMedia", occured
+    when lod/pacs/snd/vids are loaded.
+
+[*] ERA is recommended to be installed over Heroes 3 Complete only. Removed resources, which are already present in Complete lods.
+
+[-] Restored functionality of Data\Redirections\Missing\*.json files, which are used to setup redirections
+    for missing resources only.
+
+[+] ERM quick vars (f..t) are now local to triggers. Use them safely.
+
+[+] Update ERM Editor.
+[+] Rewritten core of ERM engine. Greatly improved old macro support ($macronam$). Just for perfection.
+
+[+] Extracted WoG campaigns into standalone mod, which was removed from Era installer package.
+
+[+] "remove exe protection.bin" was applied to h3era.exe and removed as patch.
+
+[+] Many resources and features were extracted from WoG mod into separate mods: Animated Object Flags, Animated Trees,
+    No Prebattle Music, Secondary Skills Scrolling, Quick Savings, Fast Battle Animation, Improved Battle Decorations,
+    WoG Interface, WoG Campaigns, Yona.
+
+[+] Added new event "OnDetermineMonInfoDlgUpgrade", occured, when game determines wether to show upgrade button
+    in monster info dialog. Parameters: MonType, UpgradedType or -1, Town ID or -1, Hero ID or -1.
+    -1 for UpgradedType means no upgrade button (because of wrong town type or appropriate building being not built, or monster having no upgrade).
+    You can change this value to allow universal Jelu-like behavior or any upgrade system.
+    Example:
+
+    ZVSE2
+
+    !?FU(OnDetermineMonInfoDlgUpgrade);
+    !#VA(monType:x) (upgType:x) (town:x) (hero:x);
+    !!VR(upgType):S(MON_GOLD_DRAGON); allow upgrade anything into Gold Dragons
+
+[+] SN/RD/MP receivers now support indexed parameters like vy6 or zi^myIndex^.
+
+[+] SN:D may be used now in battle, being equal to BU:R.
+
+[+] Added support for trigger local dynamic arrays. !!SN:M-1/#/#/-1 will allocate new dynamic array
+    with ID, that will be automatically released after current trigger is exited. Thus no
+    corresponding !!SN:M# is necessary to release this temporary array. It can be used, for instance,
+    for large calculations or to pass string arguments to function.
+
+    Example:
+    !?FU(OnAdventureMapRightMouseClick);
+    !!SN:M-1/4/1/-1;        [allocate 4 strings array (-1 = auto ID, 4 = 4 items, 1 = of string type, -1 = local to current trigger)]
+    !!VR(dlgStrings:y):Sv1; [save array ID]
+
+    ; Setup strings
+    !!SN:M(dlgStrings)/0/^Select commander bonus:^;
+    !!SN:M(dlgStrings)/1/^1) Attack^;
+    !!SN:M(dlgStrings)/2/^2) Speed^;
+    !!SN:M(dlgStrings)/3/^3) Health^;
+
+    !!FU(PM_ShowDialog):P(dlgStrings); [pass 4 string to dialog showing function]
+    ; here array with (dlgStrings) ID will be automatically freed, same as SN:M(dlgStrings);
+
+    !?FU(PM_ShowDialog);
+    ; (dlgStrings:x) - dynamic array of 4 strings
+    ; (items[3]:z)
+    !!SN:M(dlgStrings)/0/?(caption:z);
+    !!SN:M(dlgStrings)/1/?(items[0]);
+    !!SN:M(dlgStrings)/2/?(items[1]);
+    !!SN:M(dlgStrings)/3/?(items[2]);
+    !!IF:M^{(caption)}
+    (items[0])
+    (items[1])
+    (items[2])^;
+
+[-] Fixed memory leakage in SN:M dynamic arrays deallocation and a few other places.

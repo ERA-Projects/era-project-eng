@@ -1,0 +1,19 @@
+{
+    "name": "bers/scripts-to-era260",
+    "description": "Converts old-school ERM scripts to era 2.6x scripts with named functions and labels",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Berserker",
+            "email": "ethernidee@yandex.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "B\\": "D:\\Soft\\Programming\\PHP\\Projects\\B\\B\\src\\"
+        }
+    }
+}

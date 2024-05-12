@@ -1,0 +1,383 @@
+ZVSE2
+
+** ENHANCED WAR MACHINES  -  ERM script 55
+
+** By Arstahd
+** Version: 1.11   updated October 25, 2004
+** Special thanks to Fnord for help with bug fixing and script maintenance
+** Version: 2.0   updated December , 2021 by @daemon_n
+** Updated Apr 2023 by Archer30
+
+** rebalances and improves war machines
+
+** ballista base damage doubled
+** first aid tent now resurrects [(1-25) x (first aid skill +1) + defense skill] worth of troops after normal healing
+** no more than 1 extra Ballista/First Aid tent can appear on battlefield (from commanders, etc...)
+** ammo cart gives +10 movement points per step
+** all war machines cost 1000 gold
+** first aid tent has 150 health
+** ammo cart has 150 health
+** heroes with Ballistics skill can use them during normal combat, siege combat use is unchanged
+**   number of catapults equals Ballistics skill level
+**   catapults can now target creatures
+**   catapults deal 5 - (10 + Att + Def) damage
+**   catapults can inflict a "critical hit" which slays one unit (chance = hero level x catapults - capped at 75%)
+**   catapults have 250 health
+**   catapults have no range penalty
+**   catapults ignore 50% of enemy defense
+
+
+
+** Variables used:
+** Z variables:    z790-z791
+** Functions used: 7120-7126
+** Flags Used:     79  74(from S-50)
+
+
+!#UN:P(WOG_OPT_ENHANCED_WAR_MACHINES_II)/?i^wog_55_enabled^; [check if Enhanced Warmachines is enabled in WoGify Options]
+
+!?FU(OnAfterErmInstructions)&i^wog_55_enabled^;
+!!MA:M(MON_BALLISTA)/4 E(MON_BALLISTA)/6 C(MON_BALLISTA)/(RES_GOLD)/1000; [Ballista Dam Low 4/ Dam High 6/ Cost 1000]
+!!MA:P(MON_FIRST_AID_TENT)/150 C(MON_FIRST_AID_TENT)/(RES_GOLD)/1000; [First Aid Tent HP 150/ Cost 1000]
+!!MA:P(MON_AMMO_CART)/150 C(MON_AMMO_CART)/(RES_GOLD)/1000; [Ammo Cart HP 150/Cost 1000]
+
+!!SN:H^monname^/(MON_CATAPULT)/0/?(single:z) H^monname^/(MON_CATAPULT)/1/?(plural:z);
+!!SN:H^monname^/(MON_NOT_USED_2)/0/(single) H^monname^/(MON_NOT_USED_2)/1/(plural);
+
+; Set up flags for Catapult in non-siege
+!!MA:X(MON_NOT_USED_2)/132197 F(MON_NOT_USED_2)/650 C(MON_NOT_USED_2)/(RES_GOLD)/1000; [set NU2 flags {catapult flags (132197) + shooter (4)}    NU2 Fight Value 650  ]
+!!MA:A(MON_NOT_USED_2)/10 D(MON_NOT_USED_2)/10 P(MON_NOT_USED_2)/250 N(MON_NOT_USED_2)/24; [NU2 Attack 10 NU2 Defense 10 NU2 HP 250  NU2 Shots 24]
+
+; creature descriptions
+!!SN:H^monname^/(MON_CATAPULT)/2/z155002 H^monname^/(MON_FIRST_AID_TENT)/2/z155003 H^monname^/(MON_AMMO_CART)/2/z155004;
+
+; Stack exp abilities
+!!UN:P(WOG_OPT_STACK_EXPERIENCE)/?(stackExp:y); [check if creature experience is enabled]
+!!UN:P(WOG_OPT_ENHANCED_MONSTERS)/?(enhancedMon:y); [Check if Enhanced Monsters is enabled in WoGify Options]
+
+!!if&(stackExp)/(enhancedMon);
+  !!EA(MON_NOT_USED_2):O(MON_CATAPULT);
+
+  !!EA(MON_NOT_USED_2):F105/?(availSlot:y); [NU2 (catapult) - get bonus line index]
+  !!EA(MON_NOT_USED_2):B(availSlot)/1/105/61/1/1/1/1/1/1/1/1/1/1/1; [set no range penalty]
+  !!EA(MON_NOT_USED_2):F98/?(availSlot); [NU2 (catapult) - get bonus line index]
+  !!EA(MON_NOT_USED_2):B(availSlot)/1/98/61/50/50/50/50/50/50/50/50/50/50/50; [set ignore defense to 50%]
+!!en;
+
+; Restrain war machine quantity of commanders
+!?FU(WOG_OnNpcPlacesWarMachine)&i^wog_55_enabled^;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-16/4/?(wmAmount:y);
+
+!!if&i^wog_isCBBattle^;
+  !!UN:C(ebp)/-12/4/1;                  [don't allow to summon in CB]
+!!el;
+  !!VR(wmAmount):S1;
+  !!UN:C(ebp)/-16/4/(wmAmount);
+!!en;
+
+!?FU(OnGameEnter)&i^wog_55_enabled^;
+; Set up new commander descriptions for Hierophant and Ogre Leader since they provide only one additional War Machine now
+!!SN:E7827723/(CALLCONV_CDECL)/20/1/42338084;
+!!SN:Bv1/d/z155008;
+!!SN:E7827723/(CALLCONV_CDECL)/25/1/42338084;
+!!SN:Bv1/d/z155009;
+
+; Set up Catapult in non-siege and non-CB battles
+!?FU(OnSetupBattlefield)&i^wog_55_enabled^;
+; Initialise catapult variables
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!VRi^wog_55_catapult_%i^:S(NO_STACK);
+!!en;
+
+; Restore the memory value for Arrow Tower Shoot Adjacent
+!!UN:C4466213/(UNC_INT)/(MON_ARROW_TOWERS);
+!!UN:C4479001/(UNC_INT)/(MON_ARROW_TOWERS);
+
+!!FU(WOG_55_PlaceCatapult)&i^wog_isSiege^<>(TRUE)/i^wog_isCBBattle^<>(TRUE):P(BATTLE_LEFT) P(BATTLE_RIGHT);
+
+; Restrain the quantities of First Aid Tents and Ballistas to max of 2 (1 from War Machine artifact, the other from Commander)
+!?FU(WOG_55_PlaceCatapult);
+!#VA(side:x);
+  
+!!if&i^battle_hero_%(side)^>(NO_HERO);
+  !!HEi^battle_hero_%(side)^:S(SKILL_BALLISTICS)/?(ballisticsLv:y);
+
+  !!if&(ballisticsLv)>(SKILL_NOT_LEARNED);
+    !!if&(side)=(BATTLE_LEFT);
+      !!VR(catPos:y):S119;
+    !!el;
+      !!VR(catPos):S135;
+    !!en;
+
+    !!BU:S(MON_CATAPULT)/(ballisticsLv)/(catPos)/(side)/-1/(FALSE); [add catapults]
+    !!BU:E(catPos)/?(catStack:y);
+
+    !!if&(catStack)>(NO_STACK);
+      !!BM(catStack):T?(type:y);
+
+      !!if&(type)=(MON_CATAPULT);
+        ; Store stack number to be used later after Tactic Phase
+        !!VRi^wog_55_catapult_%(side)^:S(catStack);
+        ; Set up basic stats except for monster type as setting here would conflict with HD fast troop placements
+        !!HEi^battle_hero_%(side)^:F?(att:y)/?(def:y)/d/d;
+        !!VR(maxDamage:y):S(att) +(def) +10;
+        !!BM(catStack):U1/5 U2/(maxDamage) H250 B(ballisticsLv);
+
+        ; Change the memory value of Arrow Tower to Catapult in order to have it shoot adjacent
+        !!UN:C4466213/(UNC_INT)/(MON_NOT_USED_2);
+        !!UN:C4479001/(UNC_INT)/(MON_NOT_USED_2);
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+; Change catapult ID to 124 - Must be after Tactics Phase due to HD mod compatibility
+!?FU(OnAfterTacticsPhase)&i^wog_55_enabled^;
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!BMi^wog_55_catapult_%i^&i^wog_55_catapult_%i^>(NO_STACK):T(MON_NOT_USED_2);
+!!en;
+
+!?FU(OnAfterBattleUniversal)&i^wog_55_enabled^;
+; Restore the memory value for Arrow Tower Shoot Adjacent
+!!UN:C4466213/(UNC_INT)/(MON_ARROW_TOWERS);
+!!UN:C4479001/(UNC_INT)/(MON_ARROW_TOWERS);
+
+!?FU(OnGameLeave)&i^wog_55_enabled^;
+!!UN:C4466213/(UNC_INT)/(MON_ARROW_TOWERS);
+!!UN:C4479001/(UNC_INT)/(MON_ARROW_TOWERS);
+
+-------------------------- B E F O R E   S T A C K    T U R N --------------------------
+!?FU(OnBattleStackObtainsTurn)&i^wog_55_enabled^;
+!#VA(stackSide:x) (stackInd:x);
+
+  !!BMi^battle_current_stack^:T?(monType:y);
+
+  ; First Aid Tent - Set up Heal Power
+  !!if&(monType)=(MON_FIRST_AID_TENT);
+    !!FU(WOG_55_BattleFunc_CheckForDamagedStacks):P(stackSide)/?(damagedStacks:y);/?(damagedMachines:y);
+    !!VRi^WOG_55_Battle_HealPower^:S0;
+
+    !!if&(damagedStacks)>(FALSE);
+      !!if&i^battle_hero_%(stackSide)^>(NO_HERO);
+        !!HEi^battle_hero_%(stackSide)^:S(SKILL_FIRST_AID)/?(skillLvL:y) Fd/?(defense:y)/d/d; [store hero's first aid skill]
+      !!el;
+        !!VR(skillLvL:y):S(SKILL_NOT_LEARNED);
+      !!en;
+
+      !!VR(skillLvL):+1;
+      !!FU(WOG_GetMaxPrimarySkillValue):P?(maxDefense:y);
+      !!VR(defense)&(defense)>(maxDefense):S0;
+
+      !!BMi^battle_current_stack^:N?(tentsAmount:y); 
+
+      !!re i/1/(tentsAmount);
+        !!VR(healPower:y):S1 R24 *(skillLvL) +(defense); [set healing: 1-25 x (first aid skill +1) +defense x # of tents]
+        !!VRi^WOG_55_Battle_HealPower^:+(healPower);
+      !!en;
+    !!en;
+  !!en;
+
+!?FU(WOG_55_BattleFunc_CheckForDamagedStacks);
+!#VA(side:x) (damagedStack:x) (isMachine:x);
+
+  !!VR(damagedStack):S0;                [assume we have no damaged stacks]
+  !!VR(isMachine):S0;
+  !!VR(firstStack:y):S(side) *(BATTLE_STACKS_PER_SIDE);
+  !!VR(lastStack:y):S(firstStack) +(BATTLE_STACKS_PER_SIDE) -1;
+
+
+  !!re i/(firstStack)/(lastStack);
+    !!BMi:L?(hpLost:y) B?(initNum:y) N?(num:y); F?f; H130;
+
+    !!if&(num);
+      !!if&(initNum)>(num)|(hpLost);
+        !!VR(damagedStack):+1;
+
+        !!br;
+        *!VRf:&(MON_FLAG_SIEGE_WEAPON);
+        *!VR(isMachine)&f:+1;
+      !!en;
+    !!en;
+  !!en;
+
+; Critical hit for Catapult in non-siege and non-CB battles
+** start of pre-damage trigger
+!?FU(OnStackToStackDamage)&i^wog_55_enabled^/i^wog_isSiege^<>(TRUE)/x7/x9=0; [x7 = shot, x9 = 0.. only for real damage]
+!#VA(attacker:x) (defender:x);
+
+  !!BM(attacker):T?(monType:y);
+
+  !!if&(monType)=(MON_NOT_USED_2);
+    !!BM(defender):N?(defNum:y);
+
+    !!if&(defNum)>1;                    [Works only when the defending number is greater than 1]
+      !!BM(attacker):N?(catNum:y);
+      
+
+      !!VR(random:y):R0/0/99;           [random roll - 1% chance per level]
+
+      !!HEi^battle_hero_%i(battle_acting_side)^:Ed/?(heroLvl:y)/1;
+      !!VR(chance:y):S(heroLvl) *(catNum) :2 F0/74; [multiply level by catapults and divide by 2, capped at 75%]
+
+      !!if&(random)<=(chance);
+        !!BM(defender):Nd-1;            [show animation, set target quantity and reduce target quantity by 1]
+
+        !!if&i^battle_isVisible^;
+          !!VR(logMsg:z):Sz155007;
+          !!MM:S(logMsg);
+          !!BM(defender):V82;
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+** end of pre-damage trigger **
+
+
+** start of movement trigger
+!?FU(OnHeroMove)&i^wog_55_enabled^;     [continue if  enabled]
+  !!HE(CURRENT_HERO):P?(x:y)/?(y:y)/?(z:y); [get hero's position]
+  !!TR(x)/(y)/(z):T?(terrain:y)/d/d/d/d/d/d/d; [get terrain type]
+
+  !!if&(terrain)<>8;
+    !!HE(CURRENT_HERO):A2/(ART_AMMO_CART)/d/?(isEquipped:y); [if on land check if hero has ammo cart]
+    !!HE(CURRENT_HERO)&(isEquipped):Wd10/1; [if on land add 10 movement if hero has ammo cart/add movement point without redraw screen]
+  !!en;
+** end of movement trigger
+
+
+**** Start of First Aid Tents healing ****
+; Hook to prevent skipping First Aid Tent's turn when there is casualty
+!?FU(WOG_BattleTent_BeforeIterateLoses)&i^wog_55_Battle_HealPower^>0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDI)/4/?(side:y);
+  !!VR(min:y):S(side) *21;
+  !!VR(max:y):S(min) +20;
+  !!VR(minLoses:y):S0;
+
+  !!VR(maxLoses:y):S0;
+  !!VR(stackToHeal:y):S(NO_STACK);
+
+  !!re i/(min)/(max);
+    !!BMi:F?f N?n;
+    !!VR(hasDied:y):Sf &(MON_FLAG_DIED);
+    !!VR(isWM:y):Sf &(MON_FLAG_SIEGE_WEAPON);
+
+    !!if&(hasDied)=0/(isWM)=0/n>0;
+      !!BMi:B?s H?h L?l;
+      !!VR(minLoses:y):Ss -n*h +l Fd/(INT_MAX);
+
+      !!if&(minLoses)>(maxLoses);
+        !!VR(maxLoses):S(minLoses);
+        !!VR(stackToHeal):Si -(min);
+      !!en;
+    !!en;
+  !!en;
+
+  !!if&(stackToHeal)>(NO_STACK);
+    !!SN:X?t/0;
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/-8/4/(stackToHeal);
+    !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4667564;
+  !!en;
+
+; Change cursor to healable when a target is not full comparing with its initial status
+!?FU(OnBattleMouseHint)&i^mouse_battleHex^>=1/i^mouse_battleHex^<=185/i^wog_55_enabled^;
+!!BU:Ei^mouse_battleHex^/?(targetStack:y); check monster position
+!!FU&(targetStack)=(NO_STACK):E; exit if no monster
+!!FU&(targetStack)=i^battle_current_stack^:E;
+
+!!BM(targetStack):T?(targetType:y) I?(stackSide:y);
+!!BMi^battle_current_stack^:T?(currType:y);
+
+!!if&(currType)=(MON_FIRST_AID_TENT)/(targetType)<>(MON_NOT_USED_2)/(stackSide)=i^battle_current_side^;
+  !!if|(targetType)<(MON_CATAPULT)/(targetType)>(MON_ARROW_TOWERS);
+    !!BM(targetStack):L?(lostHp:y) N?(num:y) B?(initNum:y);
+
+    !!UN|(lostHp)>0/(num)<(initNum):R5/2/17;
+  !!en;
+!!en;
+
+; Heal with First Aid Tent mouse click
+!?FU(OnBattleScreenMouseClick)&i^mouse_action^=(MOUSE_LMB_PRESSED)/i^mouse_battleHex^>=1/i^mouse_battleHex^<=185/i^wog_55_Battle_HealPower^>0/i^wog_55_enabled^;
+!!BU:Ei^mouse_battleHex^/?(targetStack:y); check monster position
+!!FU&(targetStack)=(NO_STACK):E; exit if no monster
+!!FU&(targetStack)=i^battle_current_stack^:E;
+
+!!BM(targetStack):T?(targetType:y) I?(stackSide:y);
+!!BMi^battle_current_stack^:T?(currType:y);
+
+!!if&(currType)=(MON_FIRST_AID_TENT)/(targetType)<>(MON_NOT_USED_2)/(stackSide)=i^battle_current_side^;
+  !!FU(WOG_55_FirstAidTentHeals)|(targetType)<(MON_CATAPULT)/(targetType)>(MON_ARROW_TOWERS):P0/(targetStack);
+!!en;
+
+!?FU(WOG_55_FirstAidTentHeals);
+!#VA(mode:x) (targetStack:x);
+
+; Exit if the target is full
+!!BM(targetStack):L?(lostHp:y) N?(num:y) B?(initNum:y);
+!!FU&(lostHp)<=0/(num)>=(initNum):E;
+
+; Exit if the target is not the same side with the tent
+!!BMi^battle_current_stack^:I?(currSide:y);
+!!BM(targetStack):I?(targetSide:y);
+!!FU&(currSide)<>(targetSide):E;
+
+; Heal
+!!CM:R0;
+
+!!BM(targetStack):P?(pos:y);
+!!BG:D(pos) E(targetStack);_
+!!BG:A(BATTLE_ACTION_TENT_HEAL); 
+
+; Hook for actual healing
+!?FU(WOG_BattleTent_PrepareHealing)&i^wog_55_Battle_HealPower^>0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(stack:y);
+  !!FU(WOG_55_BattleFunc_GetStackId):P(stack)/?(stackId:y);
+  !!BM(stackId):L?l;
+
+  !!if&i^wog_55_Battle_HealPower^>l;
+    !!BM(stackId):N?(currNum:y) B?(initNum:y) H?(health:y);
+
+    !!if&(currNum)<=(initNum);          [In some cases, the current number might be bigger than initial number]
+      !!VR(maxHeal:y):S(initNum) -(currNum) *(health) +l;
+
+      !!FU(WOG_55_BattleFunc_CalculateStackHealing):P(stackId)/i^wog_55_Battle_HealPower^/?(hpLost:y)/?(num:y);
+      !!BM(stackId):N(num);
+      !!VRi^wog_55_Battle_HealPower^:F1/(maxHeal);
+
+      !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/i^wog_55_Battle_HealPower^;
+      !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ECX)/4/(hpLost);
+    !!en;
+  !!en;
+
+  !!VRi^wog_55_Battle_HealPower^:S0;
+
+!?FU(WOG_55_BattleFunc_GetStackId);
+!#VA(stack:x) (stackId:x);
+
+  !!UN:C(stack)/244/4/?(side:y) C(stack)/248/4/?(index:y);;
+  !!VR(stackId):S(side)*21 +(index);
+
+!?FU(WOG_55_BattleFunc_CalculateStackHealing);
+!#VA(stack:x) (healPower:x) (hpLost:x) (num:x);
+
+  !!BM(stack):H?(maxHp:y) L?(hpLost) B?(initNum:y) N?(num);
+
+  !!if&(initNum)>(num);
+
+    !!if&(healPower)>(hpLost);
+
+      !!VR(qtyToResurrect:y):S(healPower) +(maxHp) -(hpLost) :(maxHp); -1;
+      !!VR(hpLost):S(healPower) +(maxHp) %(maxHp);
+
+      !!if&(qtyToResurrect);
+        !!VR(num):+(qtyToResurrect);
+        !!VR(num)&(num)>(initNum):S(initNum);
+      !!en;
+    !!el;
+      !!VR(hpLost):-(healPower);
+    !!en;
+
+  !!el;
+    !!VR(hpLost):-(healPower);
+    !!VR(hpLost)&(hpLost)<0:S0;
+  !!en;
+**** End of First Aid Tents healing ****

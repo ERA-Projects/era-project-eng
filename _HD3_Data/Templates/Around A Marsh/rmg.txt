@@ -1,0 +1,31 @@
+Map			Zone																																																																									Connections								
+				Type					Restrictions				Player towns					Neutral towns					Town types									Minimum mines							Mine Density							Terrain									Monsters												Treasure									Zones					Restrictions			
+Name	Minimum Size	Maximum Size	Id	human start	computer start	Treasure	Junction	Base Size	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions	Ownership	Minimum towns	Minimum castles	Town Density	Castle Density	Minimum towns	Minimum castles	Town Density	Castle Density	Towns are of same type	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Elemental	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Wood	Mercury	Ore	Sulfur	Crystal	Gems	Gold	Match to town	Dirt	Sand	Grass	Snow	Swamp	Rough	Cave	Lava	Strength	Match to town	Neutral	Castle	Rampart	Tower	Inferno	Necropolis	Dungeon	Stronghold	Fortress	Forge	Low	High	Density	Low	High	Density	Low	High	Density	Zone 1	Zone 2	Value	Wide	Border Guard	Minimum human positions	Maximum human positions	Minimum total positions	Maximum total positions
+Around A Marsh	16	16	1	x				15	1	4	4	4	1		1								x	x	x	x		x	x			1		1												x									avg		x	x	x	x	x	x	x	x		x	9000	9500	1	3500	5500	3	350	2000	5	1	5	5000			1	4	4	4
+			2	x				15	1	4	4	4	2		1								x	x	x	x		x	x			1		1												x									avg		x	x	x	x	x	x	x	x		x	9000	9500	1	3500	5500	3	350	2000	5	2	6	5000			1	4	4	4
+			3	x				15	1	4	4	4	3		1								x	x	x	x		x	x			1		1												x									avg		x	x	x	x	x	x	x	x		x	9000	9500	1	3500	5500	3	350	2000	5	3	7	5000			1	4	4	4
+			4	x				15	1	4	4	4	4		1								x	x	x	x		x	x			1		1												x									avg		x	x	x	x	x	x	x	x		x	9000	9500	1	3500	5500	3	350	2000	5	4	8	5000			1	4	4	4
+			5			x		15	1	4	4	4						1						x	x	x		x	x		x		1		1												x		x					x	strong		x	x	x	x	x	x	x	x		x	25000	28000	1	6000	9500	7	350	2000	2	5	6	25000			1	4	4	4
+			6			x		15	1	4	4	4						1						x	x	x		x	x		x					1	1										x		x					x	strong		x	x	x	x	x	x	x	x		x	25000	28000	1	6000	9500	7	350	2000	2	6	7	35000			1	4	4	4
+			7			x		15	1	4	4	4						1						x	x	x		x	x		x				1		1										x		x					x	strong		x	x	x	x	x	x	x	x		x	25000	28000	1	6000	9500	7	350	2000	2	7	8	25000			1	4	4	4
+			8			x		15	1	4	4	4						1						x	x	x		x	x		x		1			1											x		x					x	strong		x	x	x	x	x	x	x	x		x	25000	28000	1	6000	9500	7	350	2000	2	5	8	35000			1	4	4	4
+			9			x		15	1	4	4	4																										2													x				strong										x		20000	120000	6	9000	9500	1	800	800	1	5	9	0	x		1	4	4	4
+			10			x		15	1	4	4	4																										2													x				strong										x		20000	120000	6	9000	9500	1	800	800	1	6	10	0	x		1	4	4	4
+			11			x		15	1	4	4	4																										2													x				strong										x		20000	120000	6	9000	9500	1	800	800	1	7	11	0	x		1	4	4	4
+			12			x		15	1	4	4	4																										2													x				strong										x		20000	120000	6	9000	9500	1	800	800	1	8	12	0	x		1	4	4	4
+																																																																												5	9	0	x		1	4	4	4
+																																																																												6	10	0	x		1	4	4	4
+																																																																												7	11	0	x		1	4	4	4
+																																																																												8	12	0	x		1	4	4	4
+																																																																												5	9	0	x		1	4	4	4
+																																																																												6	10	0	x		1	4	4	4
+																																																																												7	11	0	x		1	4	4	4
+																																																																												8	12	0	x		1	4	4	4
+																																																																												9	10	0	x		1	4	4	4
+																																																																												10	11	0	x		1	4	4	4
+																																																																												11	12	0	x		1	4	4	4
+																																																																												12	9	0	x		1	4	4	4
+																																																																												9	10	0	x		1	4	4	4
+																																																																												10	11	0	x		1	4	4	4
+																																																																												11	12	0	x		1	4	4	4
+																																																																												12	9	0	x		1	4	4	4

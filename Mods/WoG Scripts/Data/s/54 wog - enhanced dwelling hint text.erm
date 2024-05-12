@@ -1,0 +1,127 @@
+ZVSE2
+
+** ENHANCED DWELLING HINT TEXT
+** ПОДРОБНЫЕ ОПИСАНИЯ ПО ВНЕШНИМ ЖИЛИЩАМ
+
+** Option 024 by Timothy Pulver
+** Rewritten by igrik (16.10.2020)
+** updated by daemon_n (04.08.2022)
+
+** Special thanks to Berserker!
+
+** This script enhances the information you see when you right-click on a
+** dwelling. If you or an allied player own the dwelling, you'll be shown how
+** many creatures are still available to be hired there. If the dwelling is
+** unowned or owned by another non-allied player, you'll just be shown the
+** standard information.
+
+
+!#DC(WOG_OPT_DWELLING_HINT_TEXT) = 24;
+
+
+!?FU(OnAdventureMapRightMouseClick)&i^key_ctrl^=(FALSE)/i^key_shift^=(FALSE)/i^key_alt^=(FALSE)/i^mouse_action^=(MOUSE_RMB_PRESSED)/i^mouse_item^=37;
+!!UN:P(WOG_OPT_DWELLING_HINT_TEXT)/?(wogOption:y);  
+!!FU&(wogOption)<>(TRUE):E;
+
+; get click coordinates
+!!CM:P?(x:y)/?(y:y)/?(z:y);
+
+; get object params
+!!OB(x)/(y)/(z):T?(objectType:y) U?(dwellingType:y);
+!!OW:C?y99/?(clickedPlayer:y) A(clickedPlayer)/?(activeHero:y);
+!!if&(activeHero)<>(NO_HERO);
+  !!HE(activeHero):P?(hX:y)/?(hY:y)/?(hZ:y);
+  ; exit if click at active hero
+  !!FU&(hX)=(x)/(hY)=(y)/(hZ)=(z):E;
+!!en;
+
+; exit if not a dwelling
+!!FU&(objectType)<>(OBJ_CREATURE_GENERATOR_1)/(objectType)<>(OBJ_CREATURE_GENERATOR_4):E;
+
+; get object entrance coordinates
+!!SN:O?(x)/?(y)/?(z);
+
+; get dwelling owner
+!!DW(x)/(y)/(z):O?(owner:y)/1;
+!!FU&(owner)=(NO_OWNER):E; 
+
+; get me player id
+!!FU(WOG_GameMgr_GetPlayer_Me):P?(mePlayerId:y);
+
+; get my team id
+!!FU(WOG_GameMgr_GetPlayer_Team):P(mePlayerId)/?(myTeam:y);
+
+; get dwelling owner team id
+!!FU(WOG_GameMgr_GetPlayer_Team):P(owner)/?(ownerTeam:y);
+
+; check is this my team dwelling
+!!FU&(myTeam)<>(ownerTeam):E;
+
+; disable standard action
+!!CM:R(FALSE);
+
+; get dwelling name
+!!FU(WOG_GameMgr_GetDwellingName):P(objectType)/(dwellingType);
+!!VR(dwellingName:z):Ss^result^;
+
+; get owner text
+!!FU(WOG_GameMgr_GetObjOwnerStr):P(owner);
+!!VR(ownerText:z):Ss^result^;
+
+; init local vars
+!#VA(msgType[4]:y) (msgMonType[4]:y);
+!!VR(msgType[0]):C(NO_MON)/(NO_MON)/(NO_MON)/(NO_MON); 
+!!VR(msgMonType[0]):C(NO_MON)/(NO_MON)/(NO_MON)/(NO_MON); 
+!!FU(NewIntArray):P8/(NO_PIC_TYPE)/?(monsters:y);
+!!VRf:S0;
+!!VRj:S-1;
+!!re i/0/3/1;
+  !!DW(x)/(y)/(z):Mi/?(monType:y)/?(monCount:y);
+
+  !!if&(monType)<>(NO_MON);
+    !!if&f=0;
+      !!VR(singleMonType:y):S(monType);
+      !!VR(singleMonCount:y):S(monCount);
+    !!en;
+    !!SN:M(monsters)/f/(PIC_TYPE_MONSTER);
+    !!VRf:+1;
+    !!VR(monCount):Sd<<16 |(monType);
+    !!SN:M(monsters)/f/(monCount);
+    !!VRf:+1;
+  !!en;
+!!en;
+
+!!if&f=2;
+
+  !!VRi^wog_DlgAtRmc^:S(TRUE);
+  !!SN:E5577600/(CALLCONV_FASTCALL)/(singleMonType)/?(singleMonCount);
+  !!VRi^wog_DlgAtRmc^:S(FALSE);
+
+!!el;
+  !!FU(PrepareMultiPicDialog):P(monsters);
+  !!IF:N(MSG_TYPE_POPUP)/^{%(dwellingName)}%T(wog.endl)%T(wog.endl)%(ownerText)^;
+!!en;
+
+!?FU(WOG_CreateERMHook);
+!!SN:Ex1/1/6287289/(WOG_BeforeDlgConstruct);
+
+!?FU(WOG_BeforeDlgConstruct)&i^wog_DlgAtRmc^;  [Pinning dialog window to object coordinates ]
+
+!!CM:A?(x:y)/?(y:y);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(xPos:y) C(ebp)/12/4/?(yPos:y)
+C(ebp)/16/4/?(width:y) C(ebp)/20/4/?(height:y);
+
+!!VR(xPos):S(width) :2 -(x:y) *-1 F0/(INT_MAX);
+!!VR(yPos):S(height) :2 -(y:y) *-1 F0/(INT_MAX);
+
+!!UN:C(HD_X)/4/?(gameScreenWidth:y) C(HD_Y)/4/?(gameScreenHeight:y);
+
+!!VR(dlgRb:y):S(xPos) +(width);
+!!if&(dlgRb)>(gameScreenWidth);
+  !!VR(xPos):S(gameScreenWidth)-(width);
+!!en;
+!!VR(dlgBb:y):S(yPos) +(height);
+!!if&(dlgBb)>(gameScreenHeight);
+  !!VR(yPos):S(gameScreenHeight) -(height);
+!!en;
+!!UN:C(ebp)/8/4/(xPos:y) C(ebp)/12/4/(yPos:y);

@@ -1,0 +1,106 @@
+ZVSE2
+
+** Obelisk Runes version 1.0 by Timothy Pulver
+** WoGify Name: script43.erm
+** Updated: September 12, 2004
+** Updated: Oct 2022 by Archer30
+** Updated: Feb 2023 by daemon_n
+
+** This script inscribes a random Adventure Spell on every obelisk. Human played
+** Heroes may cast this spell at no cost when they visit the Obelisk. The AI
+** can only use Fly or Water Walk and gets 10 bonus spell points for any other
+** Obelisk visited instead. Once visited, an Obelisk's spell will remain the
+** same for the rest of the game. Some spells like Summon Boat will usually
+** be useless but may appear anyway. Banned movement spells will not appear on
+** Obelisks.
+
+** PO Numbers used for Obelisk object:
+**  S (spell number)
+--------------------------------------------------------------------------------
+
+!?FU(WOG_43_Initialization);            [Set up Obelisk spells at start of map]
+!!UN:P43/?(wogOption:y);
+!!if&(wogOption);
+  !!FU(NewIntArray):P?(spells:y);
+
+  !!re i/(SPELL_FIRST_ADVENTURE)/(SPELL_LAST_ADVENTURE);
+    !!co&i=(SPELL_SUMMON_BOAT);         [Skip summon boat to simplify calculation (should only have it appear when the location is allow to cast this spell)]
+
+    !!FU(WOG_CHECK_SPELL_BAN):Pi/?(spellBanned:y);
+    !!if&(spellBanned)=(FALSE);
+      !!FU(Array_Push):P(spells:y)/i;
+    !!en;
+  !!en;
+  !!SN:M(spells:y)/?(size:y);
+  !!if&(size);
+    !!VR(maxIndex:y):S(size) -1;
+
+    !!UN:U(OBJ_OBELISK)/(ANY_OBJ)/?(num:y);
+    !!if&(num);
+      !!re i/1/(num);                   [Loop through all obelisks to set spell]
+        !!UN:U(OBJ_OBELISK)/(ANY_OBJ)/i/2;
+        !!VR(random:y):R0/0/(maxIndex);
+        !!SN:M(spells)/(random)/?(spellId:y);
+        !!PO2:S(spellId);
+      !!en;
+    !!el;
+      !!UN:P43/(FALSE);  [; Disable option if there is no adventure spell available]
+    !!en;  
+  !!el;
+    !!UN:P43/(FALSE); [ Disable option if there is no adventure spell available]
+  !!en;  
+!!en;
+
+
+!#FU(WOG_43_Initialization):P;
+
+--------------------------------------------------------------------------------
+!$OB(OBJ_OBELISK);
+!!UN:P43/?(wogOption:y);                          [Check if script is enabled: (wogOption:y)]
+
+!!if&(wogOption:y);
+  
+  !!PO998:S?(spellId:y);                        [Read spell number: (spellId:y)]
+
+  !!if&(spellId:y)>=(SPELL_FIRST_ADVENTURE)/(spellId:y)<=(SPELL_LAST_ADVENTURE);
+     [Ask if player wants to cast the Obelisk spell]
+    !!IF:V2/0;                          [Initialize Flag 2 to False]
+
+    !!if&(ERM_FLAG_IS_HUMAN);
+      !!IF:Q2/(PIC_TYPE_SPELL)/(spellId:y)/(MSG_TYPE_QUESTION)/^%T(wog.43.text)^;
+    !!el;
+      !!IF|(spellId:y)=(SPELL_FLY)/(spellId:y)=(SPELL_WATER_WALK):V2/1; [For AI, say "yes" if it's Fly or Water Walk]
+      !!HE-1&-2:Id10/1;                 [Give AI 10 spell points if it's not Fly or Water Walk]
+    !!en;
+
+    !!FU&-2:E;                          [Exit trigger if player clicks "no"]
+    !!HE-1:I?m/1;                     [Hero's spell points before casting: y-3]
+    !!OW:S1/(spellId:y);                        [Cast adventure map spell for current hero]
+    !!HE-1:Im/1;                      [Restore hero's spell points after casting: y-3]
+  !!en;
+!!en;
+
+--------------------------------------------------------------------------------
+!?FU(OnAdventureMapRightMouseClick);
+!!UN:P43/?(wogOption:y);                          [Check if script is enabled: (wogOption:y)]
+!!FU&(wogOption:y)<>1:E;                          [Exit if script isn't enabled]
+
+!!OBi^mouse_mapX^/i^mouse_mapY^/i^mouse_mapZ^:T?t; [Object clicked: y-4]
+!!FU|t<>(OBJ_OBELISK):E;              [Exit if not an Obelisk or right-click]
+
+!!MTi^mouse_mapX^/i^mouse_mapY^/i^mouse_mapZ^:N?(id:y);
+!!UN:C(GAME_MANAGER)/4/?(gameMgr:y);
+!!VR(obeliskVisitedBitsPtr:y):S(id) +320489 +(gameMgr);
+!!UN:C(obeliskVisitedBitsPtr)/4/?(bitSet:y);
+!!VR(playerBit:y):S1 Sd<<i^timerOwner^;
+!!VR(bitSet:y):&(playerBit:y);
+!!if&(bitSet);
+  !!POi^mouse_mapX^/i^mouse_mapY^/i^mouse_mapZ^:S?(spellId:y); [Spell number for this Obelisk: (spellId:y)]
+
+  !!if&(spellId:y)>=0/(spellId:y)<=(SPELL_LAST_ADVENTURE);
+    !!FU(WOG_GetObjectName):P(OBJ_OBELISK)/?(objName:z);
+    !!IF:Q4/(PIC_TYPE_SPELL)/(spellId:y)/(MSG_TYPE_POPUP)/^%(objName)%T(wog.endl)%T(wog.endl)%T(wog.visited)^;
+    !!CM:R0;                            [Disable standard right-click function]
+  !!en;
+!!en;
+

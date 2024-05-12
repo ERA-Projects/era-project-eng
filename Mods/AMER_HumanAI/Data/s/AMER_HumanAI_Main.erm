@@ -1,0 +1,587 @@
+ZVSE2
+**
+**  Written by Matteo "Ameranth" T. 2022.
+**
+**  Code common to the scripts of Human AI.
+**  --------------------------------------------------
+
+
+**  --------------------------------------------------
+!#VRi^huAI_on^:S(TRUE);                             //For other mods to query if Human AI is loaded.
+!#VRi^huAI_enabled^:S(TRUE);                        //Whether or not Human AI is enabled, useful if another mod wants to toggle human AI on/off.
+
+**  Default settings:
+!#VRi^huAI_liteModeForCustomMaps^:S(TRUE);          //When enabled, the follow options are DISABLED for custom scenarios: huAI_replaceHeroes, huAI_funnelTroops, huAI_improvedArtifactAI.
+!#VRi^huAI_necromancy^:S100;                        //The percent of necromancy to emulate.
+!#VRi^huAI_demonFarm^:S(TRUE);                      //Whether or not AI sacrifices troops to raise demons after combat.
+!#VRi^huAI_recoverLosses^:S100;                     //Whether or not AI recovers most lost troops after combat with other AI.
+!#VRi^huAI_replaceSkills^:S(TRUE);                  //Whether or not to replace AI heroes' "bad" skills with "good" ones.
+!#VRi^huAI_replaceHeroes^:S(TRUE);                  //Whether or not to replace AI's "bad" heroes with "good" ones.
+!#VRi^huAI_hireMoreHeroes^:S7;                      //Hire heroes for AI beyond usual restrictions, up to this amount. AI will reserve one "slot" for hiring leveled heroes.
+!#VRi^huAI_funnelTroops^:S(TRUE);                   //Whether or not to funnel troops from AI's low-level heroes to their two highest-level heroes.
+!#VRi^huAI_funnelTroops_whileVisible^:S(FALSE);     //If huAI_funnelTroops works while AI heroes are visible to a human player.
+!#VRi^huAI_improvedArtifactAI^:S(TRUE);             //Whether or not improved artifact AI is on: artifact funneling, combo assembling, loadout optimization.
+!#VRi^huAI_handicap_goldPerTurn^:S0;                //Gold given to AI players on each of their turns.
+!#VRi^huAI_handicap_resources^:S0;                  //Resources given to AI players on each of their turns. 2x this amount is given as wood/ore.
+!#VRi^huAI_handicap_XP^:S0;                         //Percent of current XP added to each AI hero on their turn. Ex. if set to 100, AI will double their XP each day.
+!#VRi^huAI_handicap_townPortal^:S-1;                //The level that AI heroes will be granted the Town Portal spell for free.
+!#VRi^huAI_handicap_fly^:S-1;                       //The level that AI heroes will be granted the Fly spell for free.
+!#VRi^huAI_handicap_manaRefill^:S2;                 //Whether or not AI heroes' mana is refilled at the end of their turn.
+!#VRi^huAI_handicap_neutralGrowth^:S0;              //Percent of creature's weekly growth that neutral stacks should grow each week. Ex. 200=stacks grow 2x of their growth weekly.
+**  --------------------------------------------------
+
+
+**  --------------------------------------------------
+**  Consts:
+!#DC(HUAI_LOW_LEVEL_CUTOFF) = 10;                   //Used to determine when best hero logic should accept a hero as a best, even if it fails to pass other criteria.
+**  --------------------------------------------------
+
+
+
+**  --------------------------------------------------
+!?FU(OnStartOrLoad);
+    !!FU(huAI_InitHook):P;
+
+!?FU(OnAfterErmInstructions);
+    !!FU(huAI_LoadConfig_FromLegacyIni):P;          //Load legacy ini settings first, they will be overwritten by those in runtime ini if it exists.
+    !!FU(huAI_PostConfig):P;
+**  --------------------------------------------------
+
+
+
+**  --------------------------------------------------
+**  Init hooks. Adapted from WoG Scripts - 80 base.erm.
+!?FU(huAI_InitHook);
+    !!SN:L^erm_hooker.era^/?(hooker:y);
+    !!FU&(hooker)=0:E;
+
+    !!SN:A(hooker)/^SetHook^/?(address:y);
+
+    !!SN:E(address)/1/5008601/(huAI_OnEndOfTurn);   //On end of each player turn. Setting our own hook for this so the mod doesn't depend on wog.
+**  --------------------------------------------------
+
+
+
+**  --------------------------------------------------
+**  Should be called by other mods that set settings in runtime ini, when they are done doing so.
+!?FU(huAI_LoadConfig_FromRuntime);
+    !!FU(LoadIntGlobalsFromJson):P^huAI.settings.^/^huAI_^/^liteModeForCustomMaps^/
+      ^necromancy^/^demonFarm^/^recoverLosses^/^replaceSkills^/^replaceHeroes^/^hireMoreHeroes^/
+      ^funnelTroops^/^funnelTroops_whileVisible^/^improvedArtifactAI^;
+
+    !!FU(LoadIntGlobalsFromJson):P^huAI.settings.^/^huAI_^/^handicap_goldPerTurn^/^handicap_resources^/^handicap_XP^/^handicap_townPortal^/^handicap_fly^/^handicap_manaRefill^/^handicap_neutralGrowth^;
+    
+    !!FU(huAI_PostConfig):P;
+**  --------------------------------------------------
+
+
+
+**  --------------------------------------------------
+**  Legacy .ini support. Ideally the legacy ini would be the same as runtime ini, so that a user could modify their ini manually if they want(?).
+!?FU(huAI_LoadConfig_FromLegacyIni);
+    !!SN:L^era.dll^/?(library:y) A(library)/^ReadStrFromIni^/?(readFromIni:y);
+
+    !!SN:E(readFromIni)/1/^AIRadius^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal:z);
+    !!VR(newAIRadius:y):V(iniKeyVal);
+    !!UN:J4/(newAIRadius);                          //Boost AI radius. Skeptical of whether or not this helps much.
+
+    !!SN:E(readFromIni)/1/^LiteModeForCustomMaps^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_liteModeForCustomMaps^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Necromancy^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_necromancy^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^DemonFarm^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_demonFarm^:V(iniKeyVal);
+    !!if&i^huAI_demonFarm^=(TRUE):;
+        !!MA:I(MON_PIT_FIEND)/?(aiValue:y);
+        !!VR(aiValueAdjust:y):S(aiValue):5;
+        !!VR(aiValue:y):+(aiValueAdjust);
+        !!MA:I(MON_PIT_FIEND)/(aiValue);            //Add +20% to Pit Fiend AI value, so that AI tends to bring them along more and, once upgraded, starts demon farming more consistently.
+    !!en:;
+
+    !!SN:E(readFromIni)/1/^RecoverLosses^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_recoverLosses^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^ReplaceSkills^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_replaceSkills^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^ReplaceHeroes^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_replaceHeroes^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^HireMoreHeroes^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_hireMoreHeroes^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^FunnelTroops^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_funnelTroops^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^FunnelTroops_WhileVisible^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_funnelTroops_whileVisible^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^ImprovedArtifactAI^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_improvedArtifactAI^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Handicap_Gold^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_handicap_goldPerTurn^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Handicap_Resources^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_handicap_resources^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Handicap_XP^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_handicap_XP^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Handicap_TownPortal^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_handicap_townPortal^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Handicap_Fly^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_handicap_fly^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Handicap_ManaRefill^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_handicap_manaRefill^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Handicap_NeutralGrowth^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_handicap_neutralGrowth^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Trade_Resources_for_Gold^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_trade_resources^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Rare_resources_threshold^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_trade_rare_threshold^:V(iniKeyVal);
+
+    !!SN:E(readFromIni)/1/^Wood_ore_resources_threshold^/^Settings^/^AMER_HumanAI.ini^/?(iniKeyVal);
+    !!VRi^huAI_trade_woodore_threshold^:V(iniKeyVal);
+
+**  --------------------------------------------------
+
+
+**  --------------------------------------------------
+**  Any tweaking of settings when config is reloaded.
+!?FU(huAI_PostConfig);
+    !!if&i^huAI_liteModeForCustomMaps^=(TRUE):;
+        !!FU(huAI_GetIsRandomMap):P?(isRandom:y);
+        !!if&(isRandom)=(FALSE):;
+            !!VRi^huAI_replaceHeroes^:S(FALSE);
+            !!VRi^huAI_funnelTroops^:S(FALSE);
+            !!VRi^huAI_improvedArtifactAI^:S(FALSE);
+        !!en:;
+    !!en:;
+**  --------------------------------------------------
+
+
+**  --------------------------------------------------
+!?FU(OnEveryDay)&i^huAI_on^=(TRUE)/i^timerIsAi^=(TRUE);     //Every day for AI
+    !!OW:C?(currentPlayer:y);
+    !!FU(huAI_OrderBestHeroes):P(currentPlayer);
+    !!FU(huAI_dailyAIBestHeroes):P(currentPlayer);          //daily trigger for other script to perform actions with best heroes.
+    
+    
+**  Daily END OF TURN trigger for other scripts to perform actions with best heroes:
+!?FU(huAI_OnEndOfTurn)&i^huAI_on^=(TRUE);
+    !!OW:C?(currentPlayer:y);
+    //!VRi^huAI_playerEndingTurn^:S(currentPlayer);         //Needed for maintaining var for previous player.
+    !!FU(huAI_dailyAIBestHeroes_EndOfTurn)&i^timerIsAi^=(TRUE):P(currentPlayer);
+**  --------------------------------------------------
+
+
+**  --------------------------------------------------
+**  Determine best heroes owned by current player. Store the heroes and their worth in parallel var arrays.
+**  huAI_currentHero_1...x contains player's best(1) to worst(x) heroes.
+**  huAI_currentHero_Worth_1...x contains their "worth," which is determined by stats, level, and specialization.
+**  huAI_currentHero_Count contains the count of current player's heroes.
+!?FU(huAI_OrderBestHeroes);
+    !#VA(currentPlayer:x);
+    
+    !!VRi^huAI_currentHero_Count^:S0;
+    
+    !!FU(huAI_IsBlacklistedPlayer):P(currentPlayer)/?(isPlayerBlacklisted:y);       //Get if player is blacklisted from huAI.
+    !!FU&(isPlayerBlacklisted)=(TRUE):E;                                            //Exit if so.
+    
+    !!OW:H(currentPlayer)/2/0;              //Get count of heroes owned by current player in v2.
+    !!VR(heroCount:y):Sv2;
+    
+    !!FU&(heroCount)<=0:E;                  //Exit if no heroes.
+    
+    //======
+    //Order owned heroes by their worth:
+    !!VR(bestWorth:y):S-1;
+    !!VR(secondBestWorth:y):S-1;
+    
+    !!re i/1/(heroCount):;                  //iterate all heroes of current player. i=iterated hero. 1=first hero index for HE:H
+        !!OW:H(currentPlayer)/2/i;          //Get id of iterated hero in v2.
+        !!VR(loopHero:y):Sv2;
+        !!co&(loopHero)<=(NO_HERO):;        //co if loopHero is invalid, for some reason.
+        !!FU(huAI_GetHeroWorth):P(currentPlayer)/(loopHero)/?(loopHeroWorth:y);
+        
+        !!if&i=1:;
+            !!VRi^huAI_currentHero_%i^:S(loopHero);
+            !!VRi^huAI_currentHero_Worth_%i^:S(loopHeroWorth);
+        !!el:;
+            !!VR(didInsert:y):S(FALSE);
+            !!re j/1/i^huAI_currentHero_Count^:;
+                !!if&(loopHeroWorth)>=i^huAI_currentHero_Worth_%j^:;
+                    //insert new hero at index.
+                    !!FU(huAI_InsertCurrentHero):P(loopHero)/(loopHeroWorth)/j;
+                    !!VR(didInsert:y):S(TRUE);
+                    !!br:;                  //br because spot for new hero was found.
+                !!en:;
+            !!en:;
+            !!if&(didInsert)=(FALSE):;
+                !!VRi^huAI_currentHero_%i^:S(loopHero);
+                !!VRi^huAI_currentHero_Worth_%i^:S(loopHeroWorth);
+            !!en:;
+        !!en:;
+        !!VRi^huAI_currentHero_Count^:Si;
+    !!en:;
+        
+    TEST
+    //!re i/1/i^huAI_currentHero_Count^:;
+        //!VR(testHero:y):Si^huAI_currentHero_%i^;
+        //!HE(testHero):B0/?(heroName:z);
+        //!VR(testWorth:y):Si^huAI_currentHero_Worth_%i^;
+        //!IF:M^%i: %(heroName) is worth %(testWorth).^;
+    //!en:;
+   TEST
+**  --------------------------------------------------
+
+
+    
+**  --------------------------------------------------
+**  Remove heroes from the huAI_currentHero vars when they die.
+**  This is only necessary when an attacking hero loses combat,
+**  since the vars only exist for the current player.
+!?FU(OnAfterBattleUniversal)&i^huAI_on^=(TRUE);
+    !!VR(hero:y):Si^battle_hero_0^;
+    !!HE(hero):O?(owner:y);
+    !!FU&(owner)>-1:E;                          //Exit if attacker did not lose.
+    
+    !!re i/1/i^huAI_currentHero_Count^:;
+        !!co&(hero)<>i^huAI_currentHero_%i^:;   //co until we find which hero in huAI_currentHero this is.
+        
+        !!FU(huAI_RemoveCurrentHero):Pi;        //Remove data associated with the index. Subsequent hero indexes are shifted up.
+        
+        !!br:;                                  //we found it, so br.
+    !!en:;
+**  --------------------------------------------------
+    
+    
+    
+**  --------------------------------------------------
+**  insert a hero into the currentHero array at (index).
+**  Heroes at subsequent indexes are shifted down to make room.
+!?FU(huAI_InsertCurrentHero);
+    !#VA(hero:x);
+    !#VA(worth:x);
+    !#VA(index:x);
+    
+    !!re i/i^huAI_currentHero_Count^/(index)/-1:;             //Loop backward to index to shift indexes down one to make room for new hero.
+        !!VR(newIndex:y):Si+1;
+        !!VRi^huAI_currentHero_%(newIndex)^:Si^huAI_currentHero_%i^;
+        !!VRi^huAI_currentHero_Worth_%(newIndex)^:Si^huAI_currentHero_Worth_%i^;
+    !!en:;
+    !!VRi^huAI_currentHero_%(index)^:S(hero);
+    !!VRi^huAI_currentHero_Worth_%(index)^:S(worth);
+    
+    !!VRi^huAI_currentHero_Count^:+1;
+    
+    
+**  remove a hero into the currentHero array at (index).
+**  Heroes at subsequent indexes are shifted up.
+!?FU(huAI_RemoveCurrentHero);
+    !#VA(index:x);
+    
+    !!VR(index):+1;                                 //Start loop from passed index+1.
+    
+    !!re i/(index)/i^huAI_currentHero_Count^:;      //Loop forward to max count, shifting indexes up.
+        !!VR(newIndex:y):Si-1;
+        !!VRi^huAI_currentHero_%(newIndex)^:Si^huAI_currentHero_%i^;
+        !!VRi^huAI_currentHero_Worth_%(newIndex)^:Si^huAI_currentHero_Worth_%i^;
+    !!en:;
+    
+    !!VRi^huAI_currentHero_Count^:-1;
+**  --------------------------------------------------
+    
+    
+    
+**  --------------------------------------------------
+**  Returns the "worth" of the passed hero for the passed player.
+**  Worth is derived from the hero's XP, base stats, and spec.
+**  We don't consider artifacts/creatures because the point is to
+**  determine which hero is best to put these on.
+!?FU(huAI_GetHeroWorth);
+    !#VA(player:x);
+    !#VA(hero:x);
+    !#VA(returnWorth:x);
+    
+    !!VR(returnWorth):S-1;
+    !!FU&(hero)<=(NO_HERO):E;                   //Exit if hero is invalid, returning -1.
+    
+    !!HE(hero):Ed/?(level:y);                   //Get hero Level.
+    //!if(level)>22:;                           //Hero level is only directly worthwhile as it helps us understand how many secondary skills the hero has. 
+        //!VR(level):S22;                       //However After level 22, the hero should have maxed SS, and therefore level is no longer worth anything.
+    //!en:;                                     //TODO: This logic needs to consider mods that modify SS investment (10 SS, ACM, etc.?).
+    
+    !!FU(huAI_GetSpecMult):P(hero)/?(specWorth:y);                  //Get a multiplier for how valuable the spec is. 
+    !!VR(specMult:e):S(specWorth):100;                              //Convert to intended float.
+    !!VR(levelValue:y):S6*(specMult);                               //Modify the value of levels by the multiplier.
+    
+    !!VR(returnWorth):S(level)*(levelValue);                        //Default return = level worth.
+    
+    //!HE(hero):F?(atk:y)/?(def:y)/?(pwr:y)/?(kno:y)/1;             //Get hero stats without arti bonuses. EDIT: Removed because this does not work for scripted artifact stats.
+    !!FU(GetHeroPrimarySkillsWithoutArts):P(hero)/?(atk:y)/?(def:y)/?(pwr:y)/?(kno:y);      //Get hero stats without arti bonuses. Works for scripted artifact bonuses.
+    !!VR(atk):*3:2;                                                 //AI plays brawls better, so attack and defense are worth more.
+    !!VR(def):*3:2;
+    !!if&(kno)>18:;                                                 //Knowledge is less necessary after getting "enough," so it is worth less after a certain point.
+        !!VR(knoAdjust:y):S(kno)-18;
+        !!VR(knoAdjust)::2;
+        !!VR(kno):-(knoAdjust);
+    !!en:;
+    !!VR(statWorth:y):S(atk)+(def)+(pwr)+(kno);
+    !!VR(returnWorth):+(statWorth);
+**  --------------------------------------------------
+    
+    
+    
+**  --------------------------------------------------
+**  Returns if the passed player should not receive Human AI benefit.
+**  At the moment of writing this is to prevent Tyrant player.
+!?FU(huAI_IsBlacklistedPlayer);
+    !#VA(player:x);
+    !#VA(returnBool:x);
+    
+    !!VR(returnBool):S(FALSE);              //Default return false.
+    
+    !!UN:P770/?(tyrantScriptEnabled:y);     //Is Tyrant enabled.
+    !!if&(tyrantScriptEnabled)=(TRUE):;
+        !!if&i^es_770_tyrantPlayer^>=(PLAYER_RED)/i^es_770_tyrantPlayer^<=(PLAYER_PINK):;   //New Tyrant script uses this var instead of always using Pink.
+            !!VR(returnBool)&(player)=i^es_770_tyrantPlayer^:S(TRUE);
+        !!el
+            !!VR(returnBool)&(player)=(PLAYER_PINK):S(TRUE);                                //If the new Tyrant script var is invalid, default to checking for Pink (old Tyrant version in use?).
+        !!en:;
+    !!en:;
+**  --------------------------------------------------
+
+
+
+**  --------------------------------------------------
+**  All credits to ARCHER for this function.
+!?FU(huAI_GetIsRandomMap);
+    !#VA(result:x);
+
+    !!VR(result):S(FALSE);
+    !!UN:C6919480/4/?(value:y);
+    !!VR(address:y):S(value) +128980;
+    !!UN:C(address)/1/?(value2:y);              [(value2)=114 -> random map]
+    !!VR(result)&(value2)=114:S(TRUE);
+**  --------------------------------------------------
+
+    
+    
+**  --------------------------------------------------
+**  Returns the index of the first human player.
+!?FU(huAI_GetFirstHumanIndex);
+    !#VA(returnPlayer:x);
+    
+    !!re i/(PLAYER_FIRST)/(PLAYER_LAST):;
+        !!OW:Ii/?(isAI:y)/?(isKilled:y);    //Get if looped player is AI/killed.
+        !!if&(isAI)=0/(isKilled)=0:;
+            !!VR(returnPlayer):Si;          //Set return value to loop index.
+            !!br:;                          //Break since we're done.
+        !!en:;
+    !!en:;
+**  --------------------------------------------------
+    
+    
+    
+**  --------------------------------------------------
+**  Returns the index of the previous player.
+!?FU(huAI_GetPrevPlayer);
+    !#VA(returnPlayer:x);
+    
+    !!OW:C?(currentPlayer:y);                           //current player index.
+    !!VR(loopPlayer:y):S(currentPlayer)-1;              //begin iterating index backward.
+    !!VR(loopPlayer)&(loopPlayer)=-1:S(PLAYER_LAST);    //wrap index if negative.
+    
+    !!re i/(loopPlayer)/(currentPlayer)/-1:;            //loop backward until the current player is reached again.
+        !!OW:Ii//?(isKilled:y);                         //Get is player alive.
+        !!if&(isKilled)=0:;
+            !!VR(returnPlayer):Si;                      //If this player is alive, set it as the return value.
+            !!br:;                                      //Break loop since we've found a return player.
+            !!FU:E;
+        !!en:;
+        !!VRi&i=0:S8;   //Loop back to player 8 if we've reached 0 and still have no answer. Set to index 8 instead of 7 because the loop does -1 on the 8 immediately, making it 7.
+    !!en:;
+**  --------------------------------------------------
+    
+    
+    
+**  --------------------------------------------------
+**  Return in x4 the first slot of (monType) or (secondMonType) unit held by (hero).
+!?FU(huAI_GetSlotOfUnit);
+    !#VA(hero:x);
+    !#VA(monType:x);
+    !#VA(secondMonType:x);
+    !#VA(returnSlot:x);
+    
+    !!VR(returnSlot):S-1;
+    
+    !!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST):;
+        !!HE(hero):C0/i/?(loopMonType:y)/?(monCount:y);                     //Get on type in slot and count.
+        !!if|(loopMonType)=(monType)/(loopMonType)=(secondMonType):;        //if this slot matched either unit we wanted.
+            !!VR(returnSlot):Si;                                            //Set return value to the matched slot.
+            !!br:;                                                          //break since we've found the return value.
+        !!en:;
+    !!en:;
+    
+    
+    
+**    Return in x4 the number of (monType) or (secondMonType) unit held by (hero).
+!?FU(huAI_GetCountOfUnit);
+    !#VA(hero:x);
+    !#VA(monType:x);
+    !#VA(secondMonType:x);
+    !#VA(returnCount:x);
+    
+    !!VR(returnCount):S0;
+    
+    !!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST):;
+        !!HE(hero):C0/i/?(loopMonType:y)/?(monCount:y);                     //Get on type in slot and count.
+        !!if&(monCount)>0:;
+            !!if|(loopMonType)=(monType)/(loopMonType)=(secondMonType):;    //if this slot matched either unit we wanted.
+                !!VR(returnCount):+(monCount);
+            !!en:;
+        !!en:;
+    !!en:;
+**  --------------------------------------------------
+    
+
+    
+**--------------------------------------------------
+**  Returns the coords of the passed objType that is closest to hero.
+**  Does not consider objects not on same aboveground/underground as hero.
+**  Does not consider gameplay elements for distance.
+**  x3 returns as -1 if failure to find any object of passed objType.
+!?FU(huAI_GetNearestToHero);
+    !#VA(hero:x);
+    !#VA(objType:x);
+    !#VA(objSubType:x);
+    !#VA(ignoreCBTaken:x);                      //Can set to 1 to ignore creature banks that have already been defeated. Only use with creature banks.
+    !#VA(returnX:x) (returnY:x) (returnZ:x);    //Returns x,y,z.
+    !#VA(returnDistance:x);                     //Returns distance to coords returned.
+    
+    !#VA(x:y) (y:y) (z:y) (heroX:y) (heroY:y) (heroZ:y);
+    
+    !!VR(returnX):S-1;                          //Default -1 to denote failure.
+    !!VR(x):S-1;                                //setting x-coordinate to -1 will force to start search from scratch
+    !!VR(nearestDist:y):S-1;
+    
+    !!HE(hero):O?(owner:y);
+    !!HE(hero):P?(heroX)/?(heroY)/?(heroZ)/d;
+
+    !!re i;     //infinite loop
+        !!UN:U(objType)/(objSubType)/-1/(x)/(y)/(z);    //Get next object. -1=iterate forward.
+        !!br&(x)<0:;                                    //break if nothing found
+        
+        !!co&(z)<>(heroZ):;                             //co if not the same aboveground/underground.
+        
+        !!if&(ignoreCBTaken)=1:;
+            !!CB(x)/(y)/(z):T?(isTaken:y);
+            !!co&(isTaken)=1:;                          //co if (ignoreCBTaken)=1 and this object has been taken.
+        !!en:;
+        
+        !!FU(huAI_GetDistanceToHero):P(hero)/(x)/(y)/?(distance:y);
+        
+        !!if&(nearestDist)=-1:;
+            !!VR(nearestDist):S(distance);
+            !!VR(returnX):S(x);
+            !!VR(returnY):S(y);
+            !!VR(returnZ):S(z);
+            !!VR(returnDistance):S(distance);
+        !!el:;
+            !!if&(distance)<(nearestDist):;
+                !!VR(nearestDist):S(distance);
+                !!VR(returnX):S(x);
+                !!VR(returnY):S(y);
+                !!VR(returnZ):S(z);
+                !!VR(returnDistance):S(distance);
+            !!en:;
+        !!en:;
+    !!en:;
+**  --------------------------------------------------
+    
+
+    
+**  --------------------------------------------------
+**  Just using a taxicab distance because it's faster than a true hypotenouse distance using
+**  pythagorean formula, and I don't need the true distance for my current use. If necessary
+**  it's simple enough to adjust for getting true distance.
+**  Does not consider gameplay elements for distance.
+!?FU(huAI_GetDistanceToHero);
+    !#VA(hero:x);
+    !#VA(x:x);
+    !#VA(y:x);
+    !#VA(returnDistance:x);
+    
+    !!VR(returnDistance):S-1;
+    
+    !!HE(hero):P?(heroX:y)/?(heroY:y)/d/d;
+    !!VR(x):-(heroX);
+    !!VR(x)&(x)<0:*-1;
+    !!VR(y):-(heroY);
+    !!VR(y)&(y)<0:*-1;
+    !!VR(returnDistance):S(x)+(y);
+**  --------------------------------------------------
+    
+    
+    
+**  --------------------------------------------------
+**  Adds to the passed int array, the types of towns owned by player.
+**  Duplicate entries are removed from the array.
+!?FU(huAI_GetOwnedTownTypes);
+    !#VA(player:x);
+    !#VA(returnArray:x);
+    
+    !#VA(x:y) (y:y) (z:y);
+    
+    !!VR(x):S-1;    //setting x-coordinate to -1 will force to start search from scratch
+
+    !!re i;         //infinite loop
+        !!UN:U(OBJ_TOWN)/(ANY_OBJ)/-1/(x)/(y)/(z);      //Get next town. -1=iterate forward.
+        !!br&(x)<0:;                                    //break if nothing found
+        
+        !!CA(x)/(y)/(z):O?(objOwner:y);
+        !!co&(objOwner)<>(player):;                     //Exit if not owned by current player.
+        
+        !!OB(x)/(y)/(z):U?(townType:y);                 //Get town subType.
+        !!FU(Array_Push):P(returnArray)/(townType);
+    !!en:;
+    !!FU(Array_SortedUnique):P(returnArray);            //Remove duplicates.
+**  --------------------------------------------------
+
+
+
+**  --------------------------------------------------
+**  Returns the maximum mana of (hero), by calculating it. This needs to be changed
+**  to support mods that modify maximum mana.
+**  This is a function we should have a better solution for.
+!?FU(huAI_GetMaxMana);
+    !#VA(hero:x);
+    !#VA(returnMaxMana:x);
+    
+    !!HE(hero):Fd/d/d/?(know:y);                            //Get Knowledge
+    !!VR(returnMaxMana):S(know)*10;                         //Base mana from Knowledge.
+    
+    !!HE(hero):S(SKILL_INTELLIGENCE)/?(intel:y);            //Get Intelligence.
+    !!VR(intelBonus:e)&(intel)=(SKILL_NOT_LEARNED):S1;      //If no intelligence, no change to mana.
+    !!VR(intelBonus:e)&(intel)=(SKILL_BASIC):S1:4+1;        //If Basic Int, multiply mana by 1.25.
+    !!VR(intelBonus:e)&(intel)=(SKILL_ADVANCED):S1:2+1;     //If Advanced, multiply by 1.5.
+    !!VR(intelBonus:e)&(intel)>=(SKILL_EXPERT):S2;          //If Expert, multiply by 2.
+    
+    !!HE(hero):X?(specType:y)/?(spec:y)/d/d/d/d/d;          //Get hero specialization. If Intelligence, add +5% per level to intelligence bonus.
+    !!if&(spec)=(SKILL_INTELLIGENCE):;
+        !!HE(hero):Ed/?(heroLevel:y);
+        !!VR(specBonus:y):S(heroLevel):20+1;
+        !!VR(intelBonus):*(specBonus);
+    !!en:;
+    
+    !!VR(returnMaxMana):*(intelBonus);
+**  --------------------------------------------------

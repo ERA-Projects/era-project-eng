@@ -1,0 +1,12 @@
+<snippet>
+  <content><![CDATA[
+!!if&$1;
+  $0
+!!el;
+
+!!en;
+]]></content>
+  <description>IF..ELSE</description>
+  <tabTrigger>ife</tabTrigger>
+  <scope>source.erm - receiver.erm - trigger.erm</scope>
+</snippet>

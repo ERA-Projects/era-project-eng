@@ -1,0 +1,244 @@
+ZVSE2
+
+** MARKET OF TIME
+** РЫНОК ВРЕМЕНИ
+
+** Option 109 by Timothy E. Pulver
+** Rewrite by igrik (20.01.2021)
+
+** All heroes can forget skills they have learned for a cost of 5000 gold.
+** When a hero visits a Market of Time, the player is invited to choose which
+** skill he wants to forget. 
+** The hero must have at least 500 movement points.
+** The hero loses the entire power reserve on this day.
+** (it takes awhile to meditate).
+
+
+!#DC(WOG_OPT_MARKET_OF_TIME) = 109;
+!#DC(OBJ_OPT_MARKET_OF_TIME) = 51;
+!#DC(OPT_MARKET_OF_TIME_MIN_MOVEPOINTS) = 500;
+!#DC(OPT_MARKET_OF_TIME_PRICE_GOLD) = 2000;
+
+;===================================================================================================
+;===================================================================================================
+
+; function for passing through all map objects
+!?FU(WOG_OnIterateAllMapObjects);
+!#VA(x:x) (y:x) (z:x);
+!#VA(objType:x);
+!#VA(objSubtype:x);
+!#VA(isYellowSquare:x); boolean.
+!#VA(isPassable:x);     boolean.
+
+; check: is entry to the object
+!!FU&(isYellowSquare)<>(TRUE):E;
+
+; check option is enabled
+!!UN:P(WOG_OPT_MARKET_OF_TIME)/?(wogOption:y); [Check if Replace Objects is enabled: y21=1 if yes]
+
+!!FU&(wogOption)<>(TRUE):E;
+!!UN:P(WOG_OPT_OBJECTS_REPLACEMENT)/?(wogOption:y); [Check if Replace Objects is enabled: y21=1 if yes]
+!!FU&(wogOption)<>(TRUE):E;
+; init var replacement
+!!VR(replace:y):S(FALSE);
+
+; check objects
+!!VR(replace)&(objType)=(OBJ_MARLETTO_TOWER):S(TRUE);
+!!VR(replace)&(objType)=(OBJ_RALLY_FLAG):S(TRUE);
+!!VR(replace)&(objType)=(OBJ_CREATURE_BANK)/(objSubtype)=2:S(TRUE);
+!!VR(replace)&(objType)=(OBJ_CREATURE_BANK)/(objSubtype)=3:S(TRUE);
+
+; exit if not searchable types
+!!FU&(replace)<>(TRUE):E;
+
+; generate 10% chance
+!!VR(random:y):R0/0/9; 
+!!FU&(random)<>0:E;
+
+; set a new object type
+!!VR(objType):S(OBJ_NEW_WOG_OBJECTS);
+!!VR(objSubtype):S(OBJ_OPT_MARKET_OF_TIME);
+
+; delete current and create a new object
+!!UN:O(x)/(y)/(z)/1/(ERM_REPLACE_NO_REDRAW); 
+!!UN:I(x)/(y)/(z)/(objType)/(objSubtype)/(ERM_REPLACE_NO_REDRAW);
+
+
+;===================================================================================================
+;===================================================================================================
+
+!?FU(OnAfterErmInstructions);
+!!UN:P(WOG_OPT_MARKET_OF_TIME)/?(wogOption:y);  
+!!FU&(wogOption)<>(TRUE):E;
+; creating object hint
+!!SN:T^wog.109.objName^/?(objName:z);
+!!SN:H^object^/(OBJ_NEW_WOG_OBJECTS)/(OBJ_OPT_MARKET_OF_TIME)/(objName);
+
+;===================================================================================================
+;===================================================================================================
+
+; Normal Market of Time
+!?OB(OBJ_NEW_WOG_OBJECTS)/(OBJ_OPT_MARKET_OF_TIME)&(ERM_FLAG_IS_HUMAN);
+!!FU(WOG_109_VisitMarketOfTime):P;
+
+; Market of Time in Titan's Winter
+!?OB(OBJ_BLANK_2)/0&(ERM_FLAG_IS_HUMAN);
+!!FU(WOG_109_VisitMarketOfTime):P;
+
+!?FU(WOG_109_VisitMarketOfTime);
+!!UN:P(WOG_OPT_MARKET_OF_TIME)/?(wogOption:y);  
+!!FU&(wogOption)<>(TRUE):E;
+
+; show title text
+!!SN:T^wog.109.title^/?(title:z)/^gold^/(OPT_MARKET_OF_TIME_PRICE_GOLD);
+!!IF:M(title); 
+
+; get hero params
+!!HE(CURRENT_HERO):N?(heroId:y);
+!!HE(heroId):B0/?(heroName:z) W?(movePoints:y)/1;
+
+; the hero has no movement points 
+!!if&(movePoints)<(OPT_MARKET_OF_TIME_MIN_MOVEPOINTS);
+  !!SN:T^wog.109.noMoves^/?(title);
+  !!IF:M(title);   
+  !!FU:E;
+!!en;
+
+; Main procedure
+; init vars
+!!VR(numMatchedSecSkills:y):S0;
+!!VR(skillLvl:y):S0;
+!!VR(picTemp:y):S0;
+
+; init arrays
+!!FU(NewIntArray):P28/0/?(arraySSkillPic:y);
+!!FU(NewIntArray):P28/-1/?(arrayPicType:y);
+
+; set array skill pictures
+!!re i/(SEC_SKILL_FIRST)/(SEC_SKILL_LAST)/1; 
+  !!HE(heroId):Si/?(skillLvl);
+
+  ; hero have this second skill
+  !!if&(skillLvl)>(SKILL_NOT_LEARNED);
+    ; If Warfare is enabled, show only one skill from the three
+    !!if&i^wog_193_enabled^;
+      !!if&w48=(SKILL_BALLISTICS);
+        !!co|i=(SKILL_ARTILLERY)/i=(SKILL_FIRST_AID);
+      !!el&w48=(SKILL_FIRST_AID);
+        !!co|i=(SKILL_BALLISTICS)/i=(SKILL_ARTILLERY);
+      !!el;
+        !!co|i=(SKILL_BALLISTICS)/i=(SKILL_FIRST_AID);
+      !!en;
+    !!en;
+
+    ; set pic subtype
+    !!VR(picTemp):Si*3 +(skillLvl) +2;
+    !!SN:V(arraySSkillPic)/(numMatchedSecSkills)/(picTemp);
+    ; set picture type
+    !!SN:V(arrayPicType)/(numMatchedSecSkills)/(PIC_TYPE_SEC_SKILL);
+    ; increse numMatchedSecSkills
+    !!VR(numMatchedSecSkills):+1;
+  !!en;
+!!en;
+
+; the hero has no skills: exit
+!!if&(numMatchedSecSkills)<=0;
+  !!SN:T^wog.109.noSkills^/?(title)/^name^/(heroName);
+  !!IF:M(title); show text: hero has no skills
+  !!FU:E;
+!!en;
+
+; first message display
+!!FU(WOG_109_Msg_Show8SSkills):P(arrayPicType)/(arraySSkillPic)/0/?(forgetSkillId:y);
+
+; remove hero skill 
+!!if&(forgetSkillId)<>-1;
+  !!FU(WOG_109_Hero_ForgetSSkill):P(heroId)/(forgetSkillId);
+!!el&(numMatchedSecSkills)>8; if skills more than 8
+  ; second message display
+  !!FU(WOG_109_Msg_Show8SSkills):P(arrayPicType)/(arraySSkillPic)/8/?(forgetSkillId);
+  !!if&(forgetSkillId)<>-1;
+    !!FU(WOG_109_Hero_ForgetSSkill):P(heroId)/(forgetSkillId);
+
+  !!el&(numMatchedSecSkills)>16; if skills more than 16
+    ; third message display
+    !!FU(WOG_109_Msg_Show8SSkills):P(arrayPicType)/(arraySSkillPic)/16/?(forgetSkillId);
+    !!if&(forgetSkillId)<>-1;
+      !!FU(WOG_109_Hero_ForgetSSkill):P(heroId)/(forgetSkillId);
+    !!en;
+  !!en;
+!!en;
+
+;===================================================================================================
+;===================================================================================================
+
+!?FU(WOG_109_Msg_Show8SSkills);
+!#VA(arrayPicType:x);
+!#VA(arrayPicSubType:x);
+!#VA(firstItemId:x);
+!#VA(result:x);  return Secondary skill ID or -1
+
+; init vars
+!#VA(picType[8]:y) (picSubType[8]:y) (pType:y) (pSType:y) (currentItem:y);
+; get pictures: type and subtype
+!!re i/0/7; 
+  !!VR(pType):S(@picType) +i;      
+  !!VR(pSType):S(@picSubType) +i; 
+
+  !!VR(currentItem):S(firstItemId)+i;
+  !!SN:V(arrayPicType)/(currentItem)/?y(pType); 
+  !!SN:V(arrayPicSubType)/(currentItem)/?y(pSType);
+!!en;
+
+; configure message 
+!!IF:N(picType[0])/(picSubType[0])/
+      (picType[1])/(picSubType[1])/
+      (picType[2])/(picSubType[2])/
+      (picType[3])/(picSubType[3])/
+      (picType[4])/(picSubType[4])/
+      (picType[5])/(picSubType[5])/
+      (picType[6])/(picSubType[6])/
+      (picType[7])/(picSubType[7]);
+; show message 
+!!IF:N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/^%T(wog.109.choice)^/?(result);
+
+; if the skill is selected
+!!if&(result)<>-1;
+  ; calculating id of the selected skill
+  !!VR(picture:y):S(@picSubType) +(result);
+  ; return skill id
+  !!VR(result):Sy(picture) -3 :3;
+!!en;
+
+;===================================================================================================
+;===================================================================================================
+
+!?FU(WOG_109_Hero_ForgetSSkill);
+!#VA(heroId:x) (forgetSkillId:x);
+!!HE(heroId):O?(owner:y) S(forgetSkillId)/?(skillLvl:y);
+
+; set picture id
+!!VR(picSubType:y):S(forgetSkillId)*3 +(skillLvl) +2;
+
+; get warning text
+!!SN:T^wog.109.forget^/?(questionText:z)/^gold^/(OPT_MARKET_OF_TIME_PRICE_GOLD);
+!!IF:Q1/(PIC_TYPE_SEC_SKILL)/(picSubType)/(MSG_TYPE_QUESTION)^%(questionText)^;
+
+; if the selection is confirmed
+!!if&1; 
+  !!OW:R(owner)/(RES_GOLD)/?(gold:y);
+
+  ; the player has no money: exit
+  !!if&(gold)<(OPT_MARKET_OF_TIME_PRICE_GOLD);
+    !!SN:T^wog.109.noMoney^/?(noMoney:z);
+    !!IF:M(noMoney);
+    !!FU:E;    
+  !!en;  
+
+  ; forget a skill
+  !!OW:R(owner)/(RES_GOLD)/d-(OPT_MARKET_OF_TIME_PRICE_GOLD);
+  !!HE(heroId):S(forgetSkillId)/(SKILL_NOT_LEARNED);
+  !!HE(heroId):Wd-(OPT_MARKET_OF_TIME_MIN_MOVEPOINTS); 
+!!en;
+
+** End of Script **

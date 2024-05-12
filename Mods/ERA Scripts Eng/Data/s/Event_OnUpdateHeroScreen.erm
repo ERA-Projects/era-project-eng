@@ -1,0 +1,24 @@
+ZVSE
+
+** ver 1.0
+
+!?FU(ES_CreateERMHook);
+!!SN:Ex1/1/5119174/(ES_OnUpdateHeroScreen); // перед обновлением экрана геро€
+
+!?FU(ES_OnUpdateHeroScreen);     // перед обновлением экрана геро€
+; ѕри открытии окна геро€:
+; OnOpenHeroScreen
+; OnLoadHeroScreen
+; OnPreHeroScreen
+; => OnUpdateHeroScreen
+; отображение окна геро€
+;
+; ѕри переключении между геро€ми из окна геро€:
+; OnPostHeroScreen
+; OnLoadHeroScreen
+; OnPreHeroScreen
+; => OnUpdateHeroScreen
+; отображение окна геро€
+!_!IF:M^ES_OnUpdateHeroScreen^;
+
+** end

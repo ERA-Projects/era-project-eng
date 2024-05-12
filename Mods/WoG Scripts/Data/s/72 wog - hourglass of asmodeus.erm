@@ -1,0 +1,286 @@
+ZVSE2
+
+** Hourglass of Asmodeus ERM Script Version 1.5 created by Timothy Pulver
+** WoGify Name: script06.erm
+** Updated: August 24, 2004
+** Rewritten by Archer30 on Jun 2022
+
+** This script adds a new ability to the Hourglass of the Evil Hour artifact.
+** Any hero who has this artifact equipped prior to a battle in which he or
+** she is the *Attacker* will be given the opportunity to summon the Demon
+** Lord Asmodeus to fight the battle instead. If the player is the defender in
+** a combat, no option to summon Asmodeus will be given.
+
+** Asmodeus fights the battle (under the player's control) but with the hero's
+** troops. He possesses good primary abilities (starting at 13) and knows
+** useful secondary skills like Expert Wisdom, Expert Sorcery and Expert Fire
+** Magic. He has several powerful fire spells at his disposal.
+
+** If Asmodeus loses the battle, the hero is *not* lost, but will remain on the
+** map with 3 lowly imps (a gift from Asmodeus). If Asmodeus *flees* the
+** battle, the summoning hero will keep the remaining army.
+
+** If Asmodeus wins the battle, the hero will not gain experience and will not
+** get the artifacts of the hero beaten (Asmodeus may claim these instead).
+** Asmodeus' primary abilities will ALL increase by 1 for each combat won.
+
+** After the battle, Asmodeus takes part of the hero's soul as payment. This
+** results in the hero losing 1 point of Power permanently. However, if the
+** hero is down to only 1 Power, Asmodeus steals the Hourglass and sends
+** three devils to attack the hero soul instead.
+
+** Important Note: the extension hero Xeron (#155) should not appear in the
+** map as this hero is used for Asmodeus (but with Calh's portrait). If Xeron
+** isn't available, the script will instead try to use Kilgor or Roland. If
+** none are available, the script will be disabled.
+
+** Version 1.1 fixes some bugs that allowed Asmodeus to be hired in a tavern
+** after retreating from or being used a combat. It also makes minor message
+** box changes and expands the right-click artifact information to explain
+** the new demon summoning power.
+
+** Version 1.2 adds code to work with the new WoGify Options screen.
+** Version 1.3 fixes several bugs.
+** Version 1.4 fixes some more bugs.
+** Version 1.5 makes some changes to work with 3.58 updates.
+** Version 2.0 rewrites the whole script with ERM 2.
+
+Flags Used in this Script: 1-2, 266-271
+Variables used in this Script: v275, v4600, z266-268
+Macro Names used in this Script: $rpower$, $aname$, $hrname$, $hisher$
+
+----------------------------------------------------------------------------------------
+
+[Set up Macros]
+!#MCv275:S@rpower@; [hero's true Power after reduction by Asmodeus]
+
+!#MCz266:S@aname@; [stores Asmodeus' name]
+!#MCz267:S@hrname@; [stores summoning hero's name]
+!#MCz268:S@hisher@; [stores "his" or "her" depending on summoning hero's sex]
+
+--------------------------------------------------------------------------------------------------------------------
+
+[Instruction trigger]
+; This script must be executed earlier than 53 map options - extention heroes!
+!?FU(WOG_106_Initialization);
+!!VRi^wog_106_Asmodeus^:S(NO_HERO);
+
+!!UN:P106/?(wogOption:y); [Check if Hourglass of Asmodeus script is enabled in WoGify Options]
+!!FU&(wogOption)<>(TRUE):E; [Exit if script is disabled]
+
+; Set one of the special hero as Asmodeus
+!!VR(heroes[3]:y):S(HERO_XERON)/(HERO_KILGOR)/(HERO_ROLAND);
+
+!!re i/0/(heroes[SIZE])/1/-1;
+  !!HE(heroes[i]):R3/?(canBeRecruited:y)/255;
+  !!VRi^wog_106_Asmodeus^&(canBeRecruited)<>(TRUE):S(heroes[i]);
+!!en;
+
+; If Xeron, Kilgor and Roland aren't available, disable script
+!!if&i^wog_106_Asmodeus^=(NO_HERO);
+  !!IF:Q1/(PIC_TYPE_ART)/(ART_HOURGLASS_OF_THE_EVIL_HOUR)/(MSG_TYPE_MES)/^%z106001^;
+  !!UN:P106/(FALSE);
+; Change the name and the description of Hourglass of Asmodeus
+!!el;
+  !!SN:H^art^/(ART_HOURGLASS_OF_THE_EVIL_HOUR)/0/z106002;
+  !!SN:H^art^/(ART_HOURGLASS_OF_THE_EVIL_HOUR)/1/z106003;
+  !!VR(asmodeus:y):Si^wog_106_Asmodeus^;
+  !!VR$aname$:Sz106007; [Put name "Asmodeus" into $aname$]
+  !!HE(asmodeus):E600000/31/1 F13/13/13/13 B0/z266; [Set Asmodeus' level, primary skills and name]
+
+  ; Remove all the skills of Asmodeus and give new ones
+  !!re i/(SEC_SKILL_FIRST)/(SEC_SKILL_LAST);
+    !!HE(asmodeus):Si/(SKILL_NOT_LEARNED);
+  !!en;
+
+  !!HE(asmodeus):S(SKILL_WISDOM)/3 S(SKILL_SORCERY)/3 S(SKILL_FIRE_MAGIC)/3 S(SKILL_LEADERSHIP)/3;
+  !!HE(asmodeus):S(SKILL_RESISTANCE)/3 S(SKILL_LUCK)/3 S(SKILL_INTELLIGENCE)/3 S(SKILL_ARCHERY)/3;
+  !!HE(asmodeus):S(SKILL_BALLISTICS)/3 S(SKILL_OFFENCE)/3; [Give expert Wisdom, Sorcery, Fire Magic, Leadership, Resistance, Luck, Intelligence, Archery, Ballistics and Offense]
+  !!HE(asmodeus):A1/(ART_META_SPELLBOOK)/17 M(SPELL_FIRE_WALL)/1 M(SPELL_BERSERK)/1 M(SPELL_INFERNO)/1;
+  !!HE(asmodeus):M(SPELL_FIRE_SHIELD)/1 M(SPELL_FIREBALL)/1 M(SPELL_SACRIFICE)/1 M(SPELL_ARMAGEDDON)/1; [Give Asmodeus a spell book and the following spells: Wall of Fire, Berserk, Inferno, Fire Shield, Fireball, Sacrifice, and Armageddon]
+  
+  ; Set Asmodeus's protrait
+  !!SN:F^PcxPngExists^/^asmodeuS.pcx^;
+
+  !!if&v1;
+    !!HE(asmodeus):L1/^asmodeuS.pcx^ L2/^asmodeuL.pcx^;
+  !!el;
+    !!HE(asmodeus):L4/(HERO_XERON);
+  !!en;
+
+   [Disable Asmodeus' Commander]
+  !!CO(asmodeus):E0;
+
+  ; Set new class and specialty for Kilgor and Roland if they are Asmodeus
+  !!if&(asmodeus)=(HERO_KILGOR);
+    !!HE(asmodeus):B2/(HERO_CLASS_DEMONIAC);
+    !!HE(asmodeus):X0/(SKILL_RESISTANCE);
+  !!el&(asmodeus)=(HERO_ROLAND);
+    !!HE(asmodeus):B2/(HERO_CLASS_HERETIC);
+    !!HE(asmodeus):X0/(SKILL_SORCERY);
+  !!en;
+
+  ; Set up new price and class for Hourglass of Asmodeus
+  !!UN:A(ART_HOURGLASS_OF_THE_EVIL_HOUR)/1/?(price:y);
+  !!VR(price):*2;                       [Double the original price]
+  !!UN:A(ART_HOURGLASS_OF_THE_EVIL_HOUR)/1/(price:y);
+  !!UN:A(ART_HOURGLASS_OF_THE_EVIL_HOUR)/3/(ART_LEVEL_MINOR);
+!!en;
+
+!?FU(WOG_106_SetHeroToAsmodeus);
+!#VA(hero:x);
+
+!!HE(hero):R3/?(canBeRecruited:y)/255;
+!!VRi^wog_106_Asmodeus^&(canBeRecruited)<>(TRUE):S(hero);
+
+!#FU(WOG_106_Initialization):P;
+
+---------------------------------------------------------------------------------------
+
+[Battle Trigger for Start of any Battle]
+!?FU(OnBeforeBattle)&i^wog_106_Asmodeus^>(NO_HERO)/i^battle_isNetwork^<>(TRUE); [Local battle]
+
+!!UN:P106/?(wogOption:y);               [Check if Hourglass of Asmodeus script is enabled in WoGify Options]
+!!FU&(wogOption)<>(TRUE):E;             [Exit if script isn't enabled or if it's an AI]
+
+ [Start of Battle]
+!!VRi^wog_106_AsmodeusSummoned^:S(FALSE);
+
+!!IF:V2/0;
+!!BA:H0/?(hero:y); [Get attacking hero's hero #]
+
+!!HE(hero):O?(owner:y);
+!!OW:I(owner)/?(isAi:y);
+!!FU&(isAi):E;                          [Exit if the attacking player is AI]
+
+!!HE(hero):A2/(ART_HOURGLASS_OF_THE_EVIL_HOUR)/?(has:y)/?(equipped:y);  [Checks if attacking hero has an Hourglass artifact equipped]
+
+ [If hero has hour glass object equipped, do the following...]
+!!if&(equipped)>0;
+  !!HE(hero):B0/?z267;  [Store current hero's name in z267]
+
+   [If hero is *Not* the AI, has the hourglass artifact equipped and has fewer than 8 active heroes, ask if he/she wishes to summon Asmodeus]
+  !!IF:Q2/(PIC_TYPE_ART)/(ART_HOURGLASS_OF_THE_EVIL_HOUR)/(MSG_TYPE_QUESTION)/^%z106004^;
+!!en;
+
+!!FU&-2:E;
+
+ [Store hero numbers for order of hero list]
+!!OW:O(CURRENT_PLAYER)/d/?v277/?v278/?v279/?v280/?v281/?v282/?v283/?v284;
+
+ [Set "his" or "her" variable depending on Hero's sex]
+!!HE(hero):R2/?(gender:y); [Store current hero's sex]
+!!SN:T^wog.whose%(gender)^/?z268;
+
+ [Set Amodeus' spell points to 20 x his Knowledge]
+!!HEi^wog_106_Asmodeus^:Fd/d/d/?(knowledge:y);
+!!VR(mana:y):S(knowledge) *20;
+!!HEi^wog_106_Asmodeus^:I(mana)/1;
+
+; Manage hero positions
+!!HE(hero):P?i^wog_106_xPos^/?i^wog_106_yPos^/?i^wog_106_zPos^ O(NO_OWNER); [Set player's hero to "unowned"]
+!!HEi^wog_106_Asmodeus^:Pi^wog_106_xPos^/i^wog_106_yPos^/i^wog_106_zPos^/1 Oi^timerOwner^; [Set Xeron's internal coordinates to the summoning hero]
+!!OW:A(CURRENT_PLAYER)/i^wog_106_Asmodeus^;
+
+ [Sets up Asmodeus and brings him into battle instead of hero]
+!!VRi^wog_106_AsmodeusSummoned^:S(TRUE);
+!!BA:H0/i^wog_106_Asmodeus^;            [Set Asmodeus as attacking battle hero]
+!!VRi^battle_hero_0^:Si^wog_106_Asmodeus^; [Era Erm Framework compatibility]
+
+!!VRi^wog_106_origHero^:S(hero);
+
+// Store neutral stacks in global vars (in order to return them on battle replay)
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!BA:M0/i/?i^wog_106_replayType_%i^/?i^wog_106_replayNum_%i^;
+!!en;
+
+// Restore neutral stacks on battle replay
+!?FU(OnBattleReplay)&i^wog_106_AsmodeusSummoned^;
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!BA:M0/i/i^wog_106_replayType_%i^/i^wog_106_replayNum_%i^;
+!!en;
+
+---------------------------------------------------------------------------------------
+
+[Battle trigger for end of battle (after it's over)]
+!?FU(OnAfterBattle)&i^wog_106_Asmodeus^>(NO_HERO)/i^wog_106_AsmodeusSummoned^/1000;
+ [Asmodeus takes payment, is improved and removed]
+!!VR(hero:y):Si^wog_106_origHero^;
+!!HEi^wog_106_Asmodeus^:O?(owner:y);    [Check if Asmodeus was defeated in battle]
+
+; If Asmodeus won, increase the stats of Asmodeus and kill him
+!!if&(owner)>(NO_OWNER);
+  ; Manage Asmodeus
+  !!HEi^wog_106_Asmodeus^:F?(attack:y)/d/d/d;     [Check if Asmodeus' stats have reached 95]
+  !!HEi^wog_106_Asmodeus^&(attack)<95:Fd1/d1/d1/d1; [If Asmodeus won and stats not 95, increase his stats by 1 each]
+  !!HEi^wog_106_Asmodeus^:O(NO_OWNER) K; [Remove Asmodeus from map]
+; If Asmodeus lose, kill the summoned hero and empty all his slots
+!!el&i^wog_isSurrendered_0^<>(TRUE);
+  !!HE(hero):K;
+  !!HE(hero):C0/(ARMY_SLOT_FIRST)/(NO_MON)/0;
+!!en;
+
+ [Restore player's hero to map]
+!!HE(hero):Oi^timerOwner^;              [Set player's hero back to player's colour]
+ [Restore order of player's hero in hero list]
+!!OW:O(CURRENT_PLAYER)/d/v277/v278/v279/v280/v281/v282/v283/v284;
+!!HE(hero):Pi^wog_106_xPos^/i^wog_106_yPos^/i^wog_106_zPos^/1;
+
+ [Checks all of summoning hero's slots to see if they're empty]
+!!re i/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!HE(hero):C0/i/?(mon:y)/?(qty:y);
+
+  !!br&(mon)>(NO_MON)/(qty)>0;
+!!en;
+
+!!if&i>(ARMY_SLOT_LAST);
+  !!HE(hero):C0/(ARMY_SLOT_0)/(MON_IMP)/1 C0/(ARMY_SLOT_1)/(MON_IMP)/1 C0/(ARMY_SLOT_2)/(MON_IMP)/1;  [If all slots empty, give summoning hero 3 Imps]
+  !!IF:Q2/(PIC_TYPE_MONSTER)/196650/(MSG_TYPE_MES)/z106008;
+  !!SN:D;
+!!en;
+
+ [Check summoning hero's *true* Power level and Power with artifacts]
+!!FU(GetHeroPrimarySkillsWithoutArts):P(hero)/d/d/?(basicPower:y)/d; [Get true Power]
+
+ [Calculate hero's newly reduced Power (if 2 or more)]
+!!if&(basicPower)>1/(basicPower)<=249;
+  ; Check the power of summoning hero
+  !!VR$rpower$:S(basicPower) -1;
+  !!HE(hero):Fd/d/?(power:y)/d;         [Power with artifacts]
+  !!VR(power):-1;
+
+   [If summoning hero has a base Power of 2 or more, display this message or the following message if hero has no artifacts]
+  !!if&$rpower$<>(power);
+    !!IF:Q1/(PIC_TYPE_SKILL_POWER)/0/(MSG_TYPE_MES)/z106009;
+  !!el;
+    !!IF:Q1/(PIC_TYPE_SKILL_POWER)/0/(MSG_TYPE_MES)/z106010;
+  !!en;
+  ; And remove 1 Power from summoning hero
+  !!HE(hero):Fd/d/d-1/d;
+ [If summoning hero has Power of less than 2, display this message]
+!!el;
+  !!IF:Q1/(PIC_TYPE_MONSTER)/(MON_DEVIL)/(MSG_TYPE_MES)/z106011;
+  ; Remove hourglass and send 3 Devils to attack hero
+  !!HE(hero):A3/(ART_HOURGLASS_OF_THE_EVIL_HOUR)/1/1 Ti^wog_106_xPos^/i^wog_106_yPos^/i^wog_106_zPos^/(MON_DEVIL)/3;
+!!en;
+
+ [Disable Asmodeus so he won't appear in any taverns later in the game]
+!!HEi^wog_106_Asmodeus^:R3/(FALSE)/255;
+
+ [Removes Asmodeus from tavern if he retreated/surrendered]
+ [Get current player]
+!!OW:C?(player:y);
+
+ [Get current tavern heroes]
+!!OW:V(player)/?(leftHero:y)/?(rightHero:y);
+
+ [If hero is #i^wog_106_Asmodeus^, generate a new hero]
+!!if&(leftHero)=i^wog_106_Asmodeus^;
+  !!FU(WOG_GetRandomUnoccupiedHero):P?(randHero:y)/(player);
+  !!OW:V(player)/(randHero)/d;
+!!el&(rightHero)=i^wog_106_Asmodeus^;
+  !!FU(WOG_GetRandomUnoccupiedHero):P?(randHero)/(player);
+  !!OW:V(player)/d/(randHero);
+!!en;
+
+** End of Script **

@@ -1,0 +1,179 @@
+ZVSE2
+
+** Arcane Tower ERM script v1.5 - Donald X. Vaccarino
+** Updated: 09/20/03 by Hermann the Weird
+** Updated: Dec 2023 by Archer30
+** A location to let heroes exchange primary skill points
+
+** To use this code, put it into a Global Event, set to never happen,
+** and add some Arcane Tower buildings to your map.
+** It's the nifty tower three down from the Fortress in the editor
+
+** You can put an Arcane Tower and Alms House on the same map, but don't put them
+** right next to each other. If you put an Arcane Tower by a Magic Well or similar
+** object, note that it can be used to really fill up on spell points.
+
+** Variables Used: v600-v617, v618
+** Flags used: 2-5
+** The other variables may be used elsewhere but will be trashed by this code.
+
+** Functions Used: 620-624
+
+
+// Hint for mouse hovering
+!?FU(OnAdvMapTileHint);
+!#VA(x:x) (y:x) (z:x);             Object entrance coordinates
+!#VA(objType:x) (objSubtype:x);    Type and subtype of object. For active hero it's object under hero.
+!#VA(tileX:x) (tileY:x) (tileZ:x); Real tile coordinates.
+
+!!FU(WOG_ShowNewWoGObjectInfo):P104/9/(tileX)/(tileY)/(tileZ);
+
+// Right-clicking dialogue
+!?FU(OnAdventureMapRightMouseClick);
+!!FU(WOG_ShowNewWoGObjectInfo):P104/9;
+
+; Function to reset all the right-click text of object
+; This function also sets PM commands to attract AI to Altar objects
+!?FU(OnEveryDay)&i^timerWeekDay^=1/i^timerDay^>1/i^timerOnce^;
+!!FU(WOG_ResetNewWoGObject):P104/9;
+
+
+** Object routine
+
+!?OB(OBJ_NEW_WOG_OBJECTS)/9;
+!!UN:P104/?(wogOption:y);               [Check for WoG option]
+!!FU&(wogOption)<>(TRUE):E;             [Exit if its disabled]
+
+!!PM998:Pi^timerOwner^/(TRUE);
+
+!!PO998:N?(value:y);  // get current PO:N value
+
+!!if&(value);
+  !!IF&(ERM_FLAG_IS_HUMAN):M(MSG_TYPE_MES)/^%T(wog.104.visited)^; // show message that already visited
+  !!FU:E; // Exit function if altar has been visited
+!!en;
+
+; For Human
+!!if&(ERM_FLAG_IS_HUMAN);
+  !!VR(msg:z):Sz104001 +^%T(wog.endl)^ +^%T(wog.endl)^ +z104002;
+  !!IF:Q2/(msg);
+
+  !!if&2;
+    !!FU(WOG_104_ChooseSkills):P;
+  !!el;
+    !!IF:M1/z104003;
+  !!en;
+; For AI
+!!el;
+  ; Disable standard action of the object and set as visited
+  !!OB998:S;                            [disable pyramid feature]
+
+  ; Set as visited
+  !!PO998:N1;
+  !!PM998:V(FALSE);
+
+  ; Give 1000 exp to the visiting hero
+  !!UN:J1/?(maxLevel:y)/d;
+  !!HE(CURRENT_HERO):E?(exp:y)/?(level:y)/1;
+
+  !!if|(maxLevel)=0/(level)<(maxLevel);
+    !!HE(CURRENT_HERO):Ed1000;
+  !!en;
+!!en;
+
+** end of object routine
+
+
+!?FU(WOG_104_ChooseSkills);
+!!IF:N(PIC_TYPE_SKILL_ATTACK)/0/(PIC_TYPE_SKILL_DEFENSE)/0/(PIC_TYPE_SKILL_POWER)/0/(PIC_TYPE_SKILL_KNOWLEDGE)/0 N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/z104004/?(skillToLearn:y);
+
+!!if&(skillToLearn)>-1;
+  !!FU(NewIntArray):P?(skillsToUnlearnList:y);
+
+  !!re i/(PRIM_SKILL_FIRST)/(PRIM_SKILL_LAST);
+    !!if&i<>(skillToLearn);
+      !!VR(picType:y):Si +(PIC_TYPE_SKILL_ATTACK);
+      !!FU(Array_Push):P(skillsToUnlearnList)/(picType)/0;
+    !!en;
+  !!en;
+
+  !!FU(PrepareMultiPicDialog):P(skillsToUnlearnList);
+  !!IF:N(MSG_TYPE_CHOOSE_PIC_OR_CANCEL)/^%T(wog.104.pay)^/?(choice:y);
+
+  !!if&(choice)>-1;
+    !!VRv600:S(skillToLearn);
+    !!VR(skillInd:y):S(choice) *2;
+    !!SN:M(skillsToUnlearnList)/(skillInd)/?(skillPicType:y); 
+    !!VRv601:S(skillPicType) -(PIC_TYPE_SKILL_ATTACK); [v601 - skill to unlearn]
+    !!FU622:P;
+  !!el;
+    !!IF:M1/z104003;
+  !!en;
+!!el;
+  !!IF:M1/z104003;
+!!en;
+
+
+** function to handle trades once skills are selected
+
+!?FU622;
+
+!!VRv602:Sv600 +31; [get picture # of skill they want]
+!!VRv603:Sv601 +31; [get picture # of skill they pay]
+!!HE(CURRENT_HERO):F?v604/?v605/?v606/?v607; [fetch skill values]
+!!VRv608:S604 +v600; [variable # of amount of skill they want]
+!!VRv609:S604 +v601; [variable # of amount of skill they pay]
+
+!!FU(GetHeroPrimarySkillsWithoutArts):P(CURRENT_HERO)/?v611/?v612/?v613/?v614; [get "clean" skill values in v611-v614 (no artifacts)]
+!!VRv618:S611 +v601; [variable # of clean skill amount to pay]
+!!VRv610:Svv618; [times they can trade]
+!!VRv610&v601>1:-1; [can trade one less if spell power or knowledge]
+
+!!if|v610<1/v610>249;                   [Compatible with Prima]
+  !!IF:M1/z104012;
+!!el;
+  !!FU623&v610>0:P;                     [continue if they can pay]
+!!en;
+
+** end of function
+
+
+** function to trade once we know they can
+
+!?FU623;
+
+!!IF:V2/1; [flag indicates we'll make trade]
+!!DO624/1/30/1:P; [allow them to make the chosen trade as many times as they can]
+
+; Set as visited only when there is one successful exchange
+!!PO998:N1;
+!!PM998:V(FALSE);
+
+; Ask if want to trade other primary skills
+!!VR(msg:z):Sz104013 +^%T(wog.endl)^ +^%T(wog.endl)^ +^%T(wog.104.anotherTrade)^;
+!!IF:Q3/(msg);
+
+!!if&3;
+  !!FU(WOG_104_ChooseSkills):P;
+!!el;
+  !!IF:M^%T(wog.104.rest)^;
+!!en;
+
+** end of function
+
+
+** function to trade one skill point, done repeatedly
+
+!?FU624;
+
+!!VRvv609&2:-1; [deduct one point of paying skill]
+!!VRvv608&2:+1; [add one point to wanted skill]
+!!HE(CURRENT_HERO)&2:Fv604/v605/v606/v607; [save new skill values]
+!!SN:D;
+
+!!VRv610&2:-1; [countdown times we can make trade]
+!!IF&2/v610=0:Q1/v602/1/v603/0/(MSG_TYPE_MES)/z104014; [Warning: negative primary skill in IF:Q dialogue will have the text shown as +-number, which is not ideal]
+!!IF&2/v610=0:V2/0;
+!!IF&2/v610>0:Q2/v602/1/v603/0/(MSG_TYPE_QUESTION)/z104015;
+
+** end of function

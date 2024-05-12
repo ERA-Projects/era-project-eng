@@ -1,0 +1,222 @@
+ZVSE2
+; Author:   Archer30
+; Original Author: Bonizag
+; Engine:   ERM 2.0+
+; Requires: ERA 3.3+, Era Erm Framework
+
+; Summon elementals with 10 times the usual spell cost on adventure map, once every week for every hero
+; AI will summon with the same costs if they learned an expert summon spell
+; w84 - cast Summon Elementals this week
+
+
+// Initialization. Now all the summoning spells are also considered as adv spells
+!#UN:P74/?i^wog_74_enabled^;
+
+!?FU(OnAfterErmInstructions)&i^wog_74_enabled^;
+!!re i/(SPELL_FIRE_ELEMENTAL)/(SPELL_AIR_ELEMENTAL);
+  !!SSi:Fd|2;
+!!en;
+
+; Set up monsters for summon spells
+; Customise here if you want
+!!VRi^wog_74_mon_%(SPELL_AIR_ELEMENTAL)^:S(MON_AIR_ELEMENTAL);
+!!VRi^wog_74_mon_%(SPELL_EARTH_ELEMENTAL)^:S(MON_EARTH_ELEMENTAL);
+!!VRi^wog_74_mon_%(SPELL_WATER_ELEMENTAL)^:S(MON_WATER_ELEMENTAL);
+!!VRi^wog_74_mon_%(SPELL_FIRE_ELEMENTAL)^:S(MON_FIRE_ELEMENTAL);
+
+// Reset all the cast flag for all heroes every day
+!?FU(OnEveryDay)&i^timerOnce^/i^timerWeekday^=1/i^wog_74_enabled^;
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!IF:Wi;
+  !!VRw84:S0;
+!!en;
+
+// Multiple spell points costs for summoning spells
+// Trigger on opening spell book on adv map
+!?FU(OnBeforeAdventureMagic)&i^wog_74_enabled^;
+!!re i/(SPELL_FIRE_ELEMENTAL)/(SPELL_AIR_ELEMENTAL);
+  !!SSi:C0/d*10;
+  !!SSi:C1/d*10;
+  !!SSi:C2/d*10;
+  !!SSi:C3/d*10;
+!!en;
+
+// Add in elementals to the hero's army
+// Trigger on closing spell book on adv map
+!?FU(OnAfterAdventureMagic)&i^wog_74_enabled^;
+; Restore costs for summoning spells
+!!re i/(SPELL_FIRE_ELEMENTAL)/(SPELL_AIR_ELEMENTAL);
+  !!SSi:C0/d:10;
+  !!SSi:C1/d:10;
+  !!SSi:C2/d:10;
+  !!SSi:C3/d:10;
+!!en;
+
+!!OW:A(CURRENT_PLAYER)/?(hero:y);
+
+!!HE(hero):P?(x:y)/?(y:y)/?(z:y);
+!!TR(x)/(y)/(z):G?(terrain:y);
+!!FU&(terrain)=21:E;                    [Cursed Ground]
+
+!!VR(spell:y):Sv997;
+
+!!if&(spell)>=(SPELL_FIRE_ELEMENTAL)/(spell)<=(SPELL_AIR_ELEMENTAL);
+  !!IF:W(hero);
+  ; Pop up msg if the hero has cast Summon Elementals this week
+  !!if&w84;
+    !!IF:M^%T(wog.74.msg)^;
+  ; Summon elementals for the hero if hasn't cast
+  !!el;
+    !!SN:P^SUMNELM^;                    [play sound before executing HE:C2 in case the army is full]
+    !!FU(WOG_74_SummonElementals):P(hero)/(spell)/(terrain)/(FALSE);
+    !!SN:D;
+  !!en;
+!!en;
+
+!?FU(WOG_74_SummonElementals);
+!#VA(hero:x) (spell:x) (terrain:x) (isAi:x);
+
+; Get the creature type/quantity of summoning
+!!VR(mon:y):Si^wog_74_mon_%(spell)^;
+!!FU(WOG_74_GetRealSpellLevel):P(hero)/(spell)/(terrain)/?(level:y);
+!!FU(WOG_74_GetSummonQty):P(hero)/(spell)/(level)/?(qty:y);
+
+; Add creature to the army
+; Auto select the weakest troop to replaced for AI
+!!if&(isAi);
+  !!HE(hero):C2/(mon)/(qty)/(FALSE);
+!!el;
+  !!HE(hero):C2/(mon)/(qty)/(TRUE);
+!!en;
+
+; Reduce spell points
+!!SS(spell):C(level)/?(cost:y);
+!!VR(cost):*10;                         [10 times the cost as the cost has been restored at the moment]
+!!HE(hero):Id-(cost);
+; Mark the summoning spell as cast
+!!IF:W(hero);
+!!VRw84:+1;
+
+!?FU(WOG_74_GetRealSpellLevel);
+!#VA(hero:x) (spell:x) (terrain:x) (level:x);
+
+!!if&(spell)=(SPELL_FIRE_ELEMENTAL);
+  !!VR(ss:y):S(SKILL_FIRE_MAGIC);
+  !!VR(favourTerrain:y):S226;           [Fiery Fields]
+!!el&(spell)=(SPELL_AIR_ELEMENTAL);
+  !!VR(ss):S(SKILL_AIR_MAGIC);
+  !!VR(favourTerrain):S229;             [Magic Clouds]
+!!el&(spell)=(SPELL_WATER_ELEMENTAL);
+  !!VR(ss):S(SKILL_WATER_MAGIC);
+  !!VR(favourTerrain):S228;             [Lucid Pools]
+!!el&(spell)=(SPELL_EARTH_ELEMENTAL);
+  !!VR(ss):S(SKILL_EARTH_MAGIC);
+  !!VR(favourTerrain):S231;             [Rockland]
+!!en;
+
+; Set the level of magic ss depending on the terrain overlay the hero is standing on
+!!if|(terrain)=(favourTerrain)/(terrain)=229; [Magic Plains]
+  !!VR(level):S(SKILL_EXPERT);
+!!el;
+  !!HE(hero):S(ss)/?(level);
+!!en;
+
+// Function for getting the quantity of creature summon from a summon spell
+// Customise here if you wish
+!?FU(WOG_74_GetSummonQty);
+!#VA(hero:x) (spell:x) (level:x) (qty:x);
+
+; Calculate the quantity of summoning according to magic level and power
+!!HE(hero):Fd/d/?(pwr:y)/d;
+
+!!VR(multiplier:y):S(level) +1 F2/4;    [Summon quantity with 2x power with no magic skill]
+!!VR(qty):S(pwr) *(multiplier);
+
+// Summon elementals for AI heroes on every turn end
+!?FU(WOG_EndOfTurn)&i^wog_74_enabled^;
+!!re (hero:y)/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HE(hero):P?(x:y)/?(y:y)/?(z:y);
+  !!co&(x)=-1/(y)=-1/(z)=-1;
+
+  !!TR(x)/(y)/(z):G?(terrain:y);
+  !!co&(terrain)=21;                    [Cursed Ground]
+
+  !!HE(hero):O?(owner:y);
+  !!co&(owner)<>i^timerOwner^;
+
+  !!OW:I(owner)/?(isAi:y);
+  !!co&(isAi)<>(TRUE);
+
+  ; Next if summoned elementals this week
+  !!IF:W(hero);
+  !!co&w84;
+
+  !!VR(elemType[4]:y):Ci^wog_74_mon_%(SPELL_EARTH_ELEMENTAL)^/i^wog_74_mon_%(SPELL_FIRE_ELEMENTAL)^/i^wog_74_mon_%(SPELL_WATER_ELEMENTAL)^/i^wog_74_mon_%(SPELL_AIR_ELEMENTAL)^;
+  !!VR(elemSpell[4]:y):C(SPELL_EARTH_ELEMENTAL)/(SPELL_FIRE_ELEMENTAL)/(SPELL_WATER_ELEMENTAL)/(SPELL_AIR_ELEMENTAL);
+  !!VR(elemSpellLvl[4]:y):C-1/-1/-1/-1;
+  !!VR(elemSecSkill[4]:y):C(SKILL_EARTH_MAGIC)/(SKILL_FIRE_MAGIC)/(SKILL_WATER_MAGIC)/(SKILL_AIR_MAGIC);
+  !!VR(elemHasSlot[4]:y):C(FALSE)/(FALSE)/(FALSE)/(FALSE);
+
+  ; Check if the hero learned and has enough mana to cast a summon spell
+  !!HE(hero):I?(mana:y)/1;
+  !!VR(canSummonAtLeastOne:y):S(FALSE);
+
+  !!re i/0/3;
+    !!FU(WOG_74_CheckIfAbleToSummon):P(hero)/(terrain)/(mana)/(elemSpell[i])/?(canCast:y);
+
+    !!if&(canCast);
+      !!HE(hero):S(elemSecSkill[i])/?(elemSpellLvl[i]);
+      !!VR(canSummonAtLeastOne):S(TRUE);
+    !!en;
+  !!en;
+
+  ; Next if it is not possible to summon any elemental
+  !!co&(canSummonAtLeastOne)<>(TRUE);
+
+  ; Check if the hero has an available slot
+  !!re (slot:y)/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+    !!HE(hero):C0/(slot)/?(mon:y)/?(qty:y);
+
+    !!re i/0/3;
+      !!VR(elemHasSlot[i])|(mon)=(NO_MON)/(mon)=(elemType[i]):S(TRUE);
+    !!en;
+
+    !!br&(mon)=(NO_MON);
+  !!en;
+
+  ; Determie which spell to cast (if there are multiple)
+  ; Priority: Earth, Fire, Water, Air
+  !!VR(spell:y):S(NO_SPELL);
+  !!VR(spellLvl:y):S(SKILL_NOT_LEARNED);
+
+  !!re i/0/3;
+    !!VR(elemSpellLvl[i])&(elemHasSlot[i])=(FALSE):S-1;
+
+    !!if&(elemSpellLvl[i])>(spellLvl);
+      !!VR(spell):S(elemSpell[i]);
+      !!VR(spellLvl):S(elemSpellLvl);
+    !!en;
+  !!en;
+
+  ; Summon elementals for the AI hero if spell available
+  !!if&(spell)>(NO_SPELL);
+    !!FU(WOG_74_SummonElementals):P(hero)/(spell)/(terrain)/(TRUE);
+    !!VRw84:+1;
+  !!en;
+!!en;
+
+!?FU(WOG_74_CheckIfAbleToSummon);
+!#VA(hero:x) (terrain:x) (mana:x) (spell:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!HE(hero):M(spell)/?(spellLearned:y);
+!!FU&(spellLearned)<>(TRUE):E;
+
+!!FU(WOG_74_GetRealSpellLevel):P(hero)/(spell)/(terrain)/?(level:y);
+; Summon elementals only with expert magic for AI
+!!FU&(level)<(SKILL_EXPERT):E;
+
+!!SS(spell):C(level)/?(cost:y);
+!!VR(cost):*10;
+
+!!VR(result)&(cost)<=(mana):S(TRUE);

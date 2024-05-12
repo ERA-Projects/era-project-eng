@@ -1,0 +1,92 @@
+mod.json file structure (project)
+Instead of "en_US" or "ru_RU" you can use any other language ("Cn_Simp" is old and deprecated). Just add a new translation to MM and everything should start to work :).
+
+{
+	"caption": {
+		"en_US" : "Epic mod with epic things",
+		"ru_RU" : "Мега мод с очень крутыми фигофинами"
+		/*
+			Caption for the mod.
+			If empty for currently selected language - English will be used instead.
+			If still empty - directory name will be used
+		*/
+	},
+	"description": {
+		"full": {
+			"en_US": "info.txt",
+			"ru_RU": "info_ru.txt"
+			/*
+				Description for the mod will be taken from this file.
+				If empty for currently selected language - English will be used instead.
+				If still empty - no info will be displayed
+			*/
+		},
+		"short": {
+			"en_US": "Epic mod, as described in title",
+			"ru_RU": "Мега крутой мод, добавлюящий тонны контента"
+			/*
+				Short description. Used for web or other places, maybe.
+				If empty for currently selected language - English will be used instead.
+			*/
+		}
+	},
+	"author": "SyDr",
+	"homepage": "http://wforum.heroes35.net",  
+	/*
+		Name of the mod author.
+		And homepage of the mod.
+	*/
+	"icon": {
+		"file": "icon.ico",
+		"index": 0
+		/*
+			If icon is not set - standard icon will be used
+			Index is zero-based index. Ignored, if file empty*/
+		*/
+	},
+	"priority": 0,
+	/*
+		Mod priority group. Limited to values from -100 to 100.
+		In MM mods from higher priority group cannot be moved to position after low priority mods.
+		Default is 0.
+	*/
+	"compatibility": {
+		"class": "default",
+		/*
+			Mod compatibility class. Available values are "default", "none" and "all".
+			Incompatible mods will be marked in MM by colour.
+		*/
+		"entries": {
+			"<Other mod ID (directory name)" : false,
+			"Yona" : true,
+			/*
+				Values are true and false (answer to question "are these mods compatible?").
+				Individual entries has higher priority, than compatibility class.
+			*/
+		}
+	},
+	"platform": "era",
+	"info_version": "1.0",
+	"mod_version": "1.0",
+	/*
+		Not used yet. Can be safely ignored (or maybe can't be ignored).
+	*/
+	"plugins": {
+		"<Plugin filename>" : {
+			"caption" : {
+				"<LngCode>" : "Caption for this pluigin"
+			}
+			"description" : {
+				"<LngCode>" : "Description for this pluigin"
+			}
+		}
+	/*
+		Exactly same rules as for other parts, that can be translated
+	*/
+	},
+	"category": "gameplay"
+	/*
+		Mod category name.
+		See lng files "category" tag - predefined ones will be automatically translated.
+	*/
+}

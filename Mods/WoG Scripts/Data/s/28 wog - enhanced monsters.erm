@@ -1,0 +1,1046 @@
+ZVSE2
+
+** ENHANCED MONSTERS  -  ERM script 50
+
+** By Arstahd
+** Version: 1.20   updated  October 26, 2004 by Arstahd
+** Updated: Mar 2023 by daemon_n and Archer30
+** Special thanks to Fnord & Herman the Weird for help with bug fixing and script maintenance
+** Local y to y- conversion by Fnord: March 26, 2004
+
+** Note: Enhancements are disabled for network human-to-human battles.
+
+** Variables used: i-m
+** V variables:    v7000-v7015
+** Z variables:    z2  
+** Y variables:    y1-y12
+** Flags used:     75,77,78
+** Functions used: 7050-7053 7060-7069
+
+
+** Boosts stats of many weaker creatures
+** Gives many creatures new abilities
+** New abilities are highlighted in yellow in the hint text when right clicking on a creature.
+** Adjusted stats are also noted in the hint text, "+" indicates that the stat was raised, "-" that it was lowered.
+**   HP = health
+**   AT = attack
+**   DE = defence
+**   DL = damage low
+**   DH = damage high
+**   SP = speed
+**   SH = shots
+**   L = level
+
+** Some neutral creatures are now aligned with town types.
+**   Castle      -  War Zealot, Peasant, Halfling
+**   Rampart     -  Sharpshooter, Sorceress
+**   Tower       -  Arctic Sharpshooter, Enchanter, Santa Gremlin, Gold Golem, Diamond Golem
+**   Inferno     -  Nightmare, Hell Steed
+**   Necropolis  -  Mummy, Ghost
+**   Dungeon     -  Lava Sharpshooter, Werewolf
+**   Stronghold  -  Boar, Rogue, Nomad
+**   Fortress    -  Troll, Gorynych
+**   Conflux     -  Messengers
+
+; Note: EA commands requires Stack Experience to work
+
+
+!#UN:P50/?i^wog_50_enabled^;         [Check if Enhanced Monsters is enabled in WoGify Options]
+*#VRi^wog_50_messagerCastEnabled^&i^wog_50_enabled^:S(TRUE); [Enable casting spell after attack for messengers - hidden feature by WoG Team]
+!#VRi^wog_50_ghostLossThreshold^:S100 F100/(INT_MAX);  [Minimun ghosts quantity for calculating daily losses, also uses for calculating the precentage of loss]
+
+!?FU(OnAfterErmInstructions)&i^wog_50_enabled^;
+!!FU(WOG_50_SetMonDescription):P;   [add specialty text]
+!!FU(WOG_50_SetMonStats):P;   [add specialty text]
+
+!?FU(WOG_50_SetMonStats);
+
+*** CASTLE CREATURES ***
+  !!MA:A2/7;        Archer Att 7
+  !!MA:D2/4;        Archer Def 4
+  !!MA:A3/7;        Marksman Att 7
+  !!MA:D3/5;        Marksman Def 5
+  !!MA:E4/7;        Griffin Dam High 7
+  !!MA:P5/30;       Royal Griffin HP 30
+  !!MA:E5/7;        Royal Griffin Dam High 7
+  !!MA:C5/6/275;    Royal Griffin Cost 275
+  !!MA:C13/5/2;     Archangel Cost 2 Gems
+  !!MA:S150/19;     Supreme Archangel Speed 19
+  !!MA:X150/?i;     Supreme Archangel remove No Retaliation and add Mind Immune   
+  !!VRi:~(MON_FLAG_NO_RETALIATION) |(MON_FLAG_MIND_IMMUNITY); 
+  !!MA:X150/i;
+  !!MA:C150/6/20000;Supreme Archangel Cost 20000
+  !!MA:C150/5/15;   Supreme Archangel Cost 15 Gems
+
+*** RAMPART CREATURES ***
+  !!MA:M16/3;       Dwarf Dam Min 3
+  !!MA:D17/8;       Battle Dwarf Def 8
+  !!MA:M17/3;       Battle Dwarf Dam Min 3
+  !!MA:D19/6;       Grand Elf Def 6
+  !!MA:A21/10;      Silver Pegasus Att 10
+  !!MA:C21/6/300;   Silver Pegasus Cost 300
+  !!MA:A25/16;      War Unicorn Att 16
+  !!MA:D25/15;      War Unicorn Def 15
+  !!MA:C25/6/1000;  War Unicorn Cost 1000
+  !!MA:S26/12;      Green Dragon Speed 12
+  !!MA:C26/6/2500;  Green Dragon Cost 2500
+  !!MA:A151/37;     Diamond Dragon Att 37
+  !!MA:D151/37;     Diamond Dragon Def 37
+  !!MA:S151/17;     Diamond Dragon Speed 17
+  !!MA:C151/6/16000;Diamond Dragon Cost 16000
+  !!MA:C151/4/15;   Diamond Dragon Cost 15 Crystal
+
+*** TOWER CREATURES ***
+  !!MA:P30/20;      Stone Gargoyle HP 20
+  !!MA:D30/8;       Stone Gargoyle Defense 8
+  !!MA:X30/d|(MON_FLAG_NO_MORALE);    Stone Gargoyle No Morale
+  !!MA:P31/20;      Obsidian Gargoyle HP 20
+  !!MA:D31/10;      Obsidian Gargoyle Defense 10
+  !!MA:X31/d|(MON_FLAG_NO_MORALE);    Obsidian Gargoyle No Morale
+  !!MA:D33/12;      Iron Golem Defense 12
+  !!MA:P36/45;      Genie HP 45
+  !!MA:C36/6/600;   Genie Cost 600
+  !!MA:P37/50;      Master Genie HP 50
+  !!MA:A37/13;      Master Genie Att 13
+  !!MA:D37/13;      Master Genie Def 13
+  !!MA:C37/6/750;   Master Genie Cost 750
+  !!MA:P40/200;     Giant HP 200
+  !!MA:S40/8;       Giant Speed 8
+  !!MA:C40/6/2500;  Giant Cost 2500
+  !!MA:A152/34;     Lord of Thunder Att 34
+  !!MA:D152/34;     Lord of Thunder Def 34
+  !!MA:C152/6/20000;Lord of Thunder Cost 20000
+  !!MA:C152/5/15;   Lord of Thunder Cost 15 Gems
+
+*** INFERNO CREATURES ***
+  !!MA:X42/d|(MON_FLAG_FLYER);         Imp Fly
+  !!MA:X43/d|(MON_FLAG_FLYER);         Familiar Fly
+  !!MA:P44/15;      Gog HP 15
+  !!MA:S44/6;       Gog Speed 6
+  !!MA:P45/15;      Magog HP 15
+  !!MA:S45/8;       Magog Speed 8
+  !!MA:M47/4;       Cerberus Dam Low 4
+  !!MA:A49/12;      Horned Demon Att 12
+  !!MA:D49/12;      Horned Demon Def 12
+  !!MA:C49/6/300;   Horned Demon Cost 300
+  !!MA:M50/8;       Pit Fiend Dam Low 8
+  !!MA:E50/14;      Pit Fiend Dam High 14
+  !!MA:X50/d|(MON_FLAG_ATTACKS_TWICE);     Pit Fiend Attack Twice
+  !!MA:P51/50;      Pit Lord HP 50
+  !!MA:A51/14;      Pit Lord Att 14
+  !!MA:D51/14;      Pit Lord Def 14
+  !!MA:M51/8;       Pit Lord Dam Low 8
+  !!MA:E51/14;      Pit Lord Dam High 14
+  !!MA:X51/d|(MON_FLAG_ATTACKS_TWICE);     Pit Lord Attack Twice
+  !!MA:P54/175;     Devil HP 175
+  !!MA:P55/225;     Arch Devil HP 225
+  !!MA:P153/450;    Hell Baron HP 450
+  !!MA:A153/36;     Hell Baron Att 36
+  !!MA:D153/38;     Hell Baron Def 38
+  !!MA:S153/18;     Hell Baron Speed 18
+  !!MA:C153/6/18000;Hell Baron Cost 18000
+  !!MA:C153/1/15;   Hell Baron Cost 15 Mercury
+
+*** NECROPOLIS CREATURES ***
+  !!MA:A59/6;       Zombie Att 6
+  !!MA:D59/6;       Zombie Def 6
+  !!MA:P60/20;      Wight HP 20
+  !!MA:P61/20;      Wraith HP 20
+  !!MA:A61/8;       Wraith Att 8
+  !!MA:D61/8;       Wraith Def 8
+  !!MA:C61/6/250;   Wraith Cost 250
+  !!MA:D68/20;      Bone Dragon Def 20
+  !!MA:C68/6/2000;  Bone Dragon Cost 2000
+  !!MA:A69/22;      Ghost Dragon Att 22
+  !!MA:D69/20;      Ghost Dragon Def 20
+  !!MA:C69/6/3500;  Ghost Dragon Cost 3500
+  !!MA:M154/50;     Blood Dragon Dam Low 40
+  !!MA:A154/32;     Blood Dragon Att 32
+  !!MA:D154/38;     Blood Dragon Def 38
+  !!MA:S154/15;     Blood Dragon Speed 15
+  !!MA:C154/6/14000;Blood Dragon Cost 14000
+  !!MA:C154/1/10;   Blood Dragon Cost 10 Mercury
+
+*** DUNGEON CREATURES ***
+  !!MA:P72/15;      Harpy HP 15
+  !!MA:P73/15;      Harpy Hag HP 15
+  !!MA:C74/6/275;   Beholder Cost 275
+  !!MA:C75/6/300;   Evil Eye Cost 300
+  !!MA:P76/30;      Medusa HP 30
+  !!MA:N76/6;       Medusa Shots 6
+  !!MA:C76/6/350;   Medusa Cost 350
+  !!MA:P77/35;      Medusa Queen HP 35
+  !!MA:N77/12;      Medusa Queen shots 12
+  !!MA:C77/6/400;   Medusa Queen Cost 400
+  !!MA:E80/22;      Manticore Dam High 22
+  !!MA:S80/8;       Manticore Speed 8
+  !!MA:P81/90;      Scorpicore HP 90
+  !!MA:D81/16;      Scorpicore Def 16
+  !!MA:E81/22;      Scorpicore Dam High 22
+  !!MA:C81/6/1100;  Scorpicore Cost 1100
+  !!MA:P82/200;     Red Dragon HP 200
+  !!MA:C82/6/2700;  Red Dragon Cost 2700
+  !!MA:A155/35;     Darkness Dragon Att 35
+  !!MA:D155/35;     Darkness Dragon Def 35
+  !!MA:S155/16;     Darkness Dragon Speed 16
+  !!MA:C155/6/16000;Darkness Dragon Cost 16000
+  !!MA:C155/3/15;   Darkness Dragon Cost 15 Sulfur
+
+*** STRONGHOLD CREATURES ***
+  !!MA:P86/12;      Wolf Rider HP 12
+  !!MA:P87/12;      Wolf Raider HP 12
+  !!MA:C87/6/150;   Wolf Raider Cost 150
+  !!MA:X88/d|(MON_FLAG_NO_MELEE_PENALTY);      Orc No combat penalty
+  !!MA:A89/9;       Orc Chief Att 9
+  !!MA:D89/6;       Orc Chief Def 6
+  !!MA:X89/d|(MON_FLAG_NO_MELEE_PENALTY);      Orc Chief No combat penalty
+  !!MA:C89/6/200;   Orc Chief Cost 200
+  !!MA:P93/75;      Thunderbird HP 75
+  !!MA:C93/6/850;   Thunderbird Cost 850
+  !!MA:P95/80;      Cyclops King HP 80
+  !!MA:A96/16;      Behemoth Att 16
+  !!MA:D96/18;      Behemoth Def 18
+  !!MA:C96/6/2000;  Behemoth Cost 2000
+  !!MA:A97/18;      Ancient Behemoth Att 18
+  !!MA:D97/22;      Ancient Behemoth Def 22
+  !!MA:C97/6/4000;  Ancient Behemoth Cost 4000
+  !!MA:A156/26;     Eldest Behemoth Att 26
+  !!MA:D156/32;     Eldest Behemoth Def 32
+  !!MA:S156/10;     Eldest Behemoth Speed 10
+  !!MA:X156/d~(MON_FLAG_FLYER); Eldest Behemoth No Fly
+  !!MA:C156/6/16000;Eldest Behemoth Cost 16000
+  !!MA:C156/4/10;   Eldest Behemoth Cost 10 Crystal
+
+*** FORTRESS CREATURES ***
+  !!MA:P99/7;       Gnoll Marauder HP 7
+  !!MA:P100/15;     Lizardman HP 15
+  !!MA:P106/40;     Basilisk HP 40
+  !!MA:C106/6/350;  Basilisk Cost 350
+  !!MA:P107/50;     Greater Basilisk HP 50
+  !!MA:C107/6/425;  Greater Basilisk Cost 425
+  !!MA:P108/75;     Wyvern HP 75
+  !!MA:P109/90;     Wyvern Monarch HP 90
+  !!MA:C109/6/1200; Wyvern Monarch Cost 1200
+  !!MA:A157/28;     Hell Hydra Att 28
+  !!MA:D157/30;     Hell Hydra Def 30
+  !!MA:M157/40;     Hell Hydra Dam Low 40
+  !!MA:E157/70;     Hell Hydra Dam High 70
+  !!MA:S157/8;      Hell Hydra Speed 8
+  !!MA:C157/6/14000;Hell Hydra Cost 14000
+  !!MA:C157/3/10;   Hell Hydra Cost 10 Sulfur
+
+*** CONFLUX CREATURES ***
+  !!MA:X112/d|(MON_FLAG_FLYER);         Air Elemental Fly
+  !!MA:A127/10;     Storm Elemental Att 10
+  !!MA:D127/10;     Storm Elemental Def 10
+  !!MA:X127/d|(MON_FLAG_FLYER);         Storm Elemental Fly
+  !!MA:C127/6/300;  Storm Elemental Cost 300
+  !!MA:M115/4;      Water Elemental Dam Low 4
+  !!MA:E115/6;      Water Elemental Dam High 6
+  !!MA:D123/12;     Ice Elemental Def 12
+  !!MA:M123/4;      Ice Elemental Dam Low 4
+  !!MA:E123/6;      Ice Elemental Dam High 6
+  !!MA:C123/6/350;  Ice Elemental Cost 350
+  !!MA:M114/5;      Fire Elemental Dam Low 5
+  !!MA:E114/8;      Fire Elemental Dam High 8
+  !!MA:M129/5;      Energy Elemental Dam Low 5
+  !!MA:E129/8;      Energy Elemental Dam High 8
+  !!MA:E113/10;     Earth Elemental Dam High 10
+  !!MA:A125/12;     Magma Elemental Att 12
+  !!MA:D125/12;     Magma Elemental Def 12
+  !!MA:C125/6/450;  Magma Elemental Cost 450
+  !!MA:X120/d|(MON_FLAG_FLYER);         Psychic Elemental Fly
+  !!MA:S120/5;      Psychic Elemental Speed 5
+  !!MA:C120/6/900;  Psychic Elemental Cost 900
+  !!MA:P121/90;     Magic Elemental HP 90
+  !!MA:S121/6;      Magic Elemental Speed 6
+  !!MA:X121/d|(MON_FLAG_FLYER);         Magic Elemental Fly
+  !!MA:C121/6/1300; Magic Elemental Cost 1300
+  !!MA:G130/1;      Firebird Growth 1
+  !!MA:C130/6/2000; Firebird Cost 2000
+  !!MA:D131/21;     Phoenix Def 21
+  !!MA:S131/20;     Phoenix Speed 20
+  !!MA:G131/1;      Phoenix Growth 1
+  !!MA:C131/6/3000; Phoenix Cost 3000
+  !!MA:A158/33;     Sacred Phoenix Att 33
+  !!MA:D158/33;     Sacred Phoenix Def 33
+  !!MA:C158/6/10000;Sacred Phoenix Cost 10000
+  !!MA:C158/1/10;   Sacred Phoenix Cost 10 Mercury
+
+*** NEUTRAL CREATURES ***
+  !!MA:X133/d|(MON_FLAG_NO_MORALE);    Crystal Dragon No Morale
+  !!MA:A134/26;     Faerie Dragon Att 26
+  !!MA:D134/26;     Faerie Dragon Def 26
+  !!MA:M134/40;     Faerie Dragon Dam Low 40
+  !!MA:E134/60;     Faerie Dragon Dam High 60
+  !!MA:C134/6/12000;Faerie Dragon Cost 12000
+  !!MA:E135/75;     Rust Dragon Dam High 75
+  !!MA:E136/16;     Enchanter Dam High 16
+  !!MA:V137/10;     Sharpshooter Map Low 10
+  !!MA:H137/16;     Sharpshooter Map High 16
+  !!MA:O137/1;      Sharpshooter > Rampart
+  !!MA:P139/2;      Peasant HP 2
+  !!MA:P140/25;     Boar HP 25
+  !!MA:A140/7;      Boar Att 7
+  !!MA:D140/7;      Boar Def 7
+  !!MA:M140/3;      Boar Dam Low 3
+  !!MA:E140/7;      Boar Dam High 7
+  !!MA:C140/6/200;  Boar Cost 200
+  !!MA:L140/2;      Boar Level 3
+  !!MA:O140/6;      Boar > Stronghold
+  !!MA:P141/40;     Mummy HP 40
+  !!MA:A141/8;      Mummy Att 8
+  !!MA:D141/10;     Mummy Def 10
+  !!MA:M141/5;      Mummy Dam Low 5
+  !!MA:E141/10;     Mummy Dam High 10
+  !!MA:L141/3;      Mummy Level 4
+  !!MA:O141/4;      Mummy > Necropolis
+  !!MA:A142/10;     Nomad Att 10
+  !!MA:M142/4;      Nomad Dam Low 4
+  !!MA:S142/8;      Nomad Speed 8
+  !!MA:C142/6/250;  Nomad Cost 250
+  !!MA:P143/15;     Rogue HP 15
+  !!MA:C143/6/125;  Rogue Cost 125
+  !!MA:C144/6/550;  Troll Cost 550
+  !!MA:O144/7;      Troll > Fortress
+  !!MA:P159/10;     Ghost HP 10
+  !!MA:A159/6;      Ghost Att 6
+  !!MA:D159/6;      Ghost Def 6
+  !!MA:M159/2;      Ghost Dam Low 2
+  !!MA:E159/4;      Ghost Dam High 4
+  !!MA:C159/6/350;  Ghost Cost 350
+  !!MA:O159/4;      Ghost > Necropolis
+  !!MA:X159/?i;     Ghost remove fire immune and add undead
+  !!VRi:~(MON_FLAG_FIRE_IMMUNITY) |(MON_FLAG_UNDEAD); 
+  !!MA:X159/i;
+  !!MA:S168/10;     Gorynych Speed 10
+  !!MA:X168/2147516563; Gorynych Set Flags - Double Wide, Fly, Alive, King 1, Attack Twice, Dragon
+  !!MA:X169/d|(MON_FLAG_ATTACKS_TWICE);     War Zealot Shoot Twice
+  !!MA:C169/6/700;  War Zealot Cost 700
+  !!MA:O169/0;      War Zealot > Castle
+  !!MA:P170/30;     Arctic Sharpshooter HP 30
+  !!MA:D170/15;     Arctic Sharpshooter Def 15
+  !!MA:M170/10;     Arctic Sharpshooter Dam Low 10
+  !!MA:E170/16;     Arctic Sharpshooter Dam High 16
+  !!MA:N170/24;     Arctic Sharpshooter Shots 24
+  !!MA:L170/4;      Arctic Sharpshooter Level 5
+  !!MA:O170/2;      Arctic Sharpshooter > Tower
+  !!MA:X170/d|(MON_FLAG_MIND_IMMUNITY);      Arctic Sharpshooter  Set flag - Immune to Mind Spells
+  !!MA:C170/6/750;  Arctic Sharpshooter Cost 750
+  !!MA:P171/25;     Lava Sharpshooter HP 25
+  !!MA:A171/16;     Lava Sharpshooter Att 16
+  !!MA:D171/12;     Lava Sharpshooter Def 12
+  !!MA:E171/12;     Lava Sharpshooter Dam High 12
+  !!MA:N171/12;     Lava Sharpshooter Shots 12
+  !!MA:L171/4;      Lava Sharpshooter Level 5
+  !!MA:O171/5;      Lava Sharpshooter > Dungeon
+  *!MA:X171/d|(MON_FLAG_DESTROYS_WALLS);        Lava Sharpshooter Set flags - Destroy Walls - Disabled as it is too OP (shoot until all the walls are destroyed)
+  !!MA:C171/6/750;  Lava Sharpshooter Cost 750 (was 800)
+  !!MA:A172/18;     Nightmare Att 18
+  !!MA:D172/16;     Nightmare Def 16
+  !!MA:M172/20;     Nightmare Dam Low 20
+  !!MA:E172/25;     Nightmare Dam High 25
+  !!MA:X172/d|(MON_FLAG_ALIVE);   Nightmare make alive
+  !!MA:O172/3;      Nightmare > Inferno
+  !!MA:P164/80;     Fire Messenger HP 80
+  !!MA:A164/16;     Fire Messenger Att 16
+  !!MA:D164/11;     Fire Messenger Def 11
+  !!MA:M164/15;     Fire Messenger Dam Low 15
+  !!MA:E164/25;     Fire Messenger Dam High 25
+  !!MA:S164/7;      Fire Messenger Speed 7
+  !!MA:O164/8;      Fire Messenger > Conflux
+  !!MA:X164/d~(MON_FLAG_FIRE_IMMUNITY);  Fire Messenger Not Fire Immune
+  !!MA:P165/100;    Earth Messenger HP 100
+  !!MA:A165/12;     Earth Messenger Att 12
+  !!MA:D165/18;     Earth Messenger Def 18
+  !!MA:M165/10;     Earth Messenger Dam Low 10
+  !!MA:E165/18;     Earth Messenger Dam High 18
+  !!MA:O165/8;      Earth Messenger > Conflux
+  !!MA:X165/d~(MON_FLAG_FIRE_IMMUNITY);  Earth Messenger Not Fire Immune
+  !!MA:P166/70;     Air Messenger HP 70
+  !!MA:A166/15;     Air Messenger Att 15
+  !!MA:D166/13;     Air Messenger Def 13
+  !!MA:M166/8;      Air Messenger Dam Low 8
+  !!MA:E166/28;     Air Messenger Dam High 28
+  !!MA:S166/8;      Air Messenger Speed 8
+  !!MA:O166/8;      Air Messenger > Conflux
+  !!MA:X166/d~(MON_FLAG_FIRE_IMMUNITY);  Air Messenger Not Fire Immune
+  !!MA:P167/90;     Water Messenger HP 90
+  !!MA:A167/14;     Water Messenger Att 14
+  !!MA:D167/15;     Water Messenger Def 15
+  !!MA:M167/12;     Water Messenger Dam Low 12
+  !!MA:E167/20;     Water Messenger Dam High 20
+  !!MA:S167/6;      Water Messenger Speed 6
+  !!MA:O167/8;      Water Messenger > Conflux
+  !!MA:X167/d~(MON_FLAG_FIRE_IMMUNITY);  Water Messenger Not Fire Immune
+  !!MA:P192/20;     Sylvan Centaur HP 20
+  !!MA:D192/7;      Sylvan Centaur Def 7
+  !!MA:X192/d|(MON_FLAG_NO_MELEE_PENALTY);      Sylvan Centaur No combat penalty
+  !!MA:C192/6/300;  Sylvan Centaur Cost 300
+  !!MA:E193/13;     Sorceress Dam High 13
+
+  ; Set up stack exp - requires stack exp to work!
+  !!UN:P(WOG_OPT_STACK_EXPERIENCE)/?(stackExpEnabled:y);
+
+  !!if&(stackExpEnabled);
+    !!EA97:F0/?(availSlot:y);                                           [ancient behemoth - get bonus line index]
+    !!EA97&(availSlot)>-1:B(availSlot)/1/98/61/40/40/40/40/40/40/40/40/40/40/40;      [set ignore defense to 40%]
+    !!EA156:F0/?(availSlot);                                          [ghost behemoth - get bonus line index]
+    !!EA156&(availSlot)>-1:B(availSlot)/1/98/61/40/40/40/40/40/40/40/40/40/40/40;     [set ignore defense to 40%]
+
+    !!EA142:F0/?(availSlot);                                         [nomad - get bonus line index]
+    !!EA142&(availSlot)>-1:B(availSlot)/1/119/83/1/1/1/1/1/1/1/1/1/1/1;               [set immune to slow]
+  !!en;
+
+****** special abilities ******
+
+** start of pre-battle trigger **
+
+!?FU(OnBeforeBattle)&i^wog_50_enabled^/-998; [continue if enabled]
+!!VRv7001:C-1/-1/-1/-1/-1/-1/-1/-1/-1/-1/0/-1; [reset variables]
+!!IF:V74/0 V75/0 V77/0;                  [reset flags 74,75,77 to false]
+
+** end of pre-battle trigger
+
+** start of battlefield trigger **
+
+!?FU(OnSetupBattlefield)&i^wog_50_enabled^/-998;                       [continue if enabled]
+!!DO7060/0/41/1:P1;                      [prepare to give abilities]
+
+** end of battlefield trigger
+
+** start of battle turn trigger **
+
+!?FU(OnBattleRound)&i^wog_50_enabled^/-998;                         [continue if enabled]
+
+!!VRv7006:S-1;                             [reset fastest speed]
+!!DO7060/0/41/1:P;                         [prepare to give spells/abilities/check for fastest monster]
+!!BMv7004:T?y-5;                           [get fastest monster's type]
+
+!!IF:V78/1;                                [set flag 78 to true - retaliations]
+
+** end of battle turn trigger **
+
+
+; Boost the speed for devils so they can teleport to anywhere (without affecting the battle queue but update grid)
+!?FU(OnBeforeBattleStackTurn_Quit)&i^wog_50_enabled^/-998/i^wog_tacticsIsEnded^;
+!#VA(stack:x);
+
+!!BM(stack):T?(type:y);
+
+!!if|(type)=(MON_DEVIL)/(type)=(MON_ARCH_DEVIL)/(type)=(MON_HELL_BARON);
+  !!BM(stack):Sd30;
+  !!VRi^wog_50_devilStackPlusOne^:S(stack) +1;
+!!en;
+
+
+** pre-action trigger
+
+!?FU(OnBeforeBattleAction)&i^wog_50_enabled^/-998; [continue if enabled]
+!!DO7060/0/41/1&78:P2;                     [prepare to give retaliations]
+
+!!BG:N?v7010 A?v7014;                      [get current stack # and action type]
+!!BG&75/v7010=v7002:A8;                    [make current creature wait if targeted by last creature]
+
+!!VRv7001:C-1/-1/-1/-1/-1/-1/-1/-1/-1;     [reset variables]
+!!IF:V75/0 V77/0;                          [reset flags 75&77 to false]
+
+!!BMv7010:T?v7001 N?v7005 P?v7007 I?y-1;   [get acting monster type, quantity, position, side]
+!!BG|v7014=6/v7014=7:E?v7002;              [if creature is attacking or shooting get destination stack]
+
+!!if&v7002>(NO_STACK);
+  !!BMv7002:T?v7008 P?v7003 R?v7004;[get type, position, retaliations of target creature stack]
+!!en;
+
+*!BMv7010&v7014=9/v7001=171:T94;           [make lava sharpshooter into cyclops if targeting as a catapult]
+
+!!VRv7000:R0/0/99;                                                        [random roll - attack]
+!!VRv7015:R0/0/99;                                             	          [random roll - retaliation]
+
+* x1=spell x2=position x3=rank x4=power x5=no retaliation flag x6=level x7=special immunity x8=target type x9=caster x10=target stack
+!!if&v7002>-1;
+  !!FU7061&v7000<10/v7001=60:P74////2/4/2/v7008/0/v7002;          [10% resistance check - paralysis if wight attacked]
+
+  !!if&v7000<20;
+    !!FU7061&v7001=61:P74////2/4/2/v7008/0/v7002;          [20% resistance check - paralysis if wraith attacked]
+    !!FU7061&v7001=80:P54////2/2/2/v7008/0/v7002;          [20% resistance check - slow if manticore attacked]
+    !!FU7061&v7001=26:P71////2/6/2/v7008/0/v7002;          [20% resistance check - poison if green dragon attacked]
+    !!FU7061&v7001=27:P70////2/3/0/v7008/0/v7002;          [20% resistance check - petrify if gold dragon attacked]
+    !!FU7061&v7001=82:P21////2/3/5/v7008/0/v7002;          [20% resistance check - fireball if red dragon attacked]
+    !!FU7061&v7001=83:P80////2/6/0/v7008/0/v7002;          [20% resistance check - acid breath if black dragon attacked]
+    !!FU7061&v7001=68:P50////2/4/4/v7008/0/v7002;          [20% resistance check - sorrow if bone dragon attacked]
+    !!FU7061&v7001=132:P16////2/2/8/v7008/0/v7002;         [20% resistance check - ice bolt if azure dragon attacked]
+    !!FU7061&v7001=133:P15////2/1/11/v7008/0/v7002;        [20% resistance check - magic arrow if crystal dragon attacked]
+    !!FU7061&v7001=40:P17////2/2/7/v7008/0/v7002;          [20% resistance check - lightning bolt if giant attacked]
+
+    !!if&-77;
+      !!BMv7002&v7000<10/v7001=60:R?v7004 R0;          [10% remove target creature's retaliations if wight attacked]
+      !!BMv7002&v7001=61:R?v7004 R0;          [20% remove target creature's retaliations if wraith attacked]
+      !!BMv7002&v7001=80:R?v7004 R0;          [20% remove target creature's retaliations if manticore attacked]
+      !!BMv7002&v7001=26:R?v7004 R0;          [20% remove target creature's retaliations if green dragon attacked]
+      !!BMv7002&v7001=27:R?v7004 R0;          [20% remove target creature's retaliations if gold dragon attacked]
+      !!BMv7002&v7001=82:R?v7004 R0;          [20% remove target creature's retaliations if red dragon attacked]
+      !!BMv7002&v7001=83:R?v7004 R0;          [20% remove target creature's retaliations if black dragon attacked]
+      !!BMv7002&v7001=68:R?v7004 R0;          [20% remove target creature's retaliations if bone dragon attacked]
+      !!BMv7002&v7001=132:R?v7004 R0;         [20% remove target creature's retaliations if azure dragon attacked]
+      !!BMv7002&v7001=133:R?v7004 R0;         [20% remove target creature's retaliations if crystal dragon attacked]
+      !!BMv7002&v7001=40:R?v7004 R0;          [20% remove target creature's retaliations if giant attacked]
+    !!en;
+  !!en;
+
+  !!BMv7002:R?v7012;      [get retaliations of target creature stack]
+
+  !!FU7064&v7000<30/v7001=140:P56/v7007/1/1/0/6/0/v7001/0/v7002;      [30% cast frenzy if boar attacks]
+
+  !!if&i^wog_50_messagerCastEnabled^;
+    !!FU7062&v7001>=164/v7001<=167:Pv7007/v7010/y-1/1;                [check for adjacent enemies - messengers]
+
+    !!FU7061&v7001=164/-77:P31/v7007/1/2/0/3/5/v7008/0/v7002;      [cast prot. from fire if fire messenger attacked]
+    !!VRv7005&v7001=164:*2;                                      [calculate fireball power if fire messenger attacked]
+
+    !!if&-77;
+      !!FU7061&v7001=164:P21/v7003/1/v7005/0/3/5/v7008/0/v7002;  [cast fireball if fire messenger attacked]
+      !!FU7061&v7001=165:P33/v7007/1/2/0/4/6/v7008/0/v7002;      [cast prot.from earth if earth messenger attacked]
+      !!FU7061&v7001=165:P23/v7003/1/v7005/0/4/6/v7008/0/v7002;  [cast meteor shower if earth messenger attacked]
+      !!FU7061&v7001=166:P30/v7007/1/2/0/2/7/v7008/0/v7002;      [cast prot. from air if air messenger attacked]
+      !!FU7061&v7001=166:P15/v7003/1/v7005/0/2/7/v7008/0/v7002;  [cast magic arrow if air messenger attacked]
+      !!FU7061&v7001=166:P17/v7003/1/v7005/0/2/7/v7008/0/v7002;  [cast lightning bolt if air messenger attacked]
+      !!FU7061&v7001=167:P32/v7007/1/2/0/3/8/v7008/0/v7002;      [cast prot. from water if water messenger attacked]
+      !!FU7061&v7001=167:P16/v7003/1/v7005/0/3/8/v7008/0/v7002;  [cast ice bolt if water messenger attacked]
+      !!FU7061&v7001=167:P20/v7003/1/v7005/0/3/8/v7008/0/v7002;  [cast frost ring if water messenger attacked]
+
+      !!BG&v7001>=164/v7001<=167:Dv7007 A2;                          [cancel action - messenger]
+    !!en;
+  !!en;
+!!en;
+
+** end of pre-action function **
+
+** start of pre-damage trigger
+
+!?FU(OnMonsterPhysicalDamage)&i^wog_50_enabled^/-998;
+!!if&v7002>-1/v7014=7;
+  !!FU7061&v7000<10/v7001=74:P45/v7003/1/3/0/2/0/v7008/1/v7002;      [10% cast weakness if beholder shot]
+  !!FU7061&v7000<20/v7001=75:P45/v7003/1/3/0/2/0/v7008/1/v7002;      [20% cast weakness if evil eye shot]
+  !!FU7061&v7000<10/v7001=100:P73/v7003/1/3/0/2/2/v7008/0/v7002;     [10% cast disease if lizardman shot]
+  !!FU7061&v7000<20/v7001=101:P73/v7003/1/3/0/2/2/v7008/0/v7002;     [20% cast disease if lizard warrior shot]
+  !!FU7061&v7000<100/v7001=170:P78/v7003/1/1/0/6/0/v7008/0/v7002;    [100% cast dispel beneficial spells if arctic sharpshooter shot]
+  !!VRv7005&v7000<100/v7001=171::2;                                  [100% calculate power if lava sharpshooter shot]
+  !!FU7061&v7000<100/v7001=171:P21/v7003/1/v7005/0/6/0/v7008/0/v7002;[100% cast fireball if lava sharpshooter shot]
+!!en;
+
+!!MF:N?y-1 D?y-2;                                                 [get target stack, damage]
+
+!!BMy-1:T?y-3 N?y-7 H?y-8 L?y-9;                                  [get target's type, health, quantity, health lost]
+!!VRy-7:*y-8 -y-9;                                                [calculate total health]
+
+** ethereal
+!!BMv7010&v7010>-1/v7010<>y-1:T?y-4;                              [get attacker type]
+!!BMv7002&v7002>-1/v7002<>y-1:T?y-4;                              [get retaliator type]
+!!VRy-5&y-3=69:S1;                                                [set if target is ghost dragon]
+!!VRy-6&y-4=69:S1;                                                [set if attacker is ghost dragon]
+
+!!if&y-2>0/y-5=1/y-6=0;
+  !!VRy-2::2;                                           [halve damage - if ethereal and attacker isn't]
+  !!MF:Fy-2;                                            [set new damage - if ethereal and attacker isn't]
+  !!VRz1:Sz150000;                                      [set combat message - if ethereal and attacker isn't]
+  !!MM:Sz1;                                             [display combat message - if ethereal and attacker isn't]
+!!en;
+
+** end of pre-damage trigger
+
+** start of post-magic resist trigger
+!?FU(OnMagicCorrectedResistance)&i^wog_50_enabled^/-998;
+
+!!MR:M?y-1 S?y-2 D?y-3;                    [get monster type, spell, damage]
+!!VRy-4|y-2=11/y-2=13/y-2=21/y-2=22/y-2=26/y-2=29:S1;    [set if Land Mine, Firewall, Fireball, Inferno, Armageddon, Fire Shield]
+!!VRy-4|y-2=16/y-2=20:S2;                                [set if Ice Bolt, Frost Ring]
+!!VRy-4|y-2=17/y-2=19/y-2=57:S3;                         [set if Lightning Bolt, Chain Lightning, Titan's Thunder]
+!!VRy-4|y-2=18/y-2=23:S4;                                [set if Implosion, Meteor Shower]
+
+
+!!VRy-3&y-1=141/y-4=1:*2;                  [double damage if mummy and fire spell]
+!!MR&y-1=141/y-4=1:Fy-3;                   [set new damage]
+
+!!VRy-3&y-1=159/y-4>0:*2;                  [double damage if ghost and any spell]
+!!MR&y-1=159/y-4>0:Fy-3;                   [set new damage]
+
+** end of post-magic resist trigger
+
+
+; Restore the speed of devils
+!?FU(OnBattleActionEnd)&i^wog_50_enabled^/-998/i^wog_50_devilStackPlusOne^/i^wog_isBattleStackAction^; [continue if enabled]
+!!VRy30:Si^wog_50_devilStackPlusOne^ -1;
+!!BMy30:S?y31;
+!!VRy31:-30 F1/(INT_MAX);
+!!BMy30:Sy31;
+!!VRi^wog_50_devilStackPlusOne^:S0;
+
+!?FU(OnAfterBattleUniversal);
+!!VRi^wog_50_devilStackPlusOne^:S0;
+
+** post-action trigger
+
+!?FU(OnAfterBattleAction)&i^wog_50_enabled^/-998;                        [continue if enabled]
+*!BMv7010&v7014=9/v7001=171:T171;              [turn lava sharpshooter back into lava sharpshooter after catapult action]
+
+* x1=spell x2=position x3=rank x4=power x5=no retaliation flag x6=level x7=special immunity x8=target type x9=caster x10=target stack
+!!if&v7002>-1;
+  !!FU7061&v7000<20/v7001=58:P73/v7003/1/3/0/2/2/v7008/0/v7002;              [20% cast disease if walking dead attacked]
+  !!FU7061&v7000<10/v7001=60:P74/v7003/1/3/1/4/2/v7008/0/v7002;              [10% cast paralysis if wight attacked]
+
+  !!if&v7000<20;
+    !!FU7061&v7001=61:P74/v7003/1/3/1/4/2/v7008/0/v7002;              [20% cast paralysis if wraith attacked]
+    !!FU7061&v7001=80:P54/v7003/1/3/1/2/2/v7008/0/v7002;              [20% cast slow if manticore attacked]
+    !!FU7061&v7001=26:P71/v7003/1/3/0/6/2/v7008/0/v7002;              [20% cast poison if green dragon attacked]
+    !!FU7061&v7001=27:P70/v7003/1/3/1/3/0/v7008/0/v7002;              [20% cast petrify if gold dragon attacked]
+    !!FU7061&v7001=82:P21/v7003/1/v7005/1/3/5/v7008/0/v7002;          [20% cast fireball if red dragon attacked]
+
+    !!if&v7001=132;
+      !!VRv7005:*4;                                           [20% calculate power if azure dragon attacked]
+      !!FU7061:P16/v7003/1/v7005/1/3/8/v7008/1/v7002;         [20% cast ice bolt if azure dragon attacked]
+    !!el&v7001=133;
+      !!VRv7005:*6;                                           [20% calculate power if cystal dragon attacked]
+      !!FU7061:P15/v7003/1/v7005/1/3/11/v7008/1/v7002;        [20% cast magic arrow if crystal dragon attacked]
+    !!en;
+
+    !!FU7061&v7001=40:P17/v7003/1/v7005/1/2/7/v7008/0/v7002;          [20% cast lightning bolt if giant attacked]
+
+    !!if&v7001=83;
+    !!FU7061:P80/v7003/1/3/1/6/0/v7008/0/v7002;              [20% cast acid breath if black dragon attacked]
+
+      !!if&-77;
+        !!VRv7005:*15;                                             [20% calculate damage if black dragon attacked]
+        !!BMv7002:Kv7005;                                          [apply damage if black dragon attacked]
+        !!VRz2:Sz150002;                                           [set combat message]
+        !!MM:Sz2;                                                  [display combat message]
+        !!BU:R;                                                    [redraw screen]
+      !!en;
+    !!el&v7001=108;
+      !!FU7061:P1/v7003/1/3/1/6/2/v7008/0/v7002;       [20% cast dummy spell if wyvern attacked]
+
+      !!if&-77;
+        !!VRv7005:*10;                               [20% calculate damage if wyvern attacked]
+        !!BMv7002:V8 Kv7005;                         [show animation, apply damage if wyvern attacked]
+        !!VRz2:Sz150003;                             [set combat message]
+        !!MM:Sz2;                                                  [display combat message]
+        !!BU:R;                                                    [redraw screen]
+      !!en;
+    !!el&v7001=68;
+      !!FU7061:P50/v7003/1/3/0/4/4/v7008/3/v7002;              [20% apply sorrow if bone dragon attacked]
+
+      !!if&-77;
+        !!VRz2:Sz150004;
+        !!MM:Sz2;
+        !!BMv7002:V30;                             [shown animation]
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+** retaliation attack **
+!!VRy-9:R0/0/99;                               [random roll]
+!!BU&v7002>-1/v7014=6/v7012>0:Ev7003/?y-1;     [check if living monster at position]
+
+!!if&v7010>-1;
+  !!BMv7010:P?y-2 F?y-4;                [get position, flags of attacking creature stack]
+  !!VRy-4:&65536;                       [check for no retaliation]
+!!en;
+
+!!if&v7002>-1;
+  !!BMv7002:N?y-3;                      [get quantity of target creature stack]
+  !!VRy-3:-1;                           [reduce quantity by 1]
+!!en;
+
+* x1=spell x2=position x3=rank x4=power x5=no retaliation flag x6=level x7=special immunity x8=target type x9=caster x10=target stack
+!!if&v7002>-1;
+  !!if&y-4=0/v7014=6/v7012>0/y-1>-1;
+    !!FU7061&y-9<20/v7008=58:P73/y-2/1/3/0/2/2/v7001/0/v7010;      [20% cast disease if walking dead retaliated]
+    !!FU7061&y-9<10/v7008=60:P74/y-2/1/3/0/4/2/v7001/0/v7010;      [10% cast paralysis if wight retaliated]
+
+    !!if&y-9<20;
+      !!FU7061&v7008=61:P74/y-2/1/3/0/4/2/v7001/0/v7010;      [20% cast paralysis if wraith retaliated]
+      !!FU7061&v7008=80:P54/y-2/1/3/0/2/2/v7001/0/v7010;      [20% cast slow if manticore retaliated]
+      !!FU7061&v7008=26:P71/y-2/1/3/0/6/2/v7001/0/v7010;      [20% cast poison if green dragon retaliated]
+      !!FU7061&v7008=27:P70/y-2/1/3/0/3/0/v7001/0/v7010;      [20% cast petrify if gold dragon retaliated]
+      !!FU7061&v7008=82:P21/y-2/1/y-3/0/3/5/v7001/0/v7010;    [20% cast fireball if red dragon attacked]
+
+      !!if&v7008=132;
+        !!VRy-3:+1 *4 -1;                             [20% calculate power if azure dragon retaliated]
+        !!FU7061:P16/y-2/1/y-3/0/3/8/v7001/1/v7010;   [20% cast ice bolt if azure dragon retaliated]
+      !!el&v7008=133;
+        !!VRy-3:+1 *6 -1;                             [20% calculate power if crystal dragon retaliated]
+        !!FU7061:P15/y-2/1/y-3/0/3/11/v7001/1/v7010;  [20% cast magic arrow if crystal dragon retaliated]
+      !!en;
+
+      !!FU7061&v7008=40/y-4=0:P17/y-2/1/y-3/0/2/7/v7001/0/v7010;    [20% cast lightning bolt if giant retaliated]
+
+      !!if&v7008=83;
+        !!FU7061:P80/y-2/1/3/0/6/0/v7001/0/v7010;      [20% cast acid breath if black dragon retaliated]
+
+        !!if&-77;
+          !!VRy-3:+1 *15;                                [20% calculate damage if black dragon attacked]
+          !!BMv7010:Ky-3;                                  [apply damage if black dragon attacked]
+          !!VRz2:Sz150005;                                 [set combat message]
+          !!MM:Sz2;                                        [display combat message]
+          !!BU:R;                                          [redraw screen]
+        !!en;
+      !!el&v7008=108;
+        !!FU7061:P1/y-2/1/3/1/6/2/v7001/0/v7010;    [20% cast dummy spell if wyvern attacked]
+
+        !!if&-77;
+          !!VRy-3:+1 *10;           [20% calculate damage if wyvern attacked]
+          !!BMv7010:V8 Ky-3;        [show animation, apply damage if wyvern attacked]
+          !!VRz2:Sz150006;                    [set combat message]
+          !!MM:Sz2;                           [display combat message]
+          !!BU:R;                               [redraw screen]
+        !!en;
+      !!el&v7008=68;
+        !!FU7061:P50/y-2/1/3/0/4/4/v7001/1/v7010;        [20% apply sorrow if bone dragon retaliated]
+
+        !!if&-77;
+          !!VRz2:Sz150007;
+          !!MM:Sz2;
+          !!BM:V30;                             [shown animation]
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+
+  !!if&v7008=141/v7014>=6/v7014<=7;
+    !!FU7061:P42/y-2/1/3/0/1/5/v7001/3/v7010;  [apply curse if mummy was attacked or shot]
+    !!VRz2:Sz150008;
+    !!MM:Sz2;
+    !!BMv7010:V40;                             [shown animation]
+  !!en;
+!!en;
+
+!!BG:N?v7009;                                         [get current stack #]
+!!BMv7009:T?y5 P?y6;                                  [get monster type, position]
+
+!!VRy14:S0 R9;                 [random roll]
+
+!!if&y14<50;
+  !!FU7065&y5=110:P20;  [if hydra, regenerate]
+  !!FU7065&y5=111:P30;  [if chaos hydra, regenerate]
+!!en;
+
+!!if&i^battle_round^>=0;
+  !!if&v7000<15;
+    !!FU7064&y5=112:P53/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. haste - air elemental]
+    !!FU7064&y5=114:P43/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. bloodlust - fire elemental]
+    !!FU7064&y5=115:P41/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. bless - water elemental]
+    !!FU7064&y5=113:P46/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. stoneskin - earth elemental]
+    !!FU7064&y5=127:P53/y6/2/5/0/6/0/v7001/0/v7002;         [15% cast adv. haste - storm elemental]
+    !!FU7064&y5=129:P43/y6/2/5/0/6/0/v7001/0/v7002;         [15% cast adv. bloodlust - energy elemental]
+    !!FU7064&y5=123:P41/y6/2/5/0/6/0/v7001/0/v7002;         [15% cast adv. bless - ice elemental]
+    !!FU7064&y5=125:P46/y6/2/5/0/6/0/v7001/0/v7002;         [15% cast adv. stoneskin - magma elemental]
+  !!el&v7000<30/v7000>14;
+    !!FU7064&y5=112:P28/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. air shield - air elemental]
+    !!FU7064&y5=114:P29/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. fire shield - fire elemental]
+    !!FU7064&y5=115:P36/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. magic mirror - water elemental]
+    !!FU7064&y5=113:P27/y6/1/3/0/6/0/v7001/0/v7002;         [15% cast bas. shield - earth elemental]
+    !!FU7064&y5=127:P28/y6/2/3/0/6/0/v7001/0/v7002;         [15% cast adv. air shield - storm elemental]
+    !!FU7064&y5=129:P29/y6/2/5/0/6/0/v7001/0/v7002;         [15% cast adv. fire shield - energy elemental]
+    !!FU7064&y5=123:P36/y6/2/5/0/6/0/v7001/0/v7002;         [15% cast adv. magic mirror - ice elemental]
+    !!FU7064&y5=125:P27/y6/2/5/0/6/0/v7001/0/v7002;         [15% cast adv. shield - magma elemental]
+  !!en;
+!!en;
+
+!!if&y5=144;
+  !!BMv7009:N?y7 B?y8;                   [get quantities (current/initial) - troll]
+
+  !!if&y7<y8;
+    !!VRy3:S1 R30;                   [calculate missing hit points - troll]
+    !!BMv7009:Nd1 Ly3;               [add 1 with 1-30 health missing - troll]
+  !!en;
+!!en;
+
+** end of post-action function **
+
+** function to cycle through all stacks  (give spells/abilities/check for fastest monster)   x1=trigger once flag
+
+!?FU7060;
+!!BMx16:T?y1;                            [get stack's monster type]
+
+**  latent abilities  **
+!!BMx16|y1=130/y1=131:M29/100/1;         [give bas. fire shield - firebird/phoenix]
+!!BMx16|y1=40/y1=41/y1=152:M30/100/2;    [give adv. prot. air - giant/titan/LoT]
+!!BMx16|y1=54/y1=55/y1=153:M31/100/2;    [give adv. prot. fire - devil/archdevil/hell baron]
+!!BMx16|y1=12/y1=13/y1=150:M32/100/2;    [give adv. prot. water - angel/archangel/supreme aa]
+!!BMx16|y1=96/y1=97/y1=156:M33/100/2;    [give adv. prot. earth - behemoth/ancient b/ghost b]
+!!BMx16&y1=93:M30/100/2;                 [give adv. prot. air - thunderbird]
+!!BMx16&y1=17:M55/100/3;                 [give exp. slayer - battle dwarf]
+!!BMx16&y1=11:M27/100/1;                 [give bas. shield - champion]
+!!BMx16&y1=21:M28/100/1;                 [give bas. air shield - silver pegasus]
+!!BMx16|y1=24/y1=25:M36/100/1;           [give bas. magic mirror - unicorn/war unicorn]
+
+!!if&x1=2;
+  !!BMx16&y1=96:Rd1;                       [give +1 retaliation - behemoth]
+  !!BMx16&y1=97:Rd1;                       [give +1 retaliation - ancient behemoth]
+  !!BMx16&y1=156:Rd2;                      [give +2 retaliation - eldest behemoth]
+  !!BMx16&y1=135:Rd1;                      [give +1 retaliation - rust dragon]
+  !!BMx16&y1=143:Rd1;                      [give +1 retaliation - rogue]
+  !!BMx16&y1=168:Rd1;                      [give +1 retaliation - gorynych]
+
+  !!IF:V78/0;                              [set flag 78 to false - retaliations]
+!!en;
+
+**  find fastest monster  **
+!!BMx16:S?y2;                            [get monster's speed]
+
+!!if&y2>v7006;
+  !!VRv7004:Sx16;                 [store stack # if faster than v7006]
+  !!VRv7006:Sy2;                  [store speed if faster than v7006]
+!!en;
+
+** end of function **
+
+** function to check if enemy has magic resistance    x1=spell x2=position x3=rank x4=power x5=no retaliation flag x6=level x7=special immunity x8=target
+* special immunities list:  1-living  2-non living  3-undead  4-mind  5-fire  6-earth  7-lightning  8-ice  9-blind  10-hypnotize  11-magic arrow
+
+!?FU7061;
+!#VA(spell:x) (pos:x) (rank:x) (power:x) (noRetaliation:x) (level:x) (specialImmun:x) (type:x) (const:x) (stack:x);
+
+!!BMx10|x7=1/x7=2:F?i;                     [check if target is alive]
+!!VRi|x7=1/x7=2:&16;                         [just check alive bit]
+!!VRy4&x7=1/i=16:S1;                         [if alive set y4 to 1]
+!!VRy4&x7=2/i=0:S1;                          [if not alive set y4 to 1]
+!!BMx10&x7=3:F?i;                          [check if target is undead]
+!!VRi&x7=3:&262144;                          [just check undead bit]
+!!VRy4&x7=3/i=262144:S1;                     [if undead set y4 to 1]
+!!BMx10|x7=4/x7=10:F?i;                    [check if target is mind immune]
+!!VRi|x7=4/x7=10:&1024;                      [just check mind immune bit]
+!!VRy4&x7=4/i=1024:S1;                       [if mind immune set y4 to 1]
+!!VRy4&x7=10/i=1024:S1;                      [if mind immune set y4 to 1]
+!!BMx10|x7=5/x7=9:F?i;                     [check if target is fire immune]
+!!VRi|x7=5/x7=9:&16384;                      [just check fire immune bit]
+!!VRy4&x7=5/i=16384:S1;                      [if fire immune set y4 to 1 (fire)]
+!!VRy4&x7=9/i=16384:S1;                      [if fire immune set y4 to 1 (blind)]
+!!VRy4&x7=11/i=16384:S1;                     [if fire immune set y4 to 1 (magic arrow)]
+!!BMx10:T?y5;                              [get target type]
+!!VRy4&x7=6/y5=112:S1;                       [if earth immune set y4 to 1 (air elemental)]
+!!VRy4&x7=6/y5=127:S1;                       [if earth immune set y4 to 1 (storm elemental)]
+!!VRy4&x7=7/y5=113:S1;                       [if lightning immune set y4 to 1 (earth elemental)]
+!!VRy4&x7=7/y5=125:S1;                       [if lightning immune set y4 to 1 (magma elemental)]
+!!VRy4&x7=8/y5=115:S1;                       [if water immune set y4 to 1 (water elemental)]
+!!VRy4&x7=8/y5=123:S1;                       [if water immune set y4 to 1 (ice elemental)]
+!!VRy4&x7=9/y5>=70/y5<=71:S1;                [if blind immune set y4 to 1 (troglodite/infernal trog)]
+!!VRy4&x7=11/y5>=112/y5<=115:S1;             [if magic arrow immune set y4 to 1 (any normal elemental)]
+!!VRy4&x7=11/y5>=123/y5<=129:S1;             [if magic arrow immune set y4 to 1 (any upgraded elemental)]
+
+!!BMx10&x7=10:N?y6 H?y7;                   [get quantity and hitpoints of target stack]
+!!VRy7&x7=10:*y6;                            [get total hitpoints of target stack (pixies/sprites)]
+!!VRy8&x7=10:Sx4 *40;                        [get total hypnotize strength (pixies/sprites)]
+!!VRy4&x7=10/y8<y7:S1;                       [if hypnotize is less than hitpoints set y4 to 1 (pixies/sprites)]
+!!BMx10&x7=10:G60/?y2/?y3;                 [check if target is already hypnotized]
+!!VRy4&x7=10/y2>0:S1;                        [if already hypnotized make immune]
+
+!!BMx10:G34/?y2/?y3;                       [check if target has Anti-Magic active]
+!!VRy3&y2>0:+1;                              [if active add 1 to rank so that 0=not active]
+!!VRy1|x8=26/x8=82/x8=132/y3=1/y3=2:S3;      [Green Dragon/Red Dragon/Azure Dragon/Basic Anti-Magic]
+!!VRy1|x8=27/y3=3:S4;                        [Gold Dragon/Advanced Anti-Magic]
+!!VRy1|x8=83/x8=121/x8=151/x8=155/y3=4:S5;   [Black Dragon/Darkness Dragon/Diamond Dragon/Magic Elemental/Expert Anti-Magic]
+
+!!IF&x6>y1/y4=0:V77/0;                       [if not immune set flag 77 to false]
+!!IF|x6<=y1/y4=1:V77/1;                      [if immune set flag 77 to true]
+!!FU7064&x6>y1/x5<>2/y4=0:Px1/x2/x3/x4/x5;   [cast spell if not immune and x5 is not 2 (indicating check only)]
+
+** end of function **
+
+** function to check if caster is adjacent to enemy   x1=position  x2=stack #   x3=side index x4=switch
+
+!?FU7062;
+!!BMx2:I?y8 F?y9;                 [get side and flags of caster stack]
+!!VRy9:&1;                            [just check double wide bit]
+!!VRy1&x1>-1/x1<17:S3;               [if on first odd row set to 3]
+!!VRy1&x1>33/x1<51:S2;               [if on odd row set to 2]
+!!VRy1&x1>67/x1<85:S2;               [if on odd row set to 2]
+!!VRy1&x1>101/x1<119:S2;             [if on odd row set to 2]
+!!VRy1&x1>135/x1<153:S2;             [if on odd row set to 2]
+!!VRy1&x1>169/x1<187:S4;             [if on last odd row set to 4]
+!!VRy1&x1>16/x1<34:S1;               [if on even row set to 1]
+!!VRy1&x1>50/x1<68:S1;               [if on even row set to 1]
+!!VRy1&x1>84/x1<102:S1;              [if on even row set to 1]
+!!VRy1&x1>118/x1<136:S1;             [if on even row set to 1]
+!!VRy1&x1>152/x1<170:S1;             [if on even row set to 1]
+
+!!FU7063|y1=2/y1=4:Px1/x3/-17/x4;       [odd]
+!!FU7063|y1=2/y1=4:Px1/x3/-16/x4;       [odd]
+!!FU7063|y1=2/y1=3/y1=4:Px1/x3/-1/x4;   [odd]
+!!FU7063|y1=2/y1=3/y1=4:Px1/x3/1/x4;    [odd]
+!!FU7063|y1=2/y1=3:Px1/x3/17/x4;        [odd]
+!!FU7063|y1=2/y1=3:Px1/x3/18/x4;        [odd]
+
+!!if&y9=1;
+  !!if&x3=0;
+    !!FU7063&y1=4:Px1/x3/-15/x4;   [odd double wide 0]
+    !!FU7063&y1=2:Px1/x3/-15/x4;   [odd double wide 0]
+    !!FU7063&y1=3:Px1/x3/19/x4;    [odd double wide 0]
+    !!FU7063&y1=2:Px1/x3/19/x4;    [odd double wide 0]
+    !!FU7063&y1>1:Px1/x3/2/x4;     [odd double wide 0]
+
+    !!if&y1=1;
+      !!FU7063:Px1/x3/-16/x4;   [even double wide 0]
+      !!FU7063:Px1/x3/18/x4;    [even double wide 0]
+      !!FU7063:Px1/x3/2/x4;     [even double wide 0]
+    !!en;
+  !!el&x3=1;
+    !!FU7063&y1=4:Px1/x3/-18/x4;   [odd double wide 1]
+    !!FU7063&y1=2:Px1/x3/-18/x4;   [odd double wide 1]
+    !!FU7063&y1=3:Px1/x3/16/x4;    [odd double wide 1]
+    !!FU7063&y1=2:Px1/x3/16/x4;    [odd double wide 1]
+    !!FU7063&y1>1:Px1/x3/-2/x4;    [odd double wide 1]
+
+    !!if&y1=1;
+      !!FU7063:Px1/x3/-19/x4;   [even double wide 1]
+      !!FU7063:Px1/x3/15/x4;    [even double wide 1]
+      !!FU7063:Px1/x3/-2/x4;    [even double wide 1]
+    !!en;
+  !!en;
+!!en;
+
+!!if&y1=1;
+  !!FU7063:Px1/x3/-18/x4;            [even]
+  !!FU7063:Px1/x3/-17/x4;            [even]
+  !!FU7063:Px1/x3/-1/x4;             [even]
+  !!FU7063:Px1/x3/1/x4;              [even]
+  !!FU7063:Px1/x3/16/x4;             [even]
+  !!FU7063:Px1/x3/17/x4;             [even]
+!!en;
+
+** end of function **
+
+** function to check if enemy is at position       x1=pos  x2=side index  x3=offset x4=switch
+
+!?FU7063;
+!!VRy1:Sx1 +x3;                 [calculate position to check]
+!!BU:Ey1/?y3;                   [check if living monster at position]
+!!BMy3&y3>-1:I?y2;              [get side of monster stack]
+!!IF&y3>-1/x2=0/y2=1/x4=1:V77/1;     [if enemy set flag 77 to true]
+!!IF&y3>-1/x2=1/y2=0/x4=1:V77/1;     [if enemy set flag 77 to true]
+
+** end of function **
+
+** function to cast spell    x1=spell x2=position x3=rank x4=power x5=no retaliation flag
+
+!?FU7064&x2>=0/x2<=186;
+!#VA(spell:x) (pos:x) (level:x) (power:x);
+
+!#VA(usedY[20]:y);
+
+!!VR(power):F1/(INT_MAX);
+
+!!BG:N?y1;                                [get current stack #]
+!!BU:Ex2/?y2;                             [check for living stack]
+!!IF&y2=-1:V77/1;                         [if dead stack set flag 77 to true]
+!!IF&x5=1:V75/1;                          [set flag 75 to true]
+
+; Check if the spell is a damaging spell
+!!SS(spell):F?(flags:y);
+!!VR(isDmgSpell:y):S(flags) &512;
+
+; Store the original data of the spell and change
+!!if&(isDmgSpell);
+  !!SS(spell):E(level)/?(origEffect:y) E(level)/0;
+  !!SS(spell):P?(origPower:y) P10;
+!!en;
+
+!!BMy1&x9=0:C(spell)/x2/x3/x4/1;               [have current stack cast spell]
+!!BMv7010&x9=1:C(spell)/x2/x3/x4/1;            [have attacker cast spell]
+
+; Restore the data of the spell
+!!if&(isDmgSpell);
+  !!SS(spell):E(level)/(origEffect) P(origPower);
+!!en;
+
+!!BMx10&x9=3/y2>-1:Mx1/x4/x3;             [apply spell to target stack]
+!!BMy1&x9>0:C2/x2/0/0/0;                  [cast dummy spell to restore current stack indicator]
+!!BMx10&x5=1:Rv7004;                      [restore target's retaliations if they were removed]
+
+** end of function **
+
+** function to check if creature needs cure       x1= x2=
+
+!?FU7065;
+
+!!BMv7009:T?y1 P?y2 L?y3;                      [get monster type, position, health lost]
+!!VRy4&y3>0:Sy3 -x1;                          [reduce damage by x1 (heal)]
+!!VRy4&y3>0/y4<0:S0;                         [if less than 0 set to 0]
+!!VRy5&y3>0:Sy3 -y4;                         [calculate hit points healed]
+!!VRz2&y3>0:Sz150009;
+!!MM&y3>0:Sz2;
+!!FU7064&y3>0:P1/y2/0/0/0/6/0/y1/0;            [cast dummy spell (scuttle boat)]
+!!BMv7009&y3>0:V79 Ly4;                        [shown animation, set health lost]
+
+** end of function **
+
+** function to add specialty text      x1=monster number  x2=Z variable index
+
+!?FU(WOG_50_SetMonDescription);
+
+!!re (monId:y)/0/172;
+  !!VR(ertString:y):S150010 +(monId);
+
+  !!if&z(ertString)<>^^;
+    !!SN:H^monname^/(monId)/2/z(ertString); [pikeman]
+  !!en;
+!!en;
+
+!!SN:H^monname^/(MON_SYLVAN_CENTAUR)/2/z150184; [sylvan centaur]
+
+** end of function **
+
+** Daily Timer **
+; Lose Ghosts daily
+; The default loss rate is 1% to 10% depending on the quantity of ghosts of one stack (100 to 1000 or more)
+; Can be tweaked by changing i^wog_50_ghostLossThreshold^
+!?FU(OnEveryDay)&i^timerDay^>0/i^wog_50_enabled^;
+!#VA(day:x) (weekDay:x) (once:x) (owner:x) (isAi:x);
+
+; Executes the daily loss of Ghosts for every hero and town
+!!OW:H(owner)/2/0 W(owner)/?(townQty:y);  [store current player heroes amount into v2]
+!!OW:Hi^timerOwner^/1;
+
+; heroes
+!!if&v1;
+  !!re (vHeroId:y)/2/v1/1/1;            [loop through all the hero of this player]
+    !!re (slot:y)/0/(ARMY_SLOT_LAST);
+      !!HEv(vHeroId):C0/(slot)/?(monId:y)/?(monQty:y); [chec for ghosts]
+
+      !!if&(monId)=(MON_GHOST)/(monQty)>i^wog_50_ghostLossThreshold^;
+        !!FU(WOG_50_CalcGhostNewNumber):P(monQty)/?(newQty:y);
+        !!HEv(vHeroId):C0/(slot)/d/(newQty); [chec for ghosts]
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+; towns
+!!if&(townQty)>0;
+  !!re i/0/(townQty)/1/-1;              [town cycle]
+    !!OW:W(owner)/i/?(townId:y);
+    !!CA0/(townId):H0/?(garisonHero:y); [get owner of iterated town, check for garrison hero]
+
+    !!if&(garisonHero)=(NO_HERO);
+      !!re (slot:y)/0/(ARMY_SLOT_LAST);
+        !!CA0/(townId):M2/(slot)/?(monId:y)/?(monQty:y); [check for ghosts]
+
+        !!if&(monId)=(MON_GHOST)/(monQty)>i^wog_50_ghostLossThreshold^;
+          !!FU(WOG_50_CalcGhostNewNumber):P(monQty)/?(newQty:y);
+          !!CA0/(townId):M2/(slot)/d/(newQty);          
+        !!en;
+      !!en;
+    !!en;
+  !!en;
+!!en;
+
+!?FU(WOG_50_CalcGhostNewNumber);
+!#VA(monQty:x) (newQty:x);
+
+!!VR(lossCounter:y):S(monQty) :i^wog_50_ghostLossThreshold^ F0/10;
+!!VR(qtyLoss:y):S(monQty) :100 *(lossCounter);
+
+!!VR(newQty):S(monQty) -(qtyLoss);
+
+** end of function

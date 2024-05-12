@@ -1,0 +1,17 @@
+ { 
+  "77001": "OnSavegameWrite",
+  "77002": "OnSavegameRead",
+  "77003": "OnKeyPressed",
+  "77004": "OnOpenHeroScreen",
+  "77005": "OnCloseHeroScreen",
+  "77006": "OnBattleStackObtainsTurn",
+  "77007": "OnBattleRegeneratePhase",
+  "77008": "OnAfterSaveGame",
+  "77010": "OnBeforeHeroInteraction",
+  "77011": "OnAfterHeroInteraction",
+  "77012": "OnStackToStackDamage",
+  "77013": "OnAICalcStackAttackEffect",
+  "77014": "OnChat",
+  "77015": "OnGameEnter",
+  "77016": "OnGameLeave"
+}

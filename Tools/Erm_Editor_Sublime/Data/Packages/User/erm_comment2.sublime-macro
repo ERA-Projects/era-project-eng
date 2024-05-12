@@ -1,0 +1,7 @@
+[
+	{"args":{"extend":false,"to":"eol"},"command":"move_to"},
+	{"args":{"setting":"tab_size","value":40},"command":"set_setting"},
+	{"args":{"characters":";\t// "},"command":"insert"},
+	{"args":{"setting":"tab_size","value":2},"command":"set_setting"}
+]
+	

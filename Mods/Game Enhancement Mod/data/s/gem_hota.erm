@@ -1,0 +1,53 @@
+ZVSE2
+; Author:   Archer30
+; Engine:   ERM 2.0+
+; Requires: ERA 3.3+, Era Erm Framework
+
+; Differentiate sprites of heroes in the battle with genders.
+
+
+!?FU(gem_CreateERMHook);
+!!SN:Ex1/1/4296921/(gem_OnDrawArrows); 4190D9 
+!!SN:Ex1/1/4599887/(gem_OnSetUpBattleHeroSprite); 46304F
+
+// 3-colour arrow
+; Warning: Must make sure ADAG.DEF has 75 frames!
+!?FU(gem_OnDrawArrows);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EBX)/4/?(heroStruct:y);
+!!UN:C(heroStruct)/73/4/?(maxMp:y);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ESI)/4/?(esi:y);
+!!VR(secDayMp:y):S(esi) +(maxMp);
+
+!!if&(secDayMp)<0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_EDX)/4/?(edx:y) Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(eax:y);
+  !!VR(ptr:y):S(eax) *2 +(edx);
+  !!UN:C(ptr)/2/d50;
+
+  !!SN:X?t/0;
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4296926; 4190DE
+!!en;
+
+// Hero sprites in battle
+!?FU(OnAfterErmInstructions);
+!!FU(NewStrArray):P36/?i^gem_heroBattleDefsList^/(M_STORED);
+
+!!SN:Vi^gem_heroBattleDefsList^/0/^CH00.def^/^CH01b.DEF^/^CH02.def^/^CH03b.DEF^/^CH04b.DEF^/^CH05.def^/^CH06.def^/^CH07b.def^/^CH08.def^/^CH09b.DEF^/^CH010.def^/^CH011b.DEF^/^CH013.DEF^/^CH013b.def^/^CH014.def^/^CH015.def^/^ch16.def^/^CH17.def^;
+!!SN:Vi^gem_heroBattleDefsList^/18/^CH00b.DEF^/^CH01.def^/^CH02b.DEF^/^CH03.def^/^CH04.def^/^CH05b.DEF^/^CH06b.DEF^/^CH07.def^/^CH08b.def^/^CH09.def^/^CH010b.def^/^CH11.def^/^CH012.def^/^CH012b.DEF^/^CH014.def^/^CH015.def^/^CH16b.def^/^CH17b.DEF^;
+
+!?FU(gem_OnSetUpBattleHeroSprite);
+; Get the index of the sprite
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_EAX)/4/?(heroStruct:y);
+!!FU&(heroStruct)=(NULL):E;
+
+!!UN:C(heroStruct)/48/4/?(index:y);
+!!UN:C(heroStruct)/981/4/?(isFemale:y);
+!!VR(index:y)&(isFemale):+18;
+!!FU&(index)<0/(index)>35:E;            [failed safe]
+
+; Load the filename pointer to the memory
+!!SN:Mi^gem_heroBattleDefsList^/?(memAddr:y)/(index);
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_ECX)/4/(memAddr);
+
+; Jump
+!!SN:X?t/0;
+!!UN:Cx1/(STRUCT_HOOK_CONTEXT_RET)/4/4599933;

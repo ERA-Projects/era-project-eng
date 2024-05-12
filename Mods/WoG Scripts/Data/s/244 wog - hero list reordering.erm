@@ -1,0 +1,81 @@
+ZVSE2
+
+** HERO/TOWN LIST REORDERING
+** 盐幸刃温世 严妊世 门形怕/梦形奈?
+** Option 040 by Alexis Koz
+** Rewritten by igrik (29.09.2020)
+** EXPANDED by daemon_n (18.05.2022)
+
+* Shift-click on Hero/Town slot shift all Heroes/Towns by 1 from first to clicked slot
+* ALT-click on Hero/Town slot move Hero/Town to first slot
+
+
+!#DC(WOG_OPT_HERO_LIST_REORDERING) = 244;
+
+
+!?FU(OnAdventureMapLeftMouseClick)&999/i^mouse_action^=(MOUSE_LMB_PRESSED);/i^wog_hdMod_on^;
+!!UN:P(WOG_OPT_HERO_LIST_REORDERING)/?(wogOption:y);  
+!!FU&(wogOption)<>(TRUE):E;
+
+
+!!if&i^mouse_item^>39/i^mouse_item^<=43:;  heroes listing
+  
+  !!VR(itemID:y):Si^mouse_item^-39; 
+  
+  !!if&i^key_alt^;
+    !#VA(hero[8]:y);
+    !!OW:O(CURRENT_PLAYER)/?(hrOnMap:y)/?(hero[0])/?(hero[1])/?(hero[2])/?(hero[3])/?(hero[4])/?(hero[5])/?(hero[6])/?(hero[7]);
+    !!OW:O(CURRENT_PLAYER)/(itemID)/?(clickHero:y);
+
+    !!if&(clickHero)<>(NO_HERO);
+      !!re i/0/(hrOnMap)/1/-1;
+        !!if&(hero[i])=(clickHero);
+          !!VR(hero[i]):S(hero[0]);
+          !!VR(hero[0]):S(clickHero);
+          !!OW:O(CURRENT_PLAYER)/(hrOnMap)/(hero[0])/(hero[1])/(hero[2])/(hero[3])/(hero[4])/(hero[5])/(hero[6])/(hero[7]);
+          !!CM:R0;
+          !!UN:R(REDRAW_ADV_MAP);
+          !!br;
+        !!en;
+          
+      !!en;
+      
+    !!en;
+    !!FU:E;
+  !!en;
+
+  !!if&i^key_shift^;
+    !!OW:O(CURRENT_PLAYER)/1/(itemID)/0;
+    !!CM:R0;
+    !!UN:R(REDRAW_ADV_MAP);
+    !!FU:E;
+  !!en;
+
+!!el&i^mouse_item^>32/i^mouse_item^<=36;
+  !!VR(itemID:y):Si^mouse_item^-32; 
+
+  !!if&i^key_alt^;
+    !!OW:W(CURRENT_PLAYER)/?(townsOnMap:y) N(CURRENT_PLAYER)/(itemID)/?(clickTown:y);
+
+    !!re i/0/(townsOnMap)/1/-1;
+      !!OW:W(CURRENT_PLAYER)/i/?(townId:y);
+      !!if&(clickTown)=(townId);
+        !!OW:W(CURRENT_PLAYER)/0/?(firstTownId:y) W(CURRENT_PLAYER)/0/(townId) W(CURRENT_PLAYER)/i/(firstTownId);
+        !!CM:R0;
+        !!UN:R(REDRAW_ADV_MAP);
+        !!br;
+      !!en;
+    !!en;
+
+    !!FU:E;
+  !!en;
+
+  !!if&i^key_shift^;
+    !!OW:N(CURRENT_PLAYER)/1/(itemID)/0;
+    !!CM:R0;
+    !!UN:R(REDRAW_ADV_MAP);
+  !!en;
+ 
+!!en;
+
+** End of Script **

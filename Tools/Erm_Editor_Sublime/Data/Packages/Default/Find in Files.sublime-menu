@@ -1,0 +1,45 @@
+[
+    {
+        "caption": "Очистить", 
+        "command": "clear_location"
+    }, 
+    {
+        "caption": "Добавить папку", 
+        "command": "add_directory"
+    }, 
+    {
+        "caption": "Фильтр файлов по маске", 
+        "args": {
+            "snippet": "*.${0:txt}"
+        }, 
+        "command": "add_where_snippet"
+    }, 
+    {
+        "caption": "Исключить файлы по маске", 
+        "args": {
+            "snippet": "-*.${0:txt}"
+        }, 
+        "command": "add_where_snippet"
+    }, 
+    {
+        "caption": "Добавить открытые папки", 
+        "args": {
+            "snippet": "<open folders>"
+        }, 
+        "command": "add_where_snippet"
+    }, 
+    {
+        "caption": "Добавить открытые файлы", 
+        "args": {
+            "snippet": "<open files>"
+        }, 
+        "command": "add_where_snippet"
+    }, 
+    {
+        "caption": "Добавить текущий файл", 
+        "args": {
+            "snippet": "<current file>"
+        }, 
+        "command": "add_where_snippet"
+    }
+]
