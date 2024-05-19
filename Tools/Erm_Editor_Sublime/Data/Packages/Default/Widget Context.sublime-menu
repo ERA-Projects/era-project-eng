@@ -1,21 +1,23 @@
 [
     {
-        "caption": "Копировать", 
-        "command": "copy"
+        "command": "open_context_url"
     }, 
     {
-        "caption": "Вырезать", 
+        "caption": "-"
+    }, 
+    {
         "command": "cut"
     }, 
     {
-        "caption": "Вставить", 
+        "command": "copy"
+    }, 
+    {
         "command": "paste"
     }, 
     {
         "caption": "-"
     }, 
     {
-        "caption": "Выделить всё", 
         "command": "select_all"
     }
 ]

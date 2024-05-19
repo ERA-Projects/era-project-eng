@@ -2,25 +2,25 @@
     {
         "caption": "Windows Line Endings (CRLF)", 
         "checkbox": true, 
+        "command": "set_line_ending", 
         "args": {
             "type": "windows"
-        }, 
-        "command": "set_line_ending"
+        }
     }, 
     {
         "caption": "Unix Line Endings (LF)", 
         "checkbox": true, 
+        "command": "set_line_ending", 
         "args": {
             "type": "unix"
-        }, 
-        "command": "set_line_ending"
+        }
     }, 
     {
         "caption": "Mac OS 9 Line Endings (CR)", 
         "checkbox": true, 
+        "command": "set_line_ending", 
         "args": {
             "type": "cr"
-        }, 
-        "command": "set_line_ending"
+        }
     }
 ]

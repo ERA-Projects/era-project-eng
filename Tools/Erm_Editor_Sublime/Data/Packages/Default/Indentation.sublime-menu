@@ -1,109 +1,109 @@
 [
     {
-        "caption": "Использовать в отступах пробелы", 
+        "caption": "Indent Using Spaces", 
         "checkbox": true, 
+        "command": "toggle_setting", 
         "args": {
             "setting": "translate_tabs_to_spaces"
-        }, 
-        "command": "toggle_setting"
+        }
     }, 
     {
         "caption": "-"
     }, 
     {
-        "caption": "Размер отступа: 1", 
+        "caption": "Tab Width: 1", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 1
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
-        "caption": "Размер отступа: 2", 
+        "caption": "Tab Width: 2", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 2
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
-        "caption": "Размер отступа: 3", 
+        "caption": "Tab Width: 3", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 3
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
-        "caption": "Размер отступа: 4", 
+        "caption": "Tab Width: 4", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 4
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
-        "caption": "Размер отступа: 5", 
+        "caption": "Tab Width: 5", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 5
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
-        "caption": "Размер отступа: 6", 
+        "caption": "Tab Width: 6", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 6
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
-        "caption": "Размер отступа: 7", 
+        "caption": "Tab Width: 7", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 7
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
-        "caption": "Размер отступа: 8", 
+        "caption": "Tab Width: 8", 
         "checkbox": true, 
+        "command": "set_setting", 
         "args": {
             "setting": "tab_size", 
             "value": 8
-        }, 
-        "command": "set_setting"
+        }
     }, 
     {
         "caption": "-"
     }, 
     {
-        "caption": "Определить параметры из буфера", 
+        "caption": "Guess Settings From Buffer", 
         "command": "detect_indentation"
     }, 
     {
         "caption": "-"
     }, 
     {
-        "caption": "Преобразовать отступы в пробелы", 
+        "caption": "Convert Indentation to Spaces", 
+        "command": "expand_tabs", 
         "args": {
             "set_translate_tabs": true
-        }, 
-        "command": "expand_tabs"
+        }
     }, 
     {
-        "caption": "Преобразовать отступы в табуляцию", 
+        "caption": "Convert Indentation to Tabs", 
+        "command": "unexpand_tabs", 
         "args": {
             "set_translate_tabs": true
-        }, 
-        "command": "unexpand_tabs"
+        }
     }
 ]

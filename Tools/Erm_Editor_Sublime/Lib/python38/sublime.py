@@ -15,7 +15,7 @@ from typing import Callable, Optional, Any, Iterator, Literal, TYPE_CHECKING
 import sublime_api
 
 if TYPE_CHECKING:
-    from sublime_types import DIP, Vector, Point, Value, CommandArgs, Kind, Event, CompletionValue
+    from sublime_types import DIP, Vector, Point, Value, CommandArgs, Kind, CompletionValue
 
 
 class _LogWriter(io.TextIOBase):
@@ -129,7 +129,7 @@ class NewFileFlags(enum.IntFlag):
     Don't select the file if it is open. Instead make a new clone of that file in the desired
     group.
 
-    .. :since:: next
+    .. :since:: 4135
     """
 
 
@@ -156,14 +156,35 @@ class FindFlags(enum.IntFlag):
     """
     NONE = 0
     """ """
-    IGNORECASE = 2
-    """ Whether case should be considered when matching the find pattern. """
     LITERAL = 1
     """ Whether the find pattern should be matched literally or as a regex. """
+    IGNORECASE = 2
+    """ Whether case should be considered when matching the find pattern. """
+    WHOLEWORD = 4
+    """
+    Whether to only match whole words.
+
+    .. since:: 4149
+    """
+    REVERSE = 8
+    """
+    Whether to search backwards.
+
+    .. since:: 4149
+    """
+    WRAP = 16
+    """
+    Whether to wrap around once the end is reached.
+
+    .. since:: 4149
+    """
 
 
-IGNORECASE = FindFlags.IGNORECASE
 LITERAL = FindFlags.LITERAL
+IGNORECASE = FindFlags.IGNORECASE
+WHOLEWORD = FindFlags.WHOLEWORD
+REVERSE = FindFlags.REVERSE
+WRAP = FindFlags.WRAP
 
 
 class QuickPanelFlags(enum.IntFlag):
@@ -848,7 +869,8 @@ def open_dialog(
 
     cb = callback
     if not multi_select:
-        cb = lambda files: callback(files[0] if files else None)
+        def cb(files):
+            return callback(files[0] if files else None)
 
     sublime_api.open_dialog(file_types, directory or '', flags, cb)
 
@@ -892,7 +914,8 @@ def select_folder_dialog(
     """
     cb = callback
     if not multi_select:
-        cb = lambda folders: callback(folders[0] if folders else None)
+        def cb(folders):
+            return callback(folders[0] if folders else None)
 
     sublime_api.select_folder_dialog(directory or '', multi_select, cb)
 
@@ -1263,6 +1286,26 @@ def get_macro() -> list[dict]:
     return sublime_api.get_macro()
 
 
+def project_history():
+    """
+    :returns: A list of most recently opened workspaces.
+              Sublime-project files with the same name are
+              listed in place of sublime-workspace files.
+
+    .. since:: 4144
+    """
+    return sublime_api.project_history()
+
+
+def folder_history():
+    """
+    :returns: A list of recent folders added to sublime projects
+
+    .. since:: 4144
+    """
+    return sublime_api.folder_history()
+
+
 class Window:
     """
     """
@@ -1559,6 +1602,18 @@ class Window:
         view_ids = sublime_api.window_views_in_group(self.window_id, group)
         return [View(x) for x in view_ids]
 
+    def num_sheets_in_group(self, group: int) -> int:
+        """
+        :returns: The number of sheets in the specified group.
+        """
+        return sublime_api.window_num_sheets_in_group(self.window_id, group)
+
+    def num_views_in_group(self, group: int) -> int:
+        """
+        :returns: The number of views in the specified group.
+        """
+        return sublime_api.window_num_views_in_group(self.window_id, group)
+
     def transient_sheet_in_group(self, group: int) -> Optional[Sheet]:
         """
         :returns: The transient sheet in the specified group.
@@ -1583,7 +1638,7 @@ class Window:
         """
         Promote the 'Sheet' parameter if semi-transient or transient.
 
-        :since: next
+        :since: 4135
         """
         sublime_api.window_promote_sheet(self.window_id, sheet.id())
 
@@ -1739,9 +1794,9 @@ class Window:
         """ :returns: Whether the sidebar is visible. """
         return sublime_api.window_is_ui_element_visible(self.window_id, UIElement.SIDE_BAR)
 
-    def set_sidebar_visible(self, flag: bool):
+    def set_sidebar_visible(self, flag: bool, animate=True):
         """ Hides or shows the sidebar. """
-        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.SIDE_BAR, flag)
+        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.SIDE_BAR, flag, animate)
 
     def is_minimap_visible(self) -> bool:
         """ :returns: Whether the minimap is visible. """
@@ -1749,7 +1804,7 @@ class Window:
 
     def set_minimap_visible(self, flag: bool):
         """ Hides or shows the minimap. """
-        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.MINIMAP, flag)
+        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.MINIMAP, flag, False)
 
     def is_status_bar_visible(self) -> bool:
         """ :returns: Whether the status bar is visible. """
@@ -1757,7 +1812,7 @@ class Window:
 
     def set_status_bar_visible(self, flag: bool):
         """ Hides or shows the status bar. """
-        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.STATUS_BAR, flag)
+        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.STATUS_BAR, flag, False)
 
     def get_tabs_visible(self) -> bool:
         """ :returns: Whether the tabs are visible. """
@@ -1765,7 +1820,7 @@ class Window:
 
     def set_tabs_visible(self, flag: bool):
         """ Hides or shows the tabs. """
-        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.TABS, flag)
+        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.TABS, flag, False)
 
     def is_menu_visible(self) -> bool:
         """ :returns: Whether the menu is visible. """
@@ -1773,7 +1828,7 @@ class Window:
 
     def set_menu_visible(self, flag: bool):
         """ Hides or shows the menu. """
-        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.MENU, flag)
+        sublime_api.window_set_ui_element_visible(self.window_id, UIElement.MENU, flag, False)
 
     def folders(self) -> list[str]:
         """ :returns: A list of the currently open folders in this `Window`. """
@@ -2346,7 +2401,7 @@ class Sheet:
         """
         :returns: Whether this sheet is currently selected.
 
-        :since: next
+        :since: 4135
         """
         return sublime_api.sheet_is_selected(self.sheet_id)
 
@@ -2821,7 +2876,10 @@ class View:
         return sublime_api.view_extract_tokens_with_scopes(self.view_id, region.begin(), region.end())
 
     def extract_scope(self, pt: Point) -> Region:
-        """ :returns: The extent of the syntax scope name assigned to the character at the given `Point`, narrower syntax scope names included. """
+        """
+        :returns: The extent of the syntax scope name assigned to the character
+                  at the given `Point`, narrower syntax scope names included.
+        """
         return sublime_api.view_extract_scope(self.view_id, pt)
 
     def expand_to_scope(self, pt: Point, selector: str) -> Optional[Region]:
@@ -3882,8 +3940,8 @@ class CompletionList:
         Sets the list of completions, allowing the list to be displayed to the
         user.
         """
-        assert(self.completions is None)
-        assert(flags is not None)
+        assert self.completions is None
+        assert flags is not None
 
         self.completions = completions
         self.flags = flags

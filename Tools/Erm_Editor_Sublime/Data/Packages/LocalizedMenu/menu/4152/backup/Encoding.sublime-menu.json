@@ -1,0 +1,472 @@
+[
+    {
+        "caption": "Установить кодировку", 
+        "children": [
+            {
+                "caption": "UTF-8", 
+                "args": {
+                    "encoding": "utf-8"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "UTF-16 LE", 
+                "args": {
+                    "encoding": "utf-16 le"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "UTF-16 BE", 
+                "args": {
+                    "encoding": "utf-16 be"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "-"
+            }, 
+            {
+                "caption": "Western (Windows 1252)", 
+                "args": {
+                    "encoding": "Western (Windows 1252)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Western (ISO 8859-1)", 
+                "args": {
+                    "encoding": "Western (ISO 8859-1)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Western (ISO 8859-3)", 
+                "args": {
+                    "encoding": "Western (ISO 8859-3)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Western (ISO 8859-15)", 
+                "args": {
+                    "encoding": "Western (ISO 8859-15)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Western (Mac Roman)", 
+                "args": {
+                    "encoding": "Western (Mac Roman)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "DOS (CP 437)", 
+                "args": {
+                    "encoding": "DOS (CP 437)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Arabic (Windows 1256)", 
+                "args": {
+                    "encoding": "Arabic (Windows 1256)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Arabic (ISO 8859-6)", 
+                "args": {
+                    "encoding": "Arabic (ISO 8859-6)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Baltic (Windows 1257)", 
+                "args": {
+                    "encoding": "Baltic (Windows 1257)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Baltic (ISO 8859-4)", 
+                "args": {
+                    "encoding": "Baltic (ISO 8859-4)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Celtic (ISO 8859-14)", 
+                "args": {
+                    "encoding": "Celtic (ISO 8859-14)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Central European (Windows 1250)", 
+                "args": {
+                    "encoding": "Central European (Windows 1250)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Central European (ISO 8859-2)", 
+                "args": {
+                    "encoding": "Central European (ISO 8859-2)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Cyrillic (Windows 1251)", 
+                "args": {
+                    "encoding": "Cyrillic (Windows 1251)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Cyrillic (Windows 866)", 
+                "args": {
+                    "encoding": "Cyrillic (Windows 866)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Cyrillic (ISO 8859-5)", 
+                "args": {
+                    "encoding": "Cyrillic (ISO 8859-5)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Cyrillic (KOI8-R)", 
+                "args": {
+                    "encoding": "Cyrillic (KOI8-R)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Cyrillic (KOI8-U)", 
+                "args": {
+                    "encoding": "Cyrillic (KOI8-U)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Estonian (ISO 8859-13)", 
+                "args": {
+                    "encoding": "Estonian (ISO 8859-13)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Greek (Windows 1253)", 
+                "args": {
+                    "encoding": "Greek (Windows 1253)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Greek (ISO 8859-7)", 
+                "args": {
+                    "encoding": "Greek (ISO 8859-7)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Hebrew (Windows 1255)", 
+                "args": {
+                    "encoding": "Hebrew (Windows 1255)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Hebrew (ISO 8859-8)", 
+                "args": {
+                    "encoding": "Hebrew (ISO 8859-8)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Nordic (ISO 8859-10)", 
+                "args": {
+                    "encoding": "Nordic (ISO 8859-10)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Romanian (ISO 8859-16)", 
+                "args": {
+                    "encoding": "Romanian (ISO 8859-16)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Turkish (Windows 1254)", 
+                "args": {
+                    "encoding": "Turkish (Windows 1254)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Turkish (ISO 8859-9)", 
+                "args": {
+                    "encoding": "Turkish (ISO 8859-9)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "Vietnamese (Windows 1258)", 
+                "args": {
+                    "encoding": "Vietnamese (Windows 1258)"
+                }, 
+                "command": "set_encoding"
+            }, 
+            {
+                "caption": "-"
+            }, 
+            {
+                "caption": "Hexadecimal", 
+                "args": {
+                    "encoding": "Hexadecimal"
+                }, 
+                "command": "set_encoding"
+            }
+        ]
+    }, 
+    {
+        "caption": "Переоткрыть в кодировке", 
+        "children": [
+            {
+                "caption": "UTF-8", 
+                "args": {
+                    "encoding": "utf-8"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "UTF-16 LE", 
+                "args": {
+                    "encoding": "utf-16 le"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "UTF-16 BE", 
+                "args": {
+                    "encoding": "utf-16 be"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "-"
+            }, 
+            {
+                "caption": "Western (Windows 1252)", 
+                "args": {
+                    "encoding": "Western (Windows 1252)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Western (ISO 8859-1)", 
+                "args": {
+                    "encoding": "Western (ISO 8859-1)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Western (ISO 8859-3)", 
+                "args": {
+                    "encoding": "Western (ISO 8859-3)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Western (ISO 8859-15)", 
+                "args": {
+                    "encoding": "Western (ISO 8859-15)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Western (Mac Roman)", 
+                "args": {
+                    "encoding": "Western (Mac Roman)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "DOS (CP 437)", 
+                "args": {
+                    "encoding": "DOS (CP 437)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Arabic (Windows 1256)", 
+                "args": {
+                    "encoding": "Arabic (Windows 1256)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Arabic (ISO 8859-6)", 
+                "args": {
+                    "encoding": "Arabic (ISO 8859-6)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Baltic (Windows 1257)", 
+                "args": {
+                    "encoding": "Baltic (Windows 1257)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Baltic (ISO 8859-4)", 
+                "args": {
+                    "encoding": "Baltic (ISO 8859-4)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Celtic (ISO 8859-14)", 
+                "args": {
+                    "encoding": "Celtic (ISO 8859-14)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Central European (Windows 1250)", 
+                "args": {
+                    "encoding": "Central European (Windows 1250)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Central European (ISO 8859-2)", 
+                "args": {
+                    "encoding": "Central European (ISO 8859-2)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Cyrillic (Windows 1251)", 
+                "args": {
+                    "encoding": "Cyrillic (Windows 1251)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Cyrillic (Windows 866)", 
+                "args": {
+                    "encoding": "Cyrillic (Windows 866)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Cyrillic (ISO 8859-5)", 
+                "args": {
+                    "encoding": "Cyrillic (ISO 8859-5)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Cyrillic (KOI8-R)", 
+                "args": {
+                    "encoding": "Cyrillic (KOI8-R)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Cyrillic (KOI8-U)", 
+                "args": {
+                    "encoding": "Cyrillic (KOI8-U)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Estonian (ISO 8859-13)", 
+                "args": {
+                    "encoding": "Estonian (ISO 8859-13)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Greek (Windows 1253)", 
+                "args": {
+                    "encoding": "Greek (Windows 1253)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Greek (ISO 8859-7)", 
+                "args": {
+                    "encoding": "Greek (ISO 8859-7)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Hebrew (Windows 1255)", 
+                "args": {
+                    "encoding": "Hebrew (Windows 1255)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Hebrew (ISO 8859-8)", 
+                "args": {
+                    "encoding": "Hebrew (ISO 8859-8)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Nordic (ISO 8859-10)", 
+                "args": {
+                    "encoding": "Nordic (ISO 8859-10)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Romanian (ISO 8859-16)", 
+                "args": {
+                    "encoding": "Romanian (ISO 8859-16)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Turkish (Windows 1254)", 
+                "args": {
+                    "encoding": "Turkish (Windows 1254)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Turkish (ISO 8859-9)", 
+                "args": {
+                    "encoding": "Turkish (ISO 8859-9)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "Vietnamese (Windows 1258)", 
+                "args": {
+                    "encoding": "Vietnamese (Windows 1258)"
+                }, 
+                "command": "reopen"
+            }, 
+            {
+                "caption": "-"
+            }, 
+            {
+                "caption": "Hexadecimal", 
+                "args": {
+                    "encoding": "Hexadecimal"
+                }, 
+                "command": "reopen"
+            }
+        ]
+    }
+]

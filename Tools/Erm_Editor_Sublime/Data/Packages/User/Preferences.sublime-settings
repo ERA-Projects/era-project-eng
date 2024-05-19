@@ -4,10 +4,9 @@
 	"color_scheme": "Packages/User/Monokai2B.tmTheme",
 	"enable_telemetry": false,
 	"fallback_encoding": "Cyrillic (Windows 1251)",
-	"font_size": 13,
+	"font_size": 12,
 	"ignored_packages":
 	[
-		"GitGutter",
 		"Vintage",
 	],
 	"rulers":
@@ -23,4 +22,5 @@
 	"themed_title_bar": false,
 	"show_encoding": true,
 
+	"index_files": true,
 }

@@ -1,0 +1,61 @@
+[
+    {
+        "command": "open_context_url"
+    }, 
+    {
+        "caption": "Перейти к определению", 
+        "command": "context_goto_definition"
+    }, 
+    {
+        "caption": "-", 
+        "id": "clipboard"
+    }, 
+    {
+        "caption": "Копировать", 
+        "command": "copy"
+    }, 
+    {
+        "caption": "Вырезать", 
+        "command": "cut"
+    }, 
+    {
+        "caption": "Вставить", 
+        "command": "paste"
+    }, 
+    {
+        "caption": "-", 
+        "id": "selection"
+    }, 
+    {
+        "caption": "Выделить всё", 
+        "command": "select_all"
+    }, 
+    {
+        "caption": "-", 
+        "id": "file"
+    }, 
+    {
+        "caption": "Открыть в браузере", 
+        "command": "open_in_browser"
+    }, 
+    {
+        "caption": "Открыть папку файла…", 
+        "args": {
+            "file": "$file_name", 
+            "dir": "$file_path"
+        }, 
+        "command": "open_dir"
+    }, 
+    {
+        "caption": "Копировать путь к файлу", 
+        "command": "copy_path"
+    }, 
+    {
+        "caption": "Показать в боковой панели", 
+        "command": "reveal_in_side_bar"
+    }, 
+    {
+        "caption": "-", 
+        "id": "end"
+    }
+]

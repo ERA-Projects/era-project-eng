@@ -1,45 +1,52 @@
 [
     {
-        "caption": "Очистить", 
+        "caption": "Clear", 
         "command": "clear_location"
     }, 
     {
-        "caption": "Добавить папку", 
+        "caption": "Add Folder", 
         "command": "add_directory"
     }, 
     {
-        "caption": "Фильтр файлов по маске", 
+        "caption": "Add Include Filter", 
+        "command": "add_where_snippet", 
         "args": {
             "snippet": "*.${0:txt}"
-        }, 
-        "command": "add_where_snippet"
+        }
     }, 
     {
-        "caption": "Исключить файлы по маске", 
+        "caption": "Add Exclude Filter", 
+        "command": "add_where_snippet", 
         "args": {
             "snippet": "-*.${0:txt}"
-        }, 
-        "command": "add_where_snippet"
+        }
     }, 
     {
-        "caption": "Добавить открытые папки", 
+        "caption": "Add Project Filters", 
+        "command": "add_where_snippet", 
+        "args": {
+            "snippet": "<project filters>"
+        }
+    }, 
+    {
+        "caption": "Add Open Folders", 
+        "command": "add_where_snippet", 
         "args": {
             "snippet": "<open folders>"
-        }, 
-        "command": "add_where_snippet"
+        }
     }, 
     {
-        "caption": "Добавить открытые файлы", 
+        "caption": "Add Open Files", 
+        "command": "add_where_snippet", 
         "args": {
             "snippet": "<open files>"
-        }, 
-        "command": "add_where_snippet"
+        }
     }, 
     {
-        "caption": "Добавить текущий файл", 
+        "caption": "Add Current File", 
+        "command": "add_where_snippet", 
         "args": {
             "snippet": "<current file>"
-        }, 
-        "command": "add_where_snippet"
+        }
     }
 ]

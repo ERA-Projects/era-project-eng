@@ -4,10 +4,10 @@
         "id": "folder_commands"
     }, 
     {
-        "caption": "Удалить папку из проекта", 
+        "caption": "Remove Folder from Project", 
+        "command": "remove_folder", 
         "args": {
             "dirs": []
-        }, 
-        "command": "remove_folder"
+        }
     }
 ]

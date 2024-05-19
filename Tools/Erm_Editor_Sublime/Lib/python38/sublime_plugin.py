@@ -17,7 +17,7 @@ import sublime_api
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from sublime_types import DIP, Vector, Point, Value, CommandArgs, Kind, Event, CompletionValue
+    from sublime_types import Value
 
 
 api_ready = False
@@ -1647,7 +1647,7 @@ class WindowCommand(Command):
     def __init__(self, window):
         """ :meta private: """
 
-        self.window: Window = window
+        self.window: sublime.Window = window
         """ The `Window` this command is attached to. """
 
     def run_(self, edit_token, args):
@@ -1685,7 +1685,7 @@ class TextCommand(Command):
     def __init__(self, view):
         """ :meta private: """
 
-        self.view: View = view
+        self.view: sublime.View = view
         """ The `View` this command is attached to. """
 
     def run_(self, edit_token, args):
@@ -1905,7 +1905,8 @@ class EventListener:
         :param hover_zone:
             Which element in Sublime Text the mouse has hovered over.
 
-    .. method:: on_query_context(view: View, key: str, operator: QueryOperator, operand: str, match_all: bool) -> Optional[bool]
+    .. method:: on_query_context(\
+            view: View, key: str, operator: QueryOperator, operand: str, match_all: bool) -> Optional[bool]
 
         Called when determining to trigger a key binding with the given context
         key. If the plugin knows how to respond to the context, it should
@@ -1928,7 +1929,8 @@ class EventListener:
             either does or doesn't match. If the context is unknown return
             ``None``.
 
-    .. method:: on_query_completions(view: View, prefix: str, locations: List[Point]) -> Union[None, List[CompletionValue], Tuple[List[CompletionValue], AutoCompleteFlags], CompletionList]
+    .. method:: on_query_completions(view: View, prefix: str, locations: List[Point]) -> Union[\
+            None, List[CompletionValue], Tuple[List[CompletionValue], AutoCompleteFlags], CompletionList]
 
         Called whenever completions are to be presented to the user.
 
@@ -1942,14 +1944,23 @@ class EventListener:
 
     .. method:: on_text_command(view: View, command_name: str, args: CommandArgs) -> (str, CommandArgs)
 
-        Called when a text command is issued. The listener may return a (command, arguments) tuple to rewrite the command, or None to run the command unmodified.
+        Called when a text command is issued. The listener may return a
+        (command, arguments) tuple to rewrite the command, or ``None`` to run
+        the command unmodified.
 
     .. method:: on_window_command(window: Window, command_name: str, args: CommandArgs) -> (str, CommandArgs)
 
-        Called when a window command is issued. The listener may return a (command, arguments) tuple to rewrite the command, or None to run the command unmodified.
+        Called when a window command is issued. The listener may return a
+        (command, arguments) tuple to rewrite the command, or ``None`` to run
+        the command unmodified.
 
-    .. method:: on_post_text_command(view: View, command_name: str, args: CommandArgs)    Called after a text command has been executed.
-    .. method:: on_post_window_command(window: Window, command_name: str, args: CommandArgs)      Called after a window command has been executed.
+    .. method:: on_post_text_command(view: View, command_name: str, args: CommandArgs)
+
+        Called after a text command has been executed.
+
+    .. method:: on_post_window_command(window: Window, command_name: str, args: CommandArgs)
+
+        Called after a window command has been executed.
 
     .. method:: on_new_window(window: Window)
 
@@ -1959,7 +1970,8 @@ class EventListener:
 
     .. method:: on_new_window_async(window: Window)
 
-        Called when a window is created, passed the Window object. Runs in a separate thread, and does not block the application.
+        Called when a window is created, passed the Window object. Runs in a
+        separate thread, and does not block the application.
 
         .. since:: 4050
 
@@ -1977,7 +1989,8 @@ class EventListener:
 
     .. method:: on_new_project_async(window: Window)
 
-        Called right after a new project is created, passed the Window object. Runs in a separate thread, and does not block the application.
+        Called right after a new project is created, passed the Window object.
+        Runs in a separate thread, and does not block the application.
 
         .. since:: 4050
 
@@ -1989,7 +2002,8 @@ class EventListener:
 
     .. method:: on_load_project_async(window: Window)
 
-        Called right after a project is loaded, passed the Window object. Runs in a separate thread, and does not block the application.
+        Called right after a project is loaded, passed the Window object. Runs
+        in a separate thread, and does not block the application.
 
         .. since:: 4050
 
@@ -2007,7 +2021,8 @@ class EventListener:
 
     .. method:: on_post_save_project_async(window: Window)
 
-        Called right after a project is saved, passed the Window object. Runs in a separate thread, and does not block the application.
+        Called right after a project is saved, passed the Window object. Runs in
+        a separate thread, and does not block the application.
 
         .. since:: 4050
 
@@ -2136,7 +2151,8 @@ class ViewEventListener:
 
     .. method:: on_selection_modified_async()
 
-        Called after the selection has been modified in the view. Runs in a separate thread, and does not block the application.
+        Called after the selection has been modified in the view. Runs in a
+        separate thread, and does not block the application.
 
     .. method:: on_activated()
 
@@ -2144,7 +2160,8 @@ class ViewEventListener:
 
     .. method:: on_activated_async()
 
-        Called when the view gains input focus. Runs in a separate thread, and does not block the application.
+        Called when the view gains input focus. Runs in a separate thread, and
+        does not block the application.
 
     .. method:: on_deactivated()
 
@@ -2152,7 +2169,8 @@ class ViewEventListener:
 
     .. method:: on_deactivated_async()
 
-        Called when the view loses input focus. Runs in a separate thread, and does not block the application.
+        Called when the view loses input focus. Runs in a separate thread, and
+        does not block the application.
 
     .. method:: on_hover(point: Point, hover_zone: HoverZone)
 
@@ -2185,7 +2203,8 @@ class ViewEventListener:
                   and it either does or doesn't match. If the context is unknown
                   return ``None``.
 
-    .. method:: on_query_completions(prefix: str, locations: List[Point]) -> Union[None, List[CompletionValue], Tuple[List[CompletionValue], AutoCompleteFlags], CompletionList]
+    .. method:: on_query_completions(prefix: str, locations: List[Point]) -> Union[\
+            None, List[CompletionValue], Tuple[List[CompletionValue], AutoCompleteFlags], CompletionList]
 
         Called whenever completions are to be presented to the user.
 
@@ -2199,7 +2218,9 @@ class ViewEventListener:
 
     .. method:: on_text_command(command_name: str, args: CommandArgs) -> Tuple[str, CommandArgs]
 
-        Called when a text command is issued. The listener may return a ``(command, arguments)`` tuple to rewrite the command, or ``None`` to run the command unmodified.
+        Called when a text command is issued. The listener may return a
+        `` (command, arguments)`` tuple to rewrite the command, or ``None`` to
+        run the command unmodified.
 
         .. since:: 3155
 

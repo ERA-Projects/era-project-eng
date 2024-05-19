@@ -1,0 +1,13 @@
+[
+    {
+        "caption": "-", 
+        "id": "folder_commands"
+    }, 
+    {
+        "caption": "Удалить папку из проекта", 
+        "args": {
+            "dirs": []
+        }, 
+        "command": "remove_folder"
+    }
+]

@@ -1,1 +1,0 @@
-{"sublime_text": "*", "version": "1.3.6", "platforms": ["*"], "url": "https://www.autoitscript.com/forum/forum/7-autoit-technical-discussion/", "description": "AutoItScript Au3 language package for SublimeText including syntax highlighting, comments toggling, auto-completions, build systems for run and compile, Tidy command, IncludeHelper command.", "dependencies": []}

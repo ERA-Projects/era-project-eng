@@ -1,0 +1,34 @@
+[
+    {
+        "command": "cut"
+    }, 
+    {
+        "command": "copy"
+    }, 
+    {
+        "command": "paste"
+    }, 
+    {
+        "caption": "-"
+    }, 
+    {
+        "command": "select_all"
+    }, 
+    {
+        "caption": "-"
+    }, 
+    {
+        "checkbox": true, 
+        "command": "console_python_version", 
+        "args": {
+            "version": "3.8"
+        }
+    }, 
+    {
+        "checkbox": true, 
+        "command": "console_python_version", 
+        "args": {
+            "version": "3.3"
+        }
+    }
+]

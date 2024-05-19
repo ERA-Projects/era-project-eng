@@ -3,23 +3,31 @@
         "command": "open_context_url"
     }, 
     {
-        "caption": "Перейти к определению", 
-        "command": "context_goto_definition"
+        "caption": "Goto Definition", 
+        "command": "goto_definition"
+    }, 
+    {
+        "caption": "-", 
+        "id": "diff"
+    }, 
+    {
+        "command": "toggle_inline_diff"
+    }, 
+    {
+        "caption": "Revert Diff Hunk", 
+        "command": "revert_hunk"
     }, 
     {
         "caption": "-", 
         "id": "clipboard"
     }, 
     {
-        "caption": "Копировать", 
-        "command": "copy"
-    }, 
-    {
-        "caption": "Вырезать", 
         "command": "cut"
     }, 
     {
-        "caption": "Вставить", 
+        "command": "copy"
+    }, 
+    {
         "command": "paste"
     }, 
     {
@@ -27,31 +35,50 @@
         "id": "selection"
     }, 
     {
-        "caption": "Выделить всё", 
         "command": "select_all"
+    }, 
+    {
+        "caption": "-", 
+        "id": "repo_commands"
+    }, 
+    {
+        "caption": "Open Git Repository…", 
+        "command": "sublime_merge_open_repo"
+    }, 
+    {
+        "caption": "File History…", 
+        "command": "sublime_merge_file_history"
+    }, 
+    {
+        "caption": "Line History…", 
+        "command": "sublime_merge_line_history"
+    }, 
+    {
+        "caption": "Blame File…", 
+        "command": "sublime_merge_blame_file"
     }, 
     {
         "caption": "-", 
         "id": "file"
     }, 
     {
-        "caption": "Открыть в браузере", 
+        "caption": "Open in Browser", 
         "command": "open_in_browser"
     }, 
     {
-        "caption": "Открыть папку файла…", 
+        "caption": "Open Containing Folder…", 
+        "command": "open_dir", 
         "args": {
             "file": "$file_name", 
             "dir": "$file_path"
-        }, 
-        "command": "open_dir"
+        }
     }, 
     {
-        "caption": "Копировать путь к файлу", 
+        "caption": "Copy File Path", 
         "command": "copy_path"
     }, 
     {
-        "caption": "Показать в боковой панели", 
+        "caption": "Reveal in Side Bar", 
         "command": "reveal_in_side_bar"
     }, 
     {
