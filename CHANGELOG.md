@@ -1,3 +1,43 @@
+### Version 2.967
+
+#### Advanced Classes Mod:
+- Summon Elemental: Now we use the native way for summoning elemental, corrected the shadow of the battlefield, spell book icon and potentially fixed other issues
+- Fixed GM Quicksand messing up highlight
+- Commander class is now replay proof
+- Kill count is now adding only after kill (instead of before kill). This also fixes in some situation that the kill isn't really there but is still considered valid, for example, some block/reflect abilities of the attacking unit, that prevents a kill, or the attacking unit is killed in the process (like burned by Fire Shield).
+- Fixed STOIC_WATCHMAN not giving 10% resistance as the description says
+- some format changes
+- Now we use hook instead of playing UN:C at needed timing to cover everything in the game and clean our code.
+It fixed the [problem] not showing correct spell point in the battle (https://discord.com/channels/580473641104310301/580473641104310305/1238718760123109407)
+- Fixed wrong condition checked for TUM 8th creature;
+- Fixed not possible to raise Wights;
+- Fix and balance Fortune;
+- Grand Master Fortune now:
+	- steals 2 speed, 3 damage, 4 attack or 4 defense on attack (slightly less than previous value);
+	- Grand Maser Fortune now respect spell immunity (Black Dragons cannot be stolen by default)
+	- Lowest speed is now 2
+	- If not enough stats to be stolen, battle log shows the exact value stolen;
+- small correction for Spell Point regeneration display
+- secret class improvements;
+- Fixed duplicate option in "Choose Class" option (at the start of the game). There are two "Ask after 5 levels". Now one of them is now Ask after 2.
+- Fixed artifact set detection. Equipping two artifacts with the same name no longer reduces 1 from your set pieces count..
+- The max kill count for commander is now at 9999 (visual change)
+- AI now can also advance their class set stats with each victory (if they mange to loot one from human. They do not drop class sets due to &1000 condition);
+
+### Game Enhancement Mod:
+- Fixed messing the first acting unit when the speed of two stacks are the same;
+- rewritten GetTime function;
+- updated version check function;
+
+### WoG:
+- added locale list for the future change locale dlg;
+
+### WoG Scripts:
+- Attacking in melee war machines fix removed cause it is already represented in the plugin;
+- Enhanced War Machines III: Fixed possible to heal hostile stacks
+- Fishing well: small init message fix;
+
+
 ### Version 2.966
 
 #### Advanced Difficulties Mod:
