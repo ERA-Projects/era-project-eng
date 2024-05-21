@@ -3,4 +3,4 @@
 ### ERA Project (English version)
 ### [Russian version](https://github.com/ERA-Projects/era-project-rus)
 # This repository is used to publish releases of the [ERA Project](https://github.com/daemon1995/era_gaming_mods)
-### [Changelog](https://github.com/ERA-Projects/era-project-rus/blob/main/CHANGELOG.md)
+### [Changelog](https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md)
