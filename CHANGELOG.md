@@ -1,4 +1,15 @@
+### Version 2.969
+
+####ERA:
+- ERA.dll kernel update
+  - regeneration with the Elixir of Life has been reduced to 100 hp;
+  - added exported function SetStdRegenerationEffect for plugins;
+
+#### Random Wallpaper Mod:
+- Fixed the inability to select map size in the scenario selection dialog;
+
 ### Version 2.968
+
 #### ERA:
 
 - updating the ERA.dll kernel to version 3.9.12:
