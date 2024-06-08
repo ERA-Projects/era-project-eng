@@ -52,7 +52,7 @@ ZVSE2
 !#VA(address:x);
 
 !!SN:E(address)/1/5013149/(WOG_OnNewDay);                            [trigger on start every day]
-!!SN:E(address)/1/5014608/(WOG_OnNewWeek);                           [trigger on start every week]
+!!SN:E(address)/1/5014608/(WOG_OnNewWeek);                           [trigger on start every week] 4C8450
 !!SN:E(address)/1/5016587/(WOG_OnNewMonth);                          [trigger on start every month]
 !!SN:E(address)/1/5008601/(WOG_EndOfTurn);                           [trigger on every player end of turn]
 !!SN:E(address)/1/7710213/(WOG_PreBeforeBattle);                     [use only in exceptional cases]
@@ -1498,6 +1498,10 @@ The game may fall at any time.^;
   !!co&(randMon)>=(MON_CATAPULT)/(randMon)<=(MON_ARROW_TOWERS);
   !!co&(randMon)>=(MON_EMISSARY_OF_WAR)/(randMon)<=(MON_EMISSARY_OF_LORE);
   !!co&(randMon)>=(MON_COMMANDER_FIRST_A)/(randMon)<=(MON_COMMANDER_LAST_D);
+
+  ; Check if the monster is allowed to spawn
+  !!MA:H(randMon)/?(advMapHigh:y);
+  !!co&(advMapHigh)<=0;
 
   ; Check if the level and fight value are ideal
   !!MA:L(randMon)/?(level:y);

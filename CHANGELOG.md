@@ -1,3 +1,99 @@
+### Version 2.968
+#### ERA:
+
+- updating the ERA.dll kernel to version 3.9.12:
+	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
+	- Implemented advanced ERM memory synchronization means in network games.
+	-  Added !!IP:M command to mark associative variables (SN:W, i^^, s^^) for further synchronization.
+  Syntax:
+    !!IP:M^var_name_1^/^var_name_2^/...;
+    !!IP:M0/^array_var_name_1^/^array_var_name_2^/...;
+	-  Added !!IP:S command to perform synchronization of all marked variables and arrays. Use !!IP:D to specify targets for synchronization.
+	After calling it marked variables cache is cleared.
+	!!IP:S is automatically called right before sending 'start battle' network event with !!IP:D-1.
+	- Added GAME_TYPE_XXX constants to Era Erm Framework (see UN:V 5-th parameter).
+	- Added the following global variables to Era Erm Framework:
+	i^battle_isActingSideUiUser^: bool. Is TRUE if acting side player is local human and thus can use all UI actions.
+	Use it to prevent non-active network player from performing state changing UI actions.
+	- Added the following functions to Era Erm Framework:
+		- !?FU(Array_Move);
+		Copies part of the array into another part of the array, overwriting existing values in a smart way.
+		- !?FU(Array_Splice);
+		  Deletes specified number of items from start index and inserts new items in the same position afterwards.
+		- !?FU(ActivateNextStack);
+		  Finds and activates next stack. Returns TRUE on success and FALSE if nobody can move in this phase.
+	- Implemented possibility to select desired IP for multiplayer gaming.
+	Vanilla game uses the first found IP address for PC, while PC may belong to multiple networks: LAN, WLAN, Virtual LAN, Internet (white IP address).
+	- Added the following exported functions to era.dll:
+		- Allocates new function ID and binds it to specified name if name is free, otherwise returns already binded ID.
+		This function can be used to implement custom ERM events in plugins.
+		The result is 1 if new ID was allocated, 0 otherwise.
+		function AllocErmFunc (FuncName: pchar; {i} out FuncId: integer): TDwordBool; stdcall;
+		typedef bool (__stdcall* TAllocErmFunc) (const char* EventName, int32_t &EventId);
+	- Added new event for plugins/Lua: 'OnAfterReloadLanguageData'. It occurs whenever Era reloads all language json data from disk.
+	- Rewritten creature regeneration ability support.
+	(!) Plugins should not hook regeneration code and should use Era 'SetRegenerationAbility' API instead.
+	- Exported function 'SetRegenerationAbility' in era.dll for plugins only (like new creature plugins).
+	- Removed heroes3.ini option "FixGetHostByName".
+	- Fixed bug: local static string arrays indexes were incorrectly calculated for non-const indexes in ERM 2 scripts, ex. (arr[i]).
+	- Fixed bug in VFS.dll, due to which Era was not working on Wine. Null mask parameter for NtQueryDirectoryFile was treated as '*'#0 instead of '*'.
+	
+#### Advanced Classes Mod:
+- prevents message display after combats for non active player
+- Added definition of frequent used artifact variables. Currently, i^acm_%(ART_ORB_OF_VULNERABILITY)_equipped^ is used in Fire Mage's Fire Ball (their immunity to their own fire ball would be ignored is Orb of Vulnerability is presented)
+- Added i^acm_meleeStack^ and i^acm_meleeSide^ to help with checking the melee attacking under !?MF1. No more BG:N trick needed.
+- Fixed the immunity behaviour of Fire Mage if they happen to be Hypnotized
+- Reworked Fire Shield rework. Now instead of checking Creature Id to know whether they should be immune to Fire Shield, we use hook to check if they should. This also prevent Fire Shield to visually show if the target is immune.
+- Added FU(ACM_GetCustomFireShieldMultiplier) to be called by 3rd party scripts to determine additional Fire Shield damage dealt by specific monsters.
+- Fixed MP compatibility of Archmage/Warden's spell table. Now you can't select the spell for your opponent
+- Fixed campaign transfer feature.
+- Fixed compatibility with TUM Enchanted: Soul Eaters now raise correct third upgraded skeletons.
+- Now you are able to choose a spell in or outside of battle
+- Partially fixed MP support - now in PVP battle, the change of commander spell type would be reflected to another side.
+- Fire Mage: now their Fireball/Inferno attack ignores the spell immunity of hostile unit and also protect own units.
+- Paladin Exp and Brute Gold: Fixed multiple logic glitches.
+- Paladin Exp: Now bonus exp from damage is maxed at 10 million
+(with all the bonuses. The value can be greater without overflow, only it's for balance concern)
+- Added commander class constants (it's strongly recommended to add a new .erm with all the ACM constants for convenience)
+- Reset bought spells when a commander is bought from a town
+- Fixed AI not using summon elemental spells
+- Fixed localization of "None" English word in erm
+- Added new class names for adventurers of each faction
+- Fixed erm error of commander's Strike All Around script
+- Fixed screen update when putting on the second artifact with the same name
+
+#### ERA Scripts:
+- Mortal Heroes: Fixed campaign transfer feature
+
+#### Game Enhancement Mod:
+- the plugin and script for obtaining local and remote versions have been rewritten. To get the local version, a function is now used that returns a string value: "!!FU(gem_GetGameVersion):P?(gameVersion:z);";
+- added a check for the presence of saved VoG options settings and a warning about the need to save if they are missing;
+- Added ArchBugFixes.era [sources](https://github.com/Archer30/Era-Plugins/tree/main/ArchBugFixes);
+- Updated Prima.dll: Fixed not doubling spell points when visiting Mana Vortex when the hero has >127 knowledge.
+
+#### Enhanced Henchmen:
+- Fixed campaign transfer feature.
+
+#### Random Wallpaper Mod:
+- the plugin for adding a logo has been rewritten to fix a crash when trying to open the game loading window;
+
+#### TrainerX:
+- added correct opening of the map after increasing the hero’s visibility radius;
+
+#### WoG:
+- Added the "ERA_MultilingualSupport.era" plugin, which allows you to change the language of downloaded resources from Lang/.\*json if localized. The list and parameters of localizations are specified in the file /Mods/WoG/Lang/era.json;
+
+#### WoG Scripts:
+- Neutral Town: Fixed elemental creatures cannot be upgraded in hill forts. Fixed neutral town option disabling Rampart Faerie Dragon option
+- Added a fix to prevent getting random monsters not allowed to spawn on the map.
+- Fixed wrong mapping of external dwellings giving extra growth to creatures in town.
+
+#### Other:
+- added the missing file /Tools/H3DefTool/Grid.pcx to launch H3DefTool;
+- added the missing file h3wmaped_unleashed.exe to launch the advanced map editor;
+- added a manual for disabling DEP (Help/DEP_tutorial.html);
+- removed unnecessary tool files;
+
 ### Version 2.967
 
 #### Advanced Classes Mod:
@@ -8,7 +104,7 @@
 - Fixed STOIC_WATCHMAN not giving 10% resistance as the description says
 - some format changes
 - Now we use hook instead of playing UN:C at needed timing to cover everything in the game and clean our code.
-It fixed the [problem] not showing correct spell point in the battle (https://discord.com/channels/580473641104310301/580473641104310305/1238718760123109407)
+It fixed the not showing correct spell point in the battle [problem](https://discord.com/channels/580473641104310301/580473641104310305/1238718760123109407)
 - Fixed wrong condition checked for TUM 8th creature;
 - Fixed not possible to raise Wights;
 - Fix and balance Fortune;

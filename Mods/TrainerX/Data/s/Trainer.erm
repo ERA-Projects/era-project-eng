@@ -218,6 +218,9 @@ ZVSE2
 !!DL(TRAINER_MAIN_DLG):S1;
 !!FU(trainer_HandleHooks):P0;
 
+; call scouting update range fix from GEM
+!!FU(gem_UpdateScoutingRange):P(hero);
+
 ; Fully update the adventure map dialogue when DL is closed
 !!UN:C(ADV_MANAGER)/4/?(advMgr:y);
 !!SN:E4289408/(CALLCONV_THISCALL)/(advMgr)/1/0;
@@ -3876,9 +3879,35 @@ ZVSE2
   !!GR(x)/(y)/(z)&(obj)=(OBJ_GARRISON):O?(owner);
   !!SY(x)/(y)/(z)&(obj)=(OBJ_SHIPYARD):O?(owner);
 
-  ; Look for hero of the object onwer, activate main interface if matches
+  ; Look for hero of the object owner, activate main interface if matches
   !!if&(owner)>(NO_PLAYER);
     !!VRi^trainer_player^:S(owner);
+
+    ; If the object is a town, get the hero as trainer hero if possible
+    !!if&(obj)=(OBJ_TOWN);
+      !!CA(x)/(y)/(z):H0/?(garrisonHero:y);
+
+      !!if&(garrisonHero)>(NO_HERO);
+        !!VRi^trainer_hero^:S(garrisonHero);
+        !!FU(trainer_MainDialog):P;
+
+        !!FU:E;
+      !!en;
+    !!en;
+
+    ; Get the entrance of the object and see if there is a hero stepping on them
+    !!SN:O?(x)/?(y)/?(z);
+
+    !!OB(x)/(y)/(z):T?(entranceObjType:y);
+
+    !!if&(entranceObjType)=(OBJ_HERO);  [Usually the hero stepping on the object is the owner of the object]
+      !!HE(x)/(y)/(z):N?i^trainer_hero^;
+      !!FU(trainer_MainDialog):P;
+
+      !!FU:E;
+    !!en;
+
+    ; If it is not possible to find other result, look for the hero with traditional procedure
     !!FU(trainer_SelectHeroByPlayer):P(owner)/(TRUE)/(FALSE);
     !!FU(trainer_MainDialog):P;
 

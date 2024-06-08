@@ -1,3 +1,235 @@
+Version 3.9.12 (06/2024)
+------------------------
+[+] Implemented advanced ERM memory synchronization means in network games.
+
+  Added !!IP:M command to mark associative variables (SN:W, i^^, s^^) for further synchronization.
+  Syntax:
+    !!IP:M^var_name_1^/^var_name_2^/...;
+    !!IP:M0/^array_var_name_1^/^array_var_name_2^/...;
+
+  The second syntax allows to mark global variables, holding IDs of global dynamic arrays (SN:M) for synchronization.
+  While array IDs may differ on remote sides, it's possible to synchronize array contents, when array IDs are stored in named global variables.
+  Array MUST exist on the side, calling !!IP:M and global variable with array ID MAY have zero value on remote side. The array will be created from scratch
+  in this case. If arrays exist on both sides, their item types (string/int) and storage types (temp, trigger local, stored) MUST be the same.
+
+  Added !!IP:S command to perform synchronization of all marked variables and arrays. Use !!IP:D to specify targets for synchronization.
+  After calling it marked variables cache is cleared.
+  !!IP:S is automatically called right before sending 'start battle' network event with !!IP:D-1.
+
+  Example of pre-battle ERM memory synchronization between remote sides:
+
+  !#FU(NewIntArray):P?i^edu_intArray^/(M_STORED);                            [create globally stored dynamic integer array with ID in i^edu_intArray^]
+
+  !?FU(OnBeforeBattle);                                                      [occurs on attacker's local side only]
+  !!VRi^edu_randomInt^:R0/0/100000;                                          [generate random variable]
+  !!VRs^edu_randomStr^:S^the random %i(edu_randomInt)^;                      [generate random string]
+  !!FU(Array_Push):Pi^edu_intArray^/100/200/300/400/500;                     [initialize dynamic integer array]
+  !!FU(NewStrArray)&i^edu_strArray^=(NULL):P?i^edu_strArray^/(M_STORED);     [conditionally initialize dynamic string array]
+  !!FU(Array_Push):Pi^edu_strArray^/^Corwin^/^Deo^/^Bers^/^Silver^/^Bes^;    [fill dynamic string array with values]
+  !!IP:M^edu_randomInt^/^edu_randomStr^ M0/^edu_intArray^ M0/^edu_strArray^; [mark global variables and arrays for synchronization]
+  !!IP:S; [May be skipped here, because it will be executed automatically soon, but it's usefull when you synchronize data on demand in battle or on adv map]
+
+  !?FU(OnBeforeBattleUniversal);                                                    [occurs on both network sides]
+  !!IF:M^%i(edu_randomInt) %s(edu_randomStr)^;                                      [display global variables, which must be synchronized by this time]
+  !!FU(Array_Join):Pi^edu_intArray^/?(text1:z)/^ ^ Pi^edu_strArray^/?(text2:z)/^ ^; [display global arrays, which must be synchornized by this time]
+  !!IF:M^%(text1) %(text2)^;
+
+[+] Added GAME_TYPE_XXX constants to Era Erm Framework (see UN:V 5-th parameter).
+
+[+] Added the following global variables to Era Erm Framework:
+
+  i^battle_isActingSideUiUser^: bool. Is TRUE if acting side player is local human and thus can use all UI actions.
+                                      Use it to prevent non-active network player from performing state changing UI actions.
+
+
+[*] The order of network battle events:
+
+  !?FU(OnBeforeBattle);               on attacker side only, battle may be cancelled
+  !?FU(OnBeforeBattleUniversal);      on attacker side, battle may still be cancelled
+  !?FU(OnBeforeBattleBeforeDataSend); on attacker side only, IP:V/W/M commands may be used
+  ; IP:S is called automatically with IP:D-1
+  ; battle start network packet is sent asynchronously
+  ; other battle triggers occur on attackers side without any waiting
+  ; battle screen is shown and becomes active
+
+  -------------------------------------------------------------------
+  ; defender receives synchronized advanced ERM variables
+  ; defender receives battle start network event with regular IP:V/W variables for synchronization
+  !?FU(OnBeforeBattleAfterDataReceived); on defender side only
+  !?FU(OnBeforeBattleForThisPcDefender); on defender side only
+  !?FU(OnBeforeBattleUniversal);         on defender side
+  ; battle screen is shown and becomes active
+  ; ...
+  ; battle ends
+  -------------------------------------------------------------------
+
+  ; defender level up and artifact capturing screens
+  !?FU(OnAfterBattleBeforeDataSend); on defender side only
+  ; IP:S is called automatically with IP:D-1
+  ; end of battle event is sent to attacker asynchronously
+  !?FU(OnAfterBattleUniversal);      on defender side
+
+  -------------------------------------------------------------------
+  !?FU(OnAfterBattleAfterDataReceived); on attacker side only
+  !?FU(OnAfterBattle); on attacker side only
+  !?FU(OnAfterBattleUniversal); on attacker side
+
+
+
+[+] Added the following functions to Era Erm Framework:
+
+  !?FU(Array_Move);
+  ; Copies part of the array into another part of the array, overwriting existing values in a smart way.
+  ; The parts may have overlapping indexes. The size of array never changes.
+  ; Example: X X X [A B C] X X {X X X} => X X X [A B C] X X {A B C}
+  ; Example: X X X [A {B C] X} X X X X => X X X [A {A B] C} X X X X
+  !#VA(list:x);    Array ID.
+  !#VA(offset:x);  Index to start copy from.
+  !#VA(length:x);  Number of items to copy.
+  !#VR(destInd:x); Position in array to copy items to (overwriting existing values).
+
+  Example:
+
+  !?FU(OnAfterErmInstructions);
+  !!FU(NewIntArray):P?(intArr:y);
+  !!FU(Array_Push):P(intArr)/100/200/300/400/500/600;
+  !!FU(Array_Move):P(intArr)/1/2/4;
+  !!FU(Array_Join):P(intArr)/?(text:z)/^ ^;
+  !!IF:M^%(text)^; 100 [200 300] 400 [200 300]
+
+  !!FU(NewStrArray):P?(strArr:y);
+  !!FU(Array_Push):P(strArr)/^Corwin^/^Deo^/^Bes^/^Druid^/^Solmyr2000^/^Silver^/^gamecreator^;
+  !!FU(Array_Move):P(strArr)/4/3/1;
+  !!FU(Array_Join):P(strArr)/?(text:z)/^ ^;
+  !!IF:M^%(text)^; Corwin Solmyr2000 Silver gamecreator Solmyr2000 Silver gamecreator
+
+
+  !?FU(Array_Splice);
+  ; Deletes specified number of items from start index and inserts new items in the same position afterwards.
+  ; The function can be used for items deletion, insertion or replacement.
+  !#VA(list:x);              ID of array to perform splicing in.
+  !#VA(startIndex:x);        Index of first item to delete. If it's negative, it means "from array end". Thus -1 is the last array item.
+  !#VA(numItemsToDelete:x);  Optional. Number of items to delete.
+  ;                          If not specified, all items are deleted from start index till array end.
+  ;                          If it is positive, then that many elements will be removed.
+  ;                          If it is negative, then the end of the removed portion will be that many elements from the end of the array.
+  ;                          If it is zero, no elements will be removed.
+  !#VA(firstItemToInsert:x); ... Up to 13 arguments to insert in the position of deleted items.
+
+  Example:
+
+  !?FU(OnAfterErmInstructions);
+  !!FU(NewIntArray):P?(intArr:y);
+  !!FU(Array_Push):P(intArr)/100/200/300/400/500/600;
+  !!FU(Array_Splice):P(intArr)/3/1/-7/-6/-5;
+  !!FU(Array_Join):P(intArr)/?(text:z)/^ ^;
+  !!IF:M^%(text)^; 100 200 300 -7 -6 -5 400 500 600
+
+  !!FU(NewStrArray):P?(strArr:y);
+  !!FU(Array_Push):P(strArr)/^Corwin^/^Deo^/^Bes^/^Druid^/^Solmyr2000^/^Silver^/^gamecreator^;
+  !!FU(Array_Splice):P(strArr)/-5/2/^why^/^not^;
+  !!FU(Array_Join):P(strArr)/?(text:z)/^ ^;
+  !!IF:M^%(text)^; Corwin Deo why not Solmyr2000 Silver gamecreator
+
+
+  !?FU(ActivateNextStack);
+  ; Finds and activates next stack. Returns TRUE on success and FALSE if nobody can move in this phase.
+  ; TRUE is returned before round end and before waiting phase start.
+  ; Credits: Archer
+  !#VA(result:x);
+
+[+] Implemented possibility to select desired IP for multiplayer gaming.
+    Vanilla game uses the first found IP address for PC, while PC may belong to multiple networks: LAN, WLAN, Virtual LAN, Internet (white IP address).
+    Era will show radio dialog if necessary to allow user to specify the desired network to play in.
+
+    A new option was added to heroes3.ini for this purpose:
+
+    AutoSelectPcIpMask = IP mask like 192.168.5.* or 10.13.*
+    ------------------
+    If specified (non empty), Era will automatically select the first IP, matching the mask (? for any single character, * for any number of characters)
+    without displaying radio dialog. If no PC address matches the mask, the dialog will still be shown.
+
+[+] Added the following exported functions to era.dll:
+
+  // Allocates new function ID and binds it to specified name if name is free, otherwise returns already binded ID.
+  // This function can be used to implement custom ERM events in plugins.
+  // The result is 1 if new ID was allocated, 0 otherwise.
+  function AllocErmFunc (FuncName: pchar; {i} out FuncId: integer): TDwordBool; stdcall;
+  typedef bool (__stdcall* TAllocErmFunc) (const char* EventName, int32_t &EventId);
+
+[+] Added new event for plugins/Lua: 'OnAfterReloadLanguageData'. It occurs whenever Era reloads all language json data from disk.
+
+[+] Rewritten creature regeneration ability support.
+  (!) Plugins should not hook regeneration code and should use Era 'SetRegenerationAbility' API instead.
+
+  Era introduces term "Standard regeneration ability", which value is calculated for any battle stack using the following formula:
+    Max(0.6 * Average upgraded 7-level creature HP [9 towns only], 20% of current stack Hit Points attribute = 0.2 * BM:H)
+
+  For SoD average 7-level creature health is 250 and 0.6 * 250 = 150. It means, that standard regeneration ability heals at least 150 HP
+  and at most 20% of maximum HP, so that it will never be too imbalanced for commanders, henchmen or super bosses.
+  Because all 9 towns are taken into account, the regeneration value will scale if scripts multiply all creature health by the same amount.
+  For instance, enabling 'Double creature health' option will change standard regeneration value minimum to 150 * 2 = 300.
+
+  Any creature can be assigned a regeneration ability with a certain application chance (0-100%) and two additional values:
+  fixed hit points and hit points in percents. The maximum of those two will be used for healing. Negative value for fixed hit points
+  mean "use standard formula". In this case hit points in percents is ignored.
+
+  The Elixir of Life artifact has effect of standard regeneration ability. If it's regeneraion value is greater, than the native one, it
+  will be used instead.
+
+  The following creatures for now have standard regeneration ability with 100% chance: Wight, Wraith, Troll, Hell Hydra,
+  Commander (if Regeneration perk is aquired).
+
+  Additionally introduced new ERM event 'OnBattleStackRegeneration' with three parameters: (stackId, finalValue, stdValue).
+  It occurs when real regeneration takes place (once per round per each stack) and may be used to change regeneration points for any creature
+  and thus implement any complex regeneration logics for any stack, even stacks without native regeneration ability.
+
+  - 'stackId'    is 0..41.
+  - 'finalValue' is final heal points to use. Negative values will be treated as 0.
+  - 'stdValue'   standard regeneration value, calculated by above mentioned formula.
+
+  Script writes may modify finalValue argument in order to assign/remove/change regeneration value for current event.
+
+  Usage:
+
+  !?FU(OnBattleStackRegeneration);
+  !#VA(stackId:x) (finalValue:x) (stdValue:x);
+  !!BM(stackId):T?(monType:y);
+
+  ; Castle creatures get 15 HP regeneration ability, but only if applied abilities had effect < 15 HP
+  !!VR(finalValue)&(monType)>=(MON_PIKEMAN)/(monType)<=(MON_ARCHANGEL)/(finalValue)<15:S15;
+
+  ; Azure dragons got native regeneration ability
+  !!VR(finalValue)&(monType)=(MON_AZURE_DRAGON):S(stdValue);
+
+  ; Sacred Phoenixes got full HP regeneration ability
+  !!VR(finalValue)&(monType)=(MON_SACRED_PHOENIX):S999999;
+
+  ; Imps will never be able to regenerate
+  !!VR(finalValue)|(monType)=(MON_IMP)/(monType)=(MON_FAMILIAR):S0;
+
+[+] Exported function 'SetRegenerationAbility' in era.dll for plugins only (like new creature plugins).
+  All plugins should use this function to turn on/off regeneration ability instead of manually hooking game code.
+
+  // Assigns or removes regeneration ability from specified creature. The chance of regeneration is usually 0..100, where
+  // 0 means no regeneration ability at all and 100 means always.
+  // HitPoints is fixed hit points amount or -1 to use standard formula
+  // HpPercents is 0..100 value and means percent of battle stack hit points attribute.
+  // The final value will be maximum of HitPoints and StackHitPoints * HpPercents / 100.
+  void SetRegenerationAbility (int32_t MonId, int32_t Chance, int32_t HitPoints, int32_t HpPercents);
+
+[-] Removed heroes3.ini option "FixGetHostByName".
+[-] Fixed bug: local static string arrays indexes were incorrectly calculated for non-const indexes in ERM 2 scripts, ex. (arr[i]).
+[-] Fixed bug in VFS.dll, due to which Era was not working on Wine. Null mask parameter for NtQueryDirectoryFile was treated as '*'#0 instead of '*'.
+
+
+Version 3.9.11 (01/2024)
+------------------------
+[+] Improved PRNG random range generation algorithm. Battle deterministic PRNG became unbiased.
+[*] Changed "OnBeforeBattleAction" event to trigger before Enchantress, Hell steed and creature experience mass spells processing.
+[*] Fixed v997 in "OnBeforeBattleAction" and "OnAfterBattleAction" events. It is equal to Era combat round counter now.
+
+
 Version 3.9.10 (01/2024)
 ------------------------
 [*] Introduced "OnAbnormalGameLeave" event to be called by plugins or HD mod in case of extreme game loop (0x4B0BA0) breaking using goto and manual stack cleaning. Improved compatibility with current HD mod versions: "OnGameLeave" event will be called for ERM correctly.
