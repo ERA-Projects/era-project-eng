@@ -1,6 +1,11 @@
-### Версия 2.97
+### Version 2.98
 
-####ERA:
+#### Other
+- missing files restored;
+
+### Version 2.97
+
+#### ERA:
 - updating the ERA.dll kernel to version 3.9.13:
 	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
 	- Improved exceptions tolerance for ERM engine (triggers and commands). ERM memory clean up is performed in case of exception, allowing to reuse ERM engine later after recovery. Exceptions may be used, for instance, to trigger fast quit from deeply nested dialogs.
