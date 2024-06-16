@@ -1,3 +1,9 @@
+### Version 2.99
+
+#### ERA Scripts:
+- Fixed Cover of Darkness description corruption;
+
+
 ### Version 2.98
 
 #### Other
@@ -54,8 +60,6 @@
 - Небольшие правки описаний;
 
 
-
-
 ### Version 2.969
 
 #### ERA:
@@ -65,6 +69,7 @@
 
 #### Random Wallpaper Mod:
 - Fixed the inability to select map size in the scenario selection dialog;
+
 
 ### Version 2.968
 
