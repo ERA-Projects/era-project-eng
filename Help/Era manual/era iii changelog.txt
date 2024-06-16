@@ -1,3 +1,43 @@
+Version 3.9.13 (06/2024)
+------------------------
+[+] Improved exceptions tolerance for ERM engine (triggers and commands). ERM memory clean up is performed in case of exception, allowing to reuse ERM engine later after recovery. Exceptions may be used, for instance, to trigger fast quit from deeply nested dialogs.
+
+[+] Improved crash/exception handling. HD and WoG handlers are not called at all. Era's handler is called only once. Crash reports become more stable and accurate. Previosly multiple exception could take place and override the same logs.
+
+[+] Added experimental (may be subject of removal) exported function to quit from any dialog in main game menu.
+
+  // Exits adventure manager dialogs and/or all subdialogs and immediately returns to game menu screen by raising special exception.
+  // TargetScreen: -1 (root screen), 102 - Load Menu, 103..107, where 107 is restart map, etc *)
+  procedure FastQuitToGameMenu (TargetScreen: integer); stdcall;
+
+  Example usage script, implementing CTRL + L hotkey to got to Game Load screen from adventure map or battle screen:
+
+  !#DC(GAME_MENU_TARGET_LOAD_GAME) = 102;
+
+  !?FU(OnKeyPressed_AdvMap)&i^key_ctrl^/i^key^=(KEY_L);
+  !#VA(key:x) (block:x);
+  !!SN:F^FastQuitToGameMenu^/(GAME_MENU_TARGET_LOAD_GAME);
+
+  !?FU(OnKeyPressed_Battle)&i^key_ctrl^/i^key^=(KEY_L);
+  !#VA(key:x) (block:x);
+  !!SN:F^FastQuitToGameMenu^/(GAME_MENU_TARGET_LOAD_GAME);
+
+[+] Commanders without UNDEAD flag are also handled by Elixir of Life now. Plugins may override IsElixirOfLifeStack exported function
+    to implement other behavior.
+
+[+] Added exported functions to era.dll, more steps on moving WoG hard-coded mechanics into replacable API format.
+  API setters return previously set implementation functions or null.
+
+  type
+    TIsCommanderIdFunc       = function (MonId: integer): boolean stdcall;
+    TIsElixirOfLifeStackFunc = function (Stack: Heroes.PBattleStack): boolean stdcall;
+
+  function IsCommanderId (MonId: integer): boolean; stdcall;
+  function SetIsCommanderIdFunc (NewImpl: TIsCommanderIdFunc): {n} TIsCommanderIdFunc; stdcall;
+  function IsElixirOfLifeStack (Stack: Heroes.PBattleStack): boolean; stdcall;
+  function SetIsElixirOfLifeStackFunc (NewImpl: TIsElixirOfLifeStackFunc): {n} TIsElixirOfLifeStackFunc; stdcall;
+
+
 Version 3.9.12 (06/2024)
 ------------------------
 [+] Implemented advanced ERM memory synchronization means in network games.

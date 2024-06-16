@@ -585,24 +585,34 @@ Navigation, Pathfinding, Resistance, Scholar, Scouting is enabled in WoGify Opti
 
 ** end of battle end trigger
 !?FU(WOG_201_SelectBestTarget);
-!#VA(side:x) (dmg:x) (result:x);
+!#VA(side:x) (ballistaStack:x) (damageMultiplier:x) (result:x);
 
 !!VR(min:y):S(side) *21;
 !!VR(max:y):S(min) +20;
 !!VR(result):S(NO_STACK);
 !!VR(killFv:y):S0;
 !!VR(killCount:y):S0;
+!!VR(fireShieldDmg:y);
+!!SN:E4468352/(CALLCONV_THISCALL)/(ballistaStack)/(TRUE); calc stack shoot damage theoretical;
+!!VR(baseDamage:y):Sv1 *(damageMultiplier);
 
+!!UN:C(ballistaStack)/1168/4/?(stepsTaken:y);
 !!re i/(min)/(max);
-  *!BA:M(enemySide)/i/?(mon:y)/?(qty:y);
-  !!BMi:N?(qty:y) H?(hp:y) T?(mon:y) O?(armySlot:y);
+  !!BMi:N?(qty:y) H?(hp:y) T?(mon:y) O?(armySlot:y) Z?(targetStack:y);
 
-  !!co|(armySlot)=(NO_MON);
+  *!co|(armySlot)=(NO_MON);
+  *!IF:M^%(armySlot)^;
+  *!BA:M(side)/(armySlot)/?(mon:y)/?(qty:y);
 
   !!if&(mon)>(NO_MON)/(qty)>0/(hp)>0;
+    *!VRi^wog_201_Shoot^:S4;(dmg) Fd/(maxDamage);
+
+    !!SN:E4471904/(CALLCONV_THISCALL)/(ballistaStack)/(targetStack)/(baseDamage)/(TRUE)/(TRUE)/(stepsTaken)/?(fireShieldDmg);
+    !!VR(toStackDamage:y):Sv1;
+
     !!MA:F(mon)/?(fv:y);
-    *!VR(maxKillCount:y):S(qty);
-    !!VR(currKillCount:y):S(dmg) :(hp) F0/(qty);
+    !!VR(maxKillCount:y):S(qty);
+    !!VR(currKillCount:y):S(toStackDamage) :(hp) F0/(qty);
     !!VR(currKillFv:y):S(currKillCount) *(fv);
 
     ; Store the values if killing at least one
@@ -613,69 +623,67 @@ Navigation, Pathfinding, Resistance, Scholar, Scouting is enabled in WoGify Opti
     !!en;
   !!en;
 !!en;
+
 !?FU(OnStackToStackDamage)&i^wog_201_Shoot^;
-!!VRx4:Si^wog_201_Shoot^;
+!!VRx4:Sd*i^wog_201_Shoot^;
+!!VRi^wog_201_Shoot^:S(FALSE);
 
 ** function to handle artillery, hero, skill level
 !?FU(OnAfterTacticsPhase);
 !!VRi^wog_201_ShootOnce^:S(TRUE);
-&i^wog_201_enabled^
-!?FU(WOG_201_KillWithArtillery)&i^wog_201_enabled^/i^wog_201_ShootOnce^;
+
+!?FU(WOG_201_KillWithArtillery)&i^wog_201_ShootOnce^;
   !!VRi^wog_201_ShootOnce^:S(FALSE);
-  !!FU(WOG_GetRandomSeedByCoord):Pi^battle_x^/i^battle_y^/i^battle_z^/?(seed:y);
   !!re (side:y)/0/i^battle_hero_vs_hero^;
-    !!HEi^battle_hero_%(side)^:A2/(ART_BALLISTA)/?y99/?(ballista:y) S(SKILL_ARTILLERY)/?(artilleryLv:y);
-    !!if&(ballista)/(artilleryLv);
+    !!HEi^battle_hero_%(side)^:A2/(ART_BALLISTA)/?y99/?(ballista:y) S(SKILL_ARTILLERY)/?(artilleryLvl:y);
+    !!if&(ballista)/(artilleryLvl);
 
       !!VR(min:y):S(side) *21;
       !!VR(max:y):S(min) +20;
-
       !!re i/(min)/(max);
         !!BMi:T?t N?n;
 
         !!if&n>0/t=(MON_BALLISTA);
-          !!BMi:Z?(stack:y);
-          !!HEi^battle_hero_%(side)^:A2/(MON_AMMO_CART)/?(has:y)/?(equipped:y) E?(exp:y)/?(heroLv:y)/1; [check for Ammo Cart, get hero's level, artillery level]
-          !!VR(equipped):F0/1 +1;       [ammo cart bonus]
-          !!VR(mult:y):S1 +(artilleryLv) *(equipped); [set multiplier to 1]
-          !!VR(seed):+i^timerDay^ +(side) +i^battle_hero_%(side)^;
-          !!FU(WOG_SafeRand):P1/50/(seed)/?(dmg:y);
-          !!VR(dmg:y):+(heroLv) *(mult); [ballista damage: (1-50 + hero level) x bonus multiplier x ammo]
-          !!VR(oppSide:y):S(side) X1;
-          !!FU(WOG_201_SelectBestTarget):P(oppSide)/(dmg)/?(targetStackId:y);
+          !!BMi:Z?(ballistaStack:y);
+          !!VR(oppSide:y):S1 -(side);
+          !!FU(WOG_201_SelectBestTarget):P(oppSide)/(ballistaStack)/(artilleryLvl)/?(targetStackId:y);
 
           !!if&(targetStackId)<>(NO_STACK);
-            !!BM(targetStackId:y):Z?(targetStack:y) N?n H?h L?l;
+            !!BM(targetStackId:y):Z?(targetStack:y) N?n H?h L?l P?p;
 
-            !!VR(maxDamage:y):Sn *h -l -1;
-            !!VRi^wog_201_Shoot^:S(dmg) Fd/(maxDamage);
+            !!VRi^wog_201_Shoot^:S(artilleryLvl:y);(dmg) Fd/(maxDamage);
 
-            !!UN:C(stack)/16/4/(targetStack:y);                              [set stack target]
 
-            !!BMi:U3/?(shots:y) U3/1 G213/?(luck:y)/d  G213/0/d;
+            !!UN:C(targetStack)/248/4/?(targetStackSideIndex:y);
+            !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y) C(cmbMgr)/78520/4/(side) C(cmbMgr)/78528/4/(side) C(cmbMgr)/68/4/p C(cmbMgr)/492854/4/(ballistaStack);                                                           [set combat target pos]
+
+            !!UN:C(ballistaStack:y)/16/4/(oppSide) C(ballistaStack:y)/14/4/(targetStackSideIndex) C(ballistaStack:y)/28/4/p; [set stack target]
+
+            !!BMi:U3/?(storedShots:y) U3/1 G212/?(storedMorale:y)/d G212/0/d G213/?(storedLuck:y)/d G213/0/d;                [get morale shots and luck]
 
             !!if&i^battle_isVisible^;
               !!VR(msg:z):S^%T(wog.201.ballista_log)^;
               !!MM:S(msg:z);
             !!en;
-
-            !!re j/0/4;                                                      [ skip double damage bonus]
-              !!UN:C4470304/j/1/?i^test_%j^ C4470304/j/1/(OPCODE_NOP_1); 
+            !#VA(patch[5]:y);
+            !!re j/0/4;                                                                                                      [ skip double damage bonus]
+              !!UN:C4470304/j/1/?(patch[j]) C4470304/j/1/(OPCODE_NOP_1); 
             !!en;
 
-            !!SN:E4453920/(CALLCONV_THISCALL)/(stack)/(targetStack:y);       [shoot stack to stack]
+            !!SN:E4453920/(CALLCONV_THISCALL)/(ballistaStack)/(targetStack:y);                                                       [shoot stack to stack]
 
             !!re j/0/4;
-              !!UN:C4470304/j/1/i^test_%j^;
+              !!UN:C4470304/j/1/(patch[j]);                                                                              [ restore double damage bonus message]
             !!en;
             restore stack and hero data
-            !!BMi:U3/(shots:y) G213/(luck:y)/d;
+            !!BMi:U3/(storedShots) G213/(storedMorale:y)/d G213/(storedLuck:y)/d;                                            [set back luck/morale]
 
             next time make lost uncureable
             *!BM(targetStackId:y):N?(new:y);
             *!VR(lost:y):Sn -(new);
             *!BM(targetStackId:y):Bd-(lost);
             !!VRi^wog_201_Shoot^:S(FALSE);
+
           !!en;
 
           !!br;

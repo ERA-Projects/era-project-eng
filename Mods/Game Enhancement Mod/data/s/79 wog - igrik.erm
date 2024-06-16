@@ -6,6 +6,39 @@ ZVSE2
 ; --------------------------------------------------------------------------------------------------
 ; --------------------------------------------------------------------------------------------------
 
+// Fix wide units passing their turns when attempting to move to their current position
+; by Archer30
+; This is a problem of game bug fixes extended.dll. When a wide unit attempt to move to its current position, the turn is passed but nothing else happens
+; This script prevents turn passing in this case
+; The script should be removed if igrik managed to fix the issue in game bug fixes extended.dll
+; Discussion: http://wforum.heroes35.net/showthread.php?tid=5717&pid=139143#pid139143
+!?FU(OnBeforeBattleAction);
+; Exit if not moving
+!!BG:A?(action:y);
+!!FU&(action)<>(BATTLE_ACTION_WALK):E;
+
+; Exit if not wide unit
+!!BMi^battle_acting_stack^:F?(flags:y);
+!!VR(isWide:y):S(flags:y) &(MON_FLAG_WIDE);
+!!FU&(isWide)=(FALSE):E;
+
+; Exit if not moving to the current position
+!!BG:D?(targetPos:y);
+!!BMi^battle_acting_stack^:P?(currPos:y);
+!!FU&(targetPos)<>(currPos):E;
+
+; Cancel the action
+!!VRi^gem_wideWalkingStackPlusOne^:Si^battle_acting_stack^ +1;
+!!BG:A(BATTLE_ACTION_SKIP);
+
+!?FU(OnBeforeBattleStackTurn)&i^gem_wideWalkingStackPlusOne^;
+!#VA(activeStack:x);
+
+!!VR(activeStack):Si^gem_wideWalkingStackPlusOne^ -1;
+!!BM(activeStack):Fd~(MON_FLAG_ACTED);
+!!VRi^gem_wideWalkingStackPlusOne^:S0;
+
+
 ** open heroscreens in the battle by right click
 !?FU(OnBattleScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED)/i^mouse_battleHex^>=252/i^mouse_battleHex^<=253;
   ; Check if it is real MP (excluding hot seat)
@@ -31,32 +64,37 @@ ZVSE2
     !!CM:R0;
   !!en;
 
-; Fixed losing Double Strike/Strike all around after the commander learns shooting with igrik's ChooseAttack plugin
-; Ideally this should be fixed in the plugin
+
 ; by Archer30
-!?FU(OnBeforeBattleAction);
-!!SN:F^PluginExists^/^ChooseAttack^;
-!!FU&v1<>(TRUE):E;
+; L - Load with confirmation
+; Ctrl-L - Load without confirmation
+; Works for battlefield and adventure map
 
-!!BG:A?(action:y);
-!!FU&(action)<>(BATTLE_ACTION_WALK_AND_ATTACK):E;
+; This constant must be removed if EEF adds it 
+!#DC(GAME_MENU_TARGET_LOAD_GAME) = 102;
 
-!!BMi^battle_acting_stack^:T?(type:y);
+; Ctrl=L to enter loading screen without confirmation
+; Adventure map
 
-!!if&(type)>=(MON_PALADIN_A)/(type)<=(MON_ASTRAL_SPIRIT_D);
-  !!BMi^battle_acting_stack^:F?(flags:y) Fd~(MON_FLAG_SHOOTER);
-  !!VRi^gem_comm_canShoot^:S(flags) &(MON_FLAG_SHOOTER);
+!?FU(OnKeyPressed_AdvMap)&i^key_ctrl^/i^key^=(KEY_L);
+!#VA(key:x) (preventDefault:x);
+!!VR(preventDefault):S(TRUE);
+!!SN:F^FastQuitToGameMenu^/(GAME_MENU_TARGET_LOAD_GAME);
+
+; Press L/Ctrl+l to enter loading screen with confirmation
+
+; Battlefield
+!?FU(OnKeyPressed_Battle)&i^key^=(KEY_L);
+!#VA(key:x) (preventDefault:x);
+!!VR(preventDefault):S(TRUE);
+
+!!if&i^key_ctrl^=0;
+  !!FU(GetTextFileString):P^genrltxt^/69/?(loadGameStr:z);
+  !!IF:Q2/(loadGameStr);
+  !!FU&-2:E;
 !!en;
+!!SN:F^FastQuitToGameMenu^/(GAME_MENU_TARGET_LOAD_GAME);
 
-!?FU(OnBattleActionEnd)&i^gem_comm_canShoot^;
-; Double check the creature type
-!!BMi^battle_acting_stack^:T?(type:y);
-
-!!if&(type)>=(MON_PALADIN_A)/(type)<=(MON_ASTRAL_SPIRIT_D);
-  !!BMi^battle_acting_stack^:Fd|(MON_FLAG_SHOOTER);
-!!en;
-
-!!VRi^gem_comm_canShoot^:S(FALSE);
 
 ; --------------------------------------------------------------------------------------------------
 
@@ -842,4 +880,3 @@ ZVSE2
 !!if|(day)<>1/(month)<>4;
   !!VRi^gem_isFirstApril^:S(FALSE);
 !!en;
-

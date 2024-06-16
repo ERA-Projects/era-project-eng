@@ -1,6 +1,59 @@
-### Version 2.969
+### Версия 2.97
 
 ####ERA:
+- updating the ERA.dll kernel to version 3.9.13:
+	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
+	- Improved exceptions tolerance for ERM engine (triggers and commands). ERM memory clean up is performed in case of exception, allowing to reuse ERM engine later after recovery. Exceptions may be used, for instance, to trigger fast quit from deeply nested dialogs.
+	- Improved crash/exception handling. HD and WoG handlers are not called at all. Era's handler is called only once. Crash reports become more stable and accurate. Previosly multiple exception could take place and override the same logs.
+	- Added experimental (may be subject of removal) exported function to quit from any dialog in main game menu.
+	- Commanders without UNDEAD flag are also handled by Elixir of Life now. Plugins may override IsElixirOfLifeStack exported function to implement other behavior.
+	- Added exported functions to era.dll, more steps on moving WoG hard-coded mechanics into replaceable API format. API setters return previously set implementation functions or null.
+- The button to launch the language selection dialog now works in the campaign menu window;
+
+#### Advanced Classes Mod:
+- in multiplayer games text from Estate/Natural Healer/Secret Sets ability wont show up for remote player
+- fix MP issue were it was possible to select enemy commander spell (Archmage/Warden class) during combat, leading to desync
+- Its now slightly more difficult to get high stats value for Prayer and Bless spell
+- various fixes for MP games
+- Dispel is now an Air Spell and to compensate Disguised moved to Water
+- Fixed Scouting Set bonus message before combat
+- Artillery Shot can no longer attack friendly troops when the active turn is enemy;
+- Fixed Fire Mage not casting Fire Ball after attack if they learn Strike all around
+- Fixed Magogs not damaging own troops if they are hypnotized
+- Fixed losing changes inside advanced classes mod.pac
+
+#### Game Enhancement Mod:
+- Replaced the mithril icon on the resource panel @Grossmaestro;
+- Removed fog of war replacement;
+
+#### Enhanced Henchmen:
+- Fixed AI not using commander's banners on Henchmen;
+
+####TrainerX:
+- removing artifacts did not previously trigger the original removal event;
+- Fixed overwriting of the artifact "Speculum" when opening the map;
+- Fixed the triggering of opening the additional options dialog when "Ctrl" is pressed;
+- Fixed incorrect removal of artifacts from the hero structure;
+
+
+#### Random Wallpaper Mod:
+- Rewritten logo plugin; added support for drawing over video and managing the name and position of the picture in both menus;
+
+#### WoG Scripts:
+- Artillery: ballista starting shot has been fixed. Now the damage is dealt as described at 100/200/300% of the unit’s normal damage;
+- Fixed possibly turning off stack exp on battle replay
+- Added New Creature Banks refill support;
+
+#### Other:
+- Добавлены файлы предпросмотра кампаний Клинка Армагеддона;
+- Небольшие правки описаний;
+
+
+
+
+### Version 2.969
+
+#### ERA:
 - ERA.dll kernel update
   - regeneration with the Elixir of Life has been reduced to 100 hp;
   - added exported function SetStdRegenerationEffect for plugins;
