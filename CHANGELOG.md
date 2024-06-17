@@ -2,6 +2,7 @@
 
 #### ERA Scripts:
 - Fixed Cover of Darkness description corruption;
+- The animation for the appearance of "Assassins" due to crashing during the battle is temporarily disabled;
 
 #### WoG Scripts:
 - Fixed Creature Banks refill;
