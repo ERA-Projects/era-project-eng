@@ -3,6 +3,9 @@
 #### ERA Scripts:
 - Fixed Cover of Darkness description corruption;
 
+#### WoG Scripts:
+- Fixed Creature Banks refill;
+
 
 ### Version 2.98
 
