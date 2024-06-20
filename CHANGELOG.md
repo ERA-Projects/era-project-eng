@@ -1,3 +1,75 @@
+### Version 2.100
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
+	
+- updating the ERA.dll kernel to version 3.9.14:
+	- added screenshot capturing support:
+		Added support for capturing game screenshots in png/jpg formats. The following function was exported in era.dll:
+
+  			(*
+    		Captures screenshot and saves it as a file. The format is detected automatically by extension. The following extensions
+    		are supported: 'jpeg', 'jpg', 'png'. By default in-game cursor is also captured. Returns success flag.
+
+    		'Quality' is used to specify jpeg saving quality (0..100).
+    		'Flags'   is a bit mask of function flags.
+
+    		TS_FLAG_HIDE_CURSOR = 1; // Hide cursor
+  			*)
+  		- function TakeScreenshot (FilePath: pchar; Quality: integer; Flags: integer): TDwordBool; stdcall;
+		- Added new option "Debug.CaptureScreenshotOnCrash" to heroes3.ini. The option allows to capture screenshot on crash and save it in "Debug/Era/screenshot.jpg".
+	- improved ERM execution stability:
+		- Added automatical ERM tracking reset and settings restoration on game start or load.
+		- Implemented automatical "Debug/Era" directory cleanup before generating debug files on crash.
+	- improved debugging facilities:
+		- Added runtime API for controlling ERM tracking. It can be used to omit well tested library from final ERM tracking log or for tracking particular code units only:
+			- Added new option "Debug.AllowRuntimeErmTrackingControl" to heroes3.ini. The option enables or disables runtime control on ERM tracking. It's enabled by default and should be disabled in case of complex bug tracking, where no code can be trusted.
+			-  The following functions were exported in era.dll:
+				- procedure DisableErmTracking; stdcall; // Pauses ERM tracking. All previously tracked info is preserved.
+				- procedure EnableErmTracking; stdcall; // Resumes ERM tracking.
+				- procedure RestoreErmTracking; stdcall; // Sets ERM tracking to value, specified in heroes3.ini (the one used before runtime manipulations)
+				- procedure ResetErmTracking; stdcall; // Clears all previously recorded tracks.
+	- improved network gaming stability:
+		- ### Warning. Using "OnGameEnter" for ERM hooks in network games does not work in Era < 3.9.14.
+		
+		Added support for "OnGameEnter" and "OnGameLeave" events in network games. Previously savegame transfer and loading on remote side used to trigger "OnAfterSavegameLoad", but not "OnGameLeave" + "OnGameEnter". That's why using erm_hooker plugin with "OnGameEnter" event resulted in unset hooks after the first end of turn.
+		  In network games the sequence of events after remote side end of turn is the following:
+		  
+		    "OnGameLeave"     - here were restore UN:C patches and erm_hooker unset hooks
+		    "OnSavegameRead"  - reading transferred savegame
+		    "OnAfterLoadGame" - fully loaded trasferred savegame
+		    "OnGameEnter"     - install UN:C patches and ERM hooks once again
+
+	- other:
+		- ERM execution is disabled after "OnGameLeave" event. MP3 and real time triggers are not executed outside of game main loop anymore. Previously triggers were executed in the context of game main menu.
+		- Updated erm_hooker.era plugin and debug map.
+		- "OnAdvMapTileHint" was renamed to "OnAdventureMapTileHint". The previous name is deprecated, but is kept for compatibility reasons.
+		- Deprecated 'OnAbnormalGameLeave' event. HD mod way to return from combat screen to main game menu is not supported anymore.
+		- Internal settings module refactoring.
+		- IP selection dialog will no be shown in multiplayer setup screen if PC has only one IP address available.
+		- Fixed ERM commands tracking with ';' inside string literals (ex. \^...;...^).
+		- Fixed inaccurate routine and line detection by address in DebugMaps module.
+		- Fixed buttons.dll plugin debug map.
+
+#### Random Wallpaper Mod:
+- Added a new menu for all;
+- Replaced the logo in the main menu;
+- Fixed "empty" pictures;
+- Removed .pac/.vid file due to uselessness;
+
+#### WoG:
+- Fixed a bug with the experience of creatures from previous updates;
+
+#### WoG Scripts:
+- Fixed the logic for updating creature banks;
+- Enhanced monsters: fixed speed of Archdevils;
+- Improved War Machines III: Fixed healing of enemy units;
+
+####Other:
+- Renamed triggers "OnAdvMapTileHint" to "OnAdventureMapTileHint";
+- TrainerX/Enhanced Henchmen mods now also support multilingualism;
+
+
 ### Version 2.99
 
 #### ERA Scripts:
@@ -16,8 +88,9 @@
 ### Version 2.97
 
 #### ERA:
-- updating the ERA.dll kernel to version 3.9.13:
 	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
+
+- updating the ERA.dll kernel to version 3.9.13:
 	- Improved exceptions tolerance for ERM engine (triggers and commands). ERM memory clean up is performed in case of exception, allowing to reuse ERM engine later after recovery. Exceptions may be used, for instance, to trigger fast quit from deeply nested dialogs.
 	- Improved crash/exception handling. HD and WoG handlers are not called at all. Era's handler is called only once. Crash reports become more stable and accurate. Previosly multiple exception could take place and override the same logs.
 	- Added experimental (may be subject of removal) exported function to quit from any dialog in main game menu.
@@ -78,9 +151,9 @@
 ### Version 2.968
 
 #### ERA:
+	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
 
 - updating the ERA.dll kernel to version 3.9.12:
-	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
 	- Implemented advanced ERM memory synchronization means in network games.
 	-  Added !!IP:M command to mark associative variables (SN:W, i^^, s^^) for further synchronization.
   Syntax:

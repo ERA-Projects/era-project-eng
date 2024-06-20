@@ -7267,6 +7267,7 @@ x5=Current Spell Points
     !!FU(eighth_SetOrGet8thMon):P(townId)/?(mon:y)/?(qty:y)/(TRUE); [Legacy]
   !!en;
 
+  *!FU(eighth_SetOrGet8thMonByTownId):P(townId)/?(mon:y)/?(qty:y);
   !!MA:L(mon)/?(level:y);
 
   !!VR(index:y):S(level) +21;
@@ -7318,6 +7319,8 @@ x5=Current Spell Points
     !!VR(qty):+y(index);
     !!FU(eighth_SetOrGet8thMon):P(townId)/(mon)/(qty)/(FALSE); [Legacy]
   !!en;
+
+  *!FU(eighth_SetOrGet8thMonByTownId):P(townId)/(mon)/dy(index);
 !!en;
 
 !!SN:D;                                 [Added SN:D command. It's used to redraw hero, heroes meeting, adventure map and town screens.]
@@ -9455,11 +9458,11 @@ Change Heroes Speciali Descriptions
 !?FU(ACM_CreateERMHook);
 !#VA(setHook:x);
 
-!!SN&i^Typhon_Third_Upgrade_Mod_Active^/i^tum_reborn_on^<>(TRUE):E(setHook)/1/5137595/(tum_Hero_GetSpecMonster_BeforeMonIdCheck); [Archer: This function ideally should be placed in TUM]
 !!SN:E(setHook)/1/5137685/(ACM_Hero_GetSpecMonster); [Manage addtional monster if TUM is enabled] 4E6515
+!!SN&i^Typhon_Third_Upgrade_Mod_Active^/i^tum_full_on^<>(TRUE)/i^tum_reborn_on^<>(TRUE):E(setHook)/1/5137595/(tum_Hero_GetSpecMonster_BeforeMonIdCheck); [Archer: This function ideally should be placed in TUM]
 
-; Archer: This function ideally should be placed in TUM
-!?FU(tum_Hero_GetSpecMonster_BeforeMonIdCheck);
+; Archer: This function ideally should be placed in TUM [Legacy]
+!?FU(tum_Hero_GetSpecMonster_BeforeMonIdCheck)&i^tum_full_on^<>(TRUE)/i^tum_reborn_on^<>(TRUE);
 !#VA(hook:x);
 
 !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(mon:y);
@@ -9591,6 +9594,8 @@ x1=Creature, x2=Hero Number, x3 Returns first upgrade, x4 Returns second upgrade
   !!el;
     !!FU(tum_GetTownMon):P(townType)/(level)/?(basicMon:y)/?(upgMon)/?(thirdUpgMon); [legacy]
   !!en;
+
+  *!FU(tum_GetMonstersInTown):P(townType)/(level)/?(basicMon:y)/?(upgMon)/?(thirdUpgMon); 
 !!el;
   !!VR(upgMon):S(MON_FIRST_AID_TENT);
   !!VR(thirdUpgMon):S(MON_AMMO_CART);
