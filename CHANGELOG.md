@@ -1,3 +1,18 @@
+### Version 2.101
+
+#### ERA:
+- Fixed old event handling bug. Triggering ERM event with disabled ERM resulted in global event not being generated either. For example, Era and plugins could not handle 'OnSavegameRead' event if ERM was disabled at the moment of savegame loading.
+
+#### Game Enhancement Mod:
+- Fix cheats not working
+
+#### Random Wallpaper Mod:
+- unnecessary files were removed;
+
+#### WoG Graphics Fix Lite:
+- Update the mod to version 2.18.0;
+
+
 ### Version 2.100
 
 #### ERA:
@@ -117,7 +132,7 @@
 #### Enhanced Henchmen:
 - Fixed AI not using commander's banners on Henchmen;
 
-####TrainerX:
+#### TrainerX:
 - removing artifacts did not previously trigger the original removal event;
 - Fixed overwriting of the artifact "Speculum" when opening the map;
 - Fixed the triggering of opening the additional options dialog when "Ctrl" is pressed;

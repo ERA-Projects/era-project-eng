@@ -35,12 +35,13 @@ ZVSE2
 !!re i/0/(size)/1/-1;
   !!SN:K(input)/i/?(character:z);
 
-  !!br&(character)<>^ ^;
+  !!br|(character)=^n^/(character)=^w^;
 !!en;
 
+; Exit if the string is empty (full of space)
 !!FU&i=(size):E;
 
-!!VR(size):-1;
+!!VR(size):-i;
 !!FU(Substr):P(input)/i/(size)/?(input);
 
 ; Catch only the first word of the input to check if they match any cheats
