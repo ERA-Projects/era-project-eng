@@ -1,0 +1,401 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html dir="ltr"><head>
+
+
+
+
+  
+  <meta content="text/html;charset=windows-1251" http-equiv="Content-Type"><title>Era II</title>
+  
+
+  
+  
+  <meta content="Berserker" name="author"></head><body>
+<span style="color: rgb(255, 0, 0); font-weight: bold;">Mods concept.</span><br>
+
+Mod is a set of files and folders, including graphics, audio, video,
+scripts, plugins, patches and custom files. Era introduces "Mods"
+folder
+where each folder is called a mod and treated as game root directory.
+It means that files and folders in mods should be arranged in the same
+way
+as in the root directory.<br>
+
+<br>
+
+<span style="font-style: italic;">Original</span>:<span style="font-style: italic;"> </span>Data<br>
+
+<span style="font-style: italic;">Mod</span>: Mods\My Mod Name\Data<br>
+
+<span style="font-style: italic;"></span><br>
+
+<span style="font-weight: bold;">Mod contents.</span><br>
+
+The contents of mods is not supposed to be modified at run-time. All
+files which are subjects to be modified at&nbsp;run-time (like
+settings, logs, temporary files) should be placed in&nbsp;real game
+folders during installation. Several mods can exist in Mods folder at
+the same time providing they are compatible. Every mod can have
+unlimited number of in-game resources (snd/vid/pac archives in Data)
+which will
+be automatically loaded.<br>
+
+<br>
+
+<span style="font-weight: bold;">Priorities.</span><br>
+
+If any mod has file with the same name as in original game, the file
+from mod is used instead of original one. If several mods have file
+with the same name,
+then&nbsp;mod with the highest priority is used. To assign a priority
+to a
+mod, add a number to the beginning of it's name, separated from the
+rest
+text by space(s). The higher number is, the higher the priority is.
+Example: "100 MyMod". If no priority is specified, it's assumed to be
+0. In case of equal priority, the creation time of mods folders is
+checked and the most recent folder is preferred during file search. This
+mechanism guarantees that mods installed later will have priority over
+older ones.<br>
+
+<br>
+
+<span style="font-style: italic;">Hint how to give a folder the most recent creation/modification time.</span><br>Execute "Tools\installmod.exe" with
+mod folder name as the only argument.<br>
+<br>
+Original snd/vid archives are loaded in the following order:<br>
+<ul>
+  <li>heroes3.vid from CD</li>
+  <li>video.vid</li>
+  <li>h3ab_ahd.vid</li>
+</ul>
+<ul>
+  <li>heroes3.snd from CD</li>
+  <li>heroes3.snd</li>
+  <li>h3ab_ahd.snd<br>
+  </li>
+</ul>
+
+
+<br>
+
+<span style="font-weight: bold;">WoG Mod.</span><br>
+
+WoG is now distributed as regular mod and thus does not change any game
+resources. Most of WoG resources are located in "Data\hmm35wog.pac".
+All
+WoG dialogs read directly this archive and ignore other mods.&nbsp; The
+only not recommended way to fix it is to import new data in
+hmm35wog.pac. WoG contains fixed first aid tent def which ensuring
+no game freezing.<br>
+
+<br>
+
+<span style="font-weight: bold;"></span><span style="font-style: italic;">Additional optional modifications</span>:<br>
+
+<ul>
+
+  <li>Fast battle animation. To disable it delete file
+"Data\cranim.txt".</li>
+  <li>No pre-battle music. To disable it delete file "Data\wog - no
+prebattle music.snd".</li>
+  <li>Animated Heroes 3 objects. To disable it delete file "Data\wog -
+animated objects.pac".</li>
+  <li>Animated trees. To disable it delete file "Data\wog - animated
+trees.pac".</li>
+  <li>Battle decorations. To disable it delete file "Data\wog - battle
+decorations.pac".</li>
+</ul>
+
+<span style="font-weight: bold;">Yona Mod.</span><br>
+
+Yona is an open-source mod written in pure Delphi using Era SDK. It's
+ideology is
+total optionality ("Data\Yona\settings.ini"), native support of all new
+features by game, AI and multiplayer code. It's compatible with
+other mods, does not store anythings in savings and does not modify ERM
+scripts. To delete the mod, delete "Mods\Yona" folder.<br>
+
+<br>
+
+<span style="font-style: italic;">Features</span>: <br>
+
+New battle log hint in heroes style describing possible kill count,
+average values, fatality values and new abilities used in attack. <br>
+
+<br>
+
+<span style="font-style: italic;">New abilities</span>: <br>
+
+<ul>
+
+  <li>Pikeman / Halberdier ignores jousting bonus and inflicts 200%
+damage
+to cavalry:</li>
+  <ul>
+    <li>Cavaliers</li>
+    <li>Champions</li>
+    <li>Centaurs</li>
+    <li>Captains Centaurs</li>
+    <li>Unicorns</li>
+    <li>Battle Unicorns</li>
+    <li>Black Knights</li>
+    <li>Death Knights</li>
+    <li>Nomads</li>
+    <li>Sylvan centaurs</li>
+    <li>Hell Steeds</li>
+    <li>Nightmares</li>
+  </ul>
+  <li>Cavaliers / Champions get 20% damage bonus per hex instead of the
+original 5%. Bonus accumulates with other bonuses like attack
+modifier, offense skill and so on.</li>
+  <li>Swordsmen / Crusaders ignore 50% of physical damage while in defense state.</li>
+  <li>Damage of Orcs / Orc-chieftains (throwing axes) depends
+quadratically on the distance to the target.<br>
+Formula: Base damage * (19 - distance) ^ 2 / 100.</li>
+</ul>
+
+<br>
+<span style="font-weight: bold;">"Secondary skills scrolling" Mod.</span><br>
+Adds scrolling buttons to the right of secondary skills list in hero screen and allows scrolling [if more than 8].<br>
+<br>
+<br>
+
+<span style="font-weight: bold; color: red;">Changes.</span><br>
+
+<br>
+
+<span style="font-weight: bold;">Portability.</span><br>
+
+The game became fully portable. All game settings are stored in
+"heroes3.ini" file. Default CD scanning mechanism is turned off. Era
+automatically loads files ".\Heroes3\Data\heroes3.vid" and
+".\Heroes3\Data\heroes3.snd" if any. If "LoadCD" option in
+"heroes3.ini" is set to 1, Era scans all CD drives seeking for
+"Heroes3" folder. If above mentioned snd/vid archives are not found in
+the game folder, Era will try to load them from CD, providing the
+"LoadCD" option is on.<br>
+
+<br>
+
+<span style="font-style: italic;">Debug mode</span>.<br>
+
+To enable debug mode set option "Debug" to 1. The file "eralog.txt"
+will be automatically recreated at game start.<br style="font-weight: bold;">
+
+<br>
+<span style="font-weight: bold;">Extensibility.</span><br style="font-weight: bold;">
+All erm files (and ert files with the same names) are automatically
+loaded from "Data\s" folder at map start or when F12 is pressed. WoG
+options dialog does not validate the existence of files on disk
+anymore. The number of scripts is limited only by the amount of
+internal memory. If a valid (negative or positive) number is found
+before script name (ex. "50 Test.erm"), it's treated as loading
+priority. If the file "load only these scripts.txt" exists in "Data\s"
+then only those scripts which are written there (one script name per
+line) are loaded. In this case loading order is the order in which
+files appear in the list. WoG ini option "Alternate_Script_Location" is
+not used anymore.<br>
+<br style="font-weight: bold;">
+
+<span style="font-weight: bold;">Multiplayer.<br>
+</span>
+<ul>
+
+  <li>A network game can take place at one PC between two game copies
+(in
+different folders) if they have different "Unique System ID" in
+"heroes3.ini". To generate the ID, just erase the whole settings line
+and
+run the game.</li>
+  <li>External IP address detection mechanism was improved. The first
+non-local address is moved in the first position of the list returned
+by gethostbyname
+function.</li>
+</ul>
+
+<span style="font-weight: bold;">Editors.</span><br>
+
+Original editors (h3maped.exe and h3ccmped.exe) work fine. WoG editors
+(h3wmaped.exe and h3wcmped.exe) may require special fix. WoG map editor
+correctly opens maps and loads mods. It also applies all memory patches
+and loads
+dll's from EraEditor folder. Extended editor functionality provided
+by GrayFace editor patch requires resources to be located in
+h3sprite.lod and h3bitmap.lod. WoG campaign editor does not support
+mods. To enable MapEdPatch functionality for new WoG objects
+and to enable WoG campaign editor, the mapmaker can run "Tools\Fix
+Editor\Fix Editor.bat". This will import all crucial data in
+h3sprite.lod and h3bitmap.lod.<br>
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">Custom buttons support.<br>
+</span>It is possible now for any mod or script to have custom buttons
+in most of in-game screens. MoP's original plugin (Buttons.dll) was
+modified and became a part of Era. Custom buttons are described in <span style="font-style: italic;">*.btn</span> files. All *.btn files are loaded from <span style="font-style: italic;">"Data\Buttons"</span> folder at game start.<br>
+<br>
+
+<span style="font-weight: bold;">Help.</span><br>
+
+All documentation, changelogs, updated ERM and Era manuals can be found
+in the "Help" folder.<br>
+
+<br>
+
+<span style="font-weight: bold;">Tweaks.</span><br>
+
+<ul>
+
+  <li>Windows 7 compatibility when running without "XP compatibility"
+option.</li>
+  <li>No WoG installer anymore.<br>
+  </li>
+  <li>Speeded-up calling all wog dialogs, several times lower HDD load.</li>
+  <li>Optimized WoG dialogs HDD and CPU load. "reduce cpu load.bin"
+patch was removed and HD-mod "Berserker's CPU
+patch" option should be turned off.</li>
+  <li>Writing ini files using ERM or Era functions now always result in
+sorted list of sections and keys in file.</li>
+  <li>Random maps generation in game/editor is no longer dependant on
+garbage
+snd/vid/lod files from Armageddon Blade.</li>
+  <li>Game does not require native lods in "Data" folder if necessary
+resources are found in other pac's.<br>
+  </li>
+  <li>Added synchronized creature sounds by GrayFace.</li>
+  <li>Script 98 (quick and smart savings) was rewritten, now supports
+option in WoG menu, does not conflict with chat and is variables-safe.</li>
+  <li>All tools were moved to Tools folder, included new standard ones:<br>
+lodexport, lodimport, objector.exe, repman.exe, resman.exe,
+installmod.exe.</li>
+  <li>Updated API and sources.</li>
+  <li>F11 now extracts scripts from memory to "Data\ExtractedScripts"
+folder instead of "Data\s\ExtractedScripts".</li>
+  <li>Removed duplicated WoG initialization code.</li>
+  <li>Fixed Era 1.9 PO/Memory bugs which led to invalid savegames data
+and size.</li>
+  <li>Fixed Era 1.9 bug when plugins and patches with ".off" extension
+were loaded anyway.<br>
+  </li>
+</ul>
+
+<br>
+
+<span style="font-weight: bold; color: red;">Technical details.</span><br>
+
+<br>
+<span style="font-weight: bold;">Custom buttons support.</span><br>
+Each <span style="font-style: italic;">*.btn</span> file (plain txt) contains lines (one per button) in the following format:<br>
+
+[Button screen];[Unique Button Name];[Button Def];[X];[Y];[Width];[Height];[Long description];[Short description];[Hotkey code],<br>
+
+where "Button screen" is one of the following values:<br>
+
+<ul>
+<li>Advmap</li><li>Town</li><li>Hero</li><li>Heroes</li><li>Battle</li><li>Dummy (button is not used anywhere)<br>
+  </li>
+</ul>
+
+Every button automatically obtains&nbsp; ID which can be retrieved by
+calling stdcall "GetButtonID" function from Era.dll with the only
+argument of button name. If specified name was not registered, the
+function returns -1.<br>
+<br>
+For heroes meeting screen trigger !?FU66666 occurs when any button is
+clicked. Arguments (x1..x2): Button ID, Block default reaction? (0-1)<br>
+<br>
+
+<span style="font-weight: bold;">Virtual File System ("Mods" folder
+support).</span><br>
+
+The following file system functions working
+with names are supported:<br>
+
+<ul>
+
+  <li>CreateFileA</li>
+  <li>GetFileAttributesA</li>
+  <li>FindFirstFileA</li>
+  <li>FindNextFileA</li>
+  <li>FindClose</li>
+  <li>LoadLibraryA</li>
+  <li>DeleteFileA</li>
+  <li>CreateDirectoryA</li>
+  <li>RemoveDirectoryA</li>
+  <li>GetPrivateProfileStringA</li>
+  <li>LoadCursorFromFileA</li>
+  <li>PlaySoundA</li>
+  <li>GetCurrentDirectoryA</li>
+  <li>SetCurrentDirectoryA</li>
+</ul>
+
+<span style="font-weight: bold;">New event "OnStackToStackDamage"
+(!?FU77012).</span><br>
+
+Arguments:<br>
+
+<ul>
+
+  <li>Attacker stack (0..41) or -1</li>
+  <li>Defender stack (0..41) or -1</li>
+  <li>Final damage (DONT
+CHANGE!)</li>
+  <li>Final damage (CHANGEABLE)</li>
+  <li>Basic damage</li>
+  <li>Damage bonus</li>
+  <li>Is distant? (if not 0 or 1 then garbage)</li>
+  <li>Distance (only for theoretical attacks)</li>
+  <li>Is theoretical? (means hint or AI calculation)</li>
+</ul>
+
+The event occurs when one stack attacks/shoots at another one.<br>
+
+<br>
+
+<span style="font-weight: bold;">New event "OnAICalcStackAttackEffect"
+(!?FU77013).</span><br>
+
+Arguments:<br>
+
+<ul>
+
+  <li>Attacker stack (0..41)</li>
+  <li>Defender stack (0..41)</li>
+  <li>Effect value (CHANGEABLE)</li>
+  <li>Effect value
+(DONT CHANGE)</li>
+</ul>
+
+<span style="font-weight: bold;">New event "OnChat" (!?FU77014).</span><br>
+
+The first argument determine event type and the rest arguments:<br>
+
+<ul>
+
+  <li>0 (Enter chat)</li>
+  <ul>
+    <li>Disable enter? (0..1)</li>
+  </ul>
+  <li>1 (Input)</li>
+  <ul>
+    <li>Input string</li>
+    <li>Action: 0 (clear box), 1 (close box) or 2 (default)</li>
+  </ul>
+  <li>2 (Leave chat)</li>
+</ul>
+
+<span style="font-weight: bold;">Miscellaneous.</span><br>
+
+<ul>
+
+  <li>Added "ApiHook" function. It finds out patch size automatically
+in
+compared to "Hook" function.</li>
+  <li>Both ApiHook and Hook functions return new address of overwritten
+code in the BRIDGE mode.</li>
+  <li>v1 keeps Era dll handle when *.era plugin is being loaded.</li>
+  <li>Era automatically calls DisableThreadLibraryCalls for all loaded
+*.era plugins.</li>
+  <li>ExecErmCmd does not kill the game on error.</li>
+  <li>Event "OnNameColors" was renamed to "OnAfterCreateWindow"
+</li>
+</ul></body></html>

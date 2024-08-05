@@ -12,8 +12,11 @@ ZVSE2
 ; This script enables good old HoMM 3 cheats for ERA
 ; It also allows using cheats when the input is mixing with unrelated characters. The first word of the input would be checked and decide whether it's a cheat code input.
 ; Cheats that works for both adventure map and battlefield in SoD now also works the same in ERA
+; This script is replaced by Easy Cheats
 !?FU(gem_CreateERMHook);
 !#VA(setHook:x);
+
+!!FU:E;
 
 !!SN:E(setHook)/1/4205107/(gem_OnDecryptInputString); 00402A33
 
@@ -468,6 +471,24 @@ ZVSE2
 !!VR(result)&i<(size):S(FALSE);
 
 
+// Fix passability after visiting prisons with game bug fixes extended enabled
+// by Archer30
+; This is a fix specifically for igrik's game bug fixes extended plugin
+; The second tile of prison doesn't become passable after the prison's removal for some reason 
+!$OB(OBJ_PRISON);
+!!HEv998/v999/v1000:O?(owner:y);        [Check the owner of the visiting hero in the prison]
+
+; Exit if the rescured hero does not belong to the current player for some reason
+!!FU&(owner)<>i^timerOwner^:E;
+
+; Exit if the second tile of prison is out of map
+!!VR(x:y):Sv998 -1;                     [Get the tile to the left of the prison]
+!!FU&(x)<0:E;
+
+*!OB(x)/v999/v1000:T?(type:y);          [here the type only returns 62 (prison) so there is no point checking it]
+!!TR(x)/v999/v1000:P1;
+
+
 // Restrain hero level at 74 in random maps
 // by Archer30
 ; Hero can reach no more than Level 74 in random maps
@@ -577,24 +598,6 @@ ZVSE2
 !!en;
 
 
-// Bad Fix: Set a hard limit of the AI's Army value to prevent AI player being stuck
-// by Archer30
-; This script is disabled as it's proved to make AI players less aggressive
-*?FU(gem_CreateERMHook);
-*#VA(address:x);
-
-*!SN:E(address)/1/4499845/(gem_OnCalcAIArmyValue);
-
-*?FU(gem_OnCalcAIArmyValue);
-*#VA(address:x);
-
-*!UN:C(address)/(STRUCT_HOOK_CONTEXT_EAX)/4/?(value:y);
-
-*!if|(value)<0/(value)>1500000;         [Note that this number cannot be any larger, otherwise it might not work in some situations (Like when the hero has very high Primary Skills)]
-  *!UN:C(address)/(STRUCT_HOOK_CONTEXT_EAX)/4/1500000;
-*!en;
-
-
 // Other stuff
 !?FU(OnGameEnter);
 
@@ -607,8 +610,6 @@ ZVSE2
   !!UN:C5125902/4/34281 C5125907/1/144; [; отключить сообщение об ограничении опыта © Berserker]
   
   !!TL:E1; enable mulpiplayer timer
-
-
 
   // Fix of the speed overload
   !!SN:F^GetModuleHandleA^/^BattleSpeed.era^; [check plugin is loaded]
@@ -874,6 +875,26 @@ C(ebp)/8/4/?i^gem_CurrentProc_Msg^;
 ***************************** BATTLE FIXES *****************************
 ************************************************************************
 ************************************************************************
+
+// Fix missing background when battle on the sea with no boat
+// by Archer30
+; This can happen when there is a battle event on the sea and the hero uses Fly/Water Walk to get across
+!?FU(gem_CreateERMHook);
+!#VA(setHook:x);
+
+!!SN:E(setHook)/1/4604702/(gem_OnDetermineBattleBackground);
+
+!?FU(gem_OnDetermineBattleBackground)&i^battle_hero_1^=(NO_HERO);
+!#VA(hook:x);
+
+!!TRi^battle_x^/i^battle_y^/i^battle_z^:T?(type:y)/?t/?t/?t/?t/?t/?t/?t;
+
+!!if&(type)=8;
+  !!SN:X?t/0;
+  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/4604712;
+!!en;
+
+
 ** Shackles of war (retreat vs neutrals bttles with SW)
 !?FU(OnBeforeBattleAction)|i^battle_hero_1^<=(NO_HERO)/i^wog_72_randHeroActive^; [Works when the defender has no hero OR is a random hero (WoG Scripts)]
 !!BG:A?(actionType:y);
@@ -1382,6 +1403,9 @@ C(ebp)/16/4/d-i^gem_MonPlusLuckPower^ C(ebp)/20/4/di^gem_MonPlusLuckPower^;
   !!if|(qty)=4095/(hasError);           [4095 is the magic number]
     !!UN:P905/(FALSE);
     !!UN:O(x)/(y)/(z)/1;                [Debug msg can be added here to help collect debug info from players]
+
+  !!el&(qty)<=0;
+    !!MO(x)/(y)/(z):G1;
   !!en;
 !!en;
 
@@ -1794,6 +1818,55 @@ C(ebp)/16/4/d-i^gem_MonPlusLuckPower^ C(ebp)/20/4/di^gem_MonPlusLuckPower^;
 
 ************************************************************************
 ************************************************************************
-******************************* FUNCTIONS ******************************
+*************************** CAMPAIGN FIXES *****************************
+************************************************************************
+************************************************************************
+
+// Fix Griffin Cliff (from Long Live the Queen) not winning after capturing all the 7 Griffin Towers
+// by Archer30
+; Ideally, we should also change the text of "Capturing all the dwellings" to "Capturing all the Griffin Towers" as it's possibly that we haven't capture some other dwellings
+!?FU(gem_CreateERMHook);
+!#VA(setHook:x);
+
+!!SN:F^IsCampaign^;
+!!FU&v1<>(TRUE):E;
+
+!!SN:F^GetCampaignFileName^/?(campaignFileName:z);
+!!SN:E6448768/(CALLCONV_CDECL)/(campaignFileName)/^Good1.h3c^/4; [Compare string (case-insensitively)]
+!!FU&v1:E;                              [If the filename is the same, it returns 0]
+
+!!SN:F^GetCampaignMapInd^;
+!!FU&v1<>2:E;
+
+; It's Griffin Cliff from Long Live the Queen
+; Set hook at checking owenrs of all the dwellings to decide whether it's a victory
+!!SN:E(setHook)/1/6236710/(gem_OnCheckDwellingOwners); 005F2A26
+
+!?FU(gem_OnCheckDwellingOwners);
+!#VA(hook:x);
+
+!!VR(x:y):S-1;
+
+!!re i;
+  !!UN:U(OBJ_CREATURE_GENERATOR_1)/25/-1/(x)/(y:y)/(z:y); [25 - Griffin Tower]
+  !!br&(x)<0;
+
+  !!DW(x)/(y)/(z):O?(player:y);
+  !!br&(player)<>i^timerOwner^;
+!!en;
+
+!!SN:X?t/0;
+
+; If the search was performed without interuption, meaning every Griffin tower is captured by the current player, return TRUE
+!!if&(x)=-1;
+  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/6236822; 5F2A96
+; Otherwise return FALSE
+!!el;
+  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/6236846; 5F2AAE
+!!en;
+
+************************************************************************
+************************************************************************
+****************************** FUNCTIONS *******************************
 ************************************************************************
 ************************************************************************

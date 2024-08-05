@@ -1,0 +1,774 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+
+  <title>Era Manual</title>
+  <link href="css.css" rel="stylesheet" type="text/css" />
+  <link href="erm8.css" rel="stylesheet" type="text/css" />
+<!--[if lt IE 8]><link href="erm.css" rel="stylesheet" type="text/css" /><![endif]-->
+
+  <style type="text/css">
+.auto-style1 {
+text-align: center;
+}
+.card {
+border: 1px dotted rgb(102, 102, 102);
+background-color: rgb(220,220,220);
+margin-bottom: 15px;
+}
+.tit {
+text-align: center; background-color: black; color: gray; font-size: 12pt; font-weight: bold
+}
+.t1 {
+background-color: rgb(162,162,162)
+}
+.t2 {
+background-color: silver
+}
+.auto-style2 {
+font-size: 12px;
+font-weight: lighter;
+text-align: center;
+vertical-align: super;
+}
+.auto-style7 {
+color: rgb(51, 51, 51);
+font-size: 14px;
+font-weight: normal;
+font-variant: small-caps;
+text-decoration: none;
+text-align: center;
+}
+.TFlag {
+border-bottom: black 2px groove;
+border-left: black 2px groove;
+border-top: black 2px groove;
+border-right: black 2px groove;
+}
+.TRegisterDiv {
+background-color: #666666;
+outline-style: groove;
+outline-color: white;
+outline-width: 2px;
+color: yellow;
+font-size: 150%;
+cursor: pointer;
+}
+.auto-style8 {
+color: rgb(128, 128, 128);
+}
+  </style>
+</head>
+
+
+<body>
+
+
+
+<div id="header">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+
+
+  <tbody>
+
+
+
+    <tr>
+
+
+
+      <td id="logo" class="auto-style1"> <a href="http://wforum.heroes35.net/index.php" name="0" target="_blank"> <img src="../images/logo-en.png" alt="WForum.Heroes35.net" border="0" /></a></td>
+
+
+
+    </tr>
+
+
+
+  
+  
+  </tbody>
+</table>
+
+
+
+</div>
+
+
+
+<div id="heading">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+
+
+  <tbody>
+
+
+
+    <tr>
+
+
+
+      <td>
+      
+      
+      <h1>Heroes modmaker manual<br />
+
+
+
+&raquo; System of plugins and patches</h1>
+
+
+
+      </td>
+
+
+
+      <td id="desc"> <a href="http://wforum.heroes35.net/member.php?action=profile&amp;uid=481">Berserker</a>
+      <br />
+
+
+
+      <a href="http://wforum.heroes35.net/" target="_blank">http://wforum.heroes35.net/</a><br />
+
+
+
+25.07.2011 </td>
+
+
+
+    </tr>
+
+
+
+  
+  
+  </tbody>
+</table>
+
+
+
+</div>
+
+
+
+<div id="content"> <strong>Version</strong>: <font color="#008000"> <b>1.0</b></font><br />
+
+
+
+<strong>Latest update</strong>: 27.08.2011<br />
+
+
+
+<b>Author</b>: Berserker
+<br />
+
+
+
+<br />
+
+
+
+<br />
+
+
+
+<table style="width: 100%;">
+
+
+
+  <tbody>
+
+
+
+    <tr>
+
+
+
+      <td class="auto-style6" style="width: 32px;">
+      <img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+
+      <td class="auto-style16"><a href="#1" class="auto-style8"> <strong class="txt-2">Patches</strong></a></td>
+
+
+
+    </tr>
+
+
+
+    <tr>
+
+
+
+      <td class="auto-style6" style="width: 32px;">
+      <img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+
+      <td class="auto-style16"><a href="#2" class="auto-style8"> <strong class="txt-2">Standard
+patches description</strong></a></td>
+
+
+
+    </tr>
+
+
+
+    <tr>
+
+
+
+      <td class="auto-style6" style="width: 32px;">
+      <img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+
+      <td class="auto-style16"><a href="#3" class="auto-style8"> <strong class="txt-2">Plugins</strong></a></td>
+
+
+
+    </tr>
+
+
+
+    <tr>
+
+
+
+      <td class="auto-style6" style="width: 32px;">
+      <img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+
+      <td class="auto-style16"><a href="#4" class="auto-style8"> <strong class="txt-2">Standard
+plugins description</strong></a></td>
+
+
+
+    </tr>
+
+
+
+  
+  
+  </tbody>
+</table>
+
+
+
+</div>
+
+
+<a name="1" href="#0">
+<h2>Patches &uarr;</h2>
+</a>
+
+
+<p class="txt-3-Paragraph">Binary patches<span class="auto-style18">&nbsp;are </span>
+files with information about the addresses at which new data will be
+written to the game memory. With the help of patches game bugs are
+fixed and functions are turned on/off. Such files have the extension
+<span class="code">"bin"</span>.</p>
+
+
+
+<p class="txt-3-Paragraph">Era 1.9+ supports 2 variants of
+patches location.<br />
+
+
+
+The first one<span style="font-weight: bold;">, </span><strong>EraPlugins</strong>
+folder, is left for compatibility purpose. All files with <span class="code">"bin" </span> extension found in the
+folder will be automatically loaded and applied. To turn off any patch
+manually just change its extension. Patches from this folder are
+applied after WoG code initialization.<br />
+
+
+
+The second variant is to place patch in one of the
+following two folders: <strong>
+"BeforeWoG" or</strong> <strong>"AfterWoG".</strong>
+Regardless in which folder the patch is placed, it will be applied
+before or after transferring control to WoG.</p>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+<a name="2" href="#0">
+<h2>Standard patches description &uarr;</h2>
+
+
+</a>
+<p><strong><em>BeforeWoG:</em></strong><br />
+
+
+<span class="code"><img src="../images/arrow.png" height="10" width="13" /> [remove exe protection.bin]</span>, author: Berserker.<br />
+
+Disables prohibition of changing executive file. Several game
+modifications alter the executive file to load their dll-libraries. If
+the prohibition is not disabled, the protection will cause crashes at
+different game menus. Such precautionary measures were necessary
+earlier because of add-on Rekvizit which used WoG as&nbsp;base platform and
+was sold for money.</p>
+
+
+<p><strong><em>AfterWoG:</em></strong><br />
+
+
+<span class="code"><img src="../images/arrow.png" height="10" width="13" /> [ai 
+sod radius.bin]</span>, author: Berserker.<br />
+
+Brings back default (SoD) AI thinking radius. The radius was seriously
+shortened (8 times less) in WoG for unknown reasons. It leaded to
+incompetent AI playing and&nbsp;hangings.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[enable next hero button.bin]</span>, author: MoP.<br />
+
+Activates "Next Hero" button. The button was disabled in executive file because of possible cheating in multiplayer.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[enable town info.bin]</span>, author: Berserker.<br />
+
+Re-enables possibility to view towns information on right click on towns icons in town view screen.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[fix erm check syntax.bin]</span>, author: Berserker.<br />
+
+
+Fixes invalid ERM engine behavior when executing several types of logical checks in commands [receivers].</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[fix erm ss a command.bin]</span>, author: Berserker.<br />
+
+Fixes bug in ERM command&nbsp;<span class="code">SS:A</span>. The command changed the full spell name instead of abbreviation.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[fix erm ca b2 command.bin]</span>, author: Berserker.<br />
+
+Fixes ERM command <span class="code">CA:B2</span>. It built all dependent buildings for the building being destroyed.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[fix erm tr r roads.bin]</span>, author: Berserker.<br />
+
+Fixes ERM error on setting/getting roads using <span class="code">TR:R command</span>.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[dl buttons fix.bin]</span>, author: Berserker.<br />
+
+DL-dialogs buttons now understand "flags" parameter. The parameter
+defines scan-code of the key, the button will be binded to (0 - no
+binding). Besides, buttons no longer close the dialog automatically but
+generate&nbsp;push (12) and release (13) events instead.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[mp3 44khz patch.bin]</span>, author: Berserker.<br />
+
+
+Allows game to play 44 khz mp3 files in stereo mode instead of default 22 khz mono.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[nocd speedup.bin]</span>, author: Berserker.<br />
+
+Disables CD-check and thus speed-ups game start (by 3-6 sec).</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no erm he f redraw.bin]</span>, author: Berserker.<br />
+
+Removes screen redraw after execution of HE:F ERM command.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no erm ow r redraw.bin]</span>, author: Berserker.<br />
+
+Removes screen redraw after execution of OW:R ERM command<span class="code"></span>.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no erm scripts turning off.bin]</span>, author: Berserker.<br />
+
+Prohibits ERM to turn off scripts&nbsp;on errors. Scripts switching
+off&nbsp; was carried out by writing end of string marker (#0) in place
+of error thus cutting off permanently part of the script.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no memory and hdd checks.bin]</span>, author: Berserker.<br />
+
+Disables hdd and memory space checks because of their invalid implementation.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no multiplayer notes.bin]</span>, author: Berserker.<br />
+
+
+The game will no longer show the warning that not all scripts are compatible with multiplayer.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no real time trigger.bin]</span>, author: Berserker.<br />
+
+Disables ERM real-time trigger <span class="code">!?TL</span>.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[reduce cpu load.bin]</span>, author: Berserker.<br />
+
+Decreases cpu load down to several percent points by inserting call to
+sleep routine in the game&nbsp;message handling cycle. The
+load&nbsp;remains on the old level during AI turn and while
+non-standard ERM dialogs are displayed.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[remove black screens.bin]</span>, author: MoP.<br />
+
+Removes smooth darkening on transitions between game screens.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[skeleton transformer fix.bin]</span>, author: Bes.<br />
+
+
+<em>Dracoliches</em> and <em>Ghosts</em> will no longer be turned into skeletons in building "Skeletons Transformer".</p>
+
+
+<p class="Comment-lite">The following patches are off by default but can be turned on via changing their extension into&nbsp;<span class="codeStd">".bin":</span><span class="codeStd"></span></p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[always summon ship.bin.off]</span>, author: Berserker.<br />
+
+Boat summoning now has 100% guarantee of success regardless water magic presence and level.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[campaign heroes as start heroes.bin.off]</span>, author: MoP.<br />
+
+Allows to select campaign heroes at start of usual maps.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[disable dracolich block.bin.off]</span>, author: Berserker.<br />
+
+Takes away the ability of <em>dracoliches</em> to block physical damage.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[dismiss last stack.bin.off]</span>, author: MoP.<br />
+
+Allows to dismiss the last stack in hero's army using standard "Dismiss" button.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[inferno gates teleports to any town.bin.off]</span>, author: MoP.<br />
+
+"Inferno Gates" building now allows to teleport to any allied town.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no gifts from allies.bin.off]</span>, author: Berserker.<br />
+
+AI allies will no longer send gifts to their human allies.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no load game confirmation.bin.off]</span>, author: Berserker.<br />
+
+Turns off load game confirmation on pressing "L" in singleplayer.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[no secondary skills limit.bin.off]</span>, authors: Berserker &amp; gamecreator.<br />
+
+Disables 8 secondary skills limit.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[transfer last stack.bin.off]</span>, author: Berserker.<br />
+
+Allows hero to transfer the last stack. The stack loses all experience.</p>
+
+
+<p><span class="code"><img src="../images/arrow.png" height="10" width="13" /> 
+[quick battle no retreat question.off]</span>, author: Berserker.<br />
+
+Disables&nbsp;autobattle suggestion to retreat if human is going to lose by game calculations.</p>
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+<a name="3" href="#0"><h2>Plugins &uarr;</h2></a>
+<p class="txt-3-Paragraph">When patches functionality is not enough
+then dynamical libraries (dll) written in high level languages and
+compiled in machine code appear on the scene. Such libraries are called
+plugins. Plugins may have very different purposes: fixing game bugs,
+introducing new functions, full game modifications.<br />
+
+Plugins for old Era&nbsp;(&lt;= 1.8х) have extension&nbsp;<span class="codeStd">"dll"</span> and are located in <strong>"EraPlugins"</strong> folder. Era guarantees their automatical loading after WoG initial code execution.<br />
+
+New-style plugins are also located in <strong>"EraPlugins"</strong> folder but carry <span class="codeStd">"era"</span>
+extension and have advanced possibilities such as&nbsp;setting custom
+handlers on game events and usage of Era applied functions. The
+initialization sections of plugins must not contain any code modifying
+game code. Only registering events handlers and initialization of data
+structures are allowed.<br />
+
+
+To install new plugin, place it in&nbsp;EraPlugins folder. To delete plugin, change its extension or delete the file.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="4">Standard plugins description &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">
+<img src="../images/arrow.png" height="10" width="13" /> [artifact merchant 
+fix.dll]</span>, author: baratorch.<br />
+
+Fixes bugs when using "Artifact merchant".</p>
+
+
+<p class="txt-3-Paragraph"><span class="code">
+<img src="../images/arrow.png" height="10" width="13" /> [all war machines in 
+blacksmith.dll.off]</span>, author: MoP.<br />
+
+Allows to buy all war machines in blacksmiths.</p>
+
+
+
+<div>
+<br />
+
+
+
+<br />
+
+
+
+<br />
+
+
+
+<br />
+
+
+
+<br />
+
+
+
+<table style="border-top: 2px solid rgb(51, 51, 51); border-bottom: 2px solid rgb(51, 51, 51); width: 100%; height: 28px; background-color: rgb(192, 192, 192); color: rgb(51, 51, 51);" class="AHSTable">
+
+
+
+  <tbody>
+
+
+
+    <tr>
+
+
+
+      <td class="auto-style1" valign="middle"> <a href="#" onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = '» Association of heroes sites «';}else{ div.style.display = 'none'; this.innerHTML = '« Association of heroes sites »';} return false" class="auto-style7">&laquo; Association of heroes sites
+&raquo;</a>
+      
+      
+      <div style="display: none;"> <span style="">
+      
+      
+      <div style="border-style: dotted none none; border-color: rgb(51, 51, 51); border-width: 1px 0px 0px; padding: 1em 1em 0em; background: rgb(229, 229, 229) none no-repeat scroll 2.2em center; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; margin-bottom: 1.5em; color: rgb(68, 68, 68); margin-top: 0.3em; height: 158px; text-align: center;">
+      <span>
+      
+      
+      <table class="card" align="middle">
+
+
+
+        <tbody>
+
+
+
+          <tr>
+
+
+
+            <td class="auto-style2" colspan="6" align="middle">About &laquo;Might and Magic&raquo;
+series games</td>
+
+
+
+          </tr>
+
+
+
+          <tr align="middle">
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag1" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international internet resource, offline and online tournaments.">
+            <img src="../images/ahs/ahs_heroesportal.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag2" alt="Heroes Fan-site" href="http://bers.heroes35.net/ahs/go.php?go=heroes-m-and-m.com" target="_blank" title="Fan-site for &quot;Heroes of Might and Magic&quot; series"> <img src="../images/ahs/ahs_heroes_mandm.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag3" alt="Heroes Community" href="http://bers.heroes35.net/ahs/go.php?go=heroes1-5.at.ua" target="_blank" title="Site devoted to M&amp;M, HoMM and KB words.">
+            <img src="../images/ahs/ahs_heroes_community.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag4" alt="Heroes Remake Site" href="http://bers.heroes35.net/ahs/go.php?go=remake-heroes.ucoz.ru" target="_blank" title="Heroes 3.5 news. Russian Heroes Project.">
+            <img src="../images/ahs/ahs_russian_heroes3.5.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag5" alt="Heroes 3 Online" href="http://bers.heroes35.net/ahs/go.php?go=geroi-3.narod.ru" target="_blank" title="Geroi-3.narod.ru - about network Heroes 3 playing for newbies: where to download the game, how to connect, where players can be found">
+            <img src="../images/ahs/ahs_heroes3_help.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag6" alt="Heroes Bulletin" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="'Heroes Bulletin' - Internet-magazine devoted to computer games of 'Heroes of Might &amp; Magic' series and other close-thematics games.">
+            <img src="../images/ahs/ahs_vestnik_heroes.png" height="31" width="88" /></a></td>
+
+
+
+          </tr>
+
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+
+      
+      
+      <table class="card" align="middle">
+
+
+
+        <tbody>
+
+
+
+          <tr>
+
+
+
+            <td class="auto-style2" colspan="6" align="middle"> <span>Modmaking and mods, towns,
+campaigns and maps, materials, resources and tools</span> </td>
+
+
+
+          </tr>
+
+
+
+          <tr align="middle">
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag7" alt="New Towns Site" href="http://bers.heroes35.net/ahs/go.php?go=heroes3towns.com" target="_blank" title="Learn more about Heroes 3 towns!">
+            <img src="../images/ahs/ahs_new_town.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag8" alt="Kremlin Site" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="Kremlin. Slavic town"> <img src="../images/ahs/ahs_kremlin.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag9" alt="Terry Pratchetts Mod" href="http://bers.heroes35.net/ahs/go.php?go=tp-mod.ucoz.net" target="_blank" title="Terry Pratchetts Mod, modification for Heroes III game">
+            <img src="../images/ahs/ahs_tpmod.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag10" alt="Catalog of H3 Mods." href="http://bers.heroes35.net/ahs/go.php?go=packa.ucoz.ru/forum/61-184-1" target="_blank" title="Catalog of Heroes 3 mods."> <img src="../images/ahs/ahs_catalog_of_mods.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag11" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international internet resource, offline and online tournaments.">
+            <img src="../images/ahs/ahs_newmaps.png" height="31" width="88" /></a></td>
+
+
+
+            <td class="auto-style2" width="10%"> <a id="wogflag12" alt="WoG Archive" href="http://bers.heroes35.net/ahs/go.php?go=wogarchive.ru" target="_blank" title="WoG Archive. The biggest materials collection for Heroes 3. More than gigabyte of data.">
+            <img src="../images/ahs/ahs_wogarchive.png" height="31" width="88" /></a></td>
+
+
+
+          </tr>
+
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+
+      </span> </div>
+
+
+
+      </span></div>
+
+
+
+      </td>
+
+
+
+    </tr>
+
+
+
+  
+  
+  </tbody>
+</table>
+
+
+
+<div id="fblock">
+<div id="fblock0">
+<div id="copy"> Copyright &copy; 2009 &mdash;
+2011, Berserker</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+<script src="../erm.js"></script>
+</body>
+</html>

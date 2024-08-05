@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Era Manual</title>
+	<link href="css.css" rel="stylesheet" type="text/css" />
+	<link href="erm8.css" rel="stylesheet" type="text/css" />
+	<!--[if lt IE 8]><link href="erm.css" rel="stylesheet" type="text/css" /><![endif]-->
+	<style type="text/css">
+	.auto-style1 {
+	text-align: center;
+	}
+	.card {
+	border: 1px dotted rgb(102, 102, 102);
+	background-color: rgb(220,220,220);
+	margin-bottom: 15px;
+	}
+	.tit {
+	text-align: center; background-color: black; color: gray; font-size: 12pt; font-weight: bold
+	}
+	.t1 {
+	background-color: rgb(162,162,162)
+	}
+	.t2 {
+	background-color: silver
+	}
+	.auto-style2 {
+	font-size: 12px;
+	font-weight: lighter;
+	text-align: center;
+	vertical-align: super;
+	}
+	.auto-style7 {
+		color: rgb(51, 51, 51);
+		font-size: 14px;
+		font-weight: normal;
+		font-variant: small-caps;
+		text-decoration: none;
+		text-align: center;
+	}
+	.TFlag {
+	border-bottom: black 2px groove;
+	border-left: black 2px groove;
+	border-top: black 2px groove;
+	border-right: black 2px groove;
+	}
+	.TRegisterDiv {
+	background-color: #666666;
+	outline-style: groove;
+	outline-color: white;
+	outline-width: 2px;
+	color: yellow;
+	font-size: 150%;
+	cursor: pointer;
+	}
+    .auto-style8 {
+		color: rgb(128, 128, 128);
+	}
+    </style>
+ 
+</head>
+
+
+<body>
+<div id="header">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td id="logo" class="auto-style1">
+				<a href="http://wforum.heroes35.net/index.php" name="0" target="_blank">
+				<img src="../images/logo-en.png" alt="WForum.Heroes35.net" border="0" /></a></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+
+<div id="heading">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+	<tr>
+		<td>
+			<h1>Heroes Modmaker Manual<br />
+			» New events (triggers)</h1>
+		</td>
+		<td id="desc">
+			<a href="http://wforum.heroes35.net/member.php?action=profile&amp;uid=481">
+			Berserker</a> <br />
+			<a href="http://wforum.heroes35.net/" target="_blank">
+			http://wforum.heroes35.net/</a><br />
+			25.07.2011 		</td>
+	</tr>
+  </tbody>
+</table>
+</div>
+
+<div id="content">
+	<strong>Version</strong>: <font color="#008000"> <b>1.0</b></font><br />
+	<strong>Latest update</strong>: 15.08.2011<br />
+	<b>Author</b>: Berserker
+<br />
+<br />
+<table style="width: 100%">
+		
+	
+	<tr>
+		<td class="auto-style6" style="width: 32px">
+		<img height="24" src="../images/go_24.png" width="24" /></td>
+		<td class="auto-style16"><a href="#1" name="events" class="auto-style8" style="font-weight:bolder"
+		onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = 'Extended standard events «', title='Hide';}else{ div.style.display = 'none'; this.innerHTML = 'Extended standard events »', title='Show';} return false">
+		Extended standard events »</a>
+		<div style="display: none; vertical-align: bottom;">
+			<span style="">
+			<DIV 
+            style="PADDING-LEFT: 1em; PADDING-RIGHT: 1.5em; MARGIN-BOTTOM: 1em; BACKGROUND: no-repeat 2.2em center; COLOR: #444444; margin-top: 0.5em;">
+				<ul>
+					<li><a href="#1.1">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="19" style="BACKGROUND-IMAGE: none; BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; BACKGROUND-ATTACHMENT: scroll; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND-REPEAT: repeat; BACKGROUND-POSITION: 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">!?GM1</font></font></a></li>
+					<li>
+					<a href="#1.2">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="20" style="BACKGROUND-IMAGE: none; BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; BACKGROUND-ATTACHMENT: scroll; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND-REPEAT: repeat; BACKGROUND-POSITION: 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">!?MM0</font></font></a></li>
+				</ul>
+			</DIV>
+			</span>
+		</td>
+	</tr>	
+	<tr>
+		<td class="auto-style6" style="width: 32px">
+		<img height="24" src="../images/go_24.png" width="24" /></td>
+		<td class="auto-style16"><a href="#2" name="trigger" class="auto-style8" style="font-weight:bolder"
+		onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = 'New ERM triggers «', title='Hide';}else{ div.style.display = 'none'; this.innerHTML = 'New ERM triggers »', title='Show';} return false">
+		New ERM triggers »</a>
+		<div style="display: none; vertical-align: bottom;">
+			<span style="">
+			<DIV 
+            style="PADDING-LEFT: 1em; PADDING-RIGHT: 1.5em; MARGIN-BOTTOM: 1em; BACKGROUND: no-repeat 2.2em center; COLOR: #444444; margin-top: 0.5em;">
+				<ul>
+					<li><a href="#2.1">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="19" style="BACKGROUND-IMAGE: none; BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; BACKGROUND-ATTACHMENT: scroll; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND-REPEAT: repeat; BACKGROUND-POSITION: 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Save data</font></font></a></li>
+					<li><a href="#2.2">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="20" style="BACKGROUND-IMAGE: none; BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; BACKGROUND-ATTACHMENT: scroll; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND-REPEAT: repeat; BACKGROUND-POSITION: 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Load saved data</font></font></a></li>
+					<li><a href="#2.3">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="21" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Keystroke</font></font></a></li>
+					<li><a href="#2.4">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="31" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Open hero window</font></font></a></li>
+					<li><a href="#2.5">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="21" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Close hero window</font></font></a></li>
+					<li><a href="#2.6">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="31" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Stack receives move in battle</font></font></a></li>
+					<li><a href="#2.7">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="31" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Regeneration phase in battle</font></font></a></li>
+					<li><a href="#2.8">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="31" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">After saving the game</font></font></a></li>
+					<li><a href="#2.9">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="31" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">Before interaction between heroes</font></font></a></li>
+					<li><a href="#2.10">
+					<font style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">
+					<font closure_uid_4xilc2="31" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 0px; DISPLAY: inline; BACKGROUND: none transparent scroll repeat 0% 0%; FONT-SIZE: 100%; VERTICAL-ALIGN: baseline; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px">After interaction between heroes</font></font></a></li>
+				</ul>
+			</DIV>
+		</span>
+	</td>
+</tr>
+</table>
+</div>
+
+
+
+<p class="Info-1">New events are introduced into the game not in the form of the usual <span class="code">!?XX</span> type ERM triggers, but in the form of nonstandard function numbers <span class="code">&gt; 30000</span>.<br />
+Era reserves functions with the numbers <span class="code">
+77000..77999</span> for its needs. Script-writers and plug-in creators may use values in the range of <span class="code">40000..134217727</span>. The tie to the <span class="code">0..30000</span> range for ERM functions has been removed.<br />
+All new events have a set of 16 local (unchanged by other events) parameters. Access to the parameters is gained via the command <span class="code">SN:X</span>.</p>
+
+<a name="1" href="#0">
+<h2>Advanced standard events ↑</h2></a>
+<p class="txt-3-Paragraph">Extended standard events also have their own <span class="code">SN:X</span> parameters and additional options.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h3><a href="#events" name="1.1">!?GM1 ^</a></h3>
+<p class="txt-3-Paragraph-h3"><em>Parameters:<span class="codeStd">
+</span></em>Save name.</p>
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+<pre erm="true">!?GM1; 
+!!SN:X?z1; received name of game being saved 
+!!VRz1:+^_%Gc^; added color of current player to it 
+!!SN:Xz1; set new save name</pre>
+<p class="txt-3-Paragraph-h3">If red player selects <span class="code">newgame</span>, the game will be saved in the file 
+<span class="code">"newgame_Red.gm1"</span>.</p>
+
+<h3><a href="#events" name="1.2">!?MM0 ^</a></h3>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em><br />
+1: Number of current stack or -1.<br />
+2: Number of enemy stack indicated by cursor or -1.<br />
+3: Minimum damage.<br />
+4: Maximum damage.</p>
+<p class="txt-3-Paragraph-h3">The trigger is convenient for replacing a standard extension hint with an indication of how many units of the enemy will be killed in the strike.</p>
+<p class="txt-3-Paragraph"><strong>Example</strong><strong class="auto-style10">:</strong></p>
+<pre erm="true">!?MM;
+!!SN:X?y1/?y2/?y3/?y4; received event parameters
+!!FU&amp;y2=-1:E; exited, if this is not a hint about damage
+!!BMy2:H?y5 L?y6 N?y7; y5 — life, y6 — lost health, y7 — number of enemy units
+!!VRy8:Sy5-y6; y8 — health of the last units of the stack
+!!VRy9:Sy3:y5; y9 — minimum quantity, will die
+!!VRy10:Sy3%y5; y10 — damage for the last unit in the worst case 
+!!VRy9&amp;y10&gt;=y8:+1; y9 — minimum quantity, will die 
+!!VRy11:Sy4:y5; y11 — maximum quantity, will die 
+!!VRy12:Sy4%y5; y12 — damage for the last unit in the best case 
+!!VRy11&amp;y12&gt;=y8:+1; y11 — maximum quantity, will die 
+!!VRy13:Sy5*y7-y6; y13 — general quantity of stack health 
+!!VRy9&amp;y9&gt;y7:Sy7; y9 — minimum quantity, will die
+!!VRy11&amp;y11&gt;y7:Sy7; y11 — maximum quantity, will die 
+!!IF:V2/0;
+!!IF&amp;y9=y11:V2/1; flag 2 indicates that the minimum and maximum levels are the same
+!!IF:V3/0;
+!!IF&amp;y9=y7:V3/1; flag 3 indicates that the entire stack will die anyway 
+!!VRz2:S^%Y3-%Y4^; damage in the format of “minimum” – “maximum”
+!!VRz2&amp;y3=y4:S^%Y3^; damage in “damage” format
+!!VRz3:S^Damage:^;
+!!if&amp;3:; if the whole stack will die 
+!!VRz1:S^%Z3 %Z2. {~Yellow}FATALITY{~}^;
+!!el:;
+!!VRz1:S^%Z3 %Z2. Kills: {~Yellow}%Y9-%Y11{~}^; damage with dispersion 
+!!VRz1&amp;2:S^%Z3 %Z2. Kills: {~Yellow}%Y9{~}^; damage without dispersion
+!!en:;
+!!MM:Mz1; set new hint</pre>
+<p class="txt-3-Paragraph"></p>
+<h2><a name="2" href="#0">New ERM triggers ↑</a></h2>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.1">Save data ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77001;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> none.</p>
+<p class="txt-3-Paragraph-h3">In this event, it is possible to save user data to file sections with the help of the machine function <span class="code">
+"WriteSavegameSection"</span>. All ERM variables have already been saved at this point.</p>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.2">Load saved data ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77002;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> none.</p>
+<p class="txt-3-Paragraph-h3">In this event, it is possible to read user data from file sections with the help of the machine function <span class="code">
+"ReadSavegameSection"</span>. All ERM variables have already been loaded at this point.</p>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.3">Keystroke ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77003;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> Keystroke code, Block game handling (0 – no, 1 – yes).</p>
+<p class="Comment-warning">The function <span class="code">GetGameState</span><strong> serves to determine which window we are in now.<br />
+<br />
+</strong>Since this event shows up in all game dialogs, it is not recommended that general global variables be used between dialog showings, since the event from the dialog could damage it.</p>
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+<pre erm="true">!?FU77003; keystroke 
+!!SN:X?y1; y1 — key code 
+!!FU&amp;y1&lt;&gt;83:E; exit, if the code is not 83 ("S" key) 
+!!SN:L^Era.dll^/?y2; received description of Era library in y2 
+!!SN:Ay2/^GetGameState^/?y3; y3 — address of function GetGameState 
+!!SN:Ey3/1/?y4; y4 — ID of parent dialog, y5 — ID of current dialog 
+!!FU&amp;y5&lt;&gt;4205280:E; exit, if this is not the adventure map 
+!!SN:X?y1/1; block standard action 
+!!IF:M^Unfortunately, you can’t save right now^;</pre>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.4">Open hero window ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77004;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> none.</p>
+<p class="txt-3-Paragraph-h3"><span class="code">!!HE-1</span> syntax works.</p>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.5">Close hero window ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77005;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> none.</p>
+<p class="txt-3-Paragraph-h3"><span class="code">!!HE-1</span> syntax works.</p>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.6">Stack receives move in battle ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77006;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> Side (0 – left, 1 – right), stack number (0..21).</p>
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+<pre erm="true">!?FU77006;
+!!SN:X0/0; in the battle, only a hero’s first stack will receive the right to a move</pre>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.7">Regeneration phase in battle ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77007;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> stack number (0..41), Structure indicator <span class="code">TBattleMonster</span>, Block regeneration? (0 – no, 1 – yes).<br />
+In this event, the regeneration of <em>Hell Hydras</em>, <em>Trolls</em>, and 
+<em>Wigts</em> takes place.</p>
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+<pre erm="true">!?FU77007; 
+!!SN:X?y1; y1 — stack number 
+!!FU&amp;y1&gt;21:E; exited, if it is defenders 
+!!BMy1:M41/999/3; place expert blessing on stack; now all attacker’s stacks always have an expert blessing</pre>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.8">After saving the game ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77008;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> none.</p>
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+<pre erm="true">!?FU77008; 
+!!IF:M^Now that the game is saved, I suggest you turn off the computer and rest^; 
+!!UN:C0/4/0; cause the game to crash</pre>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.9">Before interaction between heroes ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77010;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> Number of initiator hero, number of target hero.<br />
+Interaction may be a meeting of a player’s heroes or allied heroes, or an attack on an enemy.</p>
+<p class="txt-3-Paragraph"></p>
+<h3><a href="#trigger" name="2.10">After interaction between heroes ^</a></h3>
+<p class="txt-3-Paragraph-h3"><span class="code">!?FU77011;</span></p>
+<p class="txt-3-Paragraph-h3"><em>Parameters:</em> Number of initiator hero, number of target hero.</p>
+<div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<table style="width: 100%; height: 28px; background-color: #C0C0C0; border-top-style: solid; border-top-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-top-color: #333333; border-bottom-color: #333333; color: rgb(51, 51, 51);" class="AHSTable">
+	<tr>
+		<td valign="middle" class="auto-style1">
+		<a href="#" onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = '&raquo; Association of heroes sites &laquo;';}else{ div.style.display = 'none'; this.innerHTML = '&laquo; Association of heroes sites &raquo;';} return false" class="auto-style7">« Association of Heroes sites »</a>
+		<div style="display: none;">
+			<span style="">
+			<div 
+			style="border-left: 0px none #666666; border-right: 0px none #666666; padding: 1em 1em 0em 1em; border-bottom: 0px none #666666; margin-bottom: 1.5em; background: #E5E5E5 no-repeat 2.2em center; color: #444444; border-top: 1px dotted #666666; margin-top: 0.3em; height: 158px; text-align: center; border-color: #333333;">
+            	
+<span> 	
+<table align="middle" class="card">
+	<tr>
+		<td align="middle" class="auto-style2" colSpan="6">About “Might and Magic” series games</td>
+	</tr>
+	<tr align="middle">
+		<td class="auto-style2" width="10%">
+		<a id="wogflag1" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international Internet resource, offline and online tournaments.">
+		<img src="../images/ahs/ahs_heroesportal.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag2" alt="Heroes Fan-site" href="http://bers.heroes35.net/ahs/go.php?go=heroes-m-and-m.com" target="_blank" title="Fan site for "Heroes of Might and Magic" series">
+		<img src="../images/ahs/ahs_heroes_mandm.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag3" alt="Heroes Community" href="http://bers.heroes35.net/ahs/go.php?go=heroes1-5.at.ua" target="_blank" title="Site devoted to M&amp;M, HoMM and KB words.">
+		<img src="../images/ahs/ahs_heroes_community.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag4" alt="Heroes Remake Site" href="http://bers.heroes35.net/ahs/go.php?go=remake-heroes.ucoz.ru" target="_blank" title="Heroes 3.5 news. Russian Heroes Project.">
+		<img src="../images/ahs/ahs_russian_heroes3.5.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag5" alt="Heroes 3 Online" href="http://bers.heroes35.net/ahs/go.php?go=geroi-3.narod.ru" target="_blank" title="Geroi-3.narod.ru - about network Heroes 3 playing for newbies: where to download the game, how to connect, where players can be found">
+		<img src="../images/ahs/ahs_heroes3_help.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag6" alt="Heroes Bulletin" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="'Heroes Bulletin' - Internet-magazine devoted to computer games of 'Heroes of Might & Magic' series and other close-thematics games.">
+		<img src="../images/ahs/ahs_vestnik_heroes.png" height="31" width="88" /></a></td>
+	</tr>
+</table>
+
+<table align="middle" class="card">
+	<tr>
+		<td align="middle" class="auto-style2" colSpan="6">
+	<span>Modmaking and mods, towns, campaigns and maps, materials, resources and tools</span>
+		</td>
+	</tr>
+	<tr align="middle">
+		<td class="auto-style2" width="10%">
+		<a id="wogflag7" alt="New Towns Site" href="http://bers.heroes35.net/ahs/go.php?go=heroes3towns.com" target="_blank" title="Learn more about Heroes 3 towns!">
+		<img src="../images/ahs/ahs_new_town.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag8" alt="Kremlin Site" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="Kremlin. Slavic town">
+		<img src="../images/ahs/ahs_kremlin.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag9" alt="Terry Pratchetts Mod" href="http://bers.heroes35.net/ahs/go.php?go=tp-mod.ucoz.net" target="_blank" title="Terry Pratchetts Mod, modification for Heroes III game">
+		<img src="../images/ahs/ahs_tpmod.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag10" alt="Catalog of H3 Mods." href="http://bers.heroes35.net/ahs/go.php?go=packa.ucoz.ru/forum/61-184-1" target="_blank" title="Catalog of Heroes 3 mods.">
+		<img src="../images/ahs/ahs_catalog_of_mods.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag11" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international Internet resource, offline and online tournaments.">
+		<img src="../images/ahs/ahs_newmaps.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag12" alt="WoG Archive" href="http://bers.heroes35.net/ahs/go.php?go=wogarchive.ru" target="_blank" title="WoG Archive. The biggest materials collection for Heroes 3. More than gigabyte of data.">
+		<img src="../images/ahs/ahs_wogarchive.png" height="31" width="88" /></a></td>
+	</tr>
+</table>
+</span>
+</div>
+</td></tr></table>
+
+<div id="fblock">
+	
+	<a href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net"></a>
+	
+<div id="fblock0">
+	
+	<div id="copy">
+			Copyright © 2009 — 2011, Berserker</div>
+</div>
+</div>
+</div>
+<script src="erm.js"></script>
+</body>
+</html>

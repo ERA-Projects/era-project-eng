@@ -1,5 +1,6 @@
 WoG
 Era Erm Framework
+Easy Cheats
 BattleQueue
 BattleSpeed
 Spells Description

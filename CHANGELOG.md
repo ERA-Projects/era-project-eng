@@ -1,3 +1,252 @@
+### Version 2.102
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file /Help/Era manual/era iii changelog.txt;
+	
+- ## updating the ERA.dll kernel to version 3.9.15:
+- Updated erm_hooker.era plugin to version 3.0:
+  - Switched to modern patching API from era.dll.
+  - Implemented protection from overlapping patches.
+  - Implemented protection from patch restoration if patched code was changed by third-party code.
+  - Improved patch bridge code.
+  - Added version reporting (RMB on Credits in game menu).
+  - Patch report file (Debug/Era/erm hooks.txt) uses human readable ERM function names instead of numeric IDs now.
+- Added support for ERM script libraries. Scripts, located in "Data/s/lib" directory are considered library scripts. They are loaded before other global scripts and before     all map scripts (both internal and external). Such scripts must be propertly written, use only named variables and functions with prefixes. They must not influence the gameplay, interface or other scripts. They should be treated as a callable collection of functions, together with related constants and data structures.
+- Era Erm Framework scripts are moved to "Data/s/lib" and can be used in maps now, even in maps, disabling global ERM scripts.
+- Fixed DL:H command. Any string is accepted as hint. The hint is copied to a dialog internal location and automatically freed on dialog closing. No more need to use global z-variables for custom dialog hints. Hints are not interpolated at show time anymore.
+- Modified "IF:L" command to allow any string as argument and automatically escape '%' character. Previously strings with '%' led to garbage results or even crashes.
+- Modified "HE:B0", "HE:B1", "HE:B3" commands to allow any string as argument.
+- Rewritten WoG "ApplyString" and "NewMesMan" functions, allowing any string in multiple ERM commands (CA, LE, GE, etc):
+	- Disabled syntax of setting event message to the one from event with given ID (ex, "GE:M30" for event with ID 30).
+	- Deprecated syntax of using -1 instead of empty string.
+- Extended SN:K(str)/(ind)/[?](strchar or char code) syntax. If result is integer variable, char code is returned instead.
+- Extended 'VR:F' command with the 4-th parameter:
+    - If (defaultValue) is specified and variable does not fit (minValue)..(maxValue) range, it will be set to (defaultValue):
+    ```
+    !!VR(intVar):F(minValue)/(maxValue)/(showErrors)/(defaultValue);
+    ```
+- Improved stability of dynamic ERM commands execution using 'ExecErmCmd' API. Added support for all ERM 2 variables in command parameters.
+- Extended ERM fast memory buffer for string literals and string arguments in ERM commands and triggers from 1 MB to 3 MB.
+- Added possibility to increase buffer size for compiled erm scripts using heroes3.ini setting. The default value is 128 MB. Single ERM command need ~0.5 KB:
+	- CompiledErmBufSize = 134217728; maximum size of a buffer for compiled erm scripts (does not influence dynamic compilation on the fly using PersistErmCmd or ExecErmCmd)
+- Disabled ERM tracking for Era Erm Framework mouse and keyboard handling code.
+- Improved ERM tracking report formatting.
+- Added new event "OnBeforeLoadGame" for plugins. It occurs right after old game leaving and before new game loading.
+- Added new option "Debug.CopySavegameOnCrash" to heroes3.ini. The option is on by default and enabled copying of last used savegame to debug directory on crash, which may be useful for crash investigation.
+- Moved a few messages from code into era.json for further localization:
+  - era.no_memory_for_erm_optimization;
+  - era.game_crash_message;
+- Refactored and updated Era SDK files in "Tools/Era/SDK". For C++ use "era.h" and "era.cpp". For Delphi use "era.pas".
+
+- Added the following functions to Era Erm Framework:
+    - ```
+        !?FU(Interpolate);
+        ; Interpolates ERM variables inside given string (%v1, etc). Can be used for nested translation strings like %T(...) is json.
+        !#VA(strPtr:x);    Source string.
+        !#VA(resultPtr:x); OUT. Result string.
+    
+        Example:
+    
+        !!VRi^edu_age^:S33;
+        !!VRs^edu_name^:S^Xeon^;
+        !!VR(templateStr:z):S^%%s(edu_name) is %%i(edu_age) years old^;
+        !!IF:M(templateStr); displays "%s(edu_name) is %i(edu_age) years old"
+        !!FU(Interpolate):P(templateStr)/?(interpolatedStr:z);
+        !!IF:M(interpolatedStr); displays "Xeon is 33 years old"
+        ```
+    - ```
+        !?FU(Trim);
+        ; Trims #0..#32 characters (space and control characters) from both sides of the string.
+        !#VA(strPtr:x);    Source string.
+        !#VA(resultPtr:x); OUT. Result string.
+
+        Example:
+
+        !!VR(text:z):S^    Hello World    ^;
+        !!FU(Trim):P(text)/?(text);
+        !!IF:M^%(text)^; displays "Hello World" without leading and trailing spaces
+        ```
+    - ```
+        !?FU(StrPos);
+        ; Finds the first occurance of needle string in the haystack string. Returns offset from string start or -1 for faulure
+        !#VA(haystackPtr:x); String to search in
+        !#VA(needlePtr:x);   String to seacrh for
+        !#VA(result:x);      Result offset in the haystack string or -1.
+        !#VA(offset:x);      Zero-based offset in haystack string to start search from. Default: 0.
+
+        Example:
+
+        !!VR(text:z):S^Hello World^;
+        !!FU(StrPos):P(text)/^World^/?(substrPos:y);
+        !!IF:M^%(substrPos)^; displays "6"
+        ```
+    - ```
+        !?FU(StrReplace);
+        ; Replaces all occurencies of Pattern string in the Source string with Replacement string. Returns final string.
+        ; Can be used inside triggers only.
+        !#VA(sourcePtr:x);      Original string to perform replacements in
+        !#VA(patternPtr:x);     What string to replace
+        !#VA(replacementPtr:x); Replacement string
+        !#VA(result:x);         Result string index
+
+        Example:
+    
+        !!VR(text:z):S^You should cast the spell. Spell casting increases your intelligence^;
+        !!FU(StrReplace):P(text)/^cast^/^learn^/?(text);
+        !!IF:M^%(text)^; You should learn the spell. Spell learning increases your intelligence
+        ```
+- Added the following constans to Era Erm Framework:
+    - CHAT_EVENT_TYPE_XXX   for 'OnChat' event subtype
+    - CHAT_EVENT_RESULT_XXX for 'OnChat' event result
+- Added the following exported functions to era.dll:
+
+  (* Compiles single ERM command without !! prefix and conditions and saves its compiled code in persisted memory storage.
+     Returns non-nil opaque pointer on success and nil on failure. Trailing semicolon is optional *)
+  function PersistErmCmd (CmdStr: pchar): {n} pointer; stdcall;
+
+  (* Executes previously compiled and persisted ERM command. Use PersistErmCmd API for compilation *)
+  procedure ExecPersistedErmCmd (PersistedCmd: pointer); stdcall;
+
+  (* Translates given string. Returns static translated string address, which will never be deallocated *)
+  function trStatic (const Key: pchar): pchar; stdcall;
+
+  (* Translates given string. Pass parameters as pairs of (key, value). Returns temporary string address, which must be immediately copied to a safe location *)
+  function trTemp (const Key: pchar; Params: pointer to array of pchar; LastParamIndex: integer): pchar; stdcall;
+
+  (* Returns human readable string for ERM event ID. Usually it's ERM trigger human readable name or ERM function name.
+     The caller MUST free returned memory block using MemFree from era.dll *)
+  function GetTriggerReadableName (EventId: integer): {O} pchar; stdcall;
+
+  (* Installs new hook at specified address. Returns pointer to bridge with original code. Optionally specify address of a pointer to write applied patch structure pointer to.
+     It will allow to rollback the patch later.
+     Handler function must use stdcall convention. It receives hook context pointer and must return non-zero value in order to execute overwritten code.  *)
+  function HookCode (Addr: pointer; HandlerFunc: THookHandler; {n} AppliedPatch: ppointer): pointer; stdcall;
+
+  type
+    PHookContext = ^THookContext;
+    THookContext = packed record
+      EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX: integer;
+      RetAddr:                                pointer;
+    end;
+
+    THookHandler = function (Context: PHookContext): LONGBOOL; stdcall;
+
+  (* Calculates number of bytes to be overwritten during hook placement *)
+  function CalcHookPatchSize (Addr: pointer): integer; stdcall;
+
+  (* The patch will be rollback and internal memory and freed. Do not use it anymore *)
+  procedure RollbackAppliedPatch ({O} AppliedPatch: pointer); stdcall;
+
+  (* Frees applied patch structure. Use it if you don't plan to rollback it anymore *)
+  procedure FreeAppliedPatch ({O} AppliedPatch: pointer); stdcall;
+
+-  Modified some exported function signatures. Many of them now use TInt32Bool type (32 bit 0 or 1) instead of boolean for better compatiblity with ERM:
+
+      type
+        TIsCommanderIdFunc       = function (MonId: integer): TInt32Bool stdcall;
+        TIsElixirOfLifeStackFunc = function (Stack: Heroes.PBattleStack): TInt32Bool stdcall;
+    
+      function IsCommanderId (MonId: integer): TInt32Bool; stdcall;
+      function SetIsCommanderIdFunc (NewImpl: TIsCommanderIdFunc): {n} TIsCommanderIdFunc; stdcall;
+      function IsElixirOfLifeStack (Stack: Heroes.PBattleStack): TInt32Bool; stdcall;
+      function SetIsElixirOfLifeStackFunc (NewImpl: TIsElixirOfLifeStackFunc): {n} TIsElixirOfLifeStackFunc; stdcall;
+    
+      (* Returns 32-character unique key for current game process. The ID will be unique between multiple game runs. *)
+      procedure GetProcessGuid: static_pchar; stdcall;
+
+
+- Increased performance of "Substr" function from Era Erm Framework.
+- Changed unsafe Era hooks with manually specified hook sizes to fully automatical hooks with hook length calculation using integrated disassembler engine.
+- Fixed bug: "OnWinGame" and "OnLoseGame" events were not executed after "OnGameLeave", because ERM engine was disabled by that time. Now "OnWinGame" and "OnLoseGame" occur right before "OnGameLeave".
+- Fixed ERM bug. Local array item access by variable index lacked lazy evaluation support. Constructions like "!!if&v1<>v1/(array[hugeValueVar])" used to produce runtime warnings. For now invalid item index is changed into 0, producing runtime error only in case of real item access.
+- Fixed IsCommanderId function crashing.
+- Fixed game bug: typing in chat bar produced phantom chat mouse button click events.
+- Fixed crash, occuring when "Debug.TrackErm" option is disabled. The bug was introduced in version 3.9.14.
+- Fixed bug: ERM memory context was lost in exceptions because of new fast exit to main menu implementation.
+- Fixed WoG complete AI battle detection. Autoclosing dialog timer is not compared to 0 anymore. The "gosolo" cheat works in battles again without ERM errors.
+- Deprecated exported 'ApiHook' and 'Hook' functions. 'Hook' will show error message, while ApiHook is preserved for legacy only. Use 'HookCode' instead or patcher_x86 API directly.
+- Fixed old event handling bug. Triggering ERM event with disabled ERM resulted in global event not being generated either. For example, Era and plugins could not handle 'OnSavegameRead' event if ERM was disabled at the moment of savegame loading.
+
+#### Advanced Classes Mod:
+- Now piecing spell immunity no longer works on own troops
+- fixed self heal on First Aid Tent when right-clicking it in combat
+- Fixed ACM Before Attack/After Attack hooks.
+- Fixed not granting the position of stack for war machine hints
+- Fixed Scroll of Summoning not working when equipping more than 1;
+- Fixed details of Fire Shield, including
+	1. Now we check if the targeted stack has been casted Fire Shield by the hero, instead of checking whether the hero has casted Fire Shield on any of the stack to determine whether to summon Fire Elemental
+	2. Remove all the BG usage in MF1 for Fire Shield, avoiding compatibility issues.
+	3. fixed Fire Shield calculation
+
+- Torosar now has his Block ability capped at 100% chance/95% damage block
+- Fixed the descriptions of Commander specialists
+- Prevent reducing the stack number of the healing creature if it has BM:B>BM:N
+- Fixed Boots of Polarity giving not refreshing screen after giving movement points
+- corrected Mutare specialist text
+- slightly reduced Fire Shield damage scaling
+- fixed commander zero movement bug with Hunter class
+- Badge of Courage no longer grants Mind Immunity
+- Power of the Dragon Father changed text to show it doesn't protect against Dispel
+- Fixed kill count on battle replay.
+- Added battle log for Natural Resistance (as many players found this ability confusing)
+- Warden commander-class spells now have proper scaling based on spell modifier
+- all spells cast by commanders now have a 50% chance to give +1 kill count
+
+#### Advanced Difficulties Mod:
+- correction of wrong Battle Reward calculation with CB settings (thanks to Maximo)
+- Creature Bank dif settings slightly reduced commander HP bonus per week on lower difficulties
+- Fixed possible to obtain battle reward when the attacking hero is killed
+- Fix possible to give AI exp even when it shouldn't (reaching level cap or already level 6424).
+
+#### Easy Cheats:
+- Released new mod "Easy Cheats" with really easy to type and remember cheats and built-in ERM console. Type "help" in chat input for details (Don't forget to enable it in the Mod Manager).
+
+#### ERA Scripts:
+- Evading Halflings: Fixed the range of damage to be evaded.
+- Peons:
+	- Move the position of Peons button by 5 pixels to the right to not cover the income number
+	- Now it's possible to send the troops from the visiting hero to work if there is no troop in the garrison
+- Fixed Leprechaun bank loan not updating screen immediately
+- Night Scouting: Fixed the picture of Assassin DLG.
+
+#### Game Enhancement Mod:
+- Seer Huts: Combo art pieces can no longer be chosen as the quest item in Seer Huts
+- Fix not trigger victory condition after capturing all 7 Griffin Towers in Long Live the Queen - Griffin Cliff scenario
+- Fix a crash of battle without boat on the sea - it is resulted by missing background of the battlefield, triggered by events from custom maps when the hero move on the sea with Fly/Water Walk.
+- Fix passability after visiting prisons with game bug fixes extended enabled
+
+#### HD mod:
+- Updated to version 5.5 R6 - thanks to baratorch;
+
+#### TrainerX:
+- TrainerX requires ERA 3.9.15 to work.
+- Now TrainerX can be used in any map including Valery's maps that prevents WoGifications.
+- Added Ctrl-click on hero portrait in Trainer main interface to centre the camera at the hero's location
+
+#### WoG Scripts:
+- Fixed an error when clicking on the morale amount with the 10SSkills mod active;
+- Neutral stack exp: Fixed the interaction with stack exp option. It is possible to enable neutral stack exp without enabling the other stack exp.
+- Metamorphs: fixed messed up stats of metamorph after they are transformed and given stack exp.
+- Mithril Enhancement: Fixed upgrading mines effect lasts for the whole game (should be 1 week according to description)
+- Small tweak to Emerald Tower (not changing fight value on enhancement)
+
+#### Other:
+- Multiple small scripts adjustments
+- Added Commander creatures into objects.txt list to support their placements onto the map;
+- files small reorganization;
+- added the following templates for creating random maps to the hd mod set:
+  - 8xm8a;
+  - 8xm8;
+  - 13th Region;
+  - Battle Arena;
+  - Blood Star;
+  - Great Sands;
+  - Magic of Decateron;
+  - Pentagram;
+  - Penteract;
+  - Tesseract;
+
+
 ### Version 2.101
 
 #### ERA:
@@ -512,7 +761,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 - Updated "game bug fixes extended.dll" plugin - thanks to igrik;
 
 #### HD mod:
-- Updated to version 5.4 R86 - thanks to baratorch;
+- Updated to version 5.5 R6 - thanks to baratorch;
 
 #### ERA ERM Framework:
 - Added initialization of i^battle_round_^ on replay - thanks to Archer30

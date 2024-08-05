@@ -1,0 +1,1210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+
+<title>Era Manual</title>
+<link href="css.css" rel="stylesheet" type="text/css" />
+
+<link href="erm8.css" rel="stylesheet" type="text/css" />
+<!--[if lt IE 8]><link href="erm.css" rel="stylesheet" type="text/css" /><![endif]-->
+
+
+
+<style type="text/css">
+P.example {
+border: 1px dashed #634f36; /* Frame parameters */
+background: #fffff5; /* Background color */
+font-family: "Courier New", Courier, monospace; /* Font family */
+padding: 7px; /* Fields surrounding text */
+margin: 0 0 1em; /* Indents */
+white-space: pre; /* Recognize all spaces and hyphens */ }
+P.exampleTitle {
+/* Frame parameters *//* Remove bottom line *//* Fields surrounding text */margin: 0px;
+border-bottom: none;
+padding: 3px;
+display: inline; /* Display as built-in element */;
+background: #C0C0C0;
+/* Background color */font-weight: bold; /* Bold font */;
+font-size: 90%; /* Font size */; /* Remove indents */;
+white-space: nowrap;
+border-style: dotted dotted none dotted;
+border-width: 1px;
+border-color: black;
+}
+P.example2 {
+border: 1px dashed #634f36; /* Frame parameters */
+background: #fffff5; /* Background color */
+font-family: "Courier New", Courier, monospace; /* Font family */
+padding: 7px; /* Fields surrounding text */
+margin: 0 0 1em; /* Indents */
+white-space: pre; /* Recognize all spaces and hyphens */ }
+P.exampleTitle2 {
+border: 1px solid black; /* Frame parameters */
+border-bottom: none; /* Remove bottom line */
+padding: 3px; /* Fields surrounding text */
+display: inline; /* Display as built-in element */
+background: #efecdf; /* Background color */
+font-weight: bold; /* Bold font */
+font-size: 90%; /* Font size */
+margin: 0; /* Remove indents */
+white-space: nowrap; /* No hyphens in text */
+}
+/* @import url('erm.css');*/
+.auto-style1 {
+text-align: center;
+}
+.card {
+border: 1px dotted rgb(102, 102, 102);
+background-color: rgb(220,220,220);
+margin-bottom: 15px;
+}
+.tit {
+text-align: center; background-color: black; color: gray; font-size: 12pt; font-weight: bold
+}
+.t1 {
+background-color: rgb(162,162,162)
+}
+.t2 {
+background-color: silver
+}
+.auto-style2 {
+font-size: 12px;
+font-weight: lighter;
+text-align: center;
+vertical-align: super;
+}
+.auto-style7 {
+color: rgb(51, 51, 51);
+font-size: 14px;
+font-weight: normal;
+font-variant: small-caps;
+text-decoration: none;
+text-align: center;
+}
+.TFlag {
+border-bottom: black 2px groove;
+border-left: black 2px groove;
+border-top: black 2px groove;
+border-right: black 2px groove;
+}
+.TRegisterDiv {
+background-color: #666666;
+outline-style: groove;
+outline-color: white;
+outline-width: 2px;
+color: yellow;
+font-size: 150%;
+cursor: pointer;
+}
+.auto-style8 {
+color: rgb(128, 128, 128);
+}
+</style>
+</head>
+
+
+<body>
+
+
+<div id="header">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+
+<tbody>
+
+
+<tr>
+
+
+<td id="logo" class="auto-style1"> <a href="http://wforum.heroes35.net/index.php" name="0" target="_blank"> <img src="../images/logo-en.png" alt="WForum.Heroes35.net" border="0" /></a></td>
+
+
+</tr>
+
+
+
+</tbody>
+</table>
+
+
+</div>
+
+
+<div id="heading">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+
+<tbody>
+
+
+<tr>
+
+
+<td>
+
+<h1>Heroes Modmaker Manual<br />
+
+
+&raquo; New commands</h1>
+
+
+</td>
+
+
+<td id="desc"> <a href="http://wforum.heroes35.net/member.php?action=profile&amp;uid=481">
+Berserker</a> <br />
+
+
+<a href="http://wforum.heroes35.net/" target="_blank">
+http://wforum.heroes35.net/</a><br />
+
+
+25.07.2011 </td>
+
+
+</tr>
+
+
+
+</tbody>
+</table>
+
+
+</div>
+
+
+<div id="content"> <strong>Version</strong>: <font color="#008000"> <b>1.0</b></font><br />
+
+
+<strong>Latest update</strong>: 15.08.2011<br />
+
+
+<b>Author</b>: Berserker
+<br />
+
+
+<br />
+
+
+<br />
+
+
+<table style="width: 100%;">
+
+
+<tbody>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#1" class="auto-style8"> <strong class="txt-2">Introduction</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#2" class="auto-style8"> <strong class="txt-2">Dynamic
+library (DLL) loading</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#3" class="auto-style8"> <strong class="txt-2">Get
+address of binary function from library</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#4" class="auto-style8"> <strong class="txt-2">Execute
+binary function</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#5" class="auto-style8"> <strong class="txt-2">Jump
+to specific command of the current trigger</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#6" class="auto-style8"> <strong class="txt-2">Get
+ERM function address</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#7" class="auto-style8"> <strong class="txt-2">Jump
+to specific ERM function command</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#8" class="auto-style8"> <strong class="txt-2">Return
+from jump to ERM function</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#9" class="auto-style8"> <strong class="txt-2">Stop
+current event handling</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#10" class="auto-style8"> <strong class="txt-2">Access
+to </strong><strong></strong></a><strong><a href="new_commands.html#10" class="auto-style8"><strong class="txt-2">parameters of new events</strong></a></strong><strong class="txt-2"></strong></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a title="Hide" href="#11" name="wwmm" class="auto-style8" style="font-weight: bolder;" onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = 'Working with additional memory «', title='Hide';}else{ div.style.display = 'none'; this.innerHTML = 'Working with additional memory»', title='Show';} return false">Working
+with additional memory &laquo;</a>
+
+<div style="vertical-align: bottom;"> <span style="">
+
+<div style="background: transparent none no-repeat scroll 2.2em center; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; padding-left: 1em; padding-right: 1.5em; margin-bottom: 1em; color: rgb(68, 68, 68); margin-top: 0.5em;">
+
+<ul>
+
+
+<li><a href="#11.1"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="19" style="border: 0px none ; margin: 0px; padding: 0px; background-image: none; background-attachment: scroll; display: inline; background-repeat: repeat; background-position: 0% 50%; font-size: 100%; vertical-align: baseline;">Description</font></font></a></li>
+
+
+<li> <a href="#11.2"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="20" style="border: 0px none ; margin: 0px; padding: 0px; background-image: none; background-attachment: scroll; display: inline; background-repeat: repeat; background-position: 0% 50%; font-size: 100%; vertical-align: baseline;">Delete
+memory slot</font></font></a></li>
+
+
+<li> <a href="#11.3"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="21" style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">Get/set
+slot length</font></font></a></li>
+
+
+<li> <a href="#11.4"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="31" style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">Working
+with </font></font><span style=""></span></a><font><font><a href="new_commands.html#11.4"><font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;"><font closure_uid_4xilc2="31" style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">values
+of slot elements</font></font></a></font></font> </li>
+
+
+<li> <a href="#11.5"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="31" style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">Get
+address of slot element</font></font></a></li>
+
+
+<li> <a href="#11.6"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="31" style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">Create
+new slot</font></font></a></li>
+
+
+
+</ul>
+
+
+</div>
+
+
+</span> </div>
+
+
+</td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#12" class="auto-style8"> <strong class="txt-2">Get
+string length</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#13" class="auto-style8"> <strong class="txt-2">Working
+with string characters</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a href="#14" class="auto-style8"> <strong class="txt-2">Copy
+memory block</strong></a></td>
+
+
+</tr>
+
+
+<tr>
+
+
+<td class="auto-style6" style="width: 32px;">
+<img src="../images/go_24.png" height="24" width="24" /></td>
+
+
+<td class="auto-style16"><a title="Hide" href="#15" name="wwam" class="auto-style8" style="font-weight: bolder;" onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = 'Working with associative memory «', title='Hide';}else{ div.style.display = 'none'; this.innerHTML = 'Working with associative memory »', title='Show';} return false">Working
+with associative memory &laquo;</a>
+
+<div style="vertical-align: bottom;"> <span style="">
+
+<div style="background: transparent none no-repeat scroll 2.2em center; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; padding-left: 1em; padding-right: 1.5em; margin-bottom: 1em; color: rgb(68, 68, 68); margin-top: 0.5em;">
+
+<ul>
+
+
+<li><a href="#15.1"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="19" style="border: 0px none ; margin: 0px; padding: 0px; background-image: none; background-attachment: scroll; display: inline; background-repeat: repeat; background-position: 0% 50%; font-size: 100%; vertical-align: baseline;">Description</font></font></a></li>
+
+
+<li> <a href="#15.2"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="20" style="border: 0px none ; margin: 0px; padding: 0px; background-image: none; background-attachment: scroll; display: inline; background-repeat: repeat; background-position: 0% 50%; font-size: 100%; vertical-align: baseline;">Clear
+associative memory</font></font></a></li>
+
+
+<li> <a href="#15.3"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="21" style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">Delete
+variable</font></font></a></li>
+
+
+<li> <a href="#15.4"> <font style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">
+<font closure_uid_4xilc2="31" style="border: 0px none ; margin: 0px; padding: 0px; background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; display: inline; font-size: 100%; vertical-align: baseline;">Working
+with variable</font></font></a></li>
+
+
+
+</ul>
+
+
+</div>
+
+
+</span> </div>
+
+
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+</table>
+
+
+</div>
+
+
+<h2><a href="#0" name="1">Introduction
+&uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph">New commands were introduced by
+extending standard operation <span class="code">"SN"</span>.
+All Era commands can work with the following ERM elements:<br />
+
+
+- Numeric positive and negative constants;<br />
+
+
+- Set (<em>without <span class="code">"d"</span></em>
+<em>modificator</em><span class="code"></span>)
+and Get (<span class="code">"?"</span>) value
+syntaxes;<br />
+
+
+- Variables <span class="code">y+</span>, <span class="code">v</span>, <span class="code">w</span>,
+<span class="code">x</span>, <span class="code">z+</span>,
+<span class="code">f..t</span>, <span class="code">e</span>;<br />
+
+
+- String constants in the form of&nbsp;<span class="code">^...^</span>&nbsp;
+with <span class="code">%Y</span>, <span class="code">%V</span>,
+<span class="code">%W</span>, <span class="code">%X</span>,
+<span class="code">%Z</span>, <span class="code">%E</span>
+specificators support. Specificators must have positive indices.<br />
+
+
+<br />
+
+
+Era's core passes a set of integer numbers&nbsp;(<em>each one
+of 4 bytes size</em>) to commands.
+In&nbsp;case of strings or get-syntax these numbers are addresses
+of variables. Address of variable is numeric value describing the
+location of data in operative memory.
+Maximum number of parameters is 64.</p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:Xv1; pass number from v1
+!!SN:X?v1; pass address of v1 variable
+!!SN:Xz1; pass address of z1 variable
+!!SN:X^text^; temporarily save text and pass its address</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="2">Dynamic library
+(DLL) loading &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:L[path
+to the library]/?[loaded library handle];</span></p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:L^kernel32.dll^/?y1;</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="3">Get address of
+binary function from library &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:[loaded
+library handle]/[function name]/?[function address];</span></p>
+
+
+<p class="txt-3-Paragraph">&nbsp;<strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:L^kernel32.dll^/?y1 Ay1/^lstrcpyA^/?y2;</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="4">Execute binary
+function &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:E[function
+address]/[calling convention]/arguments...</span></p>
+
+
+<em>Calling convention:</em><br />
+
+
+<p class="txt-3-Paragraph">- 0 (PASCAL)<br />
+
+
+- 1 (CDECL or STDCALL)<br />
+
+
+- 2 (THISCALL)<br />
+
+
+- 3 (FASTCALL)<br />
+
+
+<br />
+
+
+The function is expected to return integer result by default. The
+result will be placed in <span class="codeStd">v1</span>&nbsp;variable.
+The convention number should be increased by 4 if the function returns
+a real (floating point) result. All Windows system libraries use <span class="codeStd">STDCALL</span>
+convention.</p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:L^kernel32.dll^/?y1;
+!!SN:Ay1/^lstrcpyA^/?y2;
+!!SN:Ey2/1/z1/z2; copy z2 contents into z1. The same as VRz1:Sz2;</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="5">Jump to specific
+command of the current trigger &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:G[command&nbsp;</span><span class="code">number</span><span class="code">
+counting from 0];</span></p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!?CM0; right click on adventrue map
+0; !!SN:G2; go to command #2
+1; !!IF:M^this text will never be shown^;
+2; !!IF:M^this text will be shown^;</pre>
+
+
+<p class="Comment">Numeration of commands was used only to
+make the example&nbsp;clearer.</p>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="6">Get ERM function
+address &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:C0/[function
+id]/?[erm function address];</span></p>
+
+
+<p class="txt-3-Paragraph">The address of ERM function can
+be used only to jump to one of function commands.</p>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="7">Jump to specific
+ERM function command &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:C[</span><span class="code">erm function address</span><span class="code">]/[command number counting from 0];</span><br />
+
+
+<br />
+
+
+The function which obtains control uses the same local variables as the
+calling one. That's its benefit. Ordinary function call <span class="code">(!!FU:P)</span> is rather expensive
+operation while jumping is done almost immediately. Era saves the
+address of the call origin to make it possible to return&nbsp;later.</p>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="8">Return from jump to
+ERM function &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:R;</span></p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!?FU40000;
+0; !!IF:M^bye^;
+1; !!IF:M^hello^; &lt;== we will jump here
+2; !!SN:R;
+
+!?CM0; right click on adventure map
+!!SN:C0/40000/?y1; y1 is address of ERM function 40000
+!!SN:Cy1/1; jump to 40000:1
+!!IF:M^world^;</pre>
+
+
+<p class="txt-3-Paragraph">Two messages will be displayed:
+<span class="code">"hello"</span> and <span class="code">"world"</span>.</p>
+
+
+<p class="Comment-warning">Number of executed jumps must
+be equal to number of executed returns.</p>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="9">Stop current event handling &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:Q;</span></p>
+
+
+<p class="txt-3-Paragraph">The command differs
+from&nbsp;<span class="code">!!FU:E</span> in
+that it breaks the whole chain of same type triggers.</p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!?FU40000;
+!!SN:Q; leave the whole FU40000 triggers chain
+
+!?FU40000;
+!!IF:M^this message will never be displayed^;
+
+!?CM0;
+!!FU40000:P; call function 40000</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="10">Access to
+parameters of new events &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:X[up
+to 16 parameters]...</span></p>
+
+
+<p class="txt-3-Paragraph">New Era events (which will be
+described below) together with events added by&nbsp;plugins need a way to exchange data with scripts. Command X provides such a
+possibility. It acts like value storage. The type of values is
+determined by the way of working with them. Thus you can put
+value&nbsp;<span class="code">5</span> in slot <span class="code">0</span>&nbsp;and then get it to
+real&nbsp;<span class="code">e-variable</span>.
+The <span class="code">"e"</span> will&nbsp;not
+held <span class="code">5</span> but some kind of
+garbage because the process takes place on machine level. The value in
+slot is treated as string address in case of getting string. So <span class="code">"!!SN:X0; !!SN:X?z1;" </span>will lead
+to crash because there is no string at address&nbsp;<span class="code">0</span>.</p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:X?y1/?y2; obtain first two event parameters
+!!SN:Xz1; the first parameter is z1 address
+!!SN:X?y1; y1 now keeps z1 address</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="11">Working with additional memory &uarr;</a></h2>
+
+
+<h3><a href="#wwmm" name="11.1">Description ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:M[...];</span></p>
+
+
+<p class="txt-3-Paragraph-h3">ERM variables are static and restricted
+in number. Their static character leads to impossibility of organizing
+dynamic data structures (for instance, lists) which would need memory
+allocation and deallocation functions. Final number of indices for
+variables demands their strict&nbsp;accounting without a chance to
+overcome the limits. Moreover,&nbsp;<span class="code">z-strings</span>
+in ERM occupy exactly 512 bytes regardless their real length. Era
+provides the programmer with up to 2 billion slots for arrays of new
+variables (integer or string). Sizes of the arrays can be changed via
+ERM. There is a possibility to automatically allocate ID's for slots
+because dynamic data structures need this functionality. Slots with
+positive indices belong to user and slots with negative indices are
+used in automatical memory allocation.</p>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwmm" name="11.2">Delete memory slot ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:M[slot number counting from 0];</span></p>
+
+
+<p class="txt-3-Paragraph-h3"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:M5; delete slot 5</pre>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwmm" name="11.3">Get/set slot length ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:M[</span><span class="code">slot number</span><span class="code">]/[?][number of elements in slot];</span></p>
+
+
+<p class="txt-3-Paragraph-h3">Slot length is number of elements in the array. The command returns -1 if the slot does not exist.</p>
+
+
+<p class="txt-3-Paragraph-h3"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:M2/5; set slot 2 length to 5.
+!!SN:My1/?y2; get slot [y1] length to y2.</pre>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwmm" name="11.4">Working with values of slot elements ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:M[</span><span class="code">slot number</span><span class="code">]/[</span><span class="code">slot number counting from 0</span><span class="code">]/[?][value];</span></p>
+
+
+<p class="txt-3-Paragraph-h3"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:M1/3; set slot 1 length to 3 elements
+!!SN:M1/0/111 M1/1/222 M1/2/333; slot 1 contents: 111, 222, 333
+!!SN:M1/1/?y5; y5 contains value of #1 element of slot 1
+!!IF:M^%Y5^; will show: "222"</pre>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwmm" name="11.5">Get address of slot element ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:M[</span><span class="code">slot number</span><span class="code">]/?[element address]/[element number];</span></p>
+
+
+<p class="Comment-warning">The address will become invalid after deleting slot or changing its size!</p>
+
+
+<p class="txt-3-Paragraph-h3"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:M1/?y1/2; y1 keeps address of #2 element of slot 1</pre>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwmm" name="11.6">Create
+new slot ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:M[slot number]/[number of elements]/[type of elements]/[store values y/n?];</span></p>
+
+
+<p class="txt-3-Paragraph-h3">Old contents of the slot (if any) is deleted.</p>
+
+
+<p class="txt-3-Paragraph-h3"><strong><em>*slot number*</em></strong> &mdash; "-1" for automatic allocation of an unassigned number and its placement in v1.</p>
+
+
+<p class="txt-3-Paragraph-h3"><strong><em>*type of elements*:</em></strong><br />
+
+
+- 0 (number)<br />
+
+
+- 1 (string)</p>
+
+
+<p class="txt-3-Paragraph-h3"><em><strong>*should the values be stored*</strong></em><br />
+
+
+ - 0 (no, when the game is loaded, contents of the elements will be considered as a trash)<br />
+
+
+- 1 (yes, contents should be saved as is)</p>
+
+
+<p class="Comment">If <span class="code">0</span>
+is set, this saves space in the file and increases file saving speed.</p>
+
+
+<p class="txt-3-Paragraph-h3"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:M0/4/1/1; Allocate a four-string array in slot 0. Save the array contents when loading.
+!!SN:M0/2/^Hello^; Set the value of the 2nd string of the slot at 0. 
+!!SN:M0/3/^World^; Set the value of the 3rd string of the slot at 0. 
+!!SN:M0/2/?z1 M0/3/?z2; Get the values of the 2nd and 3rd strings in z1, z2. 
+!!IF:M^%Z1 %Z2^; A message "Hello World" will be displayed.
+!!SN:M0; Delete slot 0. 
+!!SN:M-1/0/0/0; Allocate an empty slot for a temporary numeric array.
+!!VRy1:S1 R6; A random number 1..6 was generated. 
+!!SN:Mv1/y1; A new slot size value was designated for this number. 
+!!VRy1:-1; y1 is an index of the last element in the slot.
+!!SN:Mv1/y1/777; The value of the last slot element is 777.</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="12">
+Get string length &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:K[string or its address]/?[string length];</span></p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!VRz1:S^123^;
+!!SN:Kz1/?y1; y1 = 3</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="13">Working with string characters &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:K[string or its address]/[character number starting at 0]/[?][character value];</span></p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!VRz1:S^abc^;
+!!SN:Kz1/2/^d^; Set the 3rd character of string z1 to "d".
+!!IF:M^%Z1^; A string “abd” will be displayed.</pre>
+
+
+<p class="txt-3-Paragraph"> </p>
+
+
+<h2><a href="#0" name="14">Copy memory block &uarr;</a></h2>
+
+
+<p class="txt-3-Paragraph"><span class="code">!!SN:K[number of bytes]/[source address]/[target address]/[random value];</span></p>
+
+
+<p class="txt-3-Paragraph"><strong>Example:</strong></p>
+
+
+<pre erm="true">!!SN:K12/?v1/?y1/1; Copy 12 bytes (3 numbers at 4 bytes) from v1, v2, v3 to y1, y2, y3
+!!VRv1:C1/2/3; v1 = 1, v2 = 2, v3 = 3
+!!SN:K12/?y1/?v1/1; Restore values of v1, v2, v3</pre>
+
+
+<p class="txt-3-Paragraph">&nbsp;</p>
+
+
+<h2><a href="#0" name="15">Working with associative memory &uarr;</a></h2>
+
+
+<h3><a href="#wwam" name="15.1">Description ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:W[...];</span></p>
+
+
+<p class="txt-3-Paragraph-h3">Very often some variables should be created for specific heroes, specific map cells or objects upon player demand. Allocation of static memory for all heroes, all objects, or all cells has significant drawbacks, such as excessive memory usage, slowing down of the game saving process, and size limitations. All these problems can be solved by working with global storage of the “key — value” pairs which is similar to ini files. Each key can have 1 numeric and 1 string value. 0/empty values are not saved which allows space-saving. When a nonexistent key is requested, 0/empty will be returned depending on target type.</p>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwam" name="15.2">Clear associative memory ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:W;</span></p>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwam" name="15.3">Delete variable ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:W[variable name];</span></p>
+
+
+<p class="txt-3-Paragraph-h3">&nbsp;</p>
+
+
+<h3><a href="#wwam" name="15.4">Working with variable ^</a></h3>
+
+
+<p class="txt-3-Paragraph-h3"><span class="code">!!SN:W[variable name]/[?][variable value];</span></p>
+
+
+<p class="txt-3-Paragraph-h3"><strong>Example:</strong></p>
+
+
+<p class="txt-3-Paragraph-h3">Causes a right-click on the adventure map to display the number of clicks on this cell. It is basically an analog of the on-demand <span class="code">!!PO</span> command.</p>
+
+
+<pre erm="true">!?CM0;
+!!CM:R0 P?y1/?y2/?y3;
+!!SN:W^Map%Y1/%Y2/%Y3^/?y4;
+!!IF:L^{~gold}You have clicked on this cell %Y4 times{~}^;
+!!VRy4:+1;
+!!SN:W^Map%Y1/%Y2/%Y3^/y4;</pre>
+
+
+<div>
+<br />
+
+
+<br />
+
+
+<br />
+
+
+<br />
+
+
+<br />
+
+
+<table style="border-top: 2px solid rgb(51, 51, 51); border-bottom: 2px solid rgb(51, 51, 51); width: 100%; height: 28px; background-color: rgb(192, 192, 192); color: rgb(51, 51, 51);" class="AHSTable">
+
+
+<tbody>
+
+
+<tr>
+
+
+<td class="auto-style1" valign="middle"> <a href="#" onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = '» Association of heroes sites «';}else{ div.style.display = 'none'; this.innerHTML = '« Association of heroes sites »';} return false" class="auto-style7">&laquo; Association of heroes sites
+&raquo;</a>
+
+<div style="display: none;"> <span style="">
+
+<div style="border-style: dotted none none; border-color: rgb(51, 51, 51); border-width: 1px 0px 0px; padding: 1em 1em 0em; background: rgb(229, 229, 229) none no-repeat scroll 2.2em center; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; margin-bottom: 1.5em; color: rgb(68, 68, 68); margin-top: 0.3em; height: 158px; text-align: center;">
+<span>
+
+<table class="card" align="middle">
+
+
+<tbody>
+
+
+<tr>
+
+
+<td class="auto-style2" colspan="6" align="middle">About &laquo;Might and Magic&raquo;
+series games</td>
+
+
+</tr>
+
+
+<tr align="middle">
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag1" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international internet resource, offline and online tournaments.">
+<img src="../images/ahs/ahs_heroesportal.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag2" alt="Heroes Fan-site" href="http://bers.heroes35.net/ahs/go.php?go=heroes-m-and-m.com" target="_blank" title="Fan-site for “Heroes of Might and Magic” series"> <img src="../images/ahs/ahs_heroes_mandm.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag3" alt="Heroes Community" href="http://bers.heroes35.net/ahs/go.php?go=heroes1-5.at.ua" target="_blank" title="Site devoted to M&amp;M, HoMM and KB words.">
+<img src="../images/ahs/ahs_heroes_community.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag4" alt="Heroes Remake Site" href="http://bers.heroes35.net/ahs/go.php?go=remake-heroes.ucoz.ru" target="_blank" title="Heroes 3.5 news. Russian Heroes Project.">
+<img src="../images/ahs/ahs_russian_heroes3.5.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag5" alt="Heroes 3 Online" href="http://bers.heroes35.net/ahs/go.php?go=geroi-3.narod.ru" target="_blank" title="Geroi-3.narod.ru - about network Heroes 3 playing for newbies: where to download the game, how to connect, where players can be found">
+<img src="../images/ahs/ahs_heroes3_help.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag6" alt="Heroes Bulletin" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="'Heroes Bulletin' - Internet-magazine devoted to computer games of 'Heroes of Might &amp; Magic' series and other close-thematics games.">
+<img src="../images/ahs/ahs_vestnik_heroes.png" height="31" width="88" /></a></td>
+
+
+</tr>
+
+
+
+</tbody>
+
+</table>
+
+
+
+<table class="card" align="middle">
+
+
+<tbody>
+
+
+<tr>
+
+
+<td class="auto-style2" colspan="6" align="middle"> <span>Modmaking and mods, towns,
+campaignes and maps, materials, resources and tools</span> </td>
+
+
+</tr>
+
+
+<tr align="middle">
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag7" alt="New Towns Site" href="http://bers.heroes35.net/ahs/go.php?go=heroes3towns.com" target="_blank" title="Learn more about Heroes 3 towns!">
+<img src="../images/ahs/ahs_new_town.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag8" alt="Kremlin Site" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="Kremlin. Slavic town"> <img src="../images/ahs/ahs_kremlin.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag9" alt="Terry Pratchetts Mod" href="http://bers.heroes35.net/ahs/go.php?go=tp-mod.ucoz.net" target="_blank" title="Terry Pratchetts Mod, modification for Heroes III game">
+<img src="../images/ahs/ahs_tpmod.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag10" alt="Catalog of H3 Mods." href="http://bers.heroes35.net/ahs/go.php?go=packa.ucoz.ru/forum/61-184-1" target="_blank" title="Catalog of Heroes 3 mods."> <img src="../images/ahs/ahs_catalog_of_mods.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag11" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international internet resource, offline and online tournaments.">
+<img src="../images/ahs/ahs_newmaps.png" height="31" width="88" /></a></td>
+
+
+<td class="auto-style2" width="10%"> <a id="wogflag12" alt="WoG Archive" href="http://bers.heroes35.net/ahs/go.php?go=wogarchive.ru" target="_blank" title="WoG Archive. The biggest materials collection for Heroes 3. More than gigabyte of data.">
+<img src="../images/ahs/ahs_wogarchive.png" height="31" width="88" /></a></td>
+
+
+</tr>
+
+
+
+</tbody>
+
+</table>
+
+
+</span> </div>
+
+
+</span></div>
+
+
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+</table>
+
+
+<div id="fblock"> 
+<div id="fblock0">
+<div id="copy"> Copyright &copy; 2009 &mdash;
+2011, Berserker</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<script src="erm.js"></script>
+</body>
+</html>
+
+

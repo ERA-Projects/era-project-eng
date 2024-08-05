@@ -1,0 +1,272 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Era Manual</title>
+	<link href="css.css" rel="stylesheet" type="text/css" />
+	<link href="erm8.css" rel="stylesheet" type="text/css" />
+	<!--[if lt IE 8]><link href="erm.css" rel="stylesheet" type="text/css" /><![endif]-->
+	<style type="text/css">
+	.auto-style1 {
+	text-align: center;
+	}
+	.card {
+	border: 1px dotted rgb(102, 102, 102);
+	background-color: rgb(220,220,220);
+	margin-bottom: 15px;
+	}
+	.tit {
+	text-align: center; background-color: black; color: gray; font-size: 12pt; font-weight: bold
+	}
+	.t1 {
+	background-color: rgb(162,162,162)
+	}
+	.t2 {
+	background-color: silver
+	}
+	.auto-style2 {
+	font-size: 12px;
+	font-weight: lighter;
+	text-align: center;
+	vertical-align: super;
+	}
+	.auto-style7 {
+		color: rgb(51, 51, 51);
+		font-size: 14px;
+		font-weight: normal;
+		font-variant: small-caps;
+		text-decoration: none;
+		text-align: center;
+	}
+	.TFlag {
+	border-bottom: black 2px groove;
+	border-left: black 2px groove;
+	border-top: black 2px groove;
+	border-right: black 2px groove;
+	}
+	.TRegisterDiv {
+	background-color: #666666;
+	outline-style: groove;
+	outline-color: white;
+	outline-width: 2px;
+	color: yellow;
+	font-size: 150%;
+	cursor: pointer;
+	}
+    </style>
+ 
+</head>
+
+
+<body>
+<div id="header">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td id="logo" class="auto-style1">
+				<a href="http://wforum.heroes35.net/index.php" name="0" target="_blank">
+				<img src="../images/logo-en.png" alt="WForum.Heroes35.net" border="0" /></a></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+
+<div id="heading">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+	<tr>
+		<td>
+			<h1>Heroes Modmaker Manual<br />
+			» Useful programs</h1>
+		</td>
+		<td id="desc">
+			<a href="http://wforum.heroes35.net/member.php?action=profile&amp;uid=481">
+			Berserker</a><br />
+			<a href="http://wforum.heroes35.net/" target="_blank">
+			http://wforum.heroes35.net/</a><br />
+			25.07.2011 		</td>
+	</tr>
+  </tbody>
+</table>
+</div>
+
+<div id="content">
+	<strong>Version</strong>: <font color="#008000"> <b>1.0</b></font><br />
+	<strong>Latest update</strong>: 27.08.2011<br />
+	<b>Author</b>: Berserker <br />
+<br />
+</div>
+
+<p class="Info-1">The following programs from the author are included in the ERA pack:<br />
+— <a href="#BinMagic">Tools\BinMagic</a><br />
+— <a href="#Dee">Tools\Dee</a><br />
+— <a href="#DEFka">Tools\DEFka</a><br />
+— <a href="#Evme">Tools\Evme</a><br />
+— <a href="#ExeBuilder">Tools\ExeBuilder</a><br />
+— <a href="#RepMan">RepMan</a><br />
+— <a href="#ResMan">ResMan</a><br />
+— <a href="#LodImport">LodImport</a><br />
+— <a href="#LodExport">LodExport</a><br />
+— <a href="#Objector">Objector</a><br />
+— <a href="#DefExplode">DefExplode</a><br />
+<br />
+The Tools\Erm Editor program by Alexander Trivonov was modified and now does not show comment tags when saving documents.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="BinMagic">BinMagic ↑</a></h2>
+<p class="txt-3-Paragraph">Designated for work with binary patches in a format compatible with all versions of Era and the ExeBuilder utility. A technical description of the program parameters is given in the file <span class="code">"binmagichelp.txt"</span>. To simplify working in the catalog with the program, there are 3 bat files:<br />
+<span class="code">binary.bat, text.bat, diff.bat.<br />
+<br />
+</span>The first two take only one argument, the name of a patch file that will be optimized and translated into, respectively, a binary or text form. <span class="code">diff.bat</span> serves to create patches through comparison of the original and changed files. It accepts three arguments:<br />
+- original file;<br />
+- changed file;<br />
+- patch save path.<br />
+<br />
+For saving in binary form, the patch should have a 
+<span class="code">"*.bin"</span> extension; if not, then any other. All three bat files create memory patches which can be activated after they are placed in the catalog <strong>
+EraPlugins\[BeforeWoG|AfterWoG]</strong>.</p>
+<p class="txt-3-Paragraph"><em>Text patch format:<br />
+</em>The patch document consists of tags containing useful information (author, field of application, description), addresses to which the new data should be written, and the data, written in hex form (<span class="code">0-9, A-F</span>).</p>
+<p class="exampleTitle">Example:</p>
+<p class="example" style="font-family: Tahoma">; Author = Unknown
+; Version = 1.0
+; Not for commercial use
+00887668 12345678
+00401FC7 9090A090B2</p>
+<p class="txt-3-Paragraph">Addresses are separated from data with white spaces. Each new address should start on a new line.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="Dee">Dee ↑</a></h2>
+<p class="txt-3-Paragraph">DEE means Dynamic ERM Editor.<br />
+This program permits the opening, editing, and (quick!) saving of game scripts, as well as their loading into the editor from game memory (<span class="code">00..99</span>), loading from the editor to game memory, and deletion from game memory. There is also the option to unpack a script from a compressed form to a single line.</p>
+<p class="txt-3-Paragraph"><br />
+</p>
+<h2><a href="#0" name="DEFka">DEFka ↑</a></h2>
+<p class="txt-3-Paragraph">With one click of the mouse, this program allows the DEFs of any standard monster to be exchanged for others (of which there are many on the Internet) and restore the original files at any moment just as easily.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="Evme">Evme ↑</a></h2>
+<p class="txt-3-Paragraph">ERM Variables Memory Editor is a utility that helps debug scripts, by allowing the user to view, change, or save to a file the values of most global ERM variables.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="ExeBuilder">ExeBuilder ↑</a></h2>
+<p class="txt-3-Paragraph">A program for the creation of your own version of an executable file. Accepts all <span class="code">bin patches</span> from folders to file 
+<span class="code">In.exe</span>, creating an <span class="code">
+Out.exe</span> file upon exit.</p>
+<p class="Comment-warning">Patches must be designated for files. BinMagic has the ability to transform patches for memory into patches for files and back.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="RepMan">RepMan ↑</a></h2>
+<p class="txt-3-Paragraph">Simple utility for replacing one line with another in the indicated file.</p>
+<p class="exampleTitle">Example:</p>
+<p class="example">Data\s\script00.erm v2391 v600</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="ResMan">ResMan ↑</a></h2>
+<p class="txt-3-Paragraph">Program for import, export, and creation of snd/vid files. Launch without parameters for help call-up.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="LodImport">LodImport ↑</a></h2>
+<p class="txt-3-Paragraph">Utility for importing a file to LOD archives.<em><br />
+Accepts two arguments:<br />
+</em>- path to <span class="code">LOD archive</span>, path to file.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="LodExport">LodExport ↑</a></h2>
+<p class="txt-3-Paragraph">Utility for exporting files from <span class="code">LOD archives</span>.<em><br />
+Accepts three arguments:<br />
+-
+</em>path to archive, file name in archive, path to destination file.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="Objector">Objector ↑</a></h2>
+<p class="txt-3-Paragraph">Allows the files for objects (<span class="codeStd">z[e]obj[c]ts.txt</span>) to be correctly unified with user files. <em><br />
+Arguments:<br />
+</em>- path to main txt file, path to installable file, [<span class="code">option</span>] add information on new objects without replacing old ones.</p>
+<p class="txt-3-Paragraph">&nbsp;</p>
+<h2><a href="#0" name="DefExplode">DefExplode ↑</a></h2>
+<p class="txt-3-Paragraph">Separates indicated <span class="code">DEF</span> into frames in bmp format.<em><br />
+Arguments:<br />
+-
+</em>path to <span class="codeStd">DEF</span>, folder for content.</p>
+<p class="Comment-lite">The use of the programs <strong>LodImport</strong> and <strong>
+ResMan</strong> in a pair with bat files allows the complete avoidance of installer <strong>WoG — h3wupd.exe</strong>, which is very often unstable in its operations.</p>
+<div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<table style="width: 100%; height: 28px; background-color: #C0C0C0; border-top-style: solid; border-top-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-top-color: #333333; border-bottom-color: #333333; color: rgb(51, 51, 51);" class="AHSTable">
+	<tr>
+		<td valign="middle" class="auto-style1">
+		<a href="#" onclick="var div = this.parentNode.getElementsByTagName('div')[0]; if(div.style.display != '') { div.style.display = ''; this.innerHTML = '&raquo; Association of heroes sites &laquo;';}else{ div.style.display = 'none'; this.innerHTML = '&laquo; Association of heroes sites &raquo;';} return false" class="auto-style7">« Association of Heroes sites »</a>
+		<div style="display: none;">
+			<span style="">
+			<div 
+			style="border-left: 0px none #666666; border-right: 0px none #666666; padding: 1em 1em 0em 1em; border-bottom: 0px none #666666; margin-bottom: 1.5em; background: #E5E5E5 no-repeat 2.2em center; color: #444444; border-top: 1px dotted #666666; margin-top: 0.3em; height: 158px; text-align: center; border-color: #333333;">
+            	
+<span> <table align="middle" class="card">
+	<tr>
+		<td align="middle" class="auto-style2" colSpan="6">About “Might and Magic” series games</td>
+	</tr>
+	<tr align="middle">
+		<td class="auto-style2" width="10%">
+		<a id="wogflag1" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international Internet resource, offline and online tournaments.">
+		<img src="../images/ahs/ahs_heroesportal.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag2" alt="Heroes Fan-site" href="http://bers.heroes35.net/ahs/go.php?go=heroes-m-and-m.com" target="_blank" title="Fan site for "Heroes of Might and Magic" series">
+		<img src="../images/ahs/ahs_heroes_mandm.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag3" alt="Heroes Community" href="http://bers.heroes35.net/ahs/go.php?go=heroes1-5.at.ua" target="_blank" title="Site devoted to M&amp;M, HoMM and KB words.">
+		<img src="../images/ahs/ahs_heroes_community.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag4" alt="Heroes Remake Site" href="http://bers.heroes35.net/ahs/go.php?go=remake-heroes.ucoz.ru" target="_blank" title="Heroes 3.5 news. Russian Heroes Project.">
+		<img src="../images/ahs/ahs_russian_heroes3.5.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag5" alt="Heroes 3 Online" href="http://bers.heroes35.net/ahs/go.php?go=geroi-3.narod.ru" target="_blank" title="Geroi-3.narod.ru - about network Heroes 3 playing for newbies: where to download the game, how to connect, where players can be found">
+		<img src="../images/ahs/ahs_heroes3_help.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag6" alt="Heroes Bulletin" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="'Heroes Bulletin' - Internet-magazine devoted to computer games of 'Heroes of Might & Magic' series and other close-thematics games.">
+		<img src="../images/ahs/ahs_vestnik_heroes.png" height="31" width="88" /></a></td>
+	</tr>
+</table>
+
+<table align="middle" class="card">
+	<tr>
+		<td align="middle" class="auto-style2" colSpan="6">
+	<span>Modmaking and mods, towns, campaigns and maps, materials, resources and tools</span>
+		</td>
+	</tr>
+	<tr align="middle">
+		<td class="auto-style2" width="10%">
+		<a id="wogflag7" alt="New Towns Site" href="http://bers.heroes35.net/ahs/go.php?go=heroes3towns.com" target="_blank" title="Learn more about Heroes 3 towns!">
+		<img src="../images/ahs/ahs_new_town.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag8" alt="Kremlin Site" href="http://bers.heroes35.net/ahs/go.php?go=woggrad.ru" target="_blank" title="Kremlin. Slavic town">
+		<img src="../images/ahs/ahs_kremlin.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag9" alt="Terry Pratchetts Mod" href="http://bers.heroes35.net/ahs/go.php?go=tp-mod.ucoz.net" target="_blank" title="Terry Pratchetts Mod, modification for Heroes III game">
+		<img src="../images/ahs/ahs_tpmod.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag10" alt="Catalog of H3 Mods." href="http://bers.heroes35.net/ahs/go.php?go=packa.ucoz.ru/forum/61-184-1" target="_blank" title="Catalog of Heroes 3 mods.">
+		<img src="../images/ahs/ahs_catalog_of_mods.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag11" alt="Heroes Portal" href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net" target="_blank" title="Heroes Portal - international Internet resource, offline and online tournaments.">
+		<img src="../images/ahs/ahs_newmaps.png" height="31" width="88" /></a></td>
+		<td class="auto-style2" width="10%">
+		<a id="wogflag12" alt="WoG Archive" href="http://bers.heroes35.net/ahs/go.php?go=wogarchive.ru" target="_blank" title="WoG Archive. The biggest materials collection for Heroes 3. More than gigabyte of data.">
+		<img src="../images/ahs/ahs_wogarchive.png" height="31" width="88" /></a></td>
+	</tr>
+</table>
+</span>
+</div>
+</td></tr></table>
+
+<div id="fblock">
+	
+	<a href="http://bers.heroes35.net/ahs/go.php?go=heroesportal.net"></a>
+	
+<div id="fblock0">
+	
+	<div id="copy">
+			Copyright © 2009 — 2011, Berserker</div>
+</div>
+</div>
+</div>
+<script src="../erm.js"></script>
+</body>
+</html>

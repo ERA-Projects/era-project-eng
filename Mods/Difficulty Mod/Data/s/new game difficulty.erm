@@ -1468,11 +1468,11 @@ This Section handels the Dialogue 45 were you can Configure_AI (Right Side)
 !!en;
 
 !!SN:W^Guarded_Object_Commander_Bonus_HP^/?y1; [Decide difficutly by checking Commander HP in chambers]
-!!SN&y1=150:W^Battle_Reward^/d3;
-!!SN&y1=200:W^Battle_Reward^/d5;
-!!SN&y1=250:W^Battle_Reward^/d7;
-!!SN&y1=400:W^Battle_Reward^/d13;
-!!SN&y1=500:W^Battle_Reward^/d23;
+!!SN&y1=50:W^Battle_Reward^/d3;
+!!SN&y1=75:W^Battle_Reward^/d5;
+!!SN&y1=100:W^Battle_Reward^/d7;
+!!SN&y1=200:W^Battle_Reward^/d13;
+!!SN&y1=400:W^Battle_Reward^/d23;
 
 !!SN:W^Dif_Mod_Neutral_Commander^/?y1;
 !!SN&y1=1:W^Battle_Reward^/d3;
@@ -3165,9 +3165,11 @@ AI player gets Stronger Commander in battle depending on game difficutly
 !!VRy11:S0R100;
 !!FU&y11>y15:E;                         [Exit if Roll not Successfull]
 
-!!BA:O?y3/?y4;                          [Check Owner Attack and Defender]
-!!HE-10:B0/?z-10;                       [get hero name]
-!!HE-10:E?y6/?y7/1;                     [get level of this hero]
+!!HEi^battle_hero_0^:O?y3;
+!!FU&y3=(NO_OWNER):E;                   [Exit if the attacking hero is killed]
+
+!!HEi^battle_hero_0^:B0/?z-10;          [get hero name]
+!!HEi^battle_hero_0^:E?y6/?y7/1;        [get level of this hero]
 
 !!VRy50:S0R6;                           [Generate range]
 !!VRy50&y15>=60:S0R7;                   [Generate range if Battle Reward chance is bigger 60]
@@ -3176,8 +3178,6 @@ AI player gets Stronger Commander in battle depending on game difficutly
 !!VRy51:S0T2;                           [Generate Coinflip to reduce the chance to get an spell or artifact]
 !!FU&y50=7/y51=1:E;                     [66% less chance to get Artifacts or Spells]
 !!FU&y50=8/y51=1:E;
-
-!!if&y3<>-1;                            [Give Reward if Attacking Hero hasn't lost the battle]
 
 **Resources Reward
 !!if&y50=0|y50=1|y50=2;                 [0 and 1 and 2 is Ressource Reward]
@@ -3248,7 +3248,6 @@ AI player gets Stronger Commander in battle depending on game difficutly
 !!en;
 
 !!UN:R2;                                [Redraw]
-!!en;
 
 ********************************************************************************
 
@@ -3336,27 +3335,35 @@ Gives AI creatures,spellpoints, movement and experience daily
 !!FU(Progressive_Difficulty)&i^timerDay^=y1/y2=1:P; [Run prog increase if option is selected and day equals payday]
 
 !!SN:W^H3_Game_Difficulty^/?y1;
-!!DO(AI_Increase_Loop)/0/155/1&y1>0:P;  [loop through heroes]
+!!FU(AI_Increase_Loop)&y1>0:P;  [loop through heroes]
 
 
 !?FU(AI_Increase_Loop);
+; Get the counter of the day (to determine whether to give creatures)
+!!VRy10:Si^timerDay^ %2;
+!!VRy10&i^H3_Game_Difficulty^=5:S0;
 
-!!HEx16:O?y1;                           [Checke Hero Owner]
-!!FU&y1=-1:E;                           [Exit if none]
-!!OW:Iy1/?y2;                           [AI 1 / Human 0]
-!!OW:Iy1/y2/?y3;                        [Check if player killed 1=killed 0=alive]
-!!FU|y2=0/y3=1:E;                       [Exit if Human or player Killed]
+; Get the level limit of the scenario (to determine whether to give exp)
+!!UN:J1/?y30/d;
+!!VRy30&y30<=0/y30>74:S74;
 
-!!VRy10:Sc;                             [get day]
-!!VRy10:%2;                             [Modulo 2]
-!!SN:W^H3_Game_Difficulty^/?y5;   !!VRy10&y5=5:S0; [If Insane Difficulty Set creature Reward to daily]
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?y1;                           [Checke Hero Owner]
+  !!co&y1=(NO_OWNER);                   [Skip if none]
 
-!!FU(Give_AI_Creatures)&y10=0:Px16/y1;  [Run if AI and still alive und gerader Tag]
-!!FU(Give_AI_Experience):Px16/y1;       [Run if AI and still alive]
-!!FU(Give_AI_Spell_Points):Px16/y1;     [Run if AI and still alive]
-!!FU(Give_AI_Movement):Px16/y1;         [Run if AI and still alive]
-!!FU(Give_AI_Spell_Book):Px16/y1;       [Run if AI and still alive]
+  !!OW:Iy1/?y2;                         [y2, AI 1 / Human 0]
+  !!co&y2=0;                            [Skip if Human]
 
+  !!FU(Give_AI_Creatures)&y10=0:Pi/y1;  [Run if AI and still alive und gerader Tag]
+
+  ; AI heroes will not receive additional exp once they've reached the level limit of the scenario or level 74
+  !!HEi:E?y31/?y32/1;
+  !!FU(Give_AI_Experience)&y32<y30:Pi/y1;[Run if AI]
+
+  !!FU(Give_AI_Spell_Points):Pi/y1;     [Run if AI]
+  !!FU(Give_AI_Movement):Pi/y1;         [Run if AI]
+  !!FU(Give_AI_Spell_Book):Pi/y1;       [Run if AI]
+!!en;
 
 !?FU(Give_AI_Creatures);
 x1=hero, x2=owner
@@ -3394,10 +3401,10 @@ x1=hero, x2=owner
 
 
 !?FU(Give_AI_Experience);
+
 !!SN:W^H3_Game_Difficulty^/?y1;
 !!VRy2&y1=1:S500; !!VRy2&y1=2:S1000; !!VRy2&y1=3:S2500; !!VRy2&y1=4:S5000; !!VRy2&y1=5:S10000;
 !!HEx1:Edy2;                            [Gives Experience daily]
-
 
 !?FU(Give_AI_Spell_Points);
 !!SN:W^H3_Game_Difficulty^/?y1;
@@ -3723,7 +3730,7 @@ AI gets 50% of combat loses recovered
 !!SN:W^Guarded_Object_Faktor^/3;        [*3 multiply factor for guards]
 !!SN:W^Guarded_Object_Commander_Bonus_Att^/3;
 !!SN:W^Guarded_Object_Commander_Bonus_Dmg^/6;
-!!SN:W^Guarded_Object_Commander_Bonus_HP^/75;
+!!SN:W^Guarded_Object_Commander_Bonus_HP^/50;
 !!en;
 
 !!if&x1=2;                              [Normal]
@@ -3731,7 +3738,7 @@ AI gets 50% of combat loses recovered
 !!SN:W^Guarded_Object_Faktor^/3;        [*3 multiply factor for guards]
 !!SN:W^Guarded_Object_Commander_Bonus_Att^/4; [more is better  Att per Week]
 !!SN:W^Guarded_Object_Commander_Bonus_Dmg^/8; [High Dmg per Week]
-!!SN:W^Guarded_Object_Commander_Bonus_HP^/100; [Health per Week]
+!!SN:W^Guarded_Object_Commander_Bonus_HP^/75; [Health per Week]
 !!en;
 
 !!if&x1=3;                              [Hard]
@@ -3739,7 +3746,7 @@ AI gets 50% of combat loses recovered
 !!SN:W^Guarded_Object_Faktor^/4;        [*4 multiply factor for guards]
 !!SN:W^Guarded_Object_Commander_Bonus_Att^/5; [more is better  Att per Week]
 !!SN:W^Guarded_Object_Commander_Bonus_Dmg^/12; [High Dmg per Week]
-!!SN:W^Guarded_Object_Commander_Bonus_HP^/150; [Health per Week]
+!!SN:W^Guarded_Object_Commander_Bonus_HP^/100; [Health per Week]
 !!en;
 
 !!if&x1=4;                              [Extreme]
@@ -3747,7 +3754,7 @@ AI gets 50% of combat loses recovered
 !!SN:W^Guarded_Object_Faktor^/4;        [*4 multiply factor for guards]
 !!SN:W^Guarded_Object_Commander_Bonus_Att^/10; [more is better  Att per Week]
 !!SN:W^Guarded_Object_Commander_Bonus_Dmg^/40; [High Dmg per Week]
-!!SN:W^Guarded_Object_Commander_Bonus_HP^/250; [Health per Week]
+!!SN:W^Guarded_Object_Commander_Bonus_HP^/200; [Health per Week]
 !!en;
 
 !!if&x1=5;                              [Impossible]
@@ -3755,7 +3762,7 @@ AI gets 50% of combat loses recovered
 !!SN:W^Guarded_Object_Faktor^/5;        [*5 multiply factor for guards]
 !!SN:W^Guarded_Object_Commander_Bonus_Att^/15; [more is better  Att per Week]
 !!SN:W^Guarded_Object_Commander_Bonus_Dmg^/75; [High Dmg per Week]
-!!SN:W^Guarded_Object_Commander_Bonus_HP^/350; [Health per Week]
+!!SN:W^Guarded_Object_Commander_Bonus_HP^/400; [Health per Week]
 !!en;
 
 
