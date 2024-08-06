@@ -1,3 +1,13 @@
+### Version 2.103
+
+#### Advanced Classes Mod:
+- Fix possible being able to cast Forgetfulness on non-shooter
+
+#### WoG:
+- Fixed a crash when trying to create random maps;
+- Added pictures for the Chronicle campaigns;
+
+
 ### Version 2.102
 
 #### ERA:
