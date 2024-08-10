@@ -8064,8 +8064,15 @@ x3-x5=Town Coordinates
 !!SN:W^Grandmaster_Adventurer_Hero%X1^/?y20;
 !!VRy15:S8000;                          [Set Golf Bonus for Master Adventurer]
 !!VRy15&y20=1:S15000;                   [Set Golf Bonus for Grandmaster Adventurer]
-!!SN:T^AC_Misc.Town_Plunder^/?z1/^gold^/y15;
-!!IF&1000:M1/z1;                        [show message]
+
+; Show message if the conqueror is the interacting player (don't use &1000 here)
+!!OW:C?y31/?y32;
+
+!!if&x2=y32;
+  !!SN:T^AC_Misc.Town_Plunder^/?z1/^gold^/y15;
+  !!IF:M1/z1;                           [show message]
+!!en;
+
 !!OW:Rx2/6/dy15;                        [increase players resources]
 
 !!VRy99:+14;                            [Add two weeks cooldown]

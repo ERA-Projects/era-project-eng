@@ -1,3 +1,22 @@
+### Version 2.104
+
+#### Advanced Classes Mod:
+- Fixed showing Plunder message when a human player's town is captured by AI
+
+#### ERA ERM Framework:
+- Added an initialization of battle variables OnSetupBattlefield;
+
+#### ERA Scripts:
+- Now backpack artifact is fully compatible with ACM (again). By enabling this option with ACM, it allows movement points artifacts to provide movement points while in backpack.
+
+#### Game Enhancement Mod:
+- Disabled invalid Quick Combat buttons and dialogues in the Tutorial map (as the whole Quick Combat feature is disable in Tutorial).
+
+#### WoG Scripts:
+- Added a function in Masters of Life to allow injecting by external scripts.
+- Refactor neutral bonuses script, boost the performance and resolve a potential variable crossing issue
+
+
 ### Version 2.103
 
 #### Advanced Classes Mod:
