@@ -1,3 +1,12 @@
+### Version 2.105
+
+#### ERA Scripts:
+- enhanced creature specialists: changed hook and optimized script;
+- Skeletons with artifacts: removed animation when combat is hidden;
+
+#### WoG Scripts:
+- Artillery: fixed crash when attacking towns with towers;
+
 ### Version 2.104
 
 #### Advanced Classes Mod:
