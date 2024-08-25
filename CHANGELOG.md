@@ -1,3 +1,32 @@
+### Version 2.106
+
+#### Advanced Classes Mod:
+- Axe of Centaur now gives +5% physical crit chance
+- Spell Trainer for summoning spells now gives percent bonus (weaker early game, stronger late game)
+- Helm of Unicorn, Ammo Cart and Ammo Cart WM Upgrade provide more spell point regeneration after combat
+- Replenish SP Ammo Cart upgrade now requires Warfare(Tactics) secondary skill instead of Learning (makes it more accessible for Warriors, since they can struggle having enough SP). Overheal Upgrade now requires Learning, instead of Warfare.
+- Ogre's Club of Havoc fixed stun ability not working
+- Pacifist ability will not reduce low level units damage by 50% anymore (thanks to Diozia)
+- Fix Diplomacy not working properly
+- Rebalance Cripple effects. The minimum speed of creatures is 3 instead of 2 (same stats of peasants).
+
+#### Advanced Difficulties Mod:
+- Fixed: additional abilities will not accumulate in battle replay (thanks to TheInvisible1966)
+
+#### ERA Scripts:
+- Mortal Heroes: Now Aura of Curse specialty no longer grants you a hidden spell specialty. Improved battle log, now it's less confusing.
+- Removed abundant functions;
+
+#### Game Enhancement Mod:
+- Added Hota style Mana Vortex interaction: Mana Vortex is now activated manually and can only be used by a guest hero. Additionally, it's not possible to use Mana Vortex in allies' towns.
+
+#### WoG Graphics Fix Lite:
+- Update the mod to version 2.19.0;
+
+#### WoG Scripts:
+- Adventure Cave: Now abilities obtained from Hermits can be used in network battles.
+
+
 ### Version 2.105
 
 #### ERA Scripts:

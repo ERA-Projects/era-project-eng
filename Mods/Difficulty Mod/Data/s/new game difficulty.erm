@@ -2630,10 +2630,14 @@ x1=Spell Number, x2=Duration, x3=Level
 !!SN:Vi^Anzahl_Abilities_List^/72/97/74/20/75/17/25/119/69/1/115/30/0;
 !!SN:Vi^Anzahl_Abilities_List^/84/103/37/50/87/43/30;
 
+
 ; Only available on BF in this script (new game difficulty.erm)! It looks like there are other EA blocking the functionality of this
 !?FU(OnSetupBattlefield)&i^Anzahl_Abilities^; [Must be later than other scripts setting EA bonuses]
 !!UN:P(WOG_OPT_STACK_EXPERIENCE)/?(stackExpOn:y);
 !!FU&(stackExpOn)<>(TRUE):E;
+
+!!SN:W^Is_Battle_Replay^/?y80;
+!!FU&y80=1:E;                           [Exit in Battle replay]
 
 !!re i/(BATTLE_DEFENDER_STACK_FIRST)/(BATTLE_DEFENDER_STACK_LAST);
   !!BMi:N?(num:y);
@@ -3819,9 +3823,7 @@ AI gets 50% of combat loses recovered
 !#SN:W^AI_has_no_DD^/0;
 !#SN:W^AI_Artifacts_Eq^/1;              [Artifact mod is switched on by default]
 
-!#SN:F^PluginExists^/^amethyst2_4^;     [Check for amethyst Plugin, result in v1]
-!#SN&v1=1:W^Typhon_Third_Upgrade_Mod_Active^/1; [Check for Third Upgrade Mod]
-!#SN&v1=1:W^TUM_registerRegularMonsters^/1; [Enable new Third Upgrade Mod Creatures option when mod is active]
+!#VRi^TUM_registerRegularMonsters^&i^Typhon_Third_Upgrade_Mod_Active^:S(TRUE); [Enable new Third Upgrade Mod Creatures option when mod is active]
 
 !?PI;
 !!FU(Game_Difficulty_Options):P;        [Run at Map Start]
