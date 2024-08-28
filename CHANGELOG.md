@@ -1,3 +1,47 @@
+### Version 2.107
+
+## HD Mod:
+- The following tweaks are now enabled by default:
+	- `Misc.TournamentSaver` - creates unique saves for each game every day;
+	- `Misc.RenameRandMap` - creates a unique name for each map created by the Random Map Generator;
+	- `UI.Ext.TownMgr.AvailableInsteadGrowth` - displays the number of creatures available for hiring in the town window, instead of growth;
+	- `UI.Tavern.InviteHero` - allows you to select the next hired hero after purchasing the current one;
+	- `UI.Ext.AdvMgr` - supports an extended tooltip in the adventure map status bar;
+
+#### Advanced Classes Mod:
+- Alternative Necromancy is now activated by left-click on Necromancy icon (was right-clicking).
+
+#### ERA ERM Framework:
+- added NPC table data;
+- added SWAP_MANAGER address (Hero Meeting Manager);
+
+#### ERA Scripts:
+- Town Treasures: Fixed sometimes not possible to loot Red player.
+- Night Scouting: Optimised the dialogue for checking Assassins owned by heroes.
+- Mortal Heroes:
+	- Prevent generating the same specialties when spamming battles in the same location.
+	- NPC reset now made by WoG function, higher "Enhnanced Commanders" -option compatibility
+
+#### TrainerX:
+- Fixed not possible to change the level of heroes not belong to the current player.
+
+#### WoG Graphics Fix Lite:
+- fixed gogs/hellhounds small portraits (they were mismatched previously)
+
+### WoG Scripts:
+- ##  "Week of Monsters" option is temporary disabled;
+- Standardise the interaction of secondary skills (Estates II, Scouting I/III). Now they are activated by left-clicking on secondary skill icons from hero screen. They cannot be activated when it's not on the player's turn/the hero does not belongs to the player.
+	- When enabling both Scouting I and Scouting III, the customization dialogue of Scouting I would be activated by right-clicking on the Scouting icon. (as the left-clicking dialog is occupied by Scouting III).
+- Released z250-z265, z770-z786 from Scouting III script. Now they can be used freely.
+- Scouting III: Basic Scouting can no longer steal resources and spells (must advance to Advanced level to use). Fixed wrong hero primary skills displayed of the town infiltrated.
+- Artillery: restricted ballistas' amount at prevent shot with  1;
+- Enhnanced Commanders: small code optimization, Astral spirit spell reset fix;
+
+#### Other:
+- Added (xxx_OnResetHero) hook to deal with hero variables (or global hero variables). This is to help reset the choices of secondary skills/artifacts when the hero is dismissed/defeated and respawn in taverns.
+- added missed AB's campaigns data
+
+
 ### Version 2.106
 
 #### Advanced Classes Mod:
@@ -14,7 +58,7 @@
 - Fixed: additional abilities will not accumulate in battle replay (thanks to TheInvisible1966)
 
 #### ERA Scripts:
-- Mortal Heroes: Now Aura of Curse specialty no longer grants you a hidden spell specialty. Improved battle log, now it's less confusing.
+- Mortal Heroes: Now Aura of Curse speciality no longer grants you a hidden spell speciality. Improved battle log, now it's less confusing.
 - Removed abundant functions;
 
 #### Game Enhancement Mod:

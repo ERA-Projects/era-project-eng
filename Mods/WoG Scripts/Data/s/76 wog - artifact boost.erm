@@ -47,6 +47,15 @@ ZVSE2
 
 
 ; Set up global vars for Diplomat's Ring and Emblem of Conizance
+!?FU(WOG_OnResetHero);
+!#VA(hero:x);
+
+!!UN:P102/?(wogOption:y);                 [Check for Enhanced Artifacts I]
+!!FU&(wogOption)<>(TRUE):E;
+
+!!IF:W(hero);
+!!VRw33:S0;
+
 !?FU(OnAfterErmInstructions);
 !!UN:P102/?(wogOption:y);                 [Check for Enhanced Artifacts I]
 !!FU&(wogOption)<>(TRUE):E;
@@ -104,6 +113,11 @@ ZVSE2
 !?FU(OnHeroScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED)/999;
 !!UN:P102/?(wogOption:y); [Check if Artifact Boost Script is enabled in WoGify Options]
 !!FU&(wogOption)<>(TRUE):E;     [Exit if it isn't]
+
+; Exit if the hero does not belong to the interacting player
+!!OW:C?(player:y)/?(interactPlayer:y);  [Get the player who's clicking the mouse button]
+!!HE(CURRENT_HERO):O?(owner:y);
+!!FU&(interactPlayer)<>(owner):E;
 
 !!VR(slot:y):S(NO_ART_SLOT);
 !!VR(item:y):Si^mouse_item^;
