@@ -1,3 +1,16 @@
+### Version 2.109
+
+## HD Mod:
+- The following tweaks are now enabled by default:
+	- `Fix.Crit.MapsOver5000` - fixes crash with a huge number of maps;
+
+#### ERA Scripts:
+- Mortal Heroes: fixed a code type;
+
+#### Game Enhancement Mod:
+- Added a fix for incorrect calculation of the defense ignoring bonus;
+
+
 ### Version 2.108
 
 #### ERA Scripts:
