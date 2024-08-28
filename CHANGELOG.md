@@ -1,3 +1,9 @@
+### Version 2.108
+
+#### ERA Scripts:
+- Mortal Heroes: fixed a code type;
+
+
 ### Version 2.107
 
 ## HD Mod:
