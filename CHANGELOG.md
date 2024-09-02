@@ -1,3 +1,30 @@
+### Version 2.110
+
+#### Advanced Classes Mod:
+- Disabled remove theoretical battle ai vs ai
+- Now the rate of Master/Grandmaster Necromancy is 20%/25% (was 17%/20%)
+- Alternative Necromancy:
+	- Now the choice of creature to raise for alternative necromancy will be reset when the hero's respawned in taverns.
+	- Now the Necromancy rate of raising a custom creature is calculated based on the current value:
+		- Walking Dead: 80% of the original value
+		- Wights: 55% of the original value
+		- Vampires: 30% of the original value
+		- Liches: 25% of the original value
+		- Black Knights: 15% of the original value
+
+#### ERA Scripts:
+- Mortal Heroes: Fixed the icon of speciality occasionally not getting reset when the hero gains a new speciality.
+
+#### Game Enhancement Mod:
+- added main menu items font selection;
+- added question before opening website;
+
+#### Other:
+- Added Vietnamese language in the language selection dialogue;
+- Some mods get icons;
+- Added Heroes Chronicles Campaigns;
+
+
 ### Version 2.109
 
 ## HD Mod:
