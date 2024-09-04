@@ -1,3 +1,46 @@
+### Version 2.111
+
+#### Advanced Classes Mod:
+- in multiplayer games text from Estate/Natural Healer/Secret Sets ability wont show up for remote player
+- fix MP issue were it was possible to select enemy commander spell (Archmage/Warden class) during combat, leading to   desync
+- Its now slighlty more difficult to get high stats value for Prayer and Bless spell
+- various fixes for MP games
+- Dispel is now an Air Spell and to compensate Disguised moved to Water
+- Fixed Scouting Set bonus message before combat
+- Power of the Dragon Father changed artifact description
+- Badge of Courage lost mind immunity for all troops
+- Warden commander class spells now have proper scaling based on spell modifier
+- all spells cast by commanders now have a 50% chance to give +1 kill count
+- Fixed the compatibility with ERA 3.9.15 (Estates hook)
+- Disable Economy (ES option) as it creates multiple text description and specialty compatibility issues.
+- Optimise HL triggers (Note that they executes for hero starting with high level by default. Here we use   i^acm_isGameStarted^ to skip the HL process before game started)
+- corrected Mutare specialist text
+- slightly reduced Fire Shield damage scaling
+- fixed commander zero movement bug with Hunter class
+- Prevent reducing the stack number of the healing creature if it has BM:B>BM:N
+- Ogre shield has a small chance to block 50% damage
+- Wooden Dwarv shield gives bonus life to level 1 and level 2 troops
+- Gnoll shield applies magic mirror in the first battle round
+- commander artifacts scaling halved
+- commander artifacts no longer lose bonus if unequipped
+- commander attack skill (Basic to Grandmaster)now scales from 5-25, same as defense.
+
+#### ERA Scripts:
+- Fixed game freeze when displaying achievements.
+- Added compatibility with the WoG Graphics Fix mod.
+
+#### Game Enhancement Mod:
+- Main plugin update to version 1.7:
+  - Changed cursor when hovering over version numbers in the main menu.
+  - Added the ability to open the changelog of the game assembly (click on the installed build version).
+  - Added the ability to open the changelog of the ERA engine (click on the ERA version).
+  - Reminder about the ability to go to the website with the latest version (click on the latest assembly version).
+
+### WoG Scripts:
+- Castle Upgrading: Fixed the growth data shown in the right-clicking dialogue on creature icons in towns.
+- Random Heroes: Fixed the random hero becomes available for all the players after battle (if he/she was banned in the map).
+
+
 ### Version 2.110
 
 #### Advanced Classes Mod:
