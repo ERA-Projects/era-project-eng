@@ -1,3 +1,13 @@
+### Version 2.112
+
+#### Advanced Classes Mod:
+- Now Fire Mages and allies will still be immune to their own Fire Ball with Orb of Vulnerability presented.
+- Now Diplomacy cannot attract creatures that cannot be generated on the map (Must set MA:H=0 beforehand).
+
+#### Game Enhancement Mod:
+- hotfix
+
+
 ### Version 2.111
 
 #### Advanced Classes Mod:
