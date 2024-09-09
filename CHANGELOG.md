@@ -1,3 +1,19 @@
+### Version 2.113
+
+#### Advanced Classes Mod:
+- corrected ERM error during combat with healing
+
+#### ERA Scripts:
+- Removed "Bandit Ambush" option, as it is highly similar to "Rogues attack heroes at random".
+- Removed unused functions erm files
+
+#### WoG Scripts:
+- now triggers from the second day only (same as daily events from the original game)
+	- Masters of Life
+	- Heroes create magic plains each day
+	- Hero's upgraded lvl 7 monsters become lvl 8 
+
+
 ### Version 2.112
 
 #### Advanced Classes Mod:
@@ -46,7 +62,7 @@
   - Added the ability to open the changelog of the ERA engine (click on the ERA version).
   - Reminder about the ability to go to the website with the latest version (click on the latest assembly version).
 
-### WoG Scripts:
+#### WoG Scripts:
 - Castle Upgrading: Fixed the growth data shown in the right-clicking dialogue on creature icons in towns.
 - Random Heroes: Fixed the random hero becomes available for all the players after battle (if he/she was banned in the map).
 
