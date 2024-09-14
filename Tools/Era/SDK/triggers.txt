@@ -1,0 +1,94 @@
+; WOG
+
+FU    "OnErmFunction " + N
+TM    "OnErmTimer " + N
+HE    "OnHeroInteraction " + N
+BA1   "OnAfterBattle"
+BR    "OnBattleRound"
+BG0   "OnBeforeBattleAction"
+BG1   "OnAfterBattleAction"
+MW0   "OnWanderingMonsterReach"
+MW1   "OnWanderingMonsterDeath"
+MR0   "OnMagicBasicResistance"
+MR1   "OnMagicCorrectedResistance"
+MR2   "OnDwarfMagicResistance"
+CM0   "OnAdventureMapRightMouseClick"
+CM1   "OnTownMouseClick"
+CM2   "OnHeroScreenMouseClick"
+CM3   "OnHeroesMeetScreenMouseClick"
+CM4   "OnBattleMouseClick"
+CM5   "OnAdventureMapLeftMouseClick"
+AE0   "OnEquipArt"
+AE1   "OnUnequipArt"
+MM0   "OnBattleMouseHint"
+MM1   "OnTownMouseHint"
+MP    "OnMp3MusicChange"
+SN    "OnSoundPlay"
+MG0   "OnBeforeAdventureMagic"
+MG1   "OnAfterAdventureMagic"
+TH0   "OnEnterTown"
+TH1   "OnLeaveTown"
+IP0   "OnBeforeBattleBeforeDataSend"
+IP1   "OnBeforeBattleAfterDataReceived"
+IP2   "OnAfterBattleBeforeDataSend"
+IP3   "OnAfterBattleAfterDataReceived"
+CO0   "OnOpenCommanderWindow"
+CO1   "OnCloseCommanderWindow"
+CO2   "OnAfterCommanderBuy"
+CO3   "OnAfterCommanderResurrect"
+BA50  "OnBeforeBattleForThisPcDefender"
+BA51  "OnAfterBattleForThisPcDefender"
+BA52  "OnBeforeBattleUniversal"
+BA53  "OnAfterBattleUniversal"
+GM0   "OnAfterLoadGame"
+GM1   "OnBeforeSaveGame"
+PI    "OnAfterErmInstructions"
+DL    "OnCustomDialogEvent"
+HM    "OnHeroMove"
+HM    "OnHeroMove " + N
+HL    "OnHeroGainLevel"
+HL    "OnHeroGainLevel " + N
+BF    "OnSetupBattlefield"
+MF1   "OnMonsterPhysicalDamage"
+TL0   "OnEverySecond"
+TL1   "OnEvery2Seconds"
+TL2   "OnEvery5Seconds"
+TL3   "OnEvery10Seconds"
+TL4   "OnEveryMinute"
+LE    "OnLocalEvent " + x/y/z
+OB    "OnBeforeVisitObject " + x/y/z OR type/subtype
+$OB   "OnAfterVisitObject " + x/y/z OR type/subtype
+
+; ERA
+
+SAVEGAME_WRITE            "OnSavegameWrite"
+SAVEGAME_READ             "OnSavegameRead"
+KEYPRESS                  "OnKeyPressed"
+OPEN_HEROSCREEN           "OnOpenHeroScreen"
+CLOSE_HEROSCREEN          "OnCloseHeroScreen"
+STACK_OBTAINS_TURN        "OnBattleStackObtainsTurn"
+REGENERATE_PHASE          "OnBattleRegeneratePhase"
+AFTER_SAVE_GAME           "OnAfterSaveGame"
+BEFOREHEROINTERACT        "OnBeforeHeroInteraction"
+AFTERHEROINTERACT         "OnAfterHeroInteraction"
+ONSTACKTOSTACKDAMAGE      "OnStackToStackDamage"
+ONAICALCSTACKATTACKEFFECT "OnAICalcStackAttackEffect"
+ONCHAT                    "OnChat"
+ONGAMEENTER               "OnGameEnter"
+ONGAMELEAVE               "OnGameLeave"
+
+; ERA Extended
+
+"OnBeforeWoG"
+"OnAfterWoG"
+"OnAfterCreateWindow"
+"OnBeforeErmInstructions"
+"OnBeforeTrigger"
+"OnAfterTrigger"
+
+All Era triggers which have ERM equivalent pass pointer to the folowing structure as event argument:
+
+TOnBeforeTriggerArgs  = PACKED RECORD
+  TriggerID:          INTEGER;
+  BlockErmExecution:  LONGBOOL;
+END; // .RECORD TOnBeforeTriggerArgs

@@ -1,3 +1,23 @@
+### Version 2.114
+
+#### Game Enhancement Mod:
+- Fixed messing up creature stats with stack exp after battle replay when the stack was killed with Summoned flag. This fixed the stats of Metamorphs and probably some 3rd party scripts.
+
+#### WOG:
+- some plugins have been rewritten to improve game stability
+
+#### WoG Graphics Fix Lite:
+- Fixed WM II catapult small icon
+
+#### WoG Scripts:
+- added support for the plugin for generating WoG objects on random maps (the plugin is currently available in the VIP channel)
+- Witch Commander Huts: Added the ability to refuse the offered skill
+
+#### Other:
+- added ERA source code
+- updated and added headers for creating plugins for using ERA API
+
+
 ### Version 2.113
 
 #### Advanced Classes Mod:

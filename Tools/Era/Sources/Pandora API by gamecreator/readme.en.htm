@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<title>Pandora's API</title>
+		<style>
+			span.monospace{
+				font-family: monospace;
+				font-size: larger;
+			}
+		</style>
+	</head>
+	<body style="font-family: sans-serif; font-size: small;">
+		<h1>Pandora's API</h1>
+		<h4>version 2.0.1 (c) gamecreator 2014-2015</h4>
+		<pre style="white-space: pre-wrap; font-family: sans-serif;">
+The purpose of Pandora's API is to allow easy addition of user-defined ERM receivers.
+SDK is located in <span class="monospace">Mods\Pandora's API\SDK</span>.
+Pandora's API implements following functionality:
+<ul><li>new Era event <b><span class="monospace">"OnPandora'sApiReady"</span></b> to indicate when user can call Pandora's API's functions;</li>
+<li>SDK namespace <b><span class="monospace">ErmVar</span></b> to provide access to all ERM variables;</li>
+<li>functions:
+<ul><li><span class="monospace">int __stdcall <b>RegisterErmReceiver</b>(char name[2], ErmInnerHandler handler, int type)</span>
+Adds user-defined receiver to ERM. Type determines the number of receiver arguments and must be one of the following:
+0 - no arguments (UN-like);
+1 - one argument (BM-like);
+2 - one to five arguments (OB-like);
+3 - one argument (FU-like);
+4 - four arguments (DO-like);
+5 - two arguments (HT-like).</li>
+<li><span class="monospace">int __stdcall <b>GenericErmHandler</b>(ErmHandler handler, char c, int num, void* todo, void* mes)</span>
+Helper function. Parses all commands into simple representation and calls user-defined handler for each.</li>
+<li><span class="monospace">void <b>ConnectPandorasAPI</b>()</span>
+SDK function. Loads Pandora's API for user plugin.</li>
+<li><span class="monospace">void <b>ApplyArg</b>(ErmArgument& arg, int& value)</span>
+SDK helper function. Applies integer command argument to an integer variable depending on how it was passed to the receiver (set/check/get).</li>
+<li><span class="monospace">bool <b>CheckArgs</b>(ErmCommand& cmd, ErmArgumentFormat format)</span>
+SDK helper fuction. Checks if received arguments satisfy specified requirements.</li>
+<li><span class="monospace">bool <b>IsValidVar</b>(char vartype, int number)</span>
+SDK helper function. Checks if an ERM variable of specified type and number exists.</li></ul>
+This mod includes two receivers:
+<ul><li><b><span class="monospace">PA</span></b> - can be used to set up Pandora's Boxes and Events (<a href="help/receiver_pa.en.htm">readme</a>)</li>
+<li><b><span class="monospace">QU</span></b> - can be used to set up Seer Huts and Quest Guards (<a href="help/receiver_qu.en.htm">readme</a>)</li></ul>
+Their sources are located in <span class="monospace">Mods\Pandora's API\Sources</span>.
+		</pre>
+	</body>
+</html>

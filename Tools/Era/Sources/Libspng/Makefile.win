@@ -1,0 +1,41 @@
+# Project: libspng
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+RES      = libspng_private.res
+OBJ      = dllmain.o spng.o miniz.o $(RES)
+LINKOBJ  = dllmain.o spng.o miniz.o $(RES)
+LIBS     = -L"D:/Soft/Programming/Dev/MinGW64/lib32" -L"D:/Soft/Programming/Dev/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32
+INCS     = -I"D:/Soft/Programming/Dev/MinGW64/include" -I"D:/Soft/Programming/Dev/MinGW64/x86_64-w64-mingw32/include" -I"D:/Soft/Programming/Dev/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"D:/Soft/Programming/Dev/MinGW64/include" -I"D:/Soft/Programming/Dev/MinGW64/x86_64-w64-mingw32/include" -I"D:/Soft/Programming/Dev/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"D:/Soft/Programming/Dev/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = libspng.dll
+CXXFLAGS = $(CXXINCS) -march=pentium4 -msse2 -Ofast -m32 -std=gnu99 -Wall -pipe
+CFLAGS   = $(INCS) -march=pentium4 -msse2 -Ofast -m32 -std=gnu99 -Wall -pipe -DBUILDING_DLL=1 -DSPNG_USE_MINIZ -DSPNG_SSE=2 -DSPNG_ENABLE_TARGET_CLONES -mstackrealign
+RM       = rm.exe -f
+DEF      = liblibspng.def
+STATIC   = liblibspng.a
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN) $(DEF) $(STATIC)
+
+$(BIN): $(LINKOBJ)
+	$(CPP) -shared $(LINKOBJ) -o $(BIN) $(LIBS) -Wl,--output-def,$(DEF),--out-implib,$(STATIC),--add-stdcall-alias
+
+dllmain.o: dllmain.c
+	$(CC) -c dllmain.c -o dllmain.o $(CFLAGS)
+
+spng.o: spng.c
+	$(CC) -c spng.c -o spng.o $(CFLAGS)
+
+miniz.o: miniz.c
+	$(CC) -c miniz.c -o miniz.o $(CFLAGS)
+
+libspng_private.res: libspng_private.rc 
+	$(WINDRES) -i libspng_private.rc -F pe-i386 --input-format=rc -o libspng_private.res -O coff 
+

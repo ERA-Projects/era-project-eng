@@ -1,0 +1,179 @@
+<html>
+	<head>
+		<title>Receiver QU</title>
+		<style>
+			a {
+				color: green;
+			}
+		</style>
+	</head>
+	<body style = "font-family: Courier, monospace;">
+		<pre style = "white-space: pre-wrap;">
+<b>Receiver</b>
+<b>!!QU#1/#2/#3:XXXX</b> - Quest Object. Used to modify the attributes of a Seer Hut or a Quest Guard in the specified position on the map.
+	#1 - X coordinate (0...);
+	#2 - Y coordinate (0...);
+	#3 - Level of the map L (0-Surface, 1-Underground).  
+<i>Extended syntax:</i>
+<b>!!QU#:XXXX</b>
+	Coordinates are in v[#],v[#+1],v[#+2].
+
+<i>Comments:</i>
+If you place Seer Hut or Quest Guard via ERM, don't forget to call QU:I after placing the object. Otherwise you will not be able to configure or interact with it (most probably the game would crash).
+<p style = "font-size: larger;"><b><u>Options</u></b>
+<b id = "options" style = "color: lightgray;">
+A   B   C   <a>D</a>   E   F   G   H   <a>I</a>   J   K   L   <a>M</a>
+<a>N</a>   O   P   <a>Q</a>   <a>R</a>   S   T   U   <a>V</a>   W   X   Y   Z
+</b></p><script>var list = document.getElementById("options").children; for (var i = 0; i < list.length; i++) { list[i].href = "#" + list[i].text; }</script><hr>
+<a id="D"></a><b>D$</b>
+Set/check/get last day to $.
+<i>Comments:</i>
+A quest must be present in the object (check with <a href="#Q">QU:Q</a>), otherwise this command would cause ERM error.
+
+<hr>
+<a id="I"></a><b>I</b>
+Perform initial setup for a newly placed object.
+
+<hr>
+<a id="M"></a><b>M#/^TEXT^</b>
+Set message text to a standard ERM string. The string can contain variable display codes.
+	# = 0 - proposal message,
+	# = 1 - progress message,
+	# = 2 - completion message.
+<i>Comments:</i>
+A quest must be present in the object (check with <a href="#Q">QU:Q</a>), otherwise this command would cause ERM error.
+
+<hr>
+<b>M#/$</b>
+Set/get message text to a string variable.
+<i>Extended syntax:</i>
+<b>M#/0</b>
+Clear the message.
+<i>Extended syntax (for experienced users):</i>
+<b>M#/$</b>
+Set message text to a text by memory pointer $ or get the memory pointer for this message.
+<i>Comments:</i>
+A quest must be present in the object (check with <a href="#Q">QU:Q</a>), otherwise this command would cause ERM error.
+
+<hr>
+<a id="N"></a><b>N$</b>
+Set/check/get seer name id (0..47). See file seerhut.txt in game resources for a complete list of names.
+<i>Comments:</i>
+There is only 48 seer names in the game to choose from. I wonder if you can add more...
+
+<hr>
+<a id="Q"></a><b>Q?$</b>
+Check/get quest type to $:
+	0 - no quest,
+	1 - achieve hero level,
+	2 - achieve primary skills,
+	3 - kill a hero,
+	4 - kill a creature on the adventure map,
+	5 - bring artifacts,
+	6 - bring creatures,
+	7 - bring resources,
+	8 - visit with a certain hero,
+	9 - be certain player.
+
+<hr>
+<b>Q0</b>
+Remove quest.
+<i>Comments:</i>
+Without a quest present you will not be able to call <a href="#D">QU:D</a> or <a href="#M">QU:M</a>.
+
+<hr>
+<b>Q1/$</b>
+Set/check/get experience level to achieve to $.
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q2/$1/$2/$3/$4</b>
+Set/check/get Attack/Defense/Power/Knowledge to achieve to $1/$2/$3/$4.
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q3/$1/$2</b>
+Set/check/get a hero to kill to $1 (Format H) and players who already succeeded to $2 (Format E).
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q4/$1/$2/$3/$4/$5</b>
+Set/check/get coordinates of a creature to kill to $1/$2/$3, creature that would be displayed in quest log to $4 (Format C) and a player who killed the creature to $5 (Format E1). The presence of a creature by the specified coordinates is not necessary.
+Note, that $4 might be different from the type of an actual creature to kill, this is purely cosmetic.
+If a new creature was to spawn by specified coordinates and another player killed it, the previous player would lose his right to complete the quest.
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q5</b>
+Clear the list of artifacts to be delivered.
+
+<hr>
+<b>Q5/#1/$2</b>
+Set/check/get the number of artifacts #1 (Format A1) to be delivered to $2.
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q6</b>
+Clear the list of creatures to be delivered.
+
+<hr>
+<b>Q6/#1/$2</b>
+Set/check/get the number of creatures of type #1 (Format C) to be delivered to $2.
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q7/#1/$2</b>
+Set/check/get the number of resource #1 (Format R) to be delivered to $2.
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q8/$</b>
+Set/check/get the hero to visit this object to $ (Format H).
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<b>Q9/$</b>
+Set/check/get the player to visit this object to $ (Format E1).
+<i>Comments:</i>
+This will set quest type even if you are just checking, because checking for a different quest type makes no sense.
+
+<hr>
+<a id="R"></a><b>R$1/$2/$3</b>
+Set/check/get reward type in a Seer Hut to $1 and type-specific reward values to $2 and $3.
+There are following reward types:
+	0 - no reward,
+	1 - $2 experience,
+	2 - $2 spell points,
+	3 - $2 morale,
+	4 - $2 luck,
+	5 - $3 of resource $2 (Format R),
+	6 - $3 points in a primary skill $2 (Format PK),
+	7 - a secondary skill $2 (Format SS) of level $3,
+	8 - artifact $2,
+	9 - spell $2,
+	10 - $3 creatures of type $2.
+<i>Comments:</i>
+Note, that you must call this command with all three arguments, even if only two are needed.
+Some of these values may return garbage when checking for predefined seer huts (e.g. number of creatures). You will have to truncate such values to the appropriate size manually.
+
+<hr>
+<a id="V"></a><b>V$</b>
+Set/check/get players who visited this object to $ (Format E).
+
+<hr>
+<b>V#1/$2</b>
+Set/check/get if a player #1 (Format E1) has visited this object to $2:
+	0 - not visited,
+	1 - visited.
+
+	</pre>
+	</body>
+</html>

@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Pandora's API</title>
+		<style>
+			span.monospace{
+				font-family: monospace;
+				font-size: larger;
+			}
+		</style>
+	</head>
+	<body style="font-family: sans-serif; font-size: small;">
+		<h1>Pandora's API</h1>
+		<h4>версия 2.0.1 (c) gamecreator 2014-2015</h4>
+		<pre style="white-space: pre-wrap; font-family: sans-serif;">
+Предназначение Pandora's API - сделать добавление пользовательских ERM рисиверов простым и удобным.
+SDK можно найти в <span class="monospace">Mods\Pandora's API\SDK</span>.
+Pandora's API реализует следующий функционал:
+<ul><li>новое событие Эры <b><span class="monospace">"OnPandora'sApiReady"</span></b> для указания когда пользователь может вызывать функции Pandora's API;</li>
+<li>пронстранство имён <b><span class="monospace">ErmVar</span></b> в SDK, обеспечивающее доступ ко всем переменным ERM;</li>
+<li>функции:
+<ul><li><span class="monospace">int __stdcall <b>RegisterErmReceiver</b>(char name[2], ErmInnerHandler handler, int type)</span>
+Добавляет определённый пользователем рисивер к ERM. Параметр type определяет количество параметров рисивера и должен быть равен одному из следующих значений:
+0 - без параметров (аналогично UN);
+1 - один параметр (аналогично BM);
+2 - от одного до пяти параметров (аналогично OB);
+3 - один параметр (аналогично FU);
+4 - четыре параметра (аналогично DO);
+5 - два параметра (аналогично HT).</li>
+<li><span class="monospace">int __stdcall <b>GenericErmHandler</b>(ErmHandler handler, char c, int num, void* todo, void* mes)</span>
+Вспомогательная функция. Переводит все команды в простой формат и вызывает для каждой пользовательский обработчик.</li>
+<li><span class="monospace">void <b>ConnectPandorasAPI</b>()</span>
+Функция SDK. Загружает Pandora's API для пользовательского плагина.</li>
+<li><span class="monospace">void <b>ApplyArg</b>(ErmArgument& arg, int& value)</span>
+Вспомогательная функция SDK. Применяет целочисленный параметр к целочисленной переменной в зависимости от того, как он был передан (установить/проверить/получить значение).</li>
+<li><span class="monospace">bool <b>CheckArgs</b>(ErmCommand& cmd, ErmArgumentFormat format)</span>
+Вспомогательная функция SDK. Проверяет, удовлетворяют ли параметры команды указанным требованиям.</li>
+<li><span class="monospace">bool <b>IsValidVar</b>(char vartype, int number)</span>
+Вспомогательная функция SDK. Проверяет существование переменной ERM с указанным типом и индеском.</li></ul>
+Мод содержит два рисивера:
+<ul><li><b><span class="monospace">PA</span></b> - предназначен для настройки Ящиков Пандоры и Событий (<a href="help/receiver_pa.ru.htm">readme</a>)</li>
+<li><b><span class="monospace">QU</span></b> - предназначен для настройки Хижин Провидца и Стражей Прохода (<a href="help/receiver_qu.ru.htm">readme</a>)</li></ul>
+Исходный код этих рисиверов можно найти в <span class="monospace">Mods\Pandora's API\Sources</span>.
+		</pre>
+	</body>
+</html>

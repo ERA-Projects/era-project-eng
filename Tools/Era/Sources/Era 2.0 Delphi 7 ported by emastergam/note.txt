@@ -1,0 +1,132 @@
+12-02-08
+================================================================================
+Missing files:
+================================================================================
+(1678b 03-09-2009) Hde32.obj
+(9815  02-12-2012) TextScan.pas
+(12202 02-18-2012) ConsoleAPI.pas
+
+All changes within source are market with {#} to be easier searched and spoted.
+Here are list of changes i made to "make it compile" on D7. All changes are 
+gruped and have priority number. Its order in witch errors are reported by D7
+compler. In same time its order fixes are done.
+
+================================================================================
+Problem: 1
+================================================================================
+In D7 class can't have constant field. All clas fields are variable. Use 
+variable and fill it on class create. For classes without constructor it is 
+added. For other one problematic variable are placed befor any other code.
+also it is needed to Removed VAR and CONST from class declaration.
+
+#1
+ StrLib.pas 
+ Line: 29   -   TStrBuilder 
+ 
+ // Added constructor and variable within
+ constructor TStrBuilder.Create;
+ begin
+   inherited;
+   MIN_BLOCK_SIZE := 65536;
+ end;
+ 
+#2
+ Lists.pas 
+ Line: 13   -   TStrBuilder
+ 
+ // Just added to existingconstructor
+ FIRST_ALLOC_COUNT   := 16;
+ DEFAULT_GROWTH_RATE := 200;
+
+#3
+ Lists.pas 
+ Line: 75   -   TStringList
+ 
+ // Just added to existingconstructor
+ FIRST_ALLOC_COUNT   := 16;
+ DEFAULT_GROWTH_RATE := 200;
+
+#6
+ CFiles.pas 
+ Line: 31   -   TAbstractFile
+ 
+ // Added constructor and variable within
+ constructor TAbstractFile.Create;
+ begin
+   inherited;
+   MIN_BUF_SIZE := 64 * 1024;
+   MAX_BUF_SIZE := 1024 * 1024;
+ end;
+
+================================================================================
+Problem: 2
+================================================================================
+No abstract class in D7. To fix this ABSTRACT is just commented.
+
+#4
+ Log.pas 
+ Line: 29   -   TLogger
+ // Abstract is just commented
+ 
+#5
+ CFiles.pas 
+ Line: 29   -   TAbstractFile
+ // Abstract is just commented
+ 
+================================================================================
+Problem: 3
+================================================================================
+There are some function with invalid parameters. 
+
+#7
+ CLang.pas 
+ Line: 78   -   IsValidClientName
+
+ // There is no second parameter in D7 library. Help say: "IsValidIdent returns 
+ // true if the given string is a valid identifier. An identifier is defined as 
+ // a character from the set ['A'..'Z', 'a'..'z', '_'] followed by zero or more 
+ // characters from the set ['A'..'Z', 'a'..'z', '0..'9', '_']."
+ IsValidIdent(ClientName, NO_DOTS_ALLOWED);
+ changet to
+ IsValidIdent(ClientName);
+ 
+#9
+ Core.pas 
+ Line: 65   -   GameRelativePath
+ // There is only one Copy procedure in D7 and it must have Length of byte to 
+ // copy. Length can be greater then source and it will copy only character
+ // till end of string. This is walid ONLY for string copy.
+ // Added 65535 as length parameter. It should be safer. Care.
+ Copy(FullPath, LENGTH(GamePath) + SIZEOF('\') + 1);
+ changed to
+ Copy(FullPath, LENGTH(GamePath) + SIZEOF('\') + 1, 65535);
+
+================================================================================
+Problem: 4
+================================================================================
+There no inline in D7. Best solution for this is just copy regular code in all 
+places where function is called. Faster and worst solution is to clear inline 
+and make procedure regular. I done it on easier way :P. Just cleared inline.
+
+#8
+ Core.pas 
+ Line: 65   -   APIArg
+ // Changed to regular function
+
+#10
+ EraMap
+ MapExt.pas 
+ Line: 159   -   WriteInt
+ // Changed to regular function
+
+================================================================================
+Results
+================================================================================
+Provided Era.dll are replaced with comiled one. After 5min test all seem ok to 
+me. But further test should be done.
+
+Compiled file size:
+190464b Era.Dll 
+140288b EraMap.Dll
+
+Time spended count this text file ~1h.

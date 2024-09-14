@@ -1,0 +1,674 @@
+Time: 30.03.2008 14:16:28 (30.03.2008 07:16:28 UTC)
+Windows Version 5.1 Service Pack 2
+
+3 Exceptions:
+
+Corrupt ExceptObj: 00000001
+
+Function Calls:
+
+00471E36 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 71E36
+0043F0E0 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F0E0
+004352F4 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 352F4
+004353E8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 353E8
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+004588D2 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 588D2
+77D388A4 ? C:\WINDOWS\system32\user32.dll + 88A4
+77D388AD ? C:\WINDOWS\system32\user32.dll + 88AD
+77D6048E ? C:\WINDOWS\system32\user32.dll + 3048E
+77D388AD ? C:\WINDOWS\system32\user32.dll + 88AD
+773E8B88 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 28B88
+773E965D ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 2965D
+77D3C76E ? C:\WINDOWS\system32\user32.dll + C76E
+773E90CC ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 290CC
+773E965D ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 2965D
+7C90F0A5 ? C:\WINDOWS\system32\ntdll.dll + F0A5
+7C90D9BF ? C:\WINDOWS\system32\ntdll.dll + D9BF
+7C80CB03 ? C:\WINDOWS\system32\kernel32.dll + CB03
+7C80CB1D ? C:\WINDOWS\system32\kernel32.dll + CB1D
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+77D38BAB ? C:\WINDOWS\system32\user32.dll + 8BAB
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+00469A21 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A21
+0043ED18 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3ED18
+00441FCB | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41FCB
+00442623 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 42623
+004593FC ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 593FC
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+77D3E361 ? C:\WINDOWS\system32\user32.dll + E361
+00441F77 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+00441F77 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+77D3B26F ? C:\WINDOWS\system32\user32.dll + B26F
+77D3B24B ? C:\WINDOWS\system32\user32.dll + B24B
+77D6048E ? C:\WINDOWS\system32\user32.dll + 3048E
+77D3B24B ? C:\WINDOWS\system32\user32.dll + B24B
+774208ED ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 608ED
+77420935 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 60935
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+77D388A4 ? C:\WINDOWS\system32\user32.dll + 88A4
+00457455 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 57455
+7C910568 ? C:\WINDOWS\system32\ntdll.dll + 10568
+77C1C2D8 ? C:\WINDOWS\system32\msvcrt.dll + 1C2D8
+00469D7E | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69D7E
+0046AA52 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 6AA52
+00441E93 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+77F1AC7A ? C:\WINDOWS\system32\GDI32.dll + AC7A
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469DC6 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69DC6
+00469B7E | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69B7E
+00441B10 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41B10
+0041ABA8 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+77D3B73E | C:\WINDOWS\system32\user32.dll + B73E
+77D3B7A6 | C:\WINDOWS\system32\user32.dll + B7A6
+773E6FF0 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 26FF0
+773E70D3 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 270D3
+773E93D8 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 293D8
+77D38706 ? C:\WINDOWS\system32\user32.dll + 8706
+77D38BAB ? C:\WINDOWS\system32\user32.dll + 8BAB
+77D3882C ? C:\WINDOWS\system32\user32.dll + 882C
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D3C009 | C:\WINDOWS\system32\user32.dll + C009
+77D3E361 | C:\WINDOWS\system32\user32.dll + E361
+00441F77 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043F4E8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F4E8
+7C80D1C3 ? C:\WINDOWS\system32\kernel32.dll + D1C3
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+7C80D3BC ? C:\WINDOWS\system32\kernel32.dll + D3BC
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+77D3C009 ? C:\WINDOWS\system32\user32.dll + C009
+77D3E361 ? C:\WINDOWS\system32\user32.dll + E361
+00441DC5 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41DC5
+00433AE8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 33AE8
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+004144A0 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 144A0
+0041F668 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1F668
+77D394E1 ? C:\WINDOWS\system32\user32.dll + 94E1
+77D3C0D9 ? C:\WINDOWS\system32\user32.dll + C0D9
+77D3C621 ? C:\WINDOWS\system32\user32.dll + C621
+77D3DCE8 ? C:\WINDOWS\system32\user32.dll + DCE8
+00441CBB ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41CBB
+77D3E2F2 ? C:\WINDOWS\system32\user32.dll + E2F2
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+00469A21 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A21
+00441B10 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41B10
+0041ABA8 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D389A0 | C:\WINDOWS\system32\user32.dll + 89A0
+00422D9E ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 22D9E
+...
+
+Registers:
+
+EAX = 009267E8
+EBX = 0EEDFADE
+ECX = 00000000
+EDX = 00000001
+ESI = 0012F548
+EDI = 0012F714
+EBP = 0012F57C
+ESP = 0012F564
+EIP = 00471E36
+Flags = 00000246
+
+Stack Trace:
+
+0012F564: 0012F92C | TExcFrame.next
+0012F568: 00471E78 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 71E78
+0012F56C: 0012F57C | TExcFrame.hEBP
+0012F570: 004352D8
+0012F574: 00929D80
+0012F578: 00000000
+0012F57C: 0012F6BC | Last EBP
+0012F580: 0043F0E6 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F0E6
+0012F584: 00929D80
+0012F588: 004352F9 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 352F9
+0012F58C: 0012F714
+0012F590: 004353ED ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 353ED
+0012F594: 00929D80
+0012F598: 0043EF4B ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF4B
+0012F59C: 0012F714
+0012F5A0: 0012F714
+0012F5A4: 00929D80
+0012F5A8: 001C055E
+0012F5AC: 0000BD33
+0012F5B0: 59010D51
+0012F5B4: 001C055E
+0012F5B8: 0012F6F8
+0012F5BC: 0012F7FC
+0012F5C0: 0012F7FC
+0012F5C4: 00922270
+0012F5C8: 004588D7 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 588D7
+0012F5CC: 00000000
+0012F5D0: 773E8B56
+0012F5D4: 0012F60C
+0012F5D8: 77D388A9 ? C:\WINDOWS\system32\user32.dll + 88A9
+0012F5DC: 006D0F40
+0012F5E0: 00000000
+0012F5E4: 77D388B2 ? C:\WINDOWS\system32\user32.dll + 88B2
+0012F5E8: 00000000
+0012F5EC: 773E8B56
+0012F5F0: 77D3887E
+0012F5F4: 0012F5E8
+0012F5F8: 03850447
+0012F5FC: 0012F720
+0012F600: 77D60494 ? C:\WINDOWS\system32\user32.dll + 30494
+0012F604: 77D388B8
+0012F608: FFFFFFFF
+0012F60C: 77D388B2 ? C:\WINDOWS\system32\user32.dll + 88B2
+0012F610: 773E8B8A ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 28B8A
+0012F614: 000F093C
+0012F618: 00000000
+0012F61C: 0012F704
+0012F620: 773E8B56
+0012F624: 773E9662 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 29662
+0012F628: 773E8B56
+0012F62C: 77D3887E
+0012F630: 00000020
+0012F634: 0012F640
+0012F638: 77D3C773 ? C:\WINDOWS\system32\user32.dll + C773
+0012F63C: 0000800A
+0012F640: 0012F6D8
+0012F644: 773E90D2 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 290D2
+0012F648: 00000000
+0012F64C: 000F093C
+0012F650: 00000000
+0012F654: 00000000
+0012F658: 0012F740
+0012F65C: 773E8B56
+0012F660: 773E9662 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 29662
+0012F664: 7C90EE18
+0012F668: 7C910738
+0012F66C: 00000020
+0012F670: 0012F6C4
+0012F674: 7FFDEBF8
+0012F678: 00000000
+0012F67C: 0012F6A4
+0012F680: 7C90F0AA ? C:\WINDOWS\system32\ntdll.dll + F0AA
+0012F684: 7FFDEC00
+0012F688: 00000034
+0012F68C: 0012F6B0
+0012F690: 0092125C
+0012F694: 0000001A
+0012F698: 7FFDEBF8
+0012F69C: 0012F97C
+0012F6A0: 00000000
+0012F6A4: 7C90D9C1 ? C:\WINDOWS\system32\ntdll.dll + D9C1
+0012F6A8: 7C80CB09 ? C:\WINDOWS\system32\kernel32.dll + CB09
+0012F6AC: 7FFDEC00
+0012F6B0: 00000034
+0012F6B4: 7C80CB22 ? C:\WINDOWS\system32\kernel32.dll + CB22
+0012F6B8: 0012F97C
+0012F6BC: 0012F724 | Last EBP
+0012F6C0: 00441E98 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E98
+
+2 Secondary Exceptions:
+
+Exception EAccessViolation in module Demo.exe at 000033E0.
+Access violation at address 004033E0 in module 'Demo.exe'. Read of address 00000001.
+
+Exception EAccessViolation in module Demo.exe at 0000324E.
+Access violation at address 0040324E in module 'Demo.exe'. Read of address 00000001.
+
+================================================================================
+
+Time: 30.03.2008 14:16:42 (30.03.2008 07:16:42 UTC)
+Windows Version 5.1 Service Pack 2
+
+3 Exceptions:
+
+Corrupt ExceptObj: 00000001
+
+Function Calls:
+
+00471E36 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 71E36
+0043F0E0 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F0E0
+004352F4 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 352F4
+004353E8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 353E8
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+77D388A4 ? C:\WINDOWS\system32\user32.dll + 88A4
+77D388AD ? C:\WINDOWS\system32\user32.dll + 88AD
+77D6048E ? C:\WINDOWS\system32\user32.dll + 3048E
+77D388AD ? C:\WINDOWS\system32\user32.dll + 88AD
+773E8B88 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 28B88
+773E965D ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 2965D
+77D3C76E ? C:\WINDOWS\system32\user32.dll + C76E
+773E90CC ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 290CC
+773E965D ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 2965D
+7C90F0A5 ? C:\WINDOWS\system32\ntdll.dll + F0A5
+7C90D9BF ? C:\WINDOWS\system32\ntdll.dll + D9BF
+7C80CB03 ? C:\WINDOWS\system32\kernel32.dll + CB03
+7C80CB1D ? C:\WINDOWS\system32\kernel32.dll + CB1D
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+77D38BAB ? C:\WINDOWS\system32\user32.dll + 8BAB
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+00469A21 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A21
+0043ED18 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3ED18
+00441FCB | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41FCB
+00442623 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 42623
+004593FC ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 593FC
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+77D3E361 ? C:\WINDOWS\system32\user32.dll + E361
+00441F77 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+00441F77 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+0041ABA8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 ? C:\WINDOWS\system32\user32.dll + 8706
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+00457455 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 57455
+7C910568 ? C:\WINDOWS\system32\ntdll.dll + 10568
+77C1C2D8 ? C:\WINDOWS\system32\msvcrt.dll + 1C2D8
+00469D7E | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69D7E
+0046AA52 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 6AA52
+00441E93 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+77F1AC7A ? C:\WINDOWS\system32\GDI32.dll + AC7A
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469DC6 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69DC6
+00469B7E | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69B7E
+00441B10 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41B10
+0041ABA8 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+77D3B73E | C:\WINDOWS\system32\user32.dll + B73E
+77D3B7A6 | C:\WINDOWS\system32\user32.dll + B7A6
+773E6FF0 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 26FF0
+773E70D3 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 270D3
+773E93D8 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 293D8
+77D38706 ? C:\WINDOWS\system32\user32.dll + 8706
+77D38BAB ? C:\WINDOWS\system32\user32.dll + 8BAB
+77D3882C ? C:\WINDOWS\system32\user32.dll + 882C
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D3C009 | C:\WINDOWS\system32\user32.dll + C009
+77D3E361 | C:\WINDOWS\system32\user32.dll + E361
+00441F77 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043F4E8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F4E8
+7C80D1C3 ? C:\WINDOWS\system32\kernel32.dll + D1C3
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+7C80D3BC ? C:\WINDOWS\system32\kernel32.dll + D3BC
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+00441DC5 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41DC5
+00441E93 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+004144A0 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 144A0
+0041F668 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1F668
+77D394E1 ? C:\WINDOWS\system32\user32.dll + 94E1
+77D3C0D9 ? C:\WINDOWS\system32\user32.dll + C0D9
+77D3C621 ? C:\WINDOWS\system32\user32.dll + C621
+77D3DCE8 ? C:\WINDOWS\system32\user32.dll + DCE8
+00441CBB ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41CBB
+77D3E2F2 ? C:\WINDOWS\system32\user32.dll + E2F2
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+00469A21 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A21
+00441B10 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41B10
+0041ABA8 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D389A0 | C:\WINDOWS\system32\user32.dll + 89A0
+00422D9E ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 22D9E
+77D3BCC7 | C:\WINDOWS\system32\user32.dll + BCC7
+0045D76B | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 5D76B
+0045D78A ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 5D78A
+0045D9AA ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 5D9AA
+004723C7 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 723C7
+7C90E64C ? C:\WINDOWS\system32\ntdll.dll + E64C
+7C816D4C | C:\WINDOWS\system32\kernel32.dll + 16D4C
+7C816D54 ? C:\WINDOWS\system32\kernel32.dll + 16D54
+
+Registers:
+
+EAX = 00000000
+EBX = 0EEDFADE
+ECX = 77D389C2
+EDX = 0012FF00
+ESI = 0012F548
+EDI = 0012F714
+EBP = 0012F57C
+ESP = 0012F564
+EIP = 00471E36
+Flags = 00000246
+
+Stack Trace:
+
+0012F564: 0012F92C | TExcFrame.next
+0012F568: 00471E78 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 71E78
+0012F56C: 0012F57C | TExcFrame.hEBP
+0012F570: 004352D8
+0012F574: 00929D80
+0012F578: 00000000
+0012F57C: 0012F6BC | Last EBP
+0012F580: 0043F0E6 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F0E6
+0012F584: 00929D80
+0012F588: 004352F9 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 352F9
+0012F58C: 0012F714
+0012F590: 004353ED ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 353ED
+0012F594: 00929D80
+0012F598: 0043EF4B ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF4B
+0012F59C: 0012F714
+0012F5A0: 0012F714
+0012F5A4: 00929D80
+0012F5A8: 00150718
+0012F5AC: 00150000
+0012F5B0: 00154F68
+0012F5B4: 0012F5A4
+0012F5B8: 006D0ED8
+0012F5BC: 0012F7E8
+0012F5C0: 7C90EE18
+0012F5C4: 77F52020
+0012F5C8: 0012F698
+0012F5CC: 00000000
+0012F5D0: 773E8B56
+0012F5D4: 0012F60C
+0012F5D8: 77D388A9 ? C:\WINDOWS\system32\user32.dll + 88A9
+0012F5DC: 006D0F40
+0012F5E0: 00000000
+0012F5E4: 77D388B2 ? C:\WINDOWS\system32\user32.dll + 88B2
+0012F5E8: 00000000
+0012F5EC: 773E8B56
+0012F5F0: 77D3887E
+0012F5F4: 0012F5E8
+0012F5F8: 77F180F0
+0012F5FC: 0012F720
+0012F600: 77D60494 ? C:\WINDOWS\system32\user32.dll + 30494
+0012F604: 77D388B8
+0012F608: FFFFFFFF
+0012F60C: 77D388B2 ? C:\WINDOWS\system32\user32.dll + 88B2
+0012F610: 773E8B8A ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 28B8A
+0012F614: 000F093C
+0012F618: 00000000
+0012F61C: 0012F704
+0012F620: 773E8B56
+0012F624: 773E9662 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 29662
+0012F628: 773E8B56
+0012F62C: 77D3887E
+0012F630: 00000020
+0012F634: 0012F640
+0012F638: 77D3C773 ? C:\WINDOWS\system32\user32.dll + C773
+0012F63C: 0000800A
+0012F640: 0012F6D8
+0012F644: 773E90D2 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 290D2
+0012F648: 00000000
+0012F64C: 000F093C
+0012F650: 00000000
+0012F654: 00000000
+0012F658: 0012F740
+0012F65C: 773E8B56
+0012F660: 773E9662 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 29662
+0012F664: 7C90EE18
+0012F668: 7C910738
+0012F66C: 00000020
+0012F670: 0012F6C4
+0012F674: 7FFDEBF8
+0012F678: 00000000
+0012F67C: 0012F6A4
+0012F680: 7C90F0AA ? C:\WINDOWS\system32\ntdll.dll + F0AA
+0012F684: 7FFDEC00
+0012F688: 00000034
+0012F68C: 0012F6B0
+0012F690: 0092125C
+0012F694: 0000001A
+0012F698: 7FFDEBF8
+0012F69C: 0012F97C
+0012F6A0: 00000000
+0012F6A4: 7C90D9C1 ? C:\WINDOWS\system32\ntdll.dll + D9C1
+0012F6A8: 7C80CB09 ? C:\WINDOWS\system32\kernel32.dll + CB09
+0012F6AC: 7FFDEC00
+0012F6B0: 00000034
+0012F6B4: 7C80CB22 ? C:\WINDOWS\system32\kernel32.dll + CB22
+0012F6B8: 0012F97C
+0012F6BC: 0012F724 | Last EBP
+0012F6C0: 00441E98 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E98
+
+2 Secondary Exceptions:
+
+Exception EAccessViolation in module Demo.exe at 000033E0.
+Access violation at address 004033E0 in module 'Demo.exe'. Read of address 00000001.
+
+Exception EAccessViolation in module Demo.exe at 0000324E.
+Access violation at address 0040324E in module 'Demo.exe'. Read of address 00000001.
+
+================================================================================
+
+Time: 30.03.2008 14:18:12 (30.03.2008 07:18:12 UTC)
+Windows Version 5.1 Service Pack 2
+
+3 Exceptions:
+
+Corrupt ExceptObj: 00000001
+
+Function Calls:
+
+00471E36 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 71E36
+0043F0E0 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F0E0
+004352F4 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 352F4
+004353E8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 353E8
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+77D388A4 ? C:\WINDOWS\system32\user32.dll + 88A4
+77D388AD ? C:\WINDOWS\system32\user32.dll + 88AD
+77D6048E ? C:\WINDOWS\system32\user32.dll + 3048E
+77D388AD ? C:\WINDOWS\system32\user32.dll + 88AD
+773E8B88 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 28B88
+773E965D ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 2965D
+77D3C76E ? C:\WINDOWS\system32\user32.dll + C76E
+773E90CC ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 290CC
+773E965D ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 2965D
+7C90F0A5 ? C:\WINDOWS\system32\ntdll.dll + F0A5
+7C90D9BF ? C:\WINDOWS\system32\ntdll.dll + D9BF
+7C80CB03 ? C:\WINDOWS\system32\kernel32.dll + CB03
+7C80CB1D ? C:\WINDOWS\system32\kernel32.dll + CB1D
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+77D38BAB ? C:\WINDOWS\system32\user32.dll + 8BAB
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+00469A21 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A21
+0043ED18 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3ED18
+00441FCB | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41FCB
+00442623 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 42623
+004593FC ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 593FC
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+77D3E361 ? C:\WINDOWS\system32\user32.dll + E361
+00441F77 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+00441F77 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+0041ABA8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 ? C:\WINDOWS\system32\user32.dll + 8706
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+00457455 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 57455
+7C910568 ? C:\WINDOWS\system32\ntdll.dll + 10568
+77C1C2D8 ? C:\WINDOWS\system32\msvcrt.dll + 1C2D8
+00469D7E | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69D7E
+0046AA52 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 6AA52
+00441E93 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+77F1AC7A ? C:\WINDOWS\system32\GDI32.dll + AC7A
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469DC6 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69DC6
+00469B7E | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69B7E
+00441B10 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41B10
+0041ABA8 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+77D3B73E | C:\WINDOWS\system32\user32.dll + B73E
+77D3B7A6 | C:\WINDOWS\system32\user32.dll + B7A6
+773E6FF0 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 26FF0
+773E70D3 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 270D3
+773E93D8 | C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 293D8
+77D38706 ? C:\WINDOWS\system32\user32.dll + 8706
+77D38BAB ? C:\WINDOWS\system32\user32.dll + 8BAB
+77D3882C ? C:\WINDOWS\system32\user32.dll + 882C
+77D387FA ? C:\WINDOWS\system32\user32.dll + 87FA
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D3C009 | C:\WINDOWS\system32\user32.dll + C009
+77D3E361 | C:\WINDOWS\system32\user32.dll + E361
+00441F77 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41F77
+0043F4E8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F4E8
+7C80D1C3 ? C:\WINDOWS\system32\kernel32.dll + D1C3
+0043EF48 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF48
+7C80D3BC ? C:\WINDOWS\system32\kernel32.dll + D3BC
+00469D7E ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69D7E
+0046AA52 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 6AA52
+0046AA52 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 6AA52
+00469DC6 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69DC6
+00441DC5 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41DC5
+00441E93 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+004144A0 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 144A0
+0041F668 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1F668
+77D394E1 ? C:\WINDOWS\system32\user32.dll + 94E1
+77D3C0D9 ? C:\WINDOWS\system32\user32.dll + C0D9
+77D3C621 ? C:\WINDOWS\system32\user32.dll + C621
+77D3DCE8 ? C:\WINDOWS\system32\user32.dll + DCE8
+00441CBB ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41CBB
+77D3E2F2 ? C:\WINDOWS\system32\user32.dll + E2F2
+00441E93 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E93
+004351B8 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 351B8
+00469A41 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A41
+00469A21 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 69A21
+00441B10 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41B10
+0041ABA8 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 1ABA8
+77D38706 | C:\WINDOWS\system32\user32.dll + 8706
+77D387E6 | C:\WINDOWS\system32\user32.dll + 87E6
+77D389A0 | C:\WINDOWS\system32\user32.dll + 89A0
+00422D9E ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 22D9E
+77D3BCC7 | C:\WINDOWS\system32\user32.dll + BCC7
+0045D76B | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 5D76B
+0045D78A ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 5D78A
+0045D9AA ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 5D9AA
+004723C7 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 723C7
+...
+
+Registers:
+
+EAX = 00921E30
+EBX = 0EEDFADE
+ECX = 0012FF18
+EDX = 0012FF20
+ESI = 0012F548
+EDI = 0012F714
+EBP = 0012F57C
+ESP = 0012F564
+EIP = 00471E36
+Flags = 00000246
+
+Stack Trace:
+
+0012F564: 0012F92C | TExcFrame.next
+0012F568: 00471E78 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 71E78
+0012F56C: 0012F57C | TExcFrame.hEBP
+0012F570: 004352D8
+0012F574: 00929D80
+0012F578: 00000000
+0012F57C: 0012F6BC | Last EBP
+0012F580: 0043F0E6 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3F0E6
+0012F584: 00929D80
+0012F588: 004352F9 ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 352F9
+0012F58C: 0012F714
+0012F590: 004353ED ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 353ED
+0012F594: 00929D80
+0012F598: 0043EF4B ? C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 3EF4B
+0012F59C: 0012F714
+0012F5A0: 0012F714
+0012F5A4: 00929D80
+0012F5A8: 00150718
+0012F5AC: 00150000
+0012F5B0: 00154F68
+0012F5B4: 0012F5A4
+0012F5B8: 006D0ED8
+0012F5BC: 0012F7E8
+0012F5C0: 7C90EE18
+0012F5C4: 77F52020
+0012F5C8: 0012F698
+0012F5CC: 00000000
+0012F5D0: 773E8B56
+0012F5D4: 0012F60C
+0012F5D8: 77D388A9 ? C:\WINDOWS\system32\user32.dll + 88A9
+0012F5DC: 006D0F40
+0012F5E0: 00000000
+0012F5E4: 77D388B2 ? C:\WINDOWS\system32\user32.dll + 88B2
+0012F5E8: 00000000
+0012F5EC: 773E8B56
+0012F5F0: 77D3887E
+0012F5F4: 0012F5E8
+0012F5F8: 77F180F0
+0012F5FC: 0012F720
+0012F600: 77D60494 ? C:\WINDOWS\system32\user32.dll + 30494
+0012F604: 77D388B8
+0012F608: FFFFFFFF
+0012F60C: 77D388B2 ? C:\WINDOWS\system32\user32.dll + 88B2
+0012F610: 773E8B8A ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 28B8A
+0012F614: 000F093C
+0012F618: 00000000
+0012F61C: 0012F704
+0012F620: 773E8B56
+0012F624: 773E9662 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 29662
+0012F628: 773E8B56
+0012F62C: 77D3887E
+0012F630: 00000020
+0012F634: 0012F640
+0012F638: 77D3C773 ? C:\WINDOWS\system32\user32.dll + C773
+0012F63C: 0000800A
+0012F640: 0012F6D8
+0012F644: 773E90D2 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 290D2
+0012F648: 00000000
+0012F64C: 000F093C
+0012F650: 00000000
+0012F654: 00000000
+0012F658: 0012F740
+0012F65C: 773E8B56
+0012F660: 773E9662 ? C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.2180_x-ww_a84f1ff9\comctl32.dll + 29662
+0012F664: 7C90EE18
+0012F668: 7C910738
+0012F66C: 00000020
+0012F670: 0012F6C4
+0012F674: 7FFDEBF8
+0012F678: 00000000
+0012F67C: 0012F6A4
+0012F680: 7C90F0AA ? C:\WINDOWS\system32\ntdll.dll + F0AA
+0012F684: 7FFDEC00
+0012F688: 00000034
+0012F68C: 0012F6B0
+0012F690: 0092125C
+0012F694: 0000001A
+0012F698: 7FFDEBF8
+0012F69C: 0012F97C
+0012F6A0: 00000000
+0012F6A4: 7C90D9C1 ? C:\WINDOWS\system32\ntdll.dll + D9C1
+0012F6A8: 7C80CB09 ? C:\WINDOWS\system32\kernel32.dll + CB09
+0012F6AC: 7FFDEC00
+0012F6B0: 00000034
+0012F6B4: 7C80CB22 ? C:\WINDOWS\system32\kernel32.dll + CB22
+0012F6B8: 0012F97C
+0012F6BC: 0012F724 | Last EBP
+0012F6C0: 00441E98 | C:\Program Files\borland\Delphi7\Projects\RSPakExample\Demo.exe + 41E98
+
+2 Secondary Exceptions:
+
+Exception EAccessViolation in module Demo.exe at 000033E0.
+Access violation at address 004033E0 in module 'Demo.exe'. Read of address 00000001.
+
+Exception EAccessViolation in module Demo.exe at 0000324E.
+Access violation at address 0040324E in module 'Demo.exe'. Read of address 00000001.
+
+================================================================================
+
