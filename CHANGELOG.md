@@ -1,3 +1,9 @@
+### Version 2.115
+
+#### WOG:
+- Removed debug message that appeared when opening dialogs
+
+
 ### Version 2.114
 
 #### Game Enhancement Mod:
