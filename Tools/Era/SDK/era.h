@@ -157,7 +157,7 @@ ERA_API static_str (__stdcall *trStatic) (const char* key);
 
 
 // ======================= ERM ======================= //
-ERA_API int (__stdcall *AllocErmFunc) (const char* EventName, int EventId);
+ERA_API int (__stdcall *AllocErmFunc) (const char* EventName, int32_t &EventId);
 ERA_API void (__stdcall *FireErmEvent) (int EventId);
 ERA_API void (__stdcall *ExecErmCmd) (const char* CmdStr);
 ERA_API void (__stdcall *ExtractErm) ();

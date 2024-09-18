@@ -1,3 +1,27 @@
+### Version 2.116
+
+#### Advanced Difficulties Mod:
+- formatted some text lines in json file
+- Commanders in creature banks will no longer gain abilities and slightly reduce their scaling at the game start
+- removed extra fonts
+
+#### Advanced Classes Mod:
+- fixed dlgs text display
+
+#### Game Enhancement Mod:
+- added combat health bar
+- added map Scrolling on the mouse Wheel and RMC
+- added town heroes deleting
+- added dlg command confirmation with spacebar
+- removed "creature stats texts.era"
+- Fixed battle replay loosing experience lines
+
+#### WoG Scripts:
+- Metamorph: Fixed possible to transform when the space is not enough.
+- Recreated GetRandomMonster function (used in Week of Monsters/Metamorph)
+- added gosolo support for scouting script
+
+
 ### Version 2.115
 
 #### WOG:
