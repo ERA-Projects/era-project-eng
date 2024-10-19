@@ -1,3 +1,35 @@
+### Version 2.117
+
+#### Advanced Difficulties Mod:
+- Fixed Creature Banks settings
+
+#### Advanced Classes Mod:
+- Now Magic Mushrooms option is disabled, as it conflicts with several features in ACM
+- Removed Anti-magic from the random spell granted from casting GM Resurrection, as it prevents further use of Resurrection.
+- Fixed neutral commanders' abilities not adapted by ACM.
+- Fixed improved Cure breaks the possibility of casting Resurrection on killed units (due to changing the HP of them).
+
+#### ERA Scripts:
+- Third Class: Now this option is partially compatible with ACM. Enabling both this option and ACM allows you to choose from 3 skills instead of 2 when hero levels up.
+
+#### Game Enhancement Mod:
+- Health Bar: Added opportunity to set health bar below creature number label
+- Fixed weird interaction when there are duplicate of combination parts
+- Fixed GEM plugin text
+- fixed version determination with scripts;
+
+#### WoG Scripts:
+- New Battlefields: Fixed new battlefields sometimes not enabled.
+- Neutral Town and Creatures Bank Growth: fixed CB monthly guard reset
+- Week of Monsters: Script is rewritten and is able to be played with
+- Fishing Well: Now Tunnel event will only be activated in random maps (as it potentially breaks the compatibility with some custom maps)
+- Mithril Enhancements: Fixed an erm error of !!MN:R (do not use short form of coordinates here like MN4, use MNv4/v5/v6 instead)
+- Artillery: fixed auto spell target side when casting is by artifacts after the prevent shot;
+
+#### WoG:
+- Fixed Multilanguage support plugin
+
+
 ### Version 2.116
 
 #### Advanced Difficulties Mod:

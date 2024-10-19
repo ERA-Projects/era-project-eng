@@ -180,6 +180,56 @@ Enable Artefact to appear on the map
 !#FU(NewIntArray):P(NUM_SECONDARY_SKILLS)/0/?i^acm_SecSkillsBackup^/(M_STORED);
 
 
+// Compatibility with Era Scripts Mod
+; by Archer30
+
+; Third Class
+; This script must be executed earlier than option 733 - third class.erm
+!?FU(ES_733_GetSkillLevelString)&x3>=(SKILL_EXPERT);
+!#VA(hero:x) (skill:x) (level:x) (result:x);
+
+; Exit if the hero is not learning a M/GM skill
+!!SN:Mi^acm_SecSkillsBackup^/(skill)/?(prevSkillLevel:y);
+!!VR(prevSkillLevel):Sd~(ACM_BACKUPED_SKILL_WAS_DECREASED_FLAG);
+!!FU&(prevSkillLevel)<(SKILL_EXPERT):E;
+
+!!SN:Mi^acm_SkillNames_ArrayId^/(skill)/?(skillName:z);
+
+!!if&i^H3_%(skillName)_0_Hero%(hero)^;
+  !!SN:T^AC_Misc.Grandmaster^/?(skillLevelStr:z);
+!!el;
+  !!SN:T^AC_Misc.Master^/?(skillLevelStr);
+!!en;
+
+!!VR(result):Z(skillLevelStr);
+
+!!SN:Q;
+
+!?FU(ES_733_GetSkillIconIndex)&x3>=(SKILL_EXPERT);
+!#VA(hero:x) (skill:x) (level:x) (result:x);
+
+; Exit if the hero is not learning a M/GM skill
+!!SN:Mi^acm_SecSkillsBackup^/(skill)/?(prevSkillLevel:y);
+!!VR(prevSkillLevel):Sd~(ACM_BACKUPED_SKILL_WAS_DECREASED_FLAG);
+!!FU&(prevSkillLevel)<(SKILL_EXPERT):E;
+
+!!VR(isGrandmaster:y):S(FALSE);
+!!VR(isGrandmaster)&(prevSkillLevel)>=4:S(TRUE);
+
+!!FU(ACM_Calc_Correct_Def_Cadre):P(skill)/(SKILL_EXPERT)/(TRUE)/(isGrandmaster)/?(result)/1;
+
+!!SN:Q;
+
+; Set up Adventurer class in Third Class option (this affects the skill preferences in the level up dialogue)
+!?FU(OnAfterErmInstructions);
+!!UN:P733/?(wogOption:y);
+!!FU&(wogOption)<>(TRUE):E;
+
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!FU(Valid_Adventurer_Hero):Pi/?(result:y);
+  !!SN&(result):W^es_733_hс.%i^/1;
+!!en;
+
 // Set up critical artifact variables
 ; by Archer30
 ; Ideally this must be placed in stdlib.erm
@@ -5644,7 +5694,9 @@ Till here Normal Necromancy
         !!VR(shootNums:y)&(goldenArrow:y):+1;
 
         !!FU(ACM_Generate_Random_Stack):P(side)/?(targetStackId:y);                                                        [return a random enemy stack to shoot]
+        
         !!if&(targetStackId)<>(NO_STACK);
+          !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
 
           !#VA(patch[5]:y);
           !!re j/0/4;                                                                                                      [ skip double damage bonus message]
@@ -5654,8 +5706,11 @@ Till here Normal Necromancy
           !!BMi:Z?(ballistaStack:y);
           !!BM(targetStackId):Z?(targetStack:y) N?n P?p;    
         
+          !!UN:C(ballistaStack)/248/4/?(ballistaSideIndex:y);
           !!UN:C(targetStack)/248/4/?(targetStackSideIndex:y);
-          !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y) C(cmbMgr)/78520/4/(side) C(cmbMgr)/78528/4/(side) C(cmbMgr)/68/4/p C(cmbMgr)/492854/4/(ballistaStack);                                                           [set combat target pos]
+          !#VA(stored[5]:y);
+          !!UN:C(cmbMgr)/68/4/?(stored[0]) C(cmbMgr)/78520/4/?(stored[1]) C(cmbMgr)/78524/4/?(stored[2]) C(cmbMgr)/78528/4/?(stored[3]) C(cmbMgr)/78536/4/?(stored[4]);                                                           [set combat target pos]
+          !!UN:C(cmbMgr)/68/4/p C(cmbMgr)/78520/4/(side) C(cmbMgr)/78524/4/(side) C(cmbMgr)/78528/4/(side) C(cmbMgr)/78536/4/(ballistaStack); 
 
           !!UN:C(ballistaStack:y)/16/4/(oppSide) C(ballistaStack:y)/20/4/(targetStackSideIndex) C(ballistaStack:y)/28/4/p; [set stack target]
           !!BMi:U3/?(storedShots:y) U3/1 G212/?(storedMorale:y)/d G212/0/d G213/?(storedLuck:y)/d G213/0/d;                [get morale shots and luck]
@@ -5679,6 +5734,9 @@ Till here Normal Necromancy
             !!UN:C4470304/j/1/(patch[j]);                                                                              [ restore double damage bonus message]
           !!en;
           !!VRi^ACM_Artillery_Shoot^:S0;                                                                                   [set flag to zero]
+          restore combatManager data
+          !!UN:C(cmbMgr)/68/4/(stored[0]) C(cmbMgr)/78520/4/(stored[1]) C(cmbMgr)/78524/4/(stored[2]) C(cmbMgr)/78528/4/(stored[3]) C(cmbMgr)/78536/4/(stored[4]);                                                           [set combat target pos]
+
           !!SN:E4607072/2/(cmbMgr:y)/0;                                                                                    [find next stack to act start battle]
 
           !!br;                                                                                                            [break finding ballista loop]
@@ -6951,7 +7009,7 @@ Before the interaction of the hero with the hero
 !?FU(ACM_CreateERMHook);
 !#VA(setHook:x);
 
-!!SN:E(setHook)/1/5131057/(ACM_OnGetIntelligencePower); 5131057
+!!SN:E(setHook)/1/5131057/(ACM_OnGetIntelligencePower); 4E4B31
 
 !?FU(ACM_OnGetIntelligencePower);
 !#VA(hook:x);
@@ -6974,7 +7032,7 @@ Before the interaction of the hero with the hero
     !!UN:C(ebp)/-4/4/(intPower);
 
     !!SN:X?t/0;
-    !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/5131069;
+    !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/5131069; 4E4B3D
   !!en;
 !!en;
 
@@ -11992,6 +12050,7 @@ Close Dialouge
 
 
 !?FU(OnSetupBattlefield);               [Set new Spells to cast for Commander]
+!#VA(usedY[10]:y);
 
 !!SN:W^Att_Com_Regeneration_ability^/0;
 !!SN:W^Def_Com_Regeneration_ability^/0;
@@ -12014,32 +12073,35 @@ Close Dialouge
 !!VRv7080:C-1/-1/-1/-1/-1/-1/-1/-1/-1/-1;[initialize variables]
 !!BA:H0/?v7083;                         [get hero (commander) number - attacker]
 !!BA:H1/?v7085;                         [get hero (commander) number - defender]
-!!COv7083&v7083>-1:B0/?y1 T?v7088;      [check skill bits, get type - attacker]
-!!COv7085&v7085>-1:B0/?y2 T?v7089;      [check skill bits, get type - defender]
-!!VRv7084&v7083>-1:Sy1 &2048;           [check regeneration bit - attacker]
-!!VRv7086&v7085>-1:Sy2 &2048;           [check regeneration bit - defender]
-!!COv7083&v7083>-1/v7084=2048:B1/11/0;  [remove regeneration - attacker]
-!!COv7085&v7085>-1/v7086=2048:B1/11/0;  [remove regeneration - defender]
-!!SN&v7083>-1/v7084=2048:W^Att_Com_Regeneration_ability^/1;
-!!SN&v7085>-1/v7086=2048:W^Def_Com_Regeneration_ability^/1;
 
-!!COv7083&v7083>-1:B0/?y1 T?v7088;      [check skill bits, get type - attacker]
-!!COv7085&v7085>-1:B0/?y2 T?v7089;      [check skill bits, get type - defender]
-!!VRv7084&v7083>-1:Sy1 &256;            [check Block bit - attacker]
-!!VRv7086&v7085>-1:Sy2 &256;            [check Block bit - defender]
-!!COv7083&v7083>-1/v7084=256:B1/8/0;    [remove Block - attacker]
-!!COv7085&v7085>-1/v7086=256:B1/8/0;    [remove Block - defender]
-!!SN&v7083>-1/v7084=256:W^Att_Com_Block_ability^/1;
-!!SN&v7085>-1/v7086=256:W^Def_Com_Block_ability^/1;
+; Manage commander abilities
+!!VR(commanders[2]:y):Ci^battle_hero_0^/i^battle_hero_1^;
 
-!!COv7083&v7083>-1:B0/?y1 T?v7088;      [check skill bits, get type - attacker]
-!!COv7085&v7085>-1:B0/?y2 T?v7089;      [check skill bits, get type - defender]
-!!VRv7084&v7083>-1:Sy1 &4096;           [check death stare bit - attacker]
-!!VRv7086&v7085>-1:Sy2 &4096;           [check death stare bit - defender]
-!!COv7083&v7083>-1/v7084=4096:B1/12/0;  [remove death stare - attacker]
-!!COv7085&v7085>-1/v7086=4096:B1/12/0;  [remove death stare - defender]
-!!SN&v7083>-1/v7084=4096:W^Att_Com_Poison_ability^/1;
-!!SN&v7085>-1/v7086=4096:W^Def_Com_Poison_ability^/1;
+; If there is no hero on the defending side, assumes there is a commander (use -4 for all the commander of the defender's side)
+!!if&i^battle_hero_1^=(NO_HERO)/i^battle_owner_1^=(NO_PLAYER);
+  !!VR(commanders[1]):S-4;
+!!en;
+
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  ; Check if there is a commander on the side
+  !!if|(commanders[i])>(NO_HERO)/(commanders[i])=-4;
+    !!CO(commanders[i]):B0/?(abilities:y);
+
+    !!if&(abilities);                   [If the ability is not 0, it means there is a commander]
+      !!VR(sideStr:z):S^Att^;
+      !!VR(sideStr)&i=(BATTLE_RIGHT):S^Def^;
+
+      !!CO(commanders[i]):B1/8/?i^%(sideStr)_Com_Block_ability^; [Block]
+      !!CO(commanders[i])&i^%(sideStr)_Com_Block_ability^:B1/8/0;
+
+      !!CO(commanders[i]):B1/11/?i^%(sideStr)_Com_Regeneration_ability^; [Regeneration]
+      !!CO(commanders[i])&i^%(sideStr)_Com_Regeneration_ability^:B1/11/0;
+
+      !!CO(commanders[i]):B1/12/?i^%(sideStr)_Com_Poison_ability^; [Poison]
+      !!CO(commanders[i])&i^%(sideStr)_Com_Poison_ability^:B1/12/0;
+    !!en;
+  !!en;
+!!en;
 
 !!SN:W^Brute_Gold_Att^/0; !!SN:W^Brute_Gold_Def^/0;
 !!SN:W^Paladin_Experience_Att^/0; !!SN:W^Paladin_Experience_Def^/0;
@@ -12068,10 +12130,10 @@ Close Dialouge
 
 !!BMv7080&v7080>-1:T?y3 I?y4;           [get acting monster type and side]
 !!BMv7082&v7082>-1:F?y7 P?y8;           [get target's flags, position]
-!!VRy10&y3>=174/y3<=191/v7081>=6/v7081<=7/v7084=4096/y4=0:S0R99; [random roll - attacker]
-!!VRy11&y3>=174/y3<=191/v7081>=6/v7081<=7/v7086=4096/y4=1:S0R99; [random roll - defender]
-!!FU7073&y3>=174/y3<=191/v7081>=6/v7081<=7/v7084=4096/y4=0/y10<50:Py7/y8; [50% cast poison if commander with death stare attacked or shot - attacker]
-!!FU7073&y3>=174/y3<=191/v7081>=6/v7081<=7/v7086=4096/y4=1/y11<50:Py7/y8; [50% cast poison if commander with death stare attacked or shot - defender]
+!!VRy10&y3>=174/y3<=191/v7081>=6/v7081<=7/i^Att_Com_Poison_ability^/y4=0:S0R99; [random roll - attacker]
+!!VRy11&y3>=174/y3<=191/v7081>=6/v7081<=7/i^Def_Com_Poison_ability^/y4=1:S0R99; [random roll - defender]
+!!FU7073&y3>=174/y3<=191/v7081>=6/v7081<=7/i^Att_Com_Poison_ability^/y4=0/y10<50:Py7/y8; [50% cast poison if commander with death stare attacked or shot - attacker]
+!!FU7073&y3>=174/y3<=191/v7081>=6/v7081<=7/i^Def_Com_Poison_ability^/y4=1/y11<50:Py7/y8; [50% cast poison if commander with death stare attacked or shot - defender]
 
 **  retaliation attack
 !!BMv7082&v7082>-1:T?y3 I?y4 P?y5;      [get target monster type, side, position]
@@ -12081,14 +12143,14 @@ Close Dialouge
 !!VRy9&v7080>-1:&65536;                 [check for no retaliation]
 
 !!BMv7080&v7080>-1:F?y7 P?y8;           [get acting creature's flags, position]
-!!VRy10&y3>=174/y3<=191/v7081=6/v7084=4096/v7087>0/y4=0/y6>-1/y9=0:S0R99; [random roll - attacker]
-!!VRy11&y3>=174/y3<=191/v7081=6/v7086=4096/v7087>0/y4=1/y6>-1/y9=0:S0R99; [random roll - defender]
-!!FU7073&y3>=174/y3<=191/v7081=6/v7084=4096/v7087>0/y4=0/y10<50/y6>-1/y9=0:Py7/y8; [50% cast poison if commander with death stare retaliates - attacker]
-!!FU7073&y3>=174/y3<=191/v7081=6/v7086=4096/v7087>0/y4=1/y11<50/y6>-1/y9=0:Py7/y8; [50% cast poison if commander with death stare retaliates - defender]
+!!VRy10&y3>=174/y3<=191/v7081=6/i^Att_Com_Poison_ability^/v7087>0/y4=0/y6>-1/y9=0:S0R99; [random roll - attacker]
+!!VRy11&y3>=174/y3<=191/v7081=6/i^Def_Com_Poison_ability^/v7087>0/y4=1/y6>-1/y9=0:S0R99; [random roll - defender]
+!!FU7073&y3>=174/y3<=191/v7081=6/i^Att_Com_Poison_ability^/v7087>0/y4=0/y10<50/y6>-1/y9=0:Py7/y8; [50% cast poison if commander with death stare retaliates - attacker]
+!!FU7073&y3>=174/y3<=191/v7081=6/i^Def_Com_Poison_ability^/v7087>0/y4=1/y11<50/y6>-1/y9=0:Py7/y8; [50% cast poison if commander with death stare retaliates - defender]
 
 !!BU:C?y1;                              [check for end of battle]
-!!COv7083&v7083>-1/v7084=4096/y1=1:B1/12/1; [restore death stare - attacker]
-!!COv7085&v7085>-1/v7086=4096/y1=1:B1/12/1; [restore death stare - defender]
+!!COv7083&v7083>-1/i^Att_Com_Poison_ability^/y1=1:B1/12/1; [restore death stare - attacker]
+!!COv7085&v7085>-1/i^Def_Com_Poison_ability^/y1=1:B1/12/1; [restore death stare - defender]
 
 ** end of post-action trigger **
 !?FU7073;
@@ -19941,11 +20003,10 @@ Your summoned air elementals grow for 3 battleround.^;
 !!VRz1:S^You cast {improved Resurrection}.
 Additional random buff for resurrected stack.^;                                 [call funktion for Resurrection]
 !!BG:E?y12;
-!!VRy28:S0R18;
+!!VRy28:S0R17;
 !!VRy28&y28=0:S27; !!VRy28&y28=1:S28; !!VRy28&y28=2:S29; !!VRy28&y28=3:S30; !!VRy28&y28=4:S31; !!VRy28&y28=5:S32;
-!!VRy28&y28=6:S33; !!VRy28&y28=7:S34; !!VRy28&y28=8:S36; !!VRy28&y28=9:S41; !!VRy28&y28=10:S43; !!VRy28&y28=11:S44;
-!!VRy28&y28=12:S46; !!VRy28&y28=13:S48; !!VRy28&y28=14:S49; !!VRy28&y28=15:S51; !!VRy28&y28=16:S53; !!VRy28&y28=17:S55;
-!!VRy28&y28=18:S58;
+!!VRy28&y28=6:S33; !!VRy28&y28=7:S36; !!VRy28&y28=8:S41; !!VRy28&y28=9:S43; !!VRy28&y28=10:S44; !!VRy28&y28=11:S46;
+!!VRy28&y28=12:S48; !!VRy28&y28=13:S49; !!VRy28&y28=14:S51; !!VRy28&y28=15:S53; !!VRy28&y28=16:S55; !!VRy28&y28=17:S58;
 !!BMy12:My28/2/3;                       [apply buff when resurrection]
 !!en;
 
@@ -20211,7 +20272,8 @@ Undead stacks heal and with next attack^;                                       
 !!BMx16:N?y1 H?y2 L?y3 B?y4;
 !!FU&y4=0:E;
 !!FU&y2=0:E;
-!!FU&y1=y4/y3=0:E;
+!!FU&y1<=0/y1=y4/y3=0:E;
+
 !!BMx16:F?y5;
 !!VRy5:&12582912;                       [Check for Clone Spell]
 !!FU&y5>0:E;                            [Exit if Clone because they cannot be healed]
@@ -21662,7 +21724,7 @@ Undead stacks heal and with next attack^;                                       
 !!FU&y9<=9|y9>69:E;
 
 !!SN:W^H3_Fire Magic_1_Hero%Y99^/?y57;  [Fire Magic Bonus handling]
-!!VRy80&y9=21|y9=22:Sy3;                [Speichere Damage fьr Feuerschaden]
+!!VRy80&y9=21|y9=22:Sy3;                [Speichere Damage for Feuerschaden]
 !!VRy80&y57=0/y9=21::3;
 !!VRy80&y57=0/y9=22::3;                 [incinerate value 1/3 fire damage]
 !!VRy80&y57=1/y9=21::2;
@@ -21803,7 +21865,7 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *-------------------------------bloodlust -------------------------------------*
 !!if&v9290=102;
-!!BMx16:G43/?y30/?y11;                  [check fьr bloodlust]
+!!BMx16:G43/?y30/?y11;                  [check for bloodlust]
 !!BMx16:A?y32;                          [speichere attack]
 .!!if&y1=y30;                          [if duration from bloodlust is spellpower spell was cast this round]
 !!SN:W^Scaling_Magic_Spell_Number_^/?y21;
@@ -21816,7 +21878,7 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *-------------------------------precision -------------------------------------*
 !!if&v9290=1030; disabled
-!!BMx16:G44/?y40/?y11;                  [check fьr precision]
+!!BMx16:G44/?y40/?y11;                  [check for precision]
 *!BMx16:A?y42;                                                                  [speichere attack]
 .!!if&y1=y40;                          [if duration from precision is spellpower spell was cast this round]
 *!VRy42:+5;                                                                     [+ 5 attack in first round]
@@ -21827,8 +21889,8 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *-------------------------------haste -----------------------------------------*
 !!if&v9290=104;
-!!BMx16:G53/?y50/?y11;                  [check fьr haste]
-!!BMx16:G54/?y54/?y11;                  [check fьr slow if haste was cast]
+!!BMx16:G53/?y50/?y11;                  [check for haste]
+!!BMx16:G54/?y54/?y11;                  [check for slow if haste was cast]
 !!BMx16:S?y52;                          [speichere speed]
 !!BMx16:I?y53;                          [Side index as for heroes (0:left, 1:right)]
 
@@ -21852,7 +21914,7 @@ Undead stacks heal and with next attack^;                                       
 
 .!!if&y2=y54/v9280=y53;
 *!IF:M^Haste1 F:33698^;
-!!VRy52:+1;                             [fix fьr frьhes haste casten]
+!!VRy52:+1;                             [fix for frohes haste casten]
 !!BMx16:Sy52;                           [set increased speed for creature]
 !!VRv9394:S10;
 .!!en;
@@ -21866,8 +21928,8 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *-------------------------------slow -----------------------------------------*
 !!if&v9290=105;
-!!BMx16:G54/?y60/?y11;                  [check fьr slow]
-!!BMx16:G53/?y64/?y11;                  [check fьr haste]
+!!BMx16:G54/?y60/?y11;                  [check for slow]
+!!BMx16:G53/?y64/?y11;                  [check for haste]
 !!BMx16:S?y62;                          [speichere speed]
 
 !!if&x16<21;
@@ -21891,7 +21953,7 @@ Undead stacks heal and with next attack^;                                       
 .!!if&y2=y64;
 *!IF:M^1Slow F:33698^;
 *!IF:M^Laufvariable %X16 Spellpower %Y2 Haste Dauer %Y64 Speed und Slow %Y60 von Creature %Y62 Y1 is%Y1 ^;
-!!VRy62:-1;                             [fix fьr frьhes slow casten]
+!!VRy62:-1;                             [fix for frohes slow casten]
 !!BMx16:Sy62;                           [set decreased speed for creature]
 !!VRv9395:S10;
 .!!en;
@@ -22122,7 +22184,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------stoneskin--------------------------------------*
 !!if&v9390=10;
-!!BMx16:G46/?y10/?y11;                  [check fьr stoneskin]
+!!BMx16:G46/?y10/?y11;                  [check for stoneskin]
 !!BMx16:D?y12;                          [speichere Defense]
 
 .!!if&x16>0;                           []
@@ -22144,7 +22206,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------blessing---------------------------------------*
 !!if&v9391=1000;                       [Disabled]
-!!BMx16:G41/?y20/?y11;                  [check fьr blessing]
+!!BMx16:G41/?y20/?y11;                  [check for blessing]
 !!BMx16:U2/?y22;                        [speichere max Damage]
 
 .!!if&x16>0;                           [creature bigger than 0]
@@ -22161,7 +22223,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------bloodlust -------------------------------------*
 !!if&v9392=10;
-!!BMx16:G43/?y30/?y11;                  [check fьr bloodlust]
+!!BMx16:G43/?y30/?y11;                  [check for bloodlust]
 !!BMx16:A?y32;                          [speichere attack]
 
 .!!if&x16>0;                           [creature bigger than 0]
@@ -22181,7 +22243,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------precision -------------------------------------*
 !!if&v9393=1000;                       [disabled]
-!!BMx16:G44/?y40/?y11;                  [check fьr precision]
+!!BMx16:G44/?y40/?y11;                  [check for precision]
 *!BMx16:A?y42;                                                                  [speichere attack]
 
 .!!if&x16>0;                           [creature bigger than 0]
@@ -22199,7 +22261,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------haste -----------------------------------------*
 !!if&v9394=10;
-!!BMx16:G53/?y50/?y11;                  [check fьr haste]
+!!BMx16:G53/?y50/?y11;                  [check for haste]
 !!BMx16:S?y52;                          [speichere speed]
 
 .!!if&x16>0;                           [creature bigger than 0]
@@ -22236,7 +22298,7 @@ Undead stacks heal and with next attack^;                                       
 !!VRy2&y18=1:+56;                       [139 Ring of the Magi]
 !!en;
 
-!!BMx16:G54/?y60/?y11;                  [check fьr slow]
+!!BMx16:G54/?y60/?y11;                  [check for slow]
 !!BMx16:S?y62;                          [speichere speed]
 
 !!VRy60&x16=0/y11>0:+1;                 [fix for first creature]
@@ -22265,7 +22327,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------shield -----------------------------------------*
 !!if&v9397=10;
-!!BMx16:G27/?y80/?y11;                  [check fьr shield]
+!!BMx16:G27/?y80/?y11;                  [check for shield]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy80:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22279,7 +22341,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------air shield ------------------------------------*
 !!if&v9398=10;
-!!BMx16:G28/?y90/?y11;                  [check fьr air shield]
+!!BMx16:G28/?y90/?y11;                  [check for air shield]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy90:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22293,7 +22355,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------magic mirror ----------------------------------*
 !!if&v9399=10;
-!!BMx16:G36/?y93/?y11;                  [check fьr magic mirror]
+!!BMx16:G36/?y93/?y11;                  [check for magic mirror]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy93:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22307,7 +22369,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------counterspell ----------------------------------*
 !!if&v9400=1000; Disabled
-!!BMx16:G34/?y94/?y11;                  [check fьr counterspell]
+!!BMx16:G34/?y94/?y11;                  [check for counterspell]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy94:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22321,7 +22383,7 @@ Undead stacks heal and with next attack^;                                       
 
 *--------------------------------mirth ----------------------------------------*
 !!if&v9401=10;
-!!BMx16:G49/?y95/?y11;                  [check fьr mirth]
+!!BMx16:G49/?y95/?y11;                  [check for mirth]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy95:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22335,7 +22397,7 @@ Undead stacks heal and with next attack^;                                       
 
 *--------------------------------luck -----------------------------------------*
 !!if&v9402=10;
-!!BMx16:G51/?y96/?y11;                  [check fьr luck]
+!!BMx16:G51/?y96/?y11;                  [check for luck]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy96:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22349,7 +22411,7 @@ Undead stacks heal and with next attack^;                                       
 
 *--------------------------------counterstrike---------------------------------*
 !!if&v9403=1000; Disabled
-!!BMx16:G58/?y97/?y11;                  [check fьr counterstrike]
+!!BMx16:G58/?y97/?y11;                  [check for counterstrike]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy97:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22363,7 +22425,7 @@ Undead stacks heal and with next attack^;                                       
 
 *--------------------------------slayer----------------------------------------*
 !!if&v9404=10;
-!!BMx16:G55/?y98/?y11;                  [check fьr slayer]
+!!BMx16:G55/?y98/?y11;                  [check for slayer]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy98:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22377,7 +22439,7 @@ Undead stacks heal and with next attack^;                                       
 
 *--------------------------------fire shield-----------------------------------*
 !!if&v9405=10;
-!!BMx16:G29/?y99/?y11;                  [check fьr fire shield]
+!!BMx16:G29/?y99/?y11;                  [check for fire shield]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy99:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22391,7 +22453,7 @@ Undead stacks heal and with next attack^;                                       
 
 *--------------------------------frenzy----------------------------------------*
 !!if&v9406=1000; Disabled
-!!BMx16:G56/?y81/?y11;                  [check fьr frenzy]
+!!BMx16:G56/?y81/?y11;                  [check for frenzy]
 .!!if|y81=1/y81=2;
 !!FU(AC_Function_120):Px16;
 .!!en;
@@ -22399,7 +22461,7 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *--------------------------------prot fire-------------------------------------*
 !!if&v9407=10;
-!!BMx16:G31/?y82/?y11;                  [check fьr prot fire]
+!!BMx16:G31/?y82/?y11;                  [check for prot fire]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy82:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22412,7 +22474,7 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *--------------------------------prot water-------------------------------------*
 !!if&v9408=10;
-!!BMx16:G32/?y83/?y11;                  [check fьr prot water]
+!!BMx16:G32/?y83/?y11;                  [check for prot water]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy83:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22425,7 +22487,7 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *--------------------------------prot earth-------------------------------------*
 !!if&v9409=10;
-!!BMx16:G33/?y84/?y11;                  [check fьr prot earth]
+!!BMx16:G33/?y84/?y11;                  [check for prot earth]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy84:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22438,7 +22500,7 @@ Undead stacks heal and with next attack^;                                       
 !!en;
 *--------------------------------prot air-------------------------------------*
 !!if&v9410=10;
-!!BMx16:G30/?y85/?y11;                  [check fьr prot air]
+!!BMx16:G30/?y85/?y11;                  [check for prot air]
 
 .!!if&x16>0;                           [creature bigger than 0]
 !!VRy85:-1;                             [reduce duration from creature 1 bis 20 um 1]
@@ -22652,7 +22714,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------stoneskin--------------------------------------*
 !!if&v9390=10;
-!!BMx16:G46/?y10/?y11;                  [check fьr stoneskin]
+!!BMx16:G46/?y10/?y11;                  [check for stoneskin]
 !!BMx16:D?y12;                          [speichere Defense]
 
 !!VRy13:Sy1;                            [duration -1 says second round]
@@ -22669,7 +22731,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------blessing---------------------------------------*
 !!if&v9391=1000; Disabled
-!!BMx16:G41/?y20/?y11;                  [check fьr blessing]
+!!BMx16:G41/?y20/?y11;                  [check for blessing]
 !!BMx16:U2/?y22;                        [speichere max Damage]
 
 !!VRy14:Sy1;                            [duration -1 says second round]
@@ -22682,7 +22744,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------bloodlust -------------------------------------*
 !!if&v9392=10;
-!!BMx16:G43/?y30/?y11;                  [check fьr bloodlust]
+!!BMx16:G43/?y30/?y11;                  [check for bloodlust]
 !!BMx16:A?y32;                          [speichere attack]
 
 !!VRy15:Sy1;                            [duration -1 says second round]
@@ -22698,7 +22760,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------precision -------------------------------------*
 !!if&v9393=1000; disabled
-!!BMx16:G44/?y40/?y11;                  [check fьr precision]
+!!BMx16:G44/?y40/?y11;                  [check for precision]
 *!BMx16:A?y42;                                                                  [speichere attack]
 
 !!VRy16:Sy1;                            [duration -1 says second round]
@@ -22712,7 +22774,7 @@ Undead stacks heal and with next attack^;                                       
 
 *-------------------------------haste -----------------------------------------*
 !!if&v9394=10;
-!!BMx16:G53/?y50/?y11;                  [check fьr haste]
+!!BMx16:G53/?y50/?y11;                  [check for haste]
 !!BMx16:S?y52;                          [speichere speed]
 
 !!VRy17:Sy1;                            [duration -1 says second round]
@@ -22745,7 +22807,7 @@ Undead stacks heal and with next attack^;                                       
 !!VRy2&y18=1:+56;                       [139 Ring of the Magi]
 !!en;
 
-!!BMx16:G54/?y60/?y11;                  [check fьr slow]
+!!BMx16:G54/?y60/?y11;                  [check for slow]
 !!BMx16:S?y62;                          [speichere speed]
 !!VRy60&x16=0:+1;                       [fix for first creature only necaserie when new round]
 
@@ -22762,7 +22824,7 @@ Cant Cleanse That Effect
 
 *-------------------------------shield -----------------------------------------*
 !!if&v9397=10;
-!!BMx16:G27/?y80/?y11;                  [check fьr shield]
+!!BMx16:G27/?y80/?y11;                  [check for shield]
 
 !!VRy19:Sy1;
 .!!if&y19=y80;
@@ -22773,7 +22835,7 @@ Cant Cleanse That Effect
 
 *-------------------------------air shield ------------------------------------*
 !!if&v9398=10;
-!!BMx16:G28/?y90/?y11;                  [check fьr air shield]
+!!BMx16:G28/?y90/?y11;                  [check for air shield]
 
 !!VRy20:Sy1;
 .!!if&y20=y90;
@@ -22784,7 +22846,7 @@ Cant Cleanse That Effect
 
 *-------------------------------magic mirror ----------------------------------*
 !!if&v9399=10;
-!!BMx16:G36/?y93/?y11;                  [check fьr magic mirror]
+!!BMx16:G36/?y93/?y11;                  [check for magic mirror]
 
 !!VRy21:Sy1;
 .!!if&y21=y93;
@@ -22795,7 +22857,7 @@ Cant Cleanse That Effect
 
 *-------------------------------counterspell ----------------------------------*
 !!if&v9400=1000; Disabled
-!!BMx16:G34/?y94/?y11;                  [check fьr counterspell]
+!!BMx16:G34/?y94/?y11;                  [check for counterspell]
 
 !!VRy22:Sy1;
 .!!if&y22=y94;
@@ -22806,7 +22868,7 @@ Cant Cleanse That Effect
 
 *-------------------------------mirth -----------------------------------------*
 !!if&v9401=10;
-!!BMx16:G49/?y95/?y11;                  [check fьr mirth]
+!!BMx16:G49/?y95/?y11;                  [check for mirth]
 
 !!VRy23:Sy1;
 .!!if&y23=y95;
@@ -22817,7 +22879,7 @@ Cant Cleanse That Effect
 
 *-------------------------------luck ------------------------------------------*
 !!if&v9402=10;
-!!BMx16:G51/?y96/?y11;                  [check fьr luck]
+!!BMx16:G51/?y96/?y11;                  [check for luck]
 
 !!VRy24:Sy1;
 .!!if&y24=y96;
@@ -22828,7 +22890,7 @@ Cant Cleanse That Effect
 
 *-------------------------------counterstrike ---------------------------------*
 !!if&v9403=1000; Disabled
-!!BMx16:G58/?y97/?y11;                  [check fьr counterstrike]
+!!BMx16:G58/?y97/?y11;                  [check for counterstrike]
 
 !!VRy25:Sy1;
 .!!if&y25=y97;
@@ -22839,7 +22901,7 @@ Cant Cleanse That Effect
 
 *-------------------------------slayer ----------------------------------------*
 !!if&v9404=10;
-!!BMx16:G55/?y98/?y11;                  [check fьr slayer]
+!!BMx16:G55/?y98/?y11;                  [check for slayer]
 
 !!VRy26:Sy1;
 .!!if&y26=y98;
@@ -22850,7 +22912,7 @@ Cant Cleanse That Effect
 
 *-------------------------------fire shield -----------------------------------*
 !!if&v9405=10;
-!!BMx16:G29/?y99/?y11;                  [check fьr fire shield]
+!!BMx16:G29/?y99/?y11;                  [check for fire shield]
 
 !!VRy27:Sy1;
 .!!if&y27=y99;
@@ -22861,7 +22923,7 @@ Cant Cleanse That Effect
 
 *-------------------------------frenzy ----------------------------------------*
 !!if&v9406=1000; Disabled
-!!BMx16:G29/?y82/?y11;                  [check fьr frenzy]
+!!BMx16:G29/?y82/?y11;                  [check for frenzy]
 
 .!!if&y82=1;
 !!FU(AC_Function_120):Px16;
@@ -22871,7 +22933,7 @@ Cant Cleanse That Effect
 
 *-------------------------------prot fire -------------------------------------*
 !!if&v9407=10;
-!!BMx16:G29/?y82/?y11;                  [check fьr prot fire]
+!!BMx16:G29/?y82/?y11;                  [check for prot fire]
 
 !!VRy28:Sy1;
 .!!if&y28=y82;
@@ -22882,7 +22944,7 @@ Cant Cleanse That Effect
 
 *-------------------------------prot water ------------------------------------*
 !!if&v9408=10;
-!!BMx16:G29/?y83/?y11;                  [check fьr prot water]
+!!BMx16:G29/?y83/?y11;                  [check for prot water]
 
 !!VRy29:Sy1;
 .!!if&y29=y83;
@@ -22893,7 +22955,7 @@ Cant Cleanse That Effect
 
 *-------------------------------prot earth ------------------------------------*
 !!if&v9409=10;
-!!BMx16:G29/?y84/?y11;                  [check fьr prot earth]
+!!BMx16:G29/?y84/?y11;                  [check for prot earth]
 
 !!VRy30:Sy1;
 .!!if&y30=y84;
@@ -22904,7 +22966,7 @@ Cant Cleanse That Effect
 
 *-------------------------------prot air --------------------------------------*
 !!if&v9410=10;
-!!BMx16:G29/?y85/?y11;                  [check fьr prot air]
+!!BMx16:G29/?y85/?y11;                  [check for prot air]
 
 !!VRy31:Sy1;
 .!!if&y31=y85;
@@ -22917,7 +22979,7 @@ Cant Cleanse That Effect
 !!SN:W^shield_var2^/?y60;
 !!if&y50=10|y60=10;
 *!SN:W^H3_Earth Magic_1_Hero%V9283^/?y87;                                       [Earth Magic Bonus handling]
-!!BMx16:G27/?y87/?y11;                  [check fьr shield]
+!!BMx16:G27/?y87/?y11;                  [check for shield]
 
 !!VRy3:Sx16;                            [use stack ID (read below*), I set y2 to current stack number]
 !!VRy3:+1*-1;                           [now I add +1 then change to negative  value, we have now number of stack for EA thx Sal]
@@ -22965,7 +23027,7 @@ Cant Cleanse That Effect
 !!FU(Calc_Spell_Duration)&y95=1:Py23/-1/?y1;
 
 !!if&v9390=10;
-!!BMx1:G46/?y10/?y11;                   [check fьr stoneskin]
+!!BMx1:G46/?y10/?y11;                   [check for stoneskin]
 !!BMx1:D?y12;                           [speichere Defense]
 
 !!VRy13:Sy1;                            [duration -1 says second round]
@@ -23154,7 +23216,7 @@ Cant Cleanse That Effect
 *!EAy2:F102/115/?y3;                    [Check for Cast/next available bonus line: y3]
 *!EAy2&y3>=0:By3/0/102/115/1/1/1/1/1/1/1/1/1/1/1; [Battle Monster]
 !!en;
-*--------------------------------------------------------------------Extra Function fьr Slow and Heal----------------------------------------------------------------------*
+*--------------------------------------------------------------------Extra Function for Slow and Heal----------------------------------------------------------------------*
 
 !?FU(AC_Function_121);
 
@@ -23177,7 +23239,7 @@ Cant Cleanse That Effect
 !!en;
 
 !!if&v9395=10;
-!!BMx16:G54/?y60/?y11;                  [check fьr slow]
+!!BMx16:G54/?y60/?y11;                  [check for slow]
 !!BMx16:S?y62;                          [speichere speed]
 .!!if&y2=y60;
 !!VRy62:+1;                             [increase max speed]
@@ -23187,7 +23249,7 @@ Cant Cleanse That Effect
 !!en;
 
 
-*--------------------------------------------------------------------Extra Function fьr Bless/Curse -----------------------------------------------------------------------------*
+*--------------------------------------------------------------------Extra Function for Bless/Curse -----------------------------------------------------------------------------*
 !?FU(AC_Function_122);
 
 !!if&x16<21;
@@ -23209,7 +23271,7 @@ Cant Cleanse That Effect
 !!en;
 
 !!if&v9391=10;
-!!BMx16:G41/?y20/?y11;                                                          [check fьr bless]
+!!BMx16:G41/?y20/?y11;                                                          [check for bless]
 !!BMx16:U2/?y22;                                                                [speichere max damage]
 .!!if&y2=y20;
 !!VRy22:-2;                                                                     [reduce max damage]
@@ -23269,7 +23331,7 @@ Cant Cleanse That Effect
 !!en;
 
 
-!!BMx16:G62/?y86/?y11;                                                          [check fьr blind]
+!!BMx16:G62/?y86/?y11;                                                          [check for blind]
 
 !!VRy32:Sy1;
 .!!if&y11=3;
@@ -33679,29 +33741,33 @@ New Commanders Section
   !!if|y1=6/y1=7;                       [if melee or shooting]
     !!MF:N?y4;                          [damage receiving stack]
     !!BMy4:I?y5;                        [Side index as for heroes (0:left, 1:right)]
-    !!BA:Hy5/?y99;                      [get hero by side index]
+    
     !!SN&y5=0:W^Att_Com_Block_ability^/?y10; [check if the commander actually has block ability]
     !!SN&y5=1:W^Def_Com_Block_ability^/?y10;    
-    !!FU|y99<0/y10=0:E;                 [Exit if no Hero or no block ability from commander]
-    !!BMy4:T?y7;                        [get creature type]
-    !!if&y7>=174/y7<=191;               [if any commander]
-      !!VRy90:S0R99;                    [make random roll]
-      !!VRy98:S30;                      [Chance to Block]
-      !!VRy97:S50;                      [Damage reduction]
-      !!if&y99=36;                      [if special hero]
-        !!HEy99:E?y80/?y81/1;           [get level of hero in case of Vey]
-        !!VRy98:Sy81:2+30 F30/100;      [Calc chance to block based on level]
-        !!VRy96:Sy81:2+50 F50/95;
-        !!VRy97:S100 -y96;              [Calc damage reduction based on level]
+
+    !!if&y10;
+      !!BMy4:T?y7;                        [get creature type]
+      !!if&y7>=174/y7<=191;               [if any commander]
+        !!VRy90:S0R99;                    [make random roll]
+        !!VRy98:S30;                      [Chance to Block]
+        !!VRy97:S50;                      [Damage reduction]
+        !!BA:Hy5/?y99;                    [get hero by side index]
+
+        !!if&y99=36;                      [if special hero]
+          !!HEy99:E?y80/?y81/1;           [get level of hero in case of Vey]
+          !!VRy98:Sy81:2+30 F30/100;      [Calc chance to block based on level]
+          !!VRy96:Sy81:2+50 F50/95;
+          !!VRy97:S100 -y96;              [Calc damage reduction based on level]
+        !!en;
+        !!FU&y90>=y98:E;                  [30% chance for success]
+        !!MF:F?y6;                        [Damage Dealt]
+        !!VRy6:*y97:100;                  [Reduce damage by 50%]
+        !!if&i^battle_isVisible^;
+          !!SN:P^CRUSDFND.wav^;           [play block sound]
+          !!BMy4:V84;                     [play commander block animation]
+        !!en;
+        !!MF:Fy6;                         [apply reduced damage]
       !!en;
-      !!FU&y90>=y98:E;                  [30% chance for success]
-      !!MF:F?y6;                        [Damage Dealt]
-      !!VRy6:*y97:100;                  [Reduce damage by 50%]
-      !!if&i^battle_isVisible^;
-        !!SN:P^CRUSDFND.wav^;           [play block sound]
-        !!BMy4:V84;                     [play commander block animation]
-      !!en;
-      !!MF:Fy6;                         [apply reduced damage]
     !!en;
   !!en;
 !!en;
@@ -33715,51 +33781,34 @@ New Commanders Section
 !!FU(ACM_Set_Com_Desc_in_battle):Py1;   [execute function locally]
 
 !?FU(ACM_Set_Com_Desc_in_battle);
+!!VRy30:S(FALSE);
+
 !!if&x1>=0/x1<=186;                     [If a valid battlefield position]
-  !!BU:Ex1/?y2; !!FU&y2=-1:E;           [get monster ID at position and exit if no monster]
-  !!BMy2:T?y3 I?y4;                     [get monster type and side index]
-  !!BHy4:N?y5;                          [Get hero or commander ID]
-  !!if&y3>=174/y3<=191/y5>=0;           [if any commander and a hero]
-    !!SN:W^Att_Com_Block_ability^/?y1;
-    !!COv7083&v7083>=0/y1=1:B1/8/1;     [give Block ability - attacker]
-    !!SN:W^Def_Com_Block_ability^/?y2;
-    !!COv7085&v7085>=0/y2=1:B1/8/1;     [give Block ability - defender]
+  !!BU:Ex1/?y2;                         [get monster ID at position and exit if no monster]
 
-    !!SN:W^Att_Com_Regeneration_ability^/?y1;
-    !!COv7083&v7083>=0/y1=1:B1/11/1;    [give regeneration - attacker]
-    !!SN:W^Def_Com_Regeneration_ability^/?y2;
-    !!COv7085&v7085>=0/y2=1:B1/11/1;    [give regeneration - defender]
+  !!if&y2>(NO_STACK);
+    !!BMy2:T?y3 I?y4;                     [get monster type and side index]
 
-    !!SN:W^Att_Com_Poison_ability^/?y1;
-    !!COv7083&v7083>=0/y1=1:B1/12/1;    [give Poison - attacker]
-    !!SN:W^Def_Com_Poison_ability^/?y2;
-    !!COv7085&v7085>=0/y2=1:B1/12/1;    [give Poison - defender]
+    !!if&y3>=174/y3<=191;               [if any commander]
+      !!FU(ACM_RestoreCommanderAbilities):P;
+
+      !!VRy30:S(TRUE);
+    !!en;
   !!en;
-!!el;
+!!en;
 
-!!SN:W^Att_Com_Block_ability^/?y1;
-!!COv7083&v7083>=0/y1=1:B1/8/0;         [remove Block ability - attacker]
-!!SN:W^Def_Com_Block_ability^/?y2;
-!!COv7085&v7085>=0/y2=1:B1/8/0;         [remove Block ability - defender]
-
-!!SN:W^Att_Com_Regeneration_ability^/?y1;
-!!COv7083&v7083>=0/y1=1:B1/11/0;        [remove regeneration - attacker]
-!!SN:W^Def_Com_Regeneration_ability^/?y2;
-!!COv7085&v7085>=0/y2=1:B1/11/0;        [remove regeneration - defender]
-
-!!SN:W^Att_Com_Poison_ability^/?y1;
-!!COv7083&v7083>=0/y1=1:B1/12/0;        [remove Posion - attacker]
-!!SN:W^Def_Com_Poison_ability^/?y2; 
-!!COv7085&v7085>=0/y2=1:B1/12/0;        [remove Posion - defender]
+!!FU(ACM_RemoveCommanderAbilities)&y30=(FALSE):P;
 
 !?FU(OnBeforeBattleAction);
+!!FU(ACM_RemoveCommanderAbilities):P;
 
-!!COv7083&v7083>=0:B1/8/0;              [remove Block ability - attacker]
-!!COv7085&v7085>=0:B1/8/0;              [remove Block ability - defender]
-!!COv7083&v7083>=0:B1/11/0;             [remove regeneration - attacker]
-!!COv7085&v7085>=0:B1/11/0;             [remove regeneration - defender]
-!!COv7083&v7083>=0:B1/12/0;             [remove Posion - attacker]
-!!COv7085&v7085>=0:B1/12/0;             [remove Posion - defender]
+!?FU(ACM_RemoveCommanderAbilities);
+!!COi^battle_hero_0^&i^Att_Com_Block_ability^:B1/8/0; [remove Block ability - attacker]
+!!CO-4&i^Def_Com_Block_ability^:B1/8/0; [remove Block ability - defender]
+!!COi^battle_hero_0^&i^Att_Com_Regeneration_ability^:B1/11/0; [remove regeneration - attacker]
+!!CO-4&i^Def_Com_Regeneration_ability^:B1/11/0; [remove regeneration - defender]
+!!COi^battle_hero_0^&i^Att_Com_Poison_ability^:B1/12/0; [remove Posion - attacker]
+!!CO-4&i^Def_Com_Poison_ability^:B1/12/0;[remove Posion - defender]
 
 ; New timing for restoring commander abilities
 ; by Archer30
@@ -33771,20 +33820,20 @@ New Commanders Section
 !?FU(ACM_OnBeforeBattleResult);
 !#VA(hook:x);
 
-!!SN:W^Att_Com_Block_ability^/?y1;
-!!COv7083&v7083>=0/y1=1:B1/8/1;       [give Block ability - attacker]
-!!SN:W^Def_Com_Block_ability^/?y2;
-!!COv7085&v7085>=0/y2=1:B1/8/1;       [give Block ability - defender]
+!!FU(ACM_RestoreCommanderAbilities):P;
 
-!!SN:W^Att_Com_Regeneration_ability^/?y1;
-!!COv7083&v7083>=0/y1=1:B1/11/1;      [give regeneration - attacker]
-!!SN:W^Def_Com_Regeneration_ability^/?y2;
-!!COv7085&v7085>=0/y2=1:B1/11/1;      [give regeneration - defender]
+!?FU(OnBeforeBattleReplay);
+!!FU(ACM_RestoreCommanderAbilities):P;
 
-!!SN:W^Att_Com_Poison_ability^/?y1;
-!!COv7083&v7083>=0/y1=1:B1/12/1;      [give Posion - attacker]
-!!SN:W^Def_Com_Poison_ability^/?y2; 
-!!COv7085&v7085>=0/y2=1:B1/12/1;      [give Posion - defender]
+!?FU(ACM_RestoreCommanderAbilities);
+!!COi^battle_hero_0^&i^Att_Com_Block_ability^:B1/8/1; [give Block ability - attacker]
+!!CO-4&i^Def_Com_Block_ability^:B1/8/1; [give Block ability - defender]
+
+!!COi^battle_hero_0^&i^Att_Com_Regeneration_ability^:B1/11/1; [give regeneration - attacker]
+!!CO-4&i^Def_Com_Regeneration_ability^:B1/11/1; [give regeneration - defender]
+
+!!COi^battle_hero_0^&i^Att_Com_Poison_ability^:B1/12/1; [give Posion - attacker]
+!!CO-4&i^Def_Com_Poison_ability^:B1/12/1;[give Posion - defender]
 
 ; Old timing is disabled due to later than commander leveling up procedures
 !?FU(OnAfterBattleAction);
