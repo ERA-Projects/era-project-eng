@@ -1,5 +1,8 @@
 ### Version 2.117
 
+>[!NOTE]
+> 16 2-Ways Monoliths mod is removed from the assembly cause of lack of stability;
+
 #### Advanced Difficulties Mod:
 - Fixed Creature Banks settings
 
