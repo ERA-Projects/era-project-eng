@@ -1,3 +1,18 @@
+### Version 2.118
+
+>[!WARNING]
+> Don't update HD-mod cause it's newer version does conflict with some plugins;
+
+#### Game Enhancement Mod:
+- Fixed messing up creature stack experience data on battle replay in some scenarios (affecting Metamorph option).
+
+#### WoG Scripts:
+- Death Chamber: Now the hostile spell casting before action is only triggered when it's a monster action (Walk/Defend/Walk and Attack/Shoot).
+
+#### Other:
+- other minor fixes;
+
+
 ### Version 2.117
 
 >[!NOTE]
