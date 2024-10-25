@@ -1,3 +1,12 @@
+### Version 2.119
+
+#### Game Enhancement Mod:
+- Fixed wrong constants;
+
+#### ERA Scripts:
+- Capture Garden and Mills: fixed capturing;
+
+
 ### Version 2.118
 
 >[!WARNING]
