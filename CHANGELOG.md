@@ -1,3 +1,16 @@
+### Version 2.120
+
+#### Advanced Difficulties Mod:
+- added compatibility between ADM and MNM. Now when grow beyond 4k option is active MNM will show correct stack size in hint text and dialogue picture
+
+#### Game Enhancement Mod:
+- Battle Replay stack exp fix: Now use a more reliable way of getting army pointers
+
+#### WoG Scripts:
+- Mithril Enhancement: Improved the compatibility between Mithril Enhancement (Monolith feature) and GEM Monolith Locator feature.
+- Emerald Tower: now it Makes number of creatures to sacrifice modable.
+
+
 ### Version 2.119
 
 #### Game Enhancement Mod:
