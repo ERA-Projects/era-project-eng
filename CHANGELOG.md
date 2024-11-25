@@ -1,3 +1,25 @@
+### Version 2.121
+
+#### HD-Mod:
+- updated up to 5.5 R19
+
+#### ERA Scripts:
+- Fixed text corruption in New Cover of Darkness
+- Adapted Military Duty so it can be customised by external scripts.
+
+#### Game Enhancement Mod:
+- Fixed pressing F to cast not working for Faerie Dragons when the owner hero cannot cast.
+- Fixed stack exp messing up in battle replay after quick combat
+
+#### WoG Graphics Fix Lite:
+- Updated up to v2.19.5
+
+#### WoG Scripts:
+- Hero Specialty Boost: Secondary Skills specialist with the ability to cast a spell at the beginning of battle no longer requires spell book to activate.
+- Living Scrolls: Living Scrolls now works without spell books.
+- Rogues attacks heroes at random: Fixed interfering Achievements option and external scripts.
+
+
 ### Version 2.120
 
 #### Advanced Difficulties Mod:
