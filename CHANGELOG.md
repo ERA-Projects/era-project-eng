@@ -1,3 +1,19 @@
+### Version 2.122
+
+#### Advanced Classes Mod:
+- Fixed possible to select a class in battle
+- Fixed ACM bonuses from Scouting events not translated.
+- Added a switch for "Switching actions" script, allowing it to be toggle on/off by external scripts.
+
+#### ERA Scripts:
+- Achievements: Fixed erm error when visiting a witch hut with no skill.
+- Lizard Warrior Ranged Retaliation: Now they only retaliate with one shot even if they can shoot twice in normal attacks (same logic as Crusaders' retaliations).
+
+#### Game Enhancement Mod:
+- Fixed Spell Research not working properly when the amount of spell in a level is fewer than usual (happens when most spells are banned in map editor or scripts)
+- Added a fix for stack exp spells immunity check.
+
+
 ### Version 2.121
 
 #### HD-Mod:
