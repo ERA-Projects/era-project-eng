@@ -1,3 +1,34 @@
+### Version 2.123
+
+#### HD-Mod:
+- updated up to 5.5 R29
+- Added many graphic settings to HD-mod Launcher - try new modes
+
+#### Advanced Classes Mod:
+- Fire Mage: New implementation for Fire Mage's Fireball attack in order to fix some behaviours (like not triggering once the commander learns Strike All Around)
+- Fixed incorrect bonuses shown for the descriptions of creature specialities.
+
+#### ERA Scripts:
+- Achievements: Fixed the special effect of Slayer achievement (forces enemies to skip their turns in the battle) did not skip non-living creatures.
+- Remagic: Fixed the interaction with Summon Elemental option (allowing you to summon elemental on the adventure map). Orb of Tempestuous Fire now correctly boost the number of Fire Elemental summoned.
+- Hero Limit: Fixed the hint text in the tavern when you already reached the hero limit and try to recruit a new one.
+- Zombi-flesheater: Fixed the hero not receiving experience on the eaten stacks.
+- Fixed the hook trigger FU(ES_OnAfterMelee) and FU(ES_OnAfterShoot) not working. This should the problems of some creature abilities like Zombie-flesheaters.
+
+#### Game Enhancement Mod:
+- Added a feature showing the keymaster's tent visiting status when you hover over/right-click on a Border Guard/Gate
+- Added a fix to prevent AI gets into an loop in the battle after reviving their troops.
+
+#### WoG:
+- Added missed 63-type objects into zaobjects.txt to allow its generation with RMG;
+
+#### WoG Scripts:
+- Enhanced War Machines I/II: Fixed First Aid Tents possibly to set the creature at 0 hp after healing.
+- Enhanced Monsters: Hopefully fixed the speed of Devils/Arch Devils messing up after battle replay.
+- Garrisons: Restored the landmines/quicksand spells in garrisons (were removed as they damaged the guards in garrisons for some reason).
+- Mirror of the Home Way: the exorbitant fee for use has been disabled;
+
+
 ### Version 2.122
 
 #### Advanced Classes Mod:
