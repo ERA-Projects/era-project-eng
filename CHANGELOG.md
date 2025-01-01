@@ -1,3 +1,44 @@
+### Version 2.124
+
+### WoG:
+## Added a new major plugin "RMG_CustomizeObjectProperties.era":
+> [!NOTE]
+> Random Map Generator (hereinafter RMG)
+	- This plugin allows you to:
+	- add completely native for Heroes 3 Creature Banks with the object type "16";
+	- change any existing banks;
+	- change sounds for visiting and surroundings for all objects;
+	- generate WoG objects RMG (no more replacing the necessary objects);
+	- add new objects to the game mechanics with full AI support (No more "Pyramids"!):
+		- already added "Resource Warehouses" from HotA;
+		- in development "Watering Hole" and "Gazebo";
+> [!TIP]
+> All of the above is done ONLY with the help of JSON files. No more objects.txt!
+> Now everyone can add their own objects
+
+# And now the most interesting:
+### Two new buttons have been added to the Random Map creation menu:
+- "RMG settings" - opens a new dialog, inside which you can (should):
+	- customize ANY generation for yourself!
+	- enable/disable most objects for the RMG;
+	- customize the maximum number of objects per map/zone;
+	- change the value of objects;
+	- change the base cost of creature dwellings;
+	- change the density of object generation;
+	- change the value of objects (later I will try to work with zone limits as well);
+- "Dice" - before each generation, create truly random settings for all objects, which turns each map into a unique set of objects;
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era":
+- Added the ability to view descriptions of hints above objects on the adventure map while holding down the "Alt" key;
+- You can change the list of objects and the hotkey for working in the file "Runtime/gem_AdventureMapHints.ini";
+- You can enable/disable the display of hints through the GEM settings window;
+
+#### Advanced Classes Mod:
+- Added a fix to prevent critical hit damage overflow (recheck MF:D/F value before applying).
+- Fixed the descriptions of creature specialists (again).
+
+
 ### Version 2.123
 
 #### HD-Mod:
