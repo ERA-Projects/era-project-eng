@@ -1,3 +1,19 @@
+### Version 2.125
+
+#### Advanced Classes Mod:
+- Fixed sometimes the animation of a stack isn't updated after receiving a damage from scripts (Like Magic Artillery).
+- Fixed Phoenix type of revival not triggering immediately after scripted damage.
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era":
+	- fixed uneven tooltips on objects;
+
+### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+- added support for the object "Mithril Warehouse" - graphics by @Grossmaestro;
+- corrected the description in the dialog;
+
+
 ### Version 2.124
 
 ### WoG:
