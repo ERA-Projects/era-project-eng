@@ -1,3 +1,9 @@
+### Version 2.126
+
+### WoG:
+- added missed crystal warehouse properties;
+
+
 ### Version 2.125
 
 #### Advanced Classes Mod:
