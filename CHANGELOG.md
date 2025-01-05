@@ -1,3 +1,28 @@
+### Version 2.127
+
+#### Advanced Classes Mod:
+- Fixed the animation of Meteor Shower and Implosion animation not changed correctly in 2-hero battles.
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era":
+	- Fixed uneven tooltips on objects;
+- For Armour specialists under level 868, the max physical damage reduction from Armour is set to 4%.
+
+### WoG:
+- Updated plugin "RMG_CustomizeObjectProperties.era":
+	- Added support for the object "Coliseum of Mages";
+	- Added support for the object "Gazebo";
+	- Now you can add any number of additional object properties to the map using the key "RMG.[mod_folder_name].properties.[index]". Please note that the properties must be in order (you can also use an array of properties);
+	- Now the generation of WoG objects works only for those objects whose operation is provided by the corresponding script (the option number is specified in json. It must be enabled for the object to be created);
+	- Now the dialog settings save only the changed object data;
+	- Fixed: seer's huts were not generated;
+- Added 2 seer's huts for generation (5 in total);
+- Changed the properties and soils of generation for some WoG objects (no more Snow Grottoes on other soils);
+
+#### Other:
+- Sublime Text Editor updated to build 4189;
+
+
 ### Version 2.126
 
 ### WoG:

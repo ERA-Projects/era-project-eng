@@ -1,4 +1,0 @@
-[
-    {"caption": "-", "id": "folder_commands"},
-    {"caption": "Ordner aus Projekt entfernen", "args": {"dirs": [] }, "command": "remove_folder"}
-]

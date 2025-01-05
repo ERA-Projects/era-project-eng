@@ -1,6 +1,6 @@
 OnAdventureMapLeftMouseClick
 OnAdventureMapRightMouseClick
-OnAdvMapTileHint
+OnAdventureMapTileHint
 OnAfterAdventureMagic
 OnAfterBattle
 OnAfterBattleAction

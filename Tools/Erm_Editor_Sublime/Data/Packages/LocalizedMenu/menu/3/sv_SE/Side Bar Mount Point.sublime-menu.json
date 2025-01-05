@@ -1,4 +1,0 @@
-[
-	{ "caption": "-", "id": "folder_commands" },
-	{ "caption": "Ta bort mapp från projekt", "command": "remove_folder", "args": { "dirs": []} }
-]

@@ -1,4 +1,0 @@
-[
-	{ "caption": "-", "id": "folder_commands" },
-	{ "caption": "Remover Pasta do Projeto", "command": "remove_folder", "args": { "dirs": []} }
-]

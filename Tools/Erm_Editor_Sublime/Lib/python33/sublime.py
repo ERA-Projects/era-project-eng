@@ -256,10 +256,11 @@ def open_dialog(callback, file_types=[], directory=None, multi_select=False, all
     if allow_folders:
         flags |= 2
 
-    cb = callback
     if not multi_select:
         def cb(files):
             return callback(files[0] if files else None)
+    else:
+        cb = callback
 
     sublime_api.open_dialog(file_types, directory or '', flags, cb)
 
@@ -289,12 +290,26 @@ def select_folder_dialog(callback, directory=None, multi_select=False):
     multi_select: bool - Whether to allow selecting multiple folders. Function
                          will call callback with a list if this is True.
     """
-    cb = callback
     if not multi_select:
         def cb(folders):
             return callback(folders[0] if folders else None)
+    else:
+        cb = callback
 
     sublime_api.select_folder_dialog(directory or '', multi_select, cb)
+
+
+def choose_font_dialog(callback, default=None):
+    font_face = ''
+    font_size = None
+    if default is not None:
+        font_face = default.get("font_face") or ""
+        try:
+            font_size = int(default.get("font_size"))
+        except ValueError:
+            font_size = None
+
+    sublime_api.choose_font_dialog(callback, font_face, font_size)
 
 
 def run_command(cmd, args=None):
@@ -453,8 +468,8 @@ def find_resources(pattern):
     return sublime_api.find_resources(pattern)
 
 
-def encode_value(val, pretty=False):
-    return sublime_api.encode_value(val, pretty)
+def encode_value(val, pretty=False, update_text=None):
+    return sublime_api.encode_value(val, pretty, update_text)
 
 
 def decode_value(data):
@@ -1396,11 +1411,14 @@ class View():
     def find(self, pattern, start_pt, flags=0):
         return sublime_api.view_find(self.view_id, pattern, start_pt, flags)
 
-    def find_all(self, pattern, flags=0, fmt=None, extractions=None):
+    def find_all(self, pattern, flags=0, fmt=None, extractions=None, within=None):
+        if isinstance(within, Region):
+            within = [within]
+
         if fmt is None:
-            return sublime_api.view_find_all(self.view_id, pattern, flags)
+            return sublime_api.view_find_all(self.view_id, pattern, flags, within)
         else:
-            results = sublime_api.view_find_all_with_contents(self.view_id, pattern, flags, fmt)
+            results = sublime_api.view_find_all_with_contents(self.view_id, pattern, flags, fmt, within)
             ret = []
             for region, contents in results:
                 ret.append(region)
@@ -1525,6 +1543,16 @@ class View():
 
     def text_point_utf16(self, row, col_utf16, *, clamp_column=False):
         return sublime_api.view_text_point_utf16(self.view_id, row, col_utf16, clamp_column)
+
+    def utf8_code_units(self, tp=None):
+        if tp is not None:
+            return sublime_api.view_code_units_at(self.view_id, tp)[0]
+        return sublime_api.view_total_code_units(self.view_id)[0]
+
+    def utf16_code_units(self, tp=None):
+        if tp is not None:
+            return sublime_api.view_code_units_at(self.view_id, tp)[1]
+        return sublime_api.view_total_code_units(self.view_id)[1]
 
     def visible_region(self):
         """ Returns the approximate visible region """
@@ -1954,21 +1982,18 @@ class CompletionList:
             repr(self.flags)
         )
 
-    def _set_target(self, target):
-        if self.completions is not None:
-            target.completions_ready(self.completions, self.flags)
-        else:
-            self.target = target
-
     def set_completions(self, completions, flags=0):
         assert self.completions is None
         assert flags is not None
 
-        self.completions = completions
+        # This may be called from another thread. Ordering is important to avoid
+        # data races. See MultiCompletionList_append.
         self.flags = flags
+        self.completions = completions
 
-        if self.target is not None:
-            self.target.completions_ready(completions, flags)
+        target = self.target  # atomic load
+        if target is not None:
+            target.completions_ready(completions, flags)
 
 
 class CompletionItem:
