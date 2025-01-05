@@ -1,3 +1,11 @@
+### Version 2.129
+
+### WoG:
+- Updated plugin "RMG_CustomizeObjectProperties.era":
+	- Gazebo now has cost picture;
+	- Fixed endless loop sound;
+	
+
 ### Version 2.128
 
 ### WoG:
