@@ -13,7 +13,7 @@
 #### Game Enhancement Mod:
 - updated plugin "GameplayEnhancementsPlugin.era":
 	- Fixed uneven tooltips on objects;
-- For Armour specialists under level 868, the max physical damage reduction from Armour is set to 4%.
+- For Armour specialists under level 868, the max physical damage reduction from Armour is set to 96%.
 
 ### WoG:
 - Updated plugin "RMG_CustomizeObjectProperties.era":
