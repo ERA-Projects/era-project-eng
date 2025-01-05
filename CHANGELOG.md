@@ -1,3 +1,10 @@
+### Version 2.128
+
+### WoG:
+- Updated plugin "RMG_CustomizeObjectProperties.era":
+	- Fixed WoG-objects generation;
+
+
 ### Version 2.127
 
 #### Advanced Classes Mod:
