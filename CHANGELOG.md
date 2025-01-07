@@ -1,3 +1,27 @@
+### Version 2.130
+
+### WoG:
+- Updated plugin "RMG_CustomizeObjectProperties.era":
+	- Added ability to reset settings for each map object separately to the dialog of generation objects;
+	- Added ability to enter exact generation seed to create a specific random map to the menu of creating a random map;
+	- Fixed crash when generating Seer's Huts;
+	- Fixed reset of resource type for Resource Warehouses to the wood at the beginning of each week;
+	- Added support for setting objects to be able to visit from an adjacent cell (like for artifacts);
+
+#### Advanced Classes Mod:
+- Changed the timing of execution for FU(ACM_DrawActionPlay):P, hopefully the damaging animation looks better.
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era":
+	- Changed the image of the button in the dialog for destroying a building in the town;
+	- Improved the tooltip about objects;
+- Updated the dialog for the mod settings;
+- Added a setting to disable mass waiting/protection for Combat Vehicles;
+
+#### ERA Scripts:
+- Battle Experience: Now the script respects human/AI exp multiplier set in scripts or wog options;
+
+
 ### Version 2.129
 
 ### WoG:
