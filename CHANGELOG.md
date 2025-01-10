@@ -1,3 +1,43 @@
+### Version 2.131
+
+### WoG:
+- Updated plugin "RMG_CustomizeObjectProperties.era":
+	- Added generation of objects on the snow, which have the necessary graphics;
+	- When visiting the Creature Bank, its name and the number of guarding creatures are now written;
+	- Added the ability to display extended tooltips when visiting Creature Banks. Key:
+	```
+	"RMG.settings.creatureBanks.extendedDlgInformation": bool
+	```
+	- Added the ability to display the name of the tooltip when visiting Creature Banks. Key:
+	```
+	"RMG.settings.creatureBanks.displayName": bool
+	```
+	- Added the ability to set a custom message when visiting Creature Banks. Key:
+	```
+	"RMG.objectGeneration.[type].[subtype].text.visit": string
+	```
+	- Added support for generating creature dwellings with 4 creatures (type 20);
+- Improved description of the spell "Antimagic";
+
+#### Advanced Classes Mod:
+- Fixed Breath Attack
+- Added combat log for the Ammo Cart Trap.
+- Fixed display of gold return dialog for the First Aid Tent for a hero who lost the battle.
+- Fixed bug: creature spells did not work with Amethyst enabled.
+- Changed the trigger area of ​​the "Nobility " skill. Now only clicking on the city or building screen activates this ability.
+
+#### ERA Scripts:
+- Town Treasuries: Optimised the dialogue of looting.
+
+#### WoG Graphics Fix Lite:
+- Updated to version 2.20.1
+
+#### WoG Scripts:
+- Enhanced Artifacts I: now Dead Man's Boots are duplicated only if the owner does not have Dead Man's Boots in his backpack.
+
+#### Other:
+- other fixes and improvements;
+
 ### Version 2.130
 
 ### WoG:
