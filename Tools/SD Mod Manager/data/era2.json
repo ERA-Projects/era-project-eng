@@ -1,0 +1,111 @@
+{
+	"BattleHeroes": {
+		"incompatible": [
+			"ERA Scripts Rus",
+			"WoG Scripts",
+			"WoG Scripts Rus"
+		]
+	},
+	"Advanced Classes Mod": {
+		"incompatible": [
+			"NewSpells"
+		],
+		"load_after": [
+			"WoG Rus"
+		]
+	},
+	"16 2-way teleports": {
+		"incompatible": [
+			"XXL"
+		]
+	},
+	"WoG Scripts Rus": {
+		"requires": [
+			"WoG Scripts",
+			"WoG"
+		],
+		"load_after": [
+			"WoG Scripts",
+			"WoG"
+		]
+	},
+	"Advanced Classes Mod Rus": {
+		"requires": [
+			"Advanced Classes Mod"
+		],
+		"load_after": [
+			"Advanced Classes Mod"
+		]
+	},
+	"ERA Scripts Rus": {
+		"load_after": [
+			"WoG Scripts",
+			"WoG Scripts Rus",
+			"WoG"
+		]
+	},
+	"XXL": {
+		"load_after": [
+			"WoG Rus",
+			"WoG"
+		]
+	},
+	"WoG Scripts": {
+		"load_after": [
+			"BattleQueue"
+		]
+	},
+	"Enhanced Henchmen": {
+		"load_after": [
+			"WoG Scripts",
+			"WoG Rus"
+		]
+	},
+	"Difficulty Mod": {
+		"load_after": [
+			"WoG Scripts"
+		]
+	},
+	"_MM_TestR1": {
+		"requires": [
+			"_MM_TestR2"
+		]
+	},
+	"_MM_TestR2": {
+		"requires": [
+			"_MM_TestR3"
+		]
+	},
+	"_MM_TestR3": {
+		"requires": [
+			"_MM_TestR4"
+		]
+	},
+	"_MM_TestI1": {
+		"requires": [
+			"_MM_TestI2"
+		]
+	},
+	"_MM_TestI2": {
+		"incompatible": [
+			"_MM_TestR2"
+		]
+	},
+	"_MM_TestI3": {
+		"incompatible": [
+			"_MM_TestR4"
+		]
+	},
+	"@to_sort_data": {
+		"random": [
+			"TrainerX and WoG graphicsX both replace zobj049.def",
+			"ERA scripts RUS and Advanced classes both replace ILCK22.def and 5 others",
+			"Enhanced Henchmen and WoG rus both replace erm script and mod rus.json",
+			"Random wallpaper menu and Legend menu both replace legendmenu.json",
+			"Quick savings and Wog Rus both replace quick savings.json",
+			"BattleQueue and Wog Rus both replace battlequeue.json",
+			"Legend menu and Wog Rus both replace legendmenurus.zip",
+			"Difficulty Mod has a lot of similar files to Advanced classes"
+		]
+	}
+}

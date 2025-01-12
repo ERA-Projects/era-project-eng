@@ -1,6 +1,29 @@
+### Version 2.132
+
+#### Advanced Classes Mod:
+- Fixed not possible to resurrect a completely killed stack after casting M/GM Cure spell.
+- Added a check for sec skill id in the cursor hovering script
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era":
+	- now additional description of objects is not displayed in the tooltip
+	- now tooltips are correctly displayed in multiplayer for an inactive player;
+	- new objects have been added for display by default;
+- tooltip for visited university on RMC has been fixed;
+- Fixed battle expected shooting damage hint
+
+#### TrainerX:
+- Now giving the ability to fly to an active hero recalculates his path;
+
+#### other:
+- Added new Mod Manager (@SyDr)
+- At the moment, you can launch the new Mod Manager at "[Game_Folder]/Tools/SD Mod Manager/main.exe"
+- Send suggestions, bug reports and thanks to [Discord channel](https://discord.com/channels/665742159307341827/723550276077748357)
+
+
 ### Version 2.131
 
-### WoG:
+#### WoG:
 - Updated plugin "RMG_CustomizeObjectProperties.era":
 	- Added generation of objects on the snow, which have the necessary graphics;
 	- When visiting the Creature Bank, its name and the number of guarding creatures are now written;
@@ -24,7 +47,7 @@
 - Added combat log for the Ammo Cart Trap.
 - Fixed display of gold return dialog for the First Aid Tent for a hero who lost the battle.
 - Fixed bug: creature spells did not work with Amethyst enabled.
-- Changed the trigger area of ​​the "Nobility " skill. Now only clicking on the city or building screen activates this ability.
+- Changed the trigger area of the "Nobility" skill. Now only clicking on the city or building screen activates this ability.
 
 #### ERA Scripts:
 - Town Treasuries: Optimised the dialogue of looting.
