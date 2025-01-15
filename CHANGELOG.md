@@ -1,3 +1,14 @@
+### Version 2.134
+
+#### ERA
+> [!IMPORTANT]
+> Critical fix for loading saved games!
+- information about the RNG operation in multiplayer games has been added to the ERA changelog. The file is located at "/Help/Era manual/era iii changelog.txt", or simply click on the ERA version in the game's main menu to open it;
+
+#### Game Enhancement Mod:
+- GameplayEnhancementsPlugin: fixed showing hints for non-active window;
+
+
 ### Version 2.133
 
 #### ERA
@@ -95,7 +106,7 @@
 - Updated C++ Era SDK ("ConnectEra" function now accepts up to 2 arguments).
 
 #### WoG:
-- updated plugin "GameplayEnhancementsPlugin.era":
+- updated plugin "RMG_CustomizeObjectProperties.era":
 	- fixed incorrect value of objects during Random Map Generation:
 		- Pandora's Box;
 		- Prison;

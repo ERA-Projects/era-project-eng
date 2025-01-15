@@ -28,13 +28,40 @@ Version 3.9.16 (01/2025)
   -) IF:F accepts 0..6 parameters. Empty parameter means "remove hint".
   -) IF:E accepts the following syntaxes: IF:E(v-var index to store result) or IF:E?(any integer variable to store result).
 
+[?] Note on generating random values in battles. Era uses deterministic random number generator in network PvP battles in order to prevent most of possible desynchronizations.
+    Generator state depends on current round ID, autoincrementing action ID (0, 1, 2...) and range bounds (minimum and maximum value to generate).
+    It means, that generating several random values in the same range in one action produces the same results:
+
+    rand(1, 10) => 6
+    rand(1, 10) => 6
+
+    This behavior is undesirable in case of multiple generations in a loop. For instance, you loop through all enemy stacks and check if rand(1, 100) < 10.
+
+    rand(1, 100) => 30
+    ...
+    rand(1, 100) => 30.
+
+    Either the effect will work on all stacks, or on none of them. The fix is an introduction of extra parameter for random number generation.
+    It will be used by engine in network PvP battles only. See VR:C0/(min)/(max)/(freeParam) or RandomRangeWithFreeParam API function.
+    We can used any deterministic value here like loop counter (0, 1, 2...) or stack ID (0..41).
+    We can even XOR it with unique pre-generated constant (but it's not obligatory). For single generation we can use random pre-generated constant like 1069019607.
+
+    rand(1, 100, 0) => 30
+    rand(1, 100, 1) => 94
+    rand(1, 100, 2) => 5
+    rand(1, 100, 3) => 67
+    ...
+    rand(1, 100, 1069019607) => 52
+
+    It's recommended to supply this free parameter for looped number generations in battle and for functions, generating random items (spells, effects), which are used in battles.
+
 [+] Extended VR:R command with optional 4-th parameter: VR:R(dummy)/(min)/(max)/(free_param);
 
-  In network battles deterministic random value generator is used, which generates values using current action ID, round ID and battle ID. An attempt to generate multiple random values in one action produces the same values like 44 44 44. To overcome this issue pass unique value to 4-th parameter for each iteration. It may be stack ID or loop counter, but better XOR it with pre-generated int32 constant, unique for the effect/spell/function, you implement. For instance, 1833290248 XOR stack ID is a good choice.
+  See the above note about generating random values in PvP battles.
 
   Example:
 
-  !?FU(OnBattleScreenMouseClick);
+  !?FU(OnBattleScreenMouseClick)&i^mouse_action^=(MOUSE_RMB_PRESSED);
   ; The effect will be seen in network battles only and will not influence singleplayer
   !#VA(v[3]:y);
   !!VR(effectId:y):S1833290248; // Unique generated int32 value for our sequence, use any offline/online generator
@@ -95,7 +122,7 @@ Version 3.9.16 (01/2025)
   (* Returns applied patch size in bytes (number of ovewritten bytes) *)
   function GetAppliedPatchSize (AppliedPatch: pointer): integer; stdcall;
 
-  (* Generates random value in specified range with additional custom parameter used only in deterministic generators to produce different outputs for sequence of generations. For instance, if you need to generate random value in battle for each enemy stack, you could use stack ID or loop variable for FreeParam. But for better generation quality use (stackID XOR UNIQUE_ACTION_MASK) and define UNIQUE_ACTION_MASK constant as unique int32 pre-generated value. In network battles multiple random value generations with the same parameters produce the same output until next action is performed. This function allows to bring back randomness to multiple same time generations. *)
+  (* Generates random value in specified range with additional custom parameter used only in deterministic generators to produce different outputs for sequence of generations. For instance, if you need to generate random value in battle for each enemy stack, you could use stack ID or loop variable for FreeParam. In network battles multiple random value generations with the same parameters produce the same output until next action is performed. This function allows to bring back randomness to multiple same time generations. *)
 
   function RandomRangeWithFreeParam (MinValue, MaxValue, FreeParam: integer): integer; stdcall;
 
