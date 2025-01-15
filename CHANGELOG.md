@@ -102,11 +102,11 @@
 		- Spell Scroll;
 		- Witch's Hut;
 		- Keymaster's Chamber;
-- > [!IMPORTANT]
-- > To add properties using the key "RMG.[mod_folder_name].properties.[index]" now requires specifying the mod folder name in lowercase. For example:
-	```
-	"RMG.wog.properties.0":"AVSidol0.def 011111111111111111111111111111111111111111111111 100000000000000000000000000000000000000000000000 111111111 011110111 38 0 0 0"
-	```
+> [!IMPORTANT]
+> 	- To add properties using the key "RMG.[mod_folder_name].properties.[index]" now requires specifying the mod folder name in lowercase. For example:
+>	```
+>	"RMG.wog.properties.0":"AVSidol0.def 011111111111111111111111111111111111111111111111 100000000000000000000000000000000000000000000000 111111111 011110111 38 0 0 0"
+>	```
 
 #### Game Enhancement Mod:
 - Fixed improved tooltip for university on RMB;
