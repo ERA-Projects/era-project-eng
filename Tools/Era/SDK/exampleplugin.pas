@@ -1,29 +1,31 @@
-LIBRARY ExamplePlugin;
-{
-DESCRIPTION:  CTRL + LMB on map object to delete it
-AUTHOR:       Alexander Shostak (aka Berserker aka EtherniDee aka BerSoft)
-}
+library ExamplePlugin;
+(*
+  Description: CTRL + LMB on map object to delete it
+  Author:      Berserker aka EtherniDee.
+*)
 
-USES SysUtils, Era;
+uses SysUtils, Era;
 
-CONST
+const
   ADV_MAP   = 37;
   CTRL_LMB  = 4;
   LMB_PUSH  = 12;
 
-PROCEDURE OnAdventureMapLeftMouseClick (Event: PEvent); STDCALL;
-BEGIN
+procedure OnAdventureMapLeftMouseClick (Event: PEvent); stdcall;
+begin
   ExecErmCmd('CM:I?y1 F?y2 S?y3;');
-  IF (y^[1] = ADV_MAP) AND (y^[2] = CTRL_LMB) AND (y^[3] = LMB_PUSH) THEN BEGIN
+
+  if (y[1] = ADV_MAP) AND (y[2] = CTRL_LMB) and (y[3] = LMB_PUSH) then begin
     ExecErmCmd('CM:R0 P?y1/?y2/?y3;');
     ExecErmCmd('UN:Ey1/y2/y3;');
-    IF f^[1] THEN BEGIN
+
+    if f[1] THEN begin
       ExecErmCmd('UN:Oy1/y2/y3/1;');
       ExecErmCmd('IF:L^{~red}Object was deleted!{~}^;');
-    END; // .IF
-  END; // .IF
-END; // .PROCEDURE OnAdventureMapLeftMouseClick
+    end;
+  end;
+end;
 
-BEGIN
+begin
   RegisterHandler(OnAdventureMapLeftMouseClick, 'OnAdventureMapLeftMouseClick');
-END.
+end.

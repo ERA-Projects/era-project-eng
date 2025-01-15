@@ -1,3 +1,131 @@
+Version 3.9.17 (01/2025)
+------------------------
+[*] Updated C++ Era SDK ("ConnectEra" function now accepts up to 2 arguments).
+[-] Fixed IF:D command: parameters 3 and 4 were mixed up in places.
+[-] Restored "HookCode" and "ApiHook" functions for legacy plugins.
+
+
+Version 3.9.16 (01/2025)
+------------------------
+[+] Added support for IME (Input Method Editor) input, used by Asian (Chinese/Japanese/Korean) languages.
+[+] Added "Lang/*" directory support for zip archives in Data.
+
+[+] Introduced another directory for ERM global library scripts: "Data/s/lib_end". Scripts from this directory will be loaded after all other map/global/library scripts.
+    Likewise "lib" directory, these scripts do not depend on UN:P5 WoG option state.
+
+[+] Improved CombatManager::CastSpell function (used also in BM:C) by temporarily setting CombatManager->ControlSide to the side, controlling casting stack.
+    Casting stack may differ from active stack (it may be counter attack or arbitrary script logic). In native game casting stack is always current active stack.
+    "Fire wall", "land mines", "quick sands", "force field" and many other spells rely on which side is considered friendly (current). The bug with friendly master-gremlins, casting "land mines" from enemy hero side seems to be also fixed.
+
+    If stack is hypnotized, it's effective side is the side of controlling (hypnotizing) hero.
+
+[+] Rewritten IF:D, IF:F, IF:E commands (multipurpose dialog implementation). Features:
+
+  -) Whenever string is accepted as a parameter, it may be any string or string literal. The value will be copied to global settings, no more dependency on z-variables.
+  -) Dialog IDs are totally ignored (better use 0 or -1 for them for readability). There is only one copy of dialog settings in memory.
+  -) Dialog settings are totally cleared before IF:D and after IF:E execution.
+  -) Fixed bugs with phantom empty strings instead of image paths or hints.
+  -) IF:F accepts 0..6 parameters. Empty parameter means "remove hint".
+  -) IF:E accepts the following syntaxes: IF:E(v-var index to store result) or IF:E?(any integer variable to store result).
+
+[+] Extended VR:R command with optional 4-th parameter: VR:R(dummy)/(min)/(max)/(free_param);
+
+  In network battles deterministic random value generator is used, which generates values using current action ID, round ID and battle ID. An attempt to generate multiple random values in one action produces the same values like 44 44 44. To overcome this issue pass unique value to 4-th parameter for each iteration. It may be stack ID or loop counter, but better XOR it with pre-generated int32 constant, unique for the effect/spell/function, you implement. For instance, 1833290248 XOR stack ID is a good choice.
+
+  Example:
+
+  !?FU(OnBattleScreenMouseClick);
+  ; The effect will be seen in network battles only and will not influence singleplayer
+  !#VA(v[3]:y);
+  !!VR(effectId:y):S1833290248; // Unique generated int32 value for our sequence, use any offline/online generator
+
+  !!re i/0/(v[SIZE])/1/-1;
+    !!VR(freeParam:y):S(effectId) Xi;
+    !!VR(v[i]):R0/1/100/(freeParam);
+  !!en;
+
+  !!IF:L^%(v[0]) %(v[1]) %(v[2])^;
+
+[+] Added support for Phoenix Ressurection and Death Stare in network PvP battles.
+
+[+] Updated "Era Erm Framework":
+
+  -) Added support for area shooting creatures to BattleStack_Shoot function.
+  -) Synchronized with Launcher "Era Erm Framework" version.
+
+[+] Added the following export types and functions to era.dll:
+
+  (*
+    Customizable dialog with up to 4 external/internal pictures (bmp/jpg/png/pcx/pcx16,def?), optional input field and 4 selectable buttons with checkboxes.
+    All pointers may be null. All fields must be writable by dialog processing routines and must be considered "dirty" after dialog processing except the field, where result
+    values are written.
+  *)
+  PMultiPurposeDlgSetup = ^TMultiPurposeDlgSetup;
+  TMultiPurposeDlgSetup = packed record
+    Title:             pchar;                 // Top dialog title
+    InputFieldLabel:   pchar;                 // If specified, user will be able to enter arbitrary text in input field
+    ButtonsGroupLabel: pchar;                 // If specified, right buttons group will be displayed
+    InputBuf:          pchar;                 // OUT. Field to write a pointer to a temporary buffer with user input. Copy this text to safe location immediately
+    SelectedItem:      integer;               // OUT. Field to write selected item index to (0-3 for buttons, -1 for Cancel)
+    ImagePaths:        array [0..3] of pchar; // All paths are relative to game root directory or custom absolute paths
+    ImageHints:        array [0..3] of pchar;
+    ButtonTexts:       array [0..3] of pchar;
+    ButtonHints:       array [0..3] of pchar;
+    ShowCancelBtn:     TInt32Bool;
+  end;
+
+  TShowMultiPurposeDlgFunc = procedure (Setup: PMultiPurposeDlgSetup); stdcall;
+
+  (* Displayes customizable configured multipurpose dialog and returns selected button ID (1..4) or -1 for Cancel *)
+  function ShowMultiPurposeDlg (Setup: PMultiPurposeDlgSetup): integer; stdcall;
+
+  (* Replaces current multipurpose dialog handler/implementor. Returns old handler if any *)
+  function SetMultiPurposeDlgHandler (NewImpl: TShowMultiPurposeDlgFunc): {n} TShowMultiPurposeDlgFunc; stdcall;
+
+  (* Creates new plugin API instance for particular DLL plugin. Pass real dll name with extension. Returns plugin instance or NULL is plugin is already created *)
+  function CreatePlugin (Name: pchar) : {On} TPlugin; stdcall;
+
+  (* Installs new hook at specified address. Returns pointer to bridge with original code if any. Optionally specify address of a pointer to write applied patch structure
+     pointer to. It will allow to rollback the patch later. MinCodeSize specifies original code size to be erased (nopped). Use 0 in most cases. *)
+  function Hook (Addr: pointer; HandlerFunc: THookHandler; {n} AppliedPatch: ppointer; MinCodeSize, HookType: integer): {n} pointer; stdcall;
+
+  (* Returns true if applied patch was overwritten *)
+  function IsPatchOverwritten (AppliedPatch: pointer): TInt32Bool; stdcall;
+
+  (* Returns applied patch size in bytes (number of ovewritten bytes) *)
+  function GetAppliedPatchSize (AppliedPatch: pointer): integer; stdcall;
+
+  (* Generates random value in specified range with additional custom parameter used only in deterministic generators to produce different outputs for sequence of generations. For instance, if you need to generate random value in battle for each enemy stack, you could use stack ID or loop variable for FreeParam. But for better generation quality use (stackID XOR UNIQUE_ACTION_MASK) and define UNIQUE_ACTION_MASK constant as unique int32 pre-generated value. In network battles multiple random value generations with the same parameters produce the same output until next action is performed. This function allows to bring back randomness to multiple same time generations. *)
+
+  function RandomRangeWithFreeParam (MinValue, MaxValue, FreeParam: integer): integer; stdcall;
+
+[+] Added "Debug.LogWindowMessagesOpt" option to "heroes 3.ini", enabling logging of main window messages and their parameters.
+
+[+] Added the following translatable strings to "era.json":
+
+  - 'era.debug.game_saving_exception_warning':   shown on savegame writing exception
+  - 'era.debug.debug_dump_confirmation':         shown on any ERM error
+  - 'era.incompatible_savegame_version_warning': shown if game saving was performed on too old Era engine
+
+[*] From now on, Era always asks permission to load global scripts on map start or scripts reloading if map has internal scripts. The permission text was changed from "skip" to "load" by default. The following language key must be re-translated: 'era.global_scripts_vs_map_scripts_warning'. WoG Option 5 is always set to 3 (ask for loading global scripts if map has internal scripts) before any scripts are loaded, thus there is no more necessity to keep it in WoG Options. UN:P5/# instruction in map internal scripts controls, wether map author forces global scripts loading or not.
+
+[+] Included updated sources codes for the following plugins: "Buttons", "Erm Hooker", "WoG Native Dialogs", "Game Bug Fixes Extended". Thanks to baratorch and Hota team for sharing their header files.
+
+[+] Included refactored Delphi and C++ Era SDK (API files) in Tools/Era/SDK.
+[+] Included latest Era sources (Tools/Era/Sources/Era 3.9.16) and Virtual File System sources.
+[*] Restored WoG cheat codes functionality in Easy Cheats mod, fixed documentation typos and added display of dumped array sizes.
+[*] Updated "erm_hooker.era" plugin to reflect Era engine changes.
+[*] Updated "buttons.era" plugin to reflect Era engine changes.
+[*] Updated "wog native dialogs.era" plugin to be more tolerant of unsupported image types for IF:E dialogs.
+[*] Increased stability of snd/vid resources processing (using splice hooks instead of patch hooks).
+[*] "load only these scripts.txt" file support is deprecated. It will be removed in Era 4.X versions. Duplicate entries in this file are ignored from now.
+[*] Updated "Era Erm Framework" mod to use "lib_end" directory for some scripts.
+[!] Savegame file format was changed. Added format checking. Old savegames will be loaded without scripts/plugins data.
+[-] Removed the following functions from era.dll: "CalcHookPatchSize", "ApiHook", "HookCode".
+[-] Fixed crash in network game in savegame dialog: RMB on some dialog items leaded to an invalid attempt to update ScreenLog without having initialized textWidget field.
+[-] Fixed wrong ERA version reporting.
+
+
 Version 3.9.15 (07/2024)
 ------------------------
 Summary:
@@ -126,7 +254,7 @@ Details:
   !!FU(StrReplace):P(text)/^cast^/^learn^/?(text);
   !!IF:M^%(text)^; You should learn the spell. Spell learning increases your intelligence
 
-[+] Added the following constans to Era Erm Framework:
+[+] Added the following constants to Era Erm Framework:
 
   CHAT_EVENT_TYPE_XXX   for 'OnChat' event subtype
   CHAT_EVENT_RESULT_XXX for 'OnChat' event result

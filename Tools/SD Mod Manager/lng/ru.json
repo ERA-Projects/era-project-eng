@@ -150,6 +150,7 @@
 	"Cannot check for program update" : "Не удалось проверить обновления программы",
 	"New program version is available" : "Доступна новая версия программы",
 	"Download" : "Загрузить",
+	"Another copy of program is running. Running more than one copy may result in incorrect data/configuration management. Do you want to run program anyway?" : "Другая копия программы уже запущена. Запуск более одной копии может привести к неправильном управлению модами/конфигурации. Запустить всё равно?",
 
 	"update_mode" : {
 		"manual" : "только вручную",

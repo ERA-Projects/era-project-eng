@@ -33,9 +33,9 @@ extern "C" __declspec(dllexport) BOOL APIENTRY DllMain (HINSTANCE hInst, DWORD r
 {
   if (reason == DLL_PROCESS_ATTACH)
   {
-    ConnectEra();
+    ConnectEra(hInst);
     RegisterHandler(OnAdventureMapLeftMouseClick, "OnAdventureMapLeftMouseClick");
-    HookCode((void*) 0x74FD1E, (void*) Hook_BattleMouseHint);
+    HookCode((void*) 0x74FD1E, Hook_BattleMouseHint);
   }
 
   return true;
