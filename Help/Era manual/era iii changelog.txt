@@ -1,3 +1,11 @@
+Version 3.9.18 (01/2025)
+------------------------
+[+] Added "Tools/UN C to bin" utility for conversion of UN:C ERM commands into binary patches.
+[+] Implemented automatic shadow/grid/selection border redraw after calling BM:C.
+[*] Updated Era and VFS sources in "Tools/Era/Sources.
+[-] Fixed bug, introduced in 3.9.16 version: global scripts used to be loaded and parsed during savegame loading.
+
+
 Version 3.9.17 (01/2025)
 ------------------------
 [*] Updated C++ Era SDK ("ConnectEra" function now accepts up to 2 arguments).

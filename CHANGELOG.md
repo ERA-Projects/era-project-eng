@@ -1,3 +1,19 @@
+### Version 2.135
+
+#### ERA
+- ## update era.dll core to version 3.9.18:
+	- Implemented automatic shadow/grid/selection border redraw after calling BM:C.
+	- Fixed bug, introduced in 3.9.16 version: global scripts used to be loaded and parsed during savegame loading.
+
+#### Advanced Classes Mod:
+- added missing check for hero ID in calculation of Fire Mage commander damage
+- added check for Orb of Tempestuous Fire when calculating Fire Mage damage (+25%)
+
+#### Other:
+- "UncToBin" utility for conversion of UN:C ERM commands into binary patches, now supports memory address offsets;
+- Updated Era and VFS sources in "Tools/Era/Sources".
+
+
 ### Version 2.134
 
 #### ERA

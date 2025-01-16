@@ -69,7 +69,7 @@
   <div class="site-wrapper">
     <div class="section">
       <h1 class="main-title">Panda™ UN:C to bin patch converter</h1>
-      <p>Converts all C[address]/[size: 1, 2 or 4]/[value] into single binary patch. Example patch:</p>
+      <p>Converts all C[address]/[size: 1, 2 or 4]/[value] into single binary patch. Alternative syntax: C[address]/[offset]/[size: 1, 2 or 4]/[value]. Example patch:</p>
       <pre style="white-space: pre-line;">
         ; Extend scouting radius for Scouting skill
         !!UN:C6547928/4/5;
@@ -106,6 +106,16 @@
       return value !== undefined ? value : defValue;
     }
 
+    function toInt (value) {
+      let result = parseInt(value);
+
+      if (isNaN(result)) {
+        throw new Error('Cannot convert non-numeric value to integer: ' + value);
+      }
+
+      return result | 0;
+    }
+
     class BinBuf {
       constructor () {
         this.buffer  = new ArrayBuffer(100000);
@@ -128,7 +138,7 @@
         offset !== undefined || (this.bufSize += 4);
       }
 
-      writeVarInt (value, intSize, offset) {
+      writeVarInt (value, intSize) {
         switch (intSize | 0) {
           case 1:
             this.writeByte(value);
@@ -166,17 +176,34 @@
       let downloadLinkElem = $('#bin-link')[0];
       let code             = codeEditor.value;
 
-      let matches    = code.matchAll(/C(0x[\da-fA-F]+|\d+)\/(\d+)\/(-?\d+)/g);
+      let matches    = code.matchAll(/C(0x[\da-fA-F]+|\d+)\/(-?\d+)\/(-?\d+)(?:\/(-?\d+))?/g);
       let result     = new BinBuf;
       let numPatches = 0;
 
       result.writeDword(0);
 
       for (let match of matches) {
-        result.writeDword(match[1]);
-        result.writeDword(match[2]);
-        result.writeVarInt(match[3], match[2]);
-        numPatches++;
+        try {
+          let address = toInt(match[1]);
+          let offset  = 0;
+          let size    = toInt(match[2]);
+          let value   = toInt(match[3]);
+
+          if (match[4]) {
+            offset = size;
+            size   = value;
+            value  = toInt(match[4]);
+          }
+
+          result.writeDword(address + offset);
+          result.writeDword(size);
+          result.writeVarInt(value, size);
+          numPatches++;
+        } catch {
+          alert('Invalid format: ' + match[0]);
+
+          throw Error('Compilation aborted');
+        }
       }
 
       result.writeDword(numPatches, 0);
