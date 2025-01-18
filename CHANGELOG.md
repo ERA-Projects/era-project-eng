@@ -10,6 +10,7 @@
 - Artillery: Fixed losing experience on creatures killed by Ballista's preventing shot; 
 
 #### Other:
+- new Mod Manager (@SyDr) updated to version 0.98.51
 - removed extra files;
 
 
