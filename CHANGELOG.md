@@ -1,3 +1,18 @@
+### Version 2.136
+
+## HD Mod:
+- Updated to version 5.5 R36;
+
+#### Advanced Classes Mod:
+- Fixed losing experience on creatures killed by Artillery/Ballista.
+
+#### WoG Scripts:
+- Artillery: Fixed losing experience on creatures killed by Ballista's preventing shot; 
+
+#### Other:
+- removed extra files;
+
+
 ### Version 2.135
 
 #### ERA
