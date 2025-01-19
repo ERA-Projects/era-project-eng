@@ -1,3 +1,12 @@
+### Version 2.138
+
+#### Game Enhancement Mod:
+- Fixed incorrect visiting status when hovering over/right-clicking on borderguards.
+
+#### Other:
+- restored Map Editor Shortcut;
+
+
 ### Version 2.137
 - hotfix
 
