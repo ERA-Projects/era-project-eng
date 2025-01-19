@@ -1,3 +1,12 @@
+### Version 2.140
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- fixed saving of dialog settings;
+- now generation of WoG objects (type 63) is possible only with the WoG Scripts mod enabled;
+- generation of some snow objects has been removed;
+
+
 ### Version 2.139
 - hotfix
 
