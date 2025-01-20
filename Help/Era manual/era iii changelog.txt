@@ -1,3 +1,51 @@
+Version 3.9.19 (01/2025)
+------------------------
+[+] Added automatic grid and selection redraw after using BM:Q on inactive stack.
+
+[+] Added the following functions to Era Erm Framework:
+
+  !?FU(EmptyIniCache);
+  ; Replaces ini file cache in memory with an empty one. Use it for recreating ini files from scratch, when you don't need previously cached data and original file on disk
+  !#VA(filePathPtr:x); Absolute or relative path to ini file
+
+  !?FU(MergeIniWithDefault);
+  ; Loads two ini files and merges source ini entries with target ini entries in cache without overwriting existing entries
+  !#VA(targetPathPtr:x); Absolute or relative path to destination ini file (main settings)
+  !#VA(sourcePathPtr:x); Absolute or relative path to source ini file (default settings)
+
+[+] Refactored and improved ini handling API. The following functions were exported/updated:
+
+  (* Forgets all cached data for specified ini file. Any read/write operation will lead to its re-reading and re-parsing *)
+  procedure ClearIniCache (const FileName: pchar); stdcall;
+
+  (* Forgets all cached data for all ini files *)
+  procedure ClearAllIniCache; stdcall;
+
+  (* Replaces ini file cache in memory with an empty one. Use it for recreating ini files from scratch, when you don't need previously cached data and original file on disk *)
+  procedure EmptyIniCache (const FileName: pchar); stdcall;
+
+  (* Reads entry from in-memory cache. Automatically loads ini file from disk if it's not cached yet *)
+  function ReadStrFromIni (const Key: pchar; const SectionName: pchar; FilePath: pchar; out Res: pchar): boolean; stdcall;
+
+  (* Writes and entry to in-memory cache. Automatically loads ini file from disk if it's not cached yet *)
+  function WriteStrToIni (const Key, Value, SectionName: pchar; FilePath: pchar): boolean; stdcall;
+
+  (* Loads and parses ini file. Creates in-memory cache for it to prevent further disk accesses. Returns true only if file existed, was successfully read and parsed.
+     Creates empty cache entry in case of any error *)
+  function LoadIni (FilePath: pchar): boolean; stdcall;
+
+  (* Saves cached ini to the specified file on a disk. Automatically recreates all directories in a path to the file. Loads file contents from disk if it was not cached earlier. *)
+  function SaveIni (FilePath: pchar): boolean; stdcall;
+
+  (* Loads two ini files and merges source ini entries with target ini entries in cache without overwriting existing entries *)
+  procedure MergeIniWithDefault (TargetPath, SourcePath: pchar); stdcall;
+
+[+] Included Era B2 library source code in "Tools/Era/Sources/Era B2 Library".
+[*] "OnRemoteEvent" is not triggered for FU:D call anymore. Era now uses FireRemoteEvent to synchronize the creation of objects on adventure map in multiplayer.
+[*] Updated Era API in "Tools/Era/SDK".
+[*] Included zdraw.dll and patched h3era.exe to allow game to be run in a windowed mode with 32 bit colors depth and without HD-mod.
+
+
 Version 3.9.18 (01/2025)
 ------------------------
 [+] Added "Tools/UN C to bin" utility for conversion of UN:C ERM commands into binary patches.

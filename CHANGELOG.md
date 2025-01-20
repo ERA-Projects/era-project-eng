@@ -1,3 +1,80 @@
+### Version 2.141
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
+- ## update era.dll core to version 3.9.19:
+	- Added automatic grid and selection redraw after using BM:Q on inactive stack.
+	- Added the following functions to Era Erm Framework:
+		```
+		!?FU(EmptyIniCache);
+		; Replaces ini file cache in memory with an empty one. Use it for recreating ini files from scratch, when you don't need previously cached data and original file on disk
+		!#VA(filePathPtr:x); Absolute or relative path to ini file
+		```
+		```
+		!?FU(MergeIniWithDefault);
+		; Loads two ini files and merges source ini entries with target ini entries in cache without overwriting existing entries
+		!#VA(targetPathPtr:x); Absolute or relative path to destination ini file (main settings)
+		!#VA(sourcePathPtr:x); Absolute or relative path to source ini file (default settings)
+		```
+	- Refactored and improved ini handling API. The following functions were exported/updated:
+		```
+		(* Forgets all cached data for specified ini file. Any read/write operation will lead to its re-reading and re-parsing *)
+		procedure ClearIniCache (const FileName: pchar); stdcall;
+		```
+		```
+		(* Forgets all cached data for all ini files *)
+		procedure ClearAllIniCache; stdcall;
+		```
+		```
+		(* Replaces ini file cache in memory with an empty one. Use it for recreating ini files from scratch, when you don't need previously cached data and original file on disk *)
+		procedure EmptyIniCache (const FileName: pchar); stdcall;
+		```
+		```
+		(* Reads entry from in-memory cache. Automatically loads ini file from disk if it's not cached yet *)
+		function ReadStrFromIni (const Key: pchar; const SectionName: pchar; FilePath: pchar; out Res: pchar): boolean; stdcall;
+		```
+		```
+		(* Writes and entry to in-memory cache. Automatically loads ini file from disk if it's not cached yet *)
+		function WriteStrToIni (const Key, Value, SectionName: pchar; FilePath: pchar): boolean; stdcall;
+		```
+		```
+		(* Loads and parses ini file. Creates in-memory cache for it to prevent further disk accesses. Returns true only if file existed, was successfully read and parsed.
+		Creates empty cache entry in case of any error *)
+		function LoadIni (FilePath: pchar): boolean; stdcall;
+		```		
+		```
+		(* Saves cached ini to the specified file on a disk. Automatically recreates all directories in a path to the file. Loads file contents from disk if it was not cached earlier. *)
+		function SaveIni (FilePath: pchar): boolean; stdcall;
+		```
+		```
+		(* Loads two ini files and merges source ini entries with target ini entries in cache without overwriting existing entries *)
+		procedure MergeIniWithDefault (TargetPath, SourcePath: pchar); stdcall;
+		```
+	- Included Era B2 library source code in "Tools/Era/Sources/Era B2 Library".
+	- "OnRemoteEvent" is not triggered for FU:D call anymore. Era now uses FireRemoteEvent to synchronize the creation of objects on adventure map in multiplayer.
+
+## HD Mod:
+- Updated to version 5.5 R37;
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- fixed crash when generating water maps;
+	- fixed deletion of dialog settings
+
+#### WoG Scripts:
+- Neutral towns population growth: added the ability to not influence the increase in Creature Bank security by key:
+```
+"RMG.objectGeneration.[type].[subtype].isNotBank": bool
+```
+- Mithril upgrades: Added support for high-level spells for Magic Shrines;
+
+#### WoG Graphics Fix Lite:
+- Updated to version 2.20.2
+
+#### Other:
+- SD Mod Manager (@SyDr) updated to version 0.98.53
+
+
 ### Version 2.140
 
 #### WoG:
@@ -42,7 +119,7 @@
 
 ### Version 2.135
 
-#### ERA
+#### ERA:
 - ## update era.dll core to version 3.9.18:
 	- Implemented automatic shadow/grid/selection border redraw after calling BM:C.
 	- Fixed bug, introduced in 3.9.16 version: global scripts used to be loaded and parsed during savegame loading.
@@ -58,7 +135,7 @@
 
 ### Version 2.134
 
-#### ERA
+#### ERA:
 > [!IMPORTANT]
 > Critical fix for loading saved games!
 - information about the RNG operation in multiplayer games has been added to the ERA changelog. The file is located at "/Help/Era manual/era iii changelog.txt", or simply click on the ERA version in the game's main menu to open it;
@@ -69,7 +146,7 @@
 
 ### Version 2.133
 
-#### ERA
+#### ERA:
 	- ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
 - ## update era.dll core to version 3.9.17:
 	- Added support for IME (Input Method Editor) input, used by Asian (Chinese/Japanese/Korean) languages.

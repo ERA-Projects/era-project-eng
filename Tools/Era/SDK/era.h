@@ -263,14 +263,23 @@ ERA_API int32_bool (__stdcall *FindNextObject) (int ObjType, int ObjSubtype, int
 
 
 // ======================= INI FILES ======================= //
+/** Forgets all cached data for specified ini file. Any read/write operation will lead to its re-reading and re-parsing */
 ERA_API void (__stdcall *ClearAllIniCache) ();
-ERA_API void (__stdcall *ClearIniCache) (const char* FileName);
+
+/** Forgets all cached data for all ini files */
+ERA_API void (__stdcall *ClearIniCache) (const char* FilePath);
+
+/** Replaces ini file cache in memory with an empty one. Use it for recreating ini files from scratch, when you don't need previously cached data and original file on disk */
+ERA_API void (__stdcall *EmptyIniCache) (const char* FilePath);
 
 /** Reads entry from ini file. The fill will be cached in memory for further fast reading */
 ERA_API int32_bool (__stdcall *ReadStrFromIni) (const char* Key, const char* SectionName, const char* FilePath, char* ResultBuffer);
 
 /** Writes new value to ini file cache in memory. Automatically loads ini to cache if necessary */
 ERA_API int32_bool (__stdcall *WriteStrToIni) (const char* Key, const char* Value, const char* SectionName, const char* FilePath);
+
+/** Loads two ini files and merges source ini entries with target ini entries in cache without overwriting existing entries */
+ERA_API int32_bool (__stdcall *MergeIniWithDefault) (const char* TargetPath, const char* SourcePath);
 
 /** Saves cached ini file data on disk */
 ERA_API int32_bool (__stdcall *SaveIni) (const char* FilePath);
