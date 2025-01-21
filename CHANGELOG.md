@@ -1,3 +1,14 @@
+### Version 2.142
+
+## HD Mod:
+- Updated to version 5.5 R37;
+
+#### Game Enhancement Mod:
+- GameplayEnhancementsPlugin:
+	- Tooltips for objects are now drawn over the fog of war;
+	- Tooltips for objects are now drawn over the entrance to the object if it is visible;
+
+
 ### Version 2.141
 
 #### ERA:
