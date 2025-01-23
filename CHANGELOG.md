@@ -1,3 +1,27 @@
+### Version 2.143
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
+- ## update era.dll core to version 3.9.20:
+	- Added support for logging random number generations to log.txt. This feature is controlled by "Debug.Rng" option in "heroes 3.ini".
+	- Fixed bug introduced in 3.9.16: CombatManager::CastSpell improvement used to check stack spell level instead of spell duration.
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- added ability to set custom AI value for guard generation. Not set value or less than "0" will not change monster AI-value:
+		- Set AI value for each Monster Guard: 
+		```
+		"RMG.objectGeneration.54.[monster_id].value": int
+		```
+		- Set AI value for ALL Monster Guard (why do you need that :thinking:?):
+		```
+		"RMG.objectGeneration.54.value": int
+		```
+
+#### Game Enhancement Mod:
+- fixed rare tooltip bug;
+
+	
 ### Version 2.142
 
 ## HD Mod:

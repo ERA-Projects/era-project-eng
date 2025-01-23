@@ -1,3 +1,9 @@
+Version 3.9.20 (01/2025)
+------------------------
+[+] Added support for logging random number generations to log.txt. This feature is controlled by "Debug.Rng" option in "heroes 3.ini".
+[-] Fixed bug introduced in 3.9.16: CombatManager::CastSpell improvement used to check stack spell level instead of spell duration.
+
+
 Version 3.9.19 (01/2025)
 ------------------------
 [+] Added automatic grid and selection redraw after using BM:Q on inactive stack.
