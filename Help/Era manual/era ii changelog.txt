@@ -69,7 +69,7 @@ Version 2.9.9
     !!re i/0/6:; loop level 2
       !!re j/0/4:; loop level 1
         !!IF:M^%Vi %Vj^;
-        
+
         !!if&i=3:; The last shown message will be "3 0"
           !!br 2:; break loop level 2
         !!en;
@@ -89,7 +89,7 @@ Version 2.9.9
 Version 2.9.8
 ------------------------
 [+] Introduced high-level fastest loops in ERM via new receivers: !!re, !!br, !!co.
-    
+
     !!re $1[/#2/#3/#4].
       ...
     !!en:;
@@ -98,13 +98,13 @@ Version 2.9.8
     #2 - counter start value. Optional. Default: initial value of loop counter var.
     #3 - counter stop value.  Optional. Default: initial value of loop counter var.
     #4 - step.                Optional. Default: 1, if stop value is set, 0 otherwise.
-    
+
     Repeats block of code. Only the first argument is obligatory.
     At first loop counter variable is initialized.
     Counter stop and step values are remembered for the whole loop and won't be evaluated on each iteration.
     Step determines, what value must be added to counter variable after each iteration. It also determines type of iteration stop condition.
     Positive step checks if counter > stop value. Negative step checks if counter < stop value.
-    
+
     On !!re it's checked, if counter reached stop-value or exceeds it. If true, execution is passed to corresponding !!en block.
     On !!en counter is increased by step and if stop condition is not met, next receiver after closest !!re will be executed.
 
@@ -131,7 +131,7 @@ Version 2.9.8
     ; Display number of the first hero empty slot, if it's found
     !!re i/0/6:;
       !!HE-1:C0/i/?t/?k;
-      
+
       !!if|t=-1/k=0:;
         !!IF:M^Free slot number is %Vi^;
         !!br:;
@@ -193,7 +193,7 @@ Version 2.9.7
 
     !!VRi:S0;
     [:for]
-    !!SN&i>=k:G[end-for]; repeat k times 
+    !!SN&i>=k:G[end-for]; repeat k times
     !!VRxk:+xi; add next argument value to result
     !!VRi:+1;
     !!SN:G[for];
@@ -451,7 +451,7 @@ Version 2.9.0
     ERM receiver handler is ready, only docs are missing for now.
 
 [+] Added new receiver !!RD for managing recruit dialog and a few new events.
-  
+
   Whenever recruit dialog is created, an event "OnOpenRecruitDlg" is triggered with the following parameters:
   x1 - selected/active monster slot (0..3)
   x2 - flags/options. Combination of bits, controlling dialog behavior:
@@ -463,7 +463,7 @@ Version 2.9.0
   x3 - enable dialog = 1.   Set to 0 to not show dialog at all.
 
   When recruit dialog is closed, an appropriate "OnCloseRecruitDlg" is trigger without parameters.
-  
+
   When dialog slider is touched or active slot changed, recalculation of number of monsters to hire
   and total costs is performed in "OnRecruitDlgRecalc" event. All parameters can be changed.
   x1 - creature cost in gold
@@ -474,8 +474,8 @@ Version 2.9.0
 
   When a few recruits are hired, "OnRecruitDlgAction" is triggered.
   x1 - number of hired creatures. Read-only.
-  
-  
+
+
   !!RD:C#slot/$type[/$num/$sourceId/#0 = use original number]; Configurate dialog
   ===============================================================================
   #slot - dialog slot index (0..3)
@@ -584,7 +584,7 @@ Version 2.9.0
 Version 2.8.8
 ------------------------
 [+] Added command for changing monster names/specialty text as !!UN:G1 zvar-free replacement.
-    SN:H^monname^/monster ID/(0 - singular, 1 - plural, 2 - description)/text. 
+    SN:H^monname^/monster ID/(0 - singular, 1 - plural, 2 - description)/text.
     Note: get syntax works with all SN:H commands, allowing to obtain actual hint/text.
 
     Example:
@@ -619,7 +619,7 @@ Version 2.8.7
     The command is a thin wrapper over RedirectFile exported function. Pass empty name as new resource name to remove
     redirection. All applied redirections are local, stored in saved game and reverted on map exit.
     '*.mp3' redirection works on all mp3 files at once.
-    
+
     Example:
     !#SN:R^crgrif.def^/^croc.def^; let Royal Griffins look like Rocs (portraits are not changed)
 
@@ -681,7 +681,7 @@ Version 2.8.7
     Event: 'OnBattlefieldVisible'.
     Occurs when battlefield becomes visible. Game changes theme to combat and display tactics popup message (if case of active tactics skill)
     right before this phase.
-    
+
     Event: 'OnCombatRound'. A drop-in replacement for !?BR aka 'OnBattleRound'. Occurs only for visible real rounds.
     v997 is round number. For tactics phase it starts from -1000000000. For normal phase, counting starts from 0.
     Each round v997 is increased by one, thus it can serve as always increasing unique round ID.
@@ -775,7 +775,7 @@ New service for scripts extraction was published: https://tools.bsoft.parkingby.
   EFFECT_VALUE_CONST  = x4; Do not change
 
 [+] Added "fix wog exp screen.bin" memory patch by igrik. It fixes column headers display in creature experience screen.
-[+] Splice and HookCode API was improved. Added support for custom extra argument and multiple calling conventions.
+[+] Splice and HookCode API were improved. Added support for custom extra argument and multiple calling conventions.
 [*] Savegames format was changed and is not compatible with previous Era versions.
 [-] Disabled "Failed to create Debug\Era\log.txt" message if several game instances are running.
 [-] Fixed UN:P3 command. Enabling/disabling commanders now enables/disables commander chests too.
@@ -933,7 +933,7 @@ Version 2.6.6
 
 Version 2.6.5
 ------------------------
-[+] Integrated igrik's plugin, displaying numeric value of moral/luck bonuses and spells duration in view creature dialog. 
+[+] Integrated igrik's plugin, displaying numeric value of moral/luck bonuses and spells duration in view creature dialog.
 [+] Improved "wog native dialogs" plugin by igrik. IF:G radio/checkbox dialog is now implemented via native ingame dialogs system.
 [+] Added "fast upgrade stacks in town.dll" plugin by igrik in the off state. Plugins allows to use A+LMB combination to instantly upgrade single stack or all stacks (click on hero portrait) in town without any confirmations.
 [-] Fixed bug in Mod Manager, not allowing to run executables with space in name like "h3era HD.exe".
@@ -1126,7 +1126,7 @@ Tracking report file is generated on F11 press or on game crash.
 
 As a result, playing game with script, that support multiplayer, can be performed without crashes.
 WoGification and quick saving scripts work.
-  
+
 [+] Released ERM Hooker v2.0 plugin with support of multiple handlers at the same address. It support Era 2.46,
 but is DEPRECATED in advance, because the same functionality without memory leaks will be ported to Era in
 future versions.
@@ -1352,12 +1352,12 @@ catapult as war machine in battle.
 [+] Added 2 Era functions for checking plugins/patches existance:
   FUNCTION PluginExists (Name: STRING): BOOLEAN; STDCALL;
   FUNCTION PatchExists  (Name: STRING): BOOLEAN; STDCALL;
-  
+
   Example:
     !!SN:L^era.dll^/?y1 Ay1/^PluginExists^/?y2 Ey2/1/^yona^;
     !!IF&v1=0:M^Plugin "yona" is not loaded!^;
 
 [*] The patch "no real time trigger" is now off by default.
-[*] Secondary skills scrolling mod scrolls skills to top on exit.   
+[*] Secondary skills scrolling mod scrolls skills to top on exit.
 [*] Era won't load plugins with zero size and patches with size <= 4.
 [-] Fixed mistakes in triggers list. Era SDK/API/Sources were updated.

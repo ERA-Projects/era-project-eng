@@ -1,3 +1,29 @@
+### Version 2.144
+
+#### ERA:
+- updated files to the current version of ERA from the official installer;
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- added support for looped sounds for new and current objects. Setting the value to an empty string will disable the sound for an already specified object. Examples of use:
+		- Set a looped sound for a specific subtype of the specified object type:
+		```
+		"RMG.objectGeneration.[object_type].[object_subtype].sound.loop": string
+		```
+		- Set a looped sound for all subtypes of the specified object type:
+		```
+		"RMG.objectGeneration.[object_type].sound.loop": string
+		```
+	- added .dbgmap debug file;
+- added ambient sounds to hota objects;
+
+#### Game Enhancement Mod:
+- fixed desynchronization in PvP battles when one of the players holds any dialogue open;
+
+#### Other:
+- updated Lua engine to the latest;
+
+
 ### Version 2.143
 
 #### ERA:
