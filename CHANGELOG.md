@@ -1,3 +1,15 @@
+### Version 2.147
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- fixed monsters never flee and split to max stacks;
+
+#### Game Enhancement Mod:
+- added new objects for hints on the adventure map;
+- some hints have had their height position changed;
+- a portrait is drawn on the adventure map as a hint for heroes;
+
+
 ### Version 2.146
 
 #### WoG:
