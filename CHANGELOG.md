@@ -1,3 +1,18 @@
+### Version 2.146
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- now adding sounds of the environment of objects will not work if other plugins are loaded that make the same changes;
+- reorganization of files that add objects;
+- preparation for transferring json files to zip archives;
+
+#### Advanced Classes Mod:
+- Fixed the chance of summoning Fire Elemental when attacking a unit with Master/Grand Master Fire Shield.
+
+#### Game Enhancement Mod:
+- Fixed possible to retaliate a attacking stack even if the stack was killed by Fire Shield.
+
+
 ### Version 2.145
 - hotfix
 
