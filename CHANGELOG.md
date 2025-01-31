@@ -1,3 +1,53 @@
+### Version 2.148
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
+- ## update era.dll core to version 3.9.21:
+	- Included modern LuaJit2 OpenResty x86 sources and compiled lua51.dll, luajit.exe without VC++ dependecies and with partial Lua 5.2 compatibility.
+
+	- Added the following functions to Era Erm Framework:
+	```
+	  !?FU(ReadJsonIntArray);
+	  ; Reads integer array from json config into either existing dynamic array or into automatically created local one.
+	  !#VA(jsonKeyPtr:x); JSON full key like "test.guards" for { "test": { "guards": [1, 2, 3, 4] } }
+	  !#VA(intArray:x);   IN/OUT. Either existing dynamic array ID or ?(localArrayId:y).
+
+	  Example:
+
+	  !?FU(OnAfterErmInstructions);
+	  !!FU(ReadJsonIntArray):P^test.guards^/?(arr:y);
+	  !!FU(Array_Join):P(arr)/?(text:z)/^, ^;
+	  !!IF:M^%(text)^;
+	```
+	```
+	  !?FU(ReadJsonStrArray);
+	  ; Reads string array from json config into either existing dynamic array or into automatically created local one.
+	  !#VA(jsonKeyPtr:x); JSON full key like "test.names" for { "test": { "names": ["daemon", "corwin", "deo"] } }
+	  !#VA(strArray:x);   IN/OUT. Either existing dynamic array ID or ?(localArrayId:y).
+
+	  Example:
+
+	  !?FU(OnAfterErmInstructions);
+	  !!FU(ReadJsonStrArray):P^test.names^/?(arr:y);
+	  !!FU(Array_Join):P(arr)/?(text:z)/^, ^;
+	  !!IF:M^%(text)^;
+	```
+	- GenerateDebugInfo function (triggered by F11) now clears Debug directory, but preserves "log.txt". The same goes for in-game exceptions (crashes).
+	- Improved crash detection and debug information dumping during savegame generation.
+	- Fixed images path prefix to use backward slashes as path delimiters in IF:D dialogs.
+	- Fixed IF:D dialog: cancel button should be enabled by default.
+
+#### WoG:
+- added 2 new creature banks, disabled for generation by default;
+- maximum number of unique subtypes of creature banks of type "16" object per zone set to 5 by default;
+
+#### Advanced Classes Mod:
+- Fixed possibly to fail on Eagle Eye magic artillery while the opponent doesn't have Emblem of Cognizance.
+
+#### Other:
+- reorganization of the list of mods and files in them;
+
+
 ### Version 2.147
 
 #### WoG:
