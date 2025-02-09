@@ -484,19 +484,16 @@ ZVSE2
 *!OB(x)/v999/v1000:T?(type:y);          [here the type only returns 62 (prison) so there is no point checking it]
 !!TR(x)/v999/v1000:P1;
 
-
+!#DC(GEM_HERO_MAX_LVL) = 74;
 // Restrain hero level at 74 in random maps
 // by Archer30
 ; Hero can reach no more than Level 74 in random maps
 !?FU(OnAfterErmInstructions);
-*!UN:J1/?(lv:y)/d;
-*!FU&(lv)<>0:E;
-
 !!UN:C(GAME_MANAGER)/(UNC_INT)/?(gameMgr:y);
 !!UN:C(gameMgr)/128980/1/?(mapType:y);
 
 !!if&(mapType)=114;
-  !!UN:J1/74/d;
+  !!UN:J1/(GEM_HERO_MAX_LVL)/d;
 !!en;
 
 
@@ -509,7 +506,7 @@ ZVSE2
 !?FU(gem_OnCheckHeroLevelUp);
 ; Exit if there isn't a limit
 !!UN:J1/?(maxLv:y)/?(var:y);           [UN:J1 result is not reliable. Don't use it!]
-!!FU|(maxLv)<=0/(maxLv)>74:E;
+!!FU|(maxLv)<=0/(maxLv)>(GEM_HERO_MAX_LVL):E;
 
 !!SN:E5088784/(CALLCONV_FASTCALL)/(maxLv);
 !!VR(maxExp:y):Sv1;
@@ -531,16 +528,17 @@ ZVSE2
 !!UN:J4/?(radius:y);
 !!UN&(radius)<=4096:J4/i^gem_aiThinkingRadius^;
 
-
 // Disable tactics message before tactics - 0x462D98 JMP SHORT 0x462DCA
-!?FU(OnGameEnter);
 !!UN:C4599192/2/12523;
 !!UN:C4599194/4/2425393296;
 
+// JackSlater
+// Fixed a spell from shrine is hinted as "learned" when this spell is granted by an artifact
+// replace available spells with learned (hero offset 0x430 -> 0x3EA)
+!!UN:C4249977/3/2/1002;                 [40D979/3 / 2 / 03EA -> 0430]
 
 // Enable combination artifacts and 5th misc slot for RoE/AB maps
 // by Hawaiing
-!?FU(OnGameEnter);
 !!UN:C(GAME_MANAGER)/(UNC_INT)/?(gameMgr:y);
 !!UN:C(gameMgr)/128664/(UNC_INT)/?(mapExpansion:y);
 !!UN&(mapExpansion)<2:C(gameMgr)/128664/(UNC_INT)/2;
@@ -898,10 +896,10 @@ C(ebp)/8/4/?i^gem_CurrentProc_Msg^;
 // Fix messing up creature stats with stack exp after battle replay when the stack was killed with Summoned flag
 // by Archer30
 // This should be fixed in BattleReplay plugin if possible
-// Fix is needed only when the battle is visible before battle replay
 ; Discussion: http://wforum.heroes35.net/showthread.php?tid=4218&pid=139509#pid139509
-!?FU(OnBeforeBattleReplay)&i^battle_isVisible^; [Execute OnBeforeBattleReplay only when the battle was visible. Otherwise stack exp data could be corrupted!]
-*?FU(OnBattleReplay);                   [This is safer but potentially not soon enough for external scripts.]
+; Do not use OnBeforeBattleReplay! With this trigger, if there is any stack killed, the stack exp of a random stack would be reset after battle replay.
+*?FU(OnBeforeBattleReplay)&i^battle_isVisible^; 
+!?FU(OnBattleReplay);                   [This is safer but potentially not soon enough for external scripts.]
 !!UN:C(COMBAT_MANAGER)/4/?(cmbMgr:y);
 !!UN:C(cmbMgr)/21700/4/?(atkStruct:y);
 !!UN:C(cmbMgr)/21704/4/?(defStruct:y);
@@ -909,21 +907,24 @@ C(ebp)/8/4/?i^gem_CurrentProc_Msg^;
 
 // Fix missing background when battle on the sea with no boat
 // by Archer30
-; This can happen when there is a battle event on the sea and the hero uses Fly/Water Walk to get across
-; This fix will be replaced later, as ideally, events on water should not be triggered at all if the hero stepping on is not on a boat
+; This can happen when there is a battle event on the sea and the hero uses Fly/Water Walk to get across, or by moving the hero to the sea by scripts
+
+; To-do: 
+; Events on water should not be triggered at all if the hero stepping on is not on a boat
+; Event trigger is around 0x481061, it should be skipped if the hero is on water
 !?FU(gem_CreateERMHook);
 !#VA(setHook:x);
 
-!!SN:E(setHook)/1/4604702/(gem_OnDetermineBattleBackground);
+!!SN:E(setHook)/1/4604702/(gem_OnDetermineBattleBackground); 46431E
 
-!?FU(gem_OnDetermineBattleBackground)&i^battle_hero_1^=(NO_HERO);
+!?FU(gem_OnDetermineBattleBackground)|i^battle_hero_1^=(NO_HERO)/i^wog_72_randHeroActive^;
 !#VA(hook:x);
 
 !!TRi^battle_x^/i^battle_y^/i^battle_z^:T?(type:y)/?t/?t/?t/?t/?t/?t/?t;
 
 !!if&(type)=8;
   !!SN:X?t/0;
-  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/4604712;
+  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/4/4604712; 464328
 !!en;
 
 // Fix messing up spell immunity checks for stack exp spells

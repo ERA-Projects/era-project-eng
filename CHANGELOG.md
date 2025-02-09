@@ -1,3 +1,42 @@
+### Version 2.149
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- added fine-tuning for the placement of attackers and defenders in Creature Banks. For a specific subtype, you can set positions for attackers and defenders. Keep in mind that duplicate positions will place multiple units in one spot, which can lead to a crash during battle:
+	```
+	"RMG.objectGeneration.16.[object_subtype].defenderPositions": int array
+	"RMG.objectGeneration.16.[object_subtype].attackerPositions": int array
+	```
+	- changed the location of defenders in the Churchyard and the Spit;
+- updated plugin "ERA_MultilingualSupport.era":
+	- fixed crash when starting the game in debug mode;
+	- added debug file to the "DebugMaps" folder;
+- Updated Chinese localization.
+
+#### Advanced Classes Mod:
+- Improved the damage calculation of M/GM Leadership to be compatible with 3rd party scripts.
+- Sync the change in Backpack Artifacts option.
+
+#### Advanced Difficulties Mod:
+- small text adjustments
+
+#### ERA Scripts:
+- Zombie-flesheater: Fixed the hp consumption amount when Zombie-flesheater learns Strike all around.
+
+#### Game Enhancement Mod:
+- Restored Commanders'Secondary Skills Scrolling in commander's Dialog;
+- Fixed losing stack exp after battle replay
+- Spell Research: Fixed erm error in some custom maps.
+- Fixed a crash upon entering the battlefield
+- fix shrines description for spells granted by artifacts
+
+#### Human AI:
+- Fixed the compatibility with Hero Limit option.
+
+#### TrainerX:
+- Now the trainer respects wog option "Disable Cheat Codes and Menu". If the option is enabled, TrainerX would by disabled.
+
+
 ### Version 2.148
 
 #### ERA:
@@ -1647,7 +1686,7 @@ It fixed the not showing correct spell point in the battle [problem](https://dis
 - Ranged Death Stare: Now Ranged Death Stare does not work on commanders and level 8 creatures (despite level 8 creatures can be affected by Melee Death Stare). Fixed erm errors. Optimised mouse hints. Fixed erm errors. FU(ES_995_CheckIfStackAffectedByDeathStare) can be used by scripters to exclude their stack from the effect of Ranged Death Stare.
 - Night Scouting: Fixed Assassins not showing up.
 
-#### Game Enhancements Mod:
+#### Game Enhancement Mod:
 - fixed rare combat crash;
 - Update "Game Bug Fixes Extended":
 	- Fixed Force Field cursor shadow for defending player;
@@ -1698,7 +1737,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 
 ### Version 2.965
 
-#### Game Enhancements Mod:
+#### Game Enhancement Mod:
 - restored end of turn button;
 
 #### WoG Scripts:
@@ -1712,7 +1751,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 - added constants about quest types and rewards;
 - added function that refreshes all quests on the map (doesn't affect custom text);
 
-#### Game Enhancements Mod:
+#### Game Enhancement Mod:
 - added 8px offset for the drawing custom dialogs near to game window borders;;
 - removed extra pcx creation;
 
@@ -1730,7 +1769,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 
 ### Version 2.963
 
-#### Game Enhancements Mod:
+#### Game Enhancement Mod:
 - Fixed mixing of units in towns (there were pikermen in the fortress and conflux);
 
 #### WoG Scripts:
@@ -1742,7 +1781,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 
 ### Version 2.962
 
-#### Game Enhancements Mod:
+#### Game Enhancement Mod:
 - Removed hardcore memory edits;
 
 #### WoG Scripts:
@@ -1755,7 +1794,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
  
 ### Version 2.961
 
-#### Game Enhancements Mod:
+#### Game Enhancement Mod:
 - Added some 1st April scripts;
 - Hill Forts - the cost of upgrade is calculated based on the level of the upgraded monster instead of the pre-upgraded monster - thanks to Archer30;
 - Fixed maximum hero level restriction script - thanks to Archer30;
@@ -1787,7 +1826,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 #### ERA ERM Framework:
 - Added initialization of i^battle_round_^ on replay - thanks to Archer30
 
-#### Game Enhancements Mod:
+#### Game Enhancement Mod:
 - Added Flexible Cheats feature. Now all the cheat codes from RoE/AB/SoD are supported. If a cheat code is entered with other unrelated info, it would also be recognized and applied - thanks to Archer30
 - Improved the fix for mage guild in rebuilt towns (after demolishing): Now high level spells would appear in guilds. Added spell research support - thanks to Archer30
 
