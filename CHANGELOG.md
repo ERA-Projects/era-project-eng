@@ -1,3 +1,18 @@
+### Version 2.150
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era" to version 1.13:
+	- added the ability to replace properties of existing objects in texts. Now you can change the soil for generating an object without having to edit the original game files. The key to determine the replacement of properties will be the def name, type and subtype of the object;
+	- fixed the original bug of generating of the Subterranean Gates for zones with different terrains
+- added generation of snow objects INSTEAD of the usual ones on the snow terrain;
+
+#### WoG Graphics Fix Lite:
+- added all the graphics of the mod to the list of game objects, which were previously required to be added into txt-files;
+
+#### WoG Scripts:
+- Enhanced Commander's Artifacts: now artifacts will not added banned Secondary Skills 
+
+
 ### Version 2.149
 
 #### WoG:
