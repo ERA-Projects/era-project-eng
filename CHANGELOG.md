@@ -1,3 +1,62 @@
+### Version 2.151
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
+- ## updated era.dll without version changed:
+	- Switched on "NXCOMPAT:NO" flag in h3era.exe and h3wmaped.exe executables, thus signalling OS, that these executables do not support DEP (Data Execution Prevention). This change can be performed on any custom executable by running "editbin.exe /NXCOMPAT:NO path_to_exe" from Visual Studio utilities.
+	- Improved CM:H to always return valid hero IDs from SwapManager even in non-click events (-1 if no hero meeting dialog is active).
+	- Fixed memory corruption bug, leading to random crashes. The bug was introduced in version 3.9.16.
+	- Fixed Heroes 3 bug: control words of adventure map objects used to be interpreted in a wrong way due to arithmetic shift usage instead of a logical one. Thanks to MoP for information.
+
+#### WoG:
+- updated plugin "game bug fixes extended.era":
+	-  removed subterranean on the surface;
+
+#### Advanced Classes Mod:
+- Added missing text/animation/sound for Hypnotize spell casted by Succubus commander.
+- Fixed the compatibility between Nobility and Achievement option.
+- Export an embed string from erm to json.
+
+#### ERA Scripts:
+- Remagic: Fixed the missing ".es" in new spell descriptions.
+- Bounty Hunting: Fixed wrong resources name.
+- Dragon Town: Fixed possible to rebuild an Utopia when it's on the edge of map, which leads to issues afterwards.
+
+#### Game Enhancement Mod:
+- Replace the stack exp ability of casting Death Ripple (Liches/Power Liches/Nightmare) with Advanced Sorrow.
+- Removed plugins:
+	- "Hawaiing_DlgEdit_Keypad_Support.era"
+	- "Hawaiing_hero_def.era"
+	- "Hawaiing_town_def.era"
+- updated plugin "GameplayEnhancementsPlugin.era":
+	- Added Numpad keyboard support to input numbers;
+	- Added ability to set custom Adventure Map view for heroes:
+		- Set custom view for hero class male:
+		```
+		"gem_plugin.map_item_view.54.class.[class_id].0": string
+		```
+		- Set custom view for hero class female:
+		```
+		"gem_plugin.map_item_view.54.class.[class_id].1": string
+		```
+		- Set custom view for exact heroId:
+		```
+		"gem_plugin.map_item_view.54.id.[hero_id]": string
+		```
+	- Added ability to set custom Adventure Map view for different town levels:
+		- Set custom view for only fort is built:
+		```
+		"gem_plugin.map_item_view.98.[town_type].fort": string
+		```
+		- Set custom view for only citadel is built:
+		```
+		"gem_plugin.map_item_view.98.[town_type].citadel": string
+		```
+
+#### WoG Scripts:
+- Commander Witch Huts: Fixed the icon for commander primary skills.
+
+
 ### Version 2.150
 
 #### WoG:
@@ -1790,7 +1849,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 #### WoG Scripts:
 - New battlefields: non-working fields have been fixed - thanks to Yuritsuki;
 
-#### ERA scripts:
+#### ERA Scripts:
 - Machine Capture: fixed crash when capturing other artifacts;
 - Night scouting: fixed assassin switch not working;
 
@@ -1802,7 +1861,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 #### WoG Scripts:
 - Warfare: Fixed crash when AI tries to get one of Warfare Skill;
 
-#### ERA scripts:
+#### ERA Scripts:
 - Elemental Suppression: Fixed possible to lose magic skills after battle - thanks to Archer30;
 - Capture War Machines: Fixed disappearing of the captured War Machines;
 - Removed unused script and text for Capture War Machines - thanks to Archer30;
