@@ -1,3 +1,13 @@
+### Version 2.153
+
+#### WoG:
+- updated plugin "game bug fixes extended.era":
+	- now frames with bonus or penalty of luck and morale above 1 display bonus in the picture (previously always displayed 1)
+	- Fixed damage calculation for units with low defence;
+- Improved "Slayer" spell description;
+- Fixed Map Editor error messages from WoG-objects;
+
+
 ### Version 2.152
 
 - hotfix
