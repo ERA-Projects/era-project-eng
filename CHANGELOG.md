@@ -1,3 +1,25 @@
+### Version 2.154
+
+#### WoG:
+- updated plugin "game bug fixes extended.era":
+	- Hero Meeting Screen in town:
+		- added button with hotkey "E"
+		- rewritten mechanics:
+		- now works if it is active player's turn;
+		- fixed triggering town's dlg button;
+		- fixed rare bug with blocking town screen
+	- added "ESC" hotkey for the closing HMS
+- updated plugin "game bug fixes extended.era":
+	- fixed WoG ERM !!CB:M command bug: it set max monster type to 196 (Dracolich) if monster type/number was checked/set as reward if creature type was higher than 196;
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era":
+	- fixed not updating last 8 pixels of Adventure Map dialog;
+	- fixed closing any pop-up dialog if it already had another dialog called earlier;
+	- added compatibility with scripts;
+	- code refactoring and optimization;
+
+
 ### Version 2.153
 
 #### WoG:
