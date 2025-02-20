@@ -1,8 +1,14 @@
+### Version 2.156
+
+#### ERA:
+- ## update of era.dll kernel without changing the version
+
+
 ### Version 2.155
 
 #### WoG:
-- updated plugin "game bug fixes extended.era":
-	- fixed crash when right-clicking on the artifact change button together
+- updated plugin "game bug fixes extended.dll":
+	- fix for game crash when right-clicking on the "Next artifact" button in the sacrificial altar
 	- fixed SoD bug: when checking the possibility of casting spells, Sorcerers now take into account all units, not just the first on each side
 - updated plugin "RMG_CustomizeObjectProperties.era":
 	- added the ability to give mithril as a reward to creature banks (adds 8 elements to the resource reward column);
@@ -48,7 +54,7 @@
 		- fixed triggering town's dlg button;
 		- fixed rare bug with blocking town screen
 	- added "ESC" hotkey for the closing HMS
-- updated plugin "game bug fixes extended.era":
+- updated plugin "game bug fixes extended.dll":
 	- fixed WoG ERM !!CB:M command bug: it set max monster type to 196 (Dracolich) if monster type/number was checked/set as reward if creature type was higher than 196;
 
 #### Game Enhancement Mod:
@@ -62,7 +68,7 @@
 ### Version 2.153
 
 #### WoG:
-- updated plugin "game bug fixes extended.era":
+- updated plugin "game bug fixes extended.dll":
 	- now frames with bonus or penalty of luck and morale above 1 display bonus in the picture (previously always displayed 1)
 	- Fixed damage calculation for units with low defence;
 - Improved "Slayer" spell description;
@@ -85,7 +91,7 @@
 	- Fixed Heroes 3 bug: control words of adventure map objects used to be interpreted in a wrong way due to arithmetic shift usage instead of a logical one. Thanks to MoP for information.
 
 #### WoG:
-- updated plugin "game bug fixes extended.era":
+- updated plugin "game bug fixes extended.dll":
 	-  removed subterranean on the surface;
 
 #### Advanced Classes Mod:
