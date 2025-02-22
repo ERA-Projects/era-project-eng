@@ -1,3 +1,17 @@
+### Version 2.157
+
+#### WoG:
+- updated plugin "wog native dialogs.era":
+	- fixed the impossibility of meeting heroes inside the town in hotseat mode for a non-red player;
+
+#### Game Enhancement Mod:
+- Added extended dialog tooltip for the "Black Market" object:
+	- right-clicking on a visited Black Market displays a dialog with prices of all artifacts available there;
+	- hovering the mouse over an object adds the number of available artifacts to the hintbar text;
+- added text with instructions for creating an error report to the game crash message;
+- removed unnecessary files;
+
+
 ### Version 2.156
 
 #### ERA:
