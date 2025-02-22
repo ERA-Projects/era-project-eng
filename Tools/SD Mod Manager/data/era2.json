@@ -30,9 +30,6 @@
 		]
 	},
 	"Advanced Classes Mod Rus": {
-		"incompatible": [
-			"XXL"
-		],
 		"requires": [
 			"Advanced Classes Mod"
 		],

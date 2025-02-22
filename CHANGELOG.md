@@ -1,3 +1,12 @@
+### Version 2.158
+
+#### Game Enhancement Mod:
+- Restored the message about gold received after the battle for the Commander "Brute";
+
+#### Other:
+- SD Mod Manager (@SyDr) updated to version 0.98.59
+
+
 ### Version 2.157
 
 #### WoG:
