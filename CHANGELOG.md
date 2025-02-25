@@ -1,3 +1,47 @@
+### Version 2.159
+
+#### ERA:
+- ## update of era.dll kernel without changing the version:
+	- Implemented saving of additional debug information for crash reports:
+		- If crash occurs during game saving, full savegame sections info will be logged and "Debug/Era/Savegame Sections" directory with savegame contents will be created.
+		- Memory report is written to "log.txt". "PagefileUsage" is total amount of reserved memory (both in RAM and in pagefile). "WorkingSetSize" is the amount of physical RAM used by process.
+
+#### WoG:
+- updated plugin "ERA_MultilingualSupport.era":
+	- added the ability to translate text from the following txt files using json keys:
+	- artevent.txt
+	- artraits.txt
+	- crgen1.txt
+	- crtrait0.txt
+	- crtraits.txt
+	- objnames.txt
+	- zcrgn1.txt
+	- zcrtrait.txt
+	- Since these files are read when the game is launched, after changing the language in the game, it will be necessary to restart it so that the new text (if it exists) is written to the game memory over the names from the txt files;
+	- Keys for translating strings are:
+		- for Artifacts, you can replace the name, description, and text when picked up on the Adventure Map:
+		```
+		"era.artifacts.[art_id].name": string,
+		"era.artifacts.[art_id].description": string,
+		"era.artifacts.[art_id].event": string
+		```
+		- for Creatures, you can replace the singular, plural name, and ability description:
+		```
+		"era.monsters.[monster_id].name.singular": string,
+		"era.monsters.[monster_id].name.plural": string,
+		"era.monsters.[monster_id].name.description": string
+		```
+		- for Adventure Map Objects, you can replace the name of standard objects and Creature Dwellings (type 17):
+		```
+		"era.objects.[object_type]": string,
+		"era.objects.17.[object_subtype]": string
+		```
+	- in the future it is possible to support more txt files (including those related to heroes);
+
+#### WoG Scripts:
+- Karmic battles: fixed incorrect level for creatures from the Fortress;
+
+
 ### Version 2.158
 
 #### Game Enhancement Mod:
