@@ -1,3 +1,15 @@
+### Version 2.160
+
+#### ERA:
+- ## update era.dll core to version 3.9.23:
+	- Updated vfs.dll to allow getting mods list via API.
+	- Improved Era crash handling and debug reports generation:
+		- Era preallocates 5 MB and reservers another 15 MB for debug report generation in out-of-memory situations.
+		- Improved ERM memory dumping. Only 1 MB is necessary to generate report of arbitrary size.
+		- Added Era memory manager statistics logging during crashes because of running out of memory. It's written to "log.txt".
+		- Fixed wrong "Total sections size" field calculation when generating crash report during game saving.
+
+
 ### Version 2.159
 
 #### ERA:

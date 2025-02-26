@@ -1,3 +1,72 @@
+Version 3.9.23 (02/2025)
+------------------------
+[+] Updated vfs.dll to allow getting mods list via API.
+
+[+] Improved Era crash handling and debug reports generation:
+
+  - Era preallocates 5 MB and reservers another 15 MB for debug report generation in out-of-memory situations.
+  - Improved ERM memory dumping. Only 1 MB is necessary to generate report of arbitrary size.
+  - Added Era memory manager statistics logging during crashes because of running out of memory. It's written to "log.txt".
+  - Fixed wrong "Total sections size" field calculation when generating crash report during game saving.
+
+
+Version 3.9.22 (02/2025)
+------------------------
+[+] Switched on "NXCOMPAT:NO" flag in h3era.exe and h3wmaped.exe executables, thus signaling OS, that these executables do not support DEP (Data Execution Prevention).
+
+  This change can be performed on any custom executable by running "editbin.exe /NXCOMPAT:NO path_to_exe" from Visual Studio utilities.
+
+[+] Improved CM:H to always return valid hero IDs from SwapManager even in non-click events (undefined if no hero meeting dialog is active).
+
+[+] Implemented saving of additional debug information for crash reports:
+
+  - If crash occurs during game saving, full savegame sections info will be logged and "Debug/Era/Savegame Sections" directory with savegame contents will be created.
+
+  - Memory report is written to "log.txt". "PagefileUsage" is total amount of reserved memory (both in RAM and in pagefile). "WorkingSetSize" is the amount of physical RAM used by process.
+
+[-] Fixed memory corruption bug, leading to random crashes. The bug was introduced in version 3.9.16.
+
+[-] Fixed Heroes 3 bug: control words of adventure map objects used to be interpreted in a wrong way due to arithmetic shift usage instead of a logical one. Thanks to MoP for information.
+
+
+Version 3.9.21 (01/2025)
+------------------------
+[+] Included modern LuaJit2 OpenResty x86 sources and compiled lua51.dll, luajit.exe without VC++ dependecies and with partial Lua 5.2 compatibility.
+
+[+] Added the following functions to Era Erm Framework:
+
+  !?FU(ReadJsonIntArray);
+  ; Reads integer array from json config into either existing dynamic array or into automatically created local one.
+  !#VA(jsonKeyPtr:x); JSON full key like "test.guards" for { "test": { "guards": [1, 2, 3, 4] } }
+  !#VA(intArray:x);   IN/OUT. Either existing dynamic array ID or ?(localArrayId:y).
+
+  Example:
+
+  !?FU(OnAfterErmInstructions);
+  !!FU(ReadJsonIntArray):P^test.guards^/?(arr:y);
+  !!FU(Array_Join):P(arr)/?(text:z)/^, ^;
+  !!IF:M^%(text)^;
+
+
+  !?FU(ReadJsonStrArray);
+  ; Reads string array from json config into either existing dynamic array or into automatically created local one.
+  !#VA(jsonKeyPtr:x); JSON full key like "test.names" for { "test": { "names": ["daemon", "corwin", "deo"] } }
+  !#VA(strArray:x);   IN/OUT. Either existing dynamic array ID or ?(localArrayId:y).
+
+  Example:
+
+  !?FU(OnAfterErmInstructions);
+  !!FU(ReadJsonStrArray):P^test.names^/?(arr:y);
+  !!FU(Array_Join):P(arr)/?(text:z)/^, ^;
+  !!IF:M^%(text)^;
+
+[*] GenerateDebugInfo function (triggered by F11) now clears Debug directory, but preserves "log.txt". The same goes for in-game exceptions (crashes).
+[*] Improved crash detection and debug information dumping during savegame generation.
+[*] Updated offline Era installer and sources.
+[-] Fixed images path prefix to use backward slashes as path delimiters in IF:D dialogs.
+[-] Fixed IF:D dialog: cancel button should be enabled by default.
+
+
 Version 3.9.20 (01/2025)
 ------------------------
 [+] Added support for logging random number generations to log.txt. This feature is controlled by "Debug.Rng" option in "heroes 3.ini".
