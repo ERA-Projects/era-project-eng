@@ -1,3 +1,49 @@
+### Version 2.161
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
+- ## update era.dll core to version 3.9.24:
+	- Changed memory manager to FastMM4. The game uses memory manager from Era now and manages separate allocation statistics.
+	- Implemented detailed game, Era and plugins allocated memory tracking. Memory report is written to "log.txt" on crash or "OnGenerateDebugInfo" event (triggered by F11).
+	- Exported the following function in era.dll:
+		- Memory functions, which are common for game and Era engine now. They will be used in Era SDK to redirect plugins memory managers to Era memory manager
+		```
+		function MemAlloc (BufSize: integer): {n} pointer; stdcall;
+		```
+		```
+		procedure MemFree ({On} Buf: pointer); stdcall;
+		```
+		```
+		function MemRealloc (var {On} Buf: pointer; NewBufSize: integer): {n} pointer; stdcall;
+		```
+		- Registers memory consumer (plugin with custom memory manager) and returns address of allocated memory counter, which consumer should atomically increase and decrease in malloc/calloc/realloc/free operations:
+		```
+		function RegisterMemoryConsumer (ConsumerName: pchar): pinteger; stdcall;
+		```
+	- Improved detection of invalid usage of Era memory buffers from Era API by plugins. Attempts to free result buffers using other memory manager API were ignored previously and will most probably cause crashes now.
+	- Fixed memory leak in LoadPcx8: pcx8 stub image was created on any GetPcx8 request if corresponding png replacement existed and stub was not registered propertly in the game resource tree, which leaded to out-of-memory errors and could lead to savegame corruption.
+
+#### WoG:
+- updated plugin "wog native dialogs.era":
+	- critical fix for plugin memory management;
+- updated plugin "game bug fixes extended.dll":
+	- critical fix for plugin memory management;
+- updated plugin "RMG_CustomizeObjectProperties.era":
+	- removed extra text in reward message after looting creature bank;
+- Fixed text when visiting Warehouses.
+
+#### WoG Scripts:
+- "Tavern Card Games" option: the game will no longer replace objects with taverns on random maps;
+- "Eagle Eye I" option: added a function to set the maximum level of a spell that a hero can learn when leveling up:
+```
+!?FU(WOG_103_Hero_GetMaxSpellLevel);
+!#VA(heroId:x) (result:x);
+```
+
+#### Game Enhancement Mod:
+- minor corrections in mod texts;
+
+
 ### Version 2.160
 
 #### ERA:

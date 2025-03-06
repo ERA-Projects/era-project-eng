@@ -1,3 +1,24 @@
+Version 3.9.24 (03/2025)
+------------------------
+[+] Changed memory manager to FastMM4. The game uses memory manager from Era now and manages separate allocation statistics.
+[+] Implemented detailed game, Era and plugins allocated memory tracking. Memory report is written to "log.txt" on crash or "OnGenerateDebugInfo" event (triggered by F11).
+
+[+] Exported the following function in era.dll:
+
+  // Memory functions, which are common for game and Era engine now. They will be used in Era SDK to redirect plugins memory managers to Era memory manager
+  function MemAlloc (BufSize: integer): {n} pointer; stdcall;
+  procedure MemFree ({On} Buf: pointer); stdcall;
+  function MemRealloc (var {On} Buf: pointer; NewBufSize: integer): {n} pointer; stdcall;
+
+  // Registers memory consumer (plugin with custom memory manager) and returns address of allocated memory counter, which
+  // consumer should atomically increase and decrease in malloc/calloc/realloc/free operations.
+  function RegisterMemoryConsumer (ConsumerName: pchar): pinteger; stdcall;
+
+[+] Improved detection of invalid usage of Era memory buffers from Era API by plugins. Attempts to free result buffers using other memory manager API were ignored previously and will most probably cause crashes now.
+
+[-] Fixed memory leak in LoadPcx8: pcx8 stub image was created on any GetPcx8 request if corresponding png replacement existed and stub was not registered propertly in the game resource tree, which leaded to out-of-memory errors and could lead to savegame corruption.
+
+
 Version 3.9.23 (02/2025)
 ------------------------
 [+] Updated vfs.dll to allow getting mods list via API.
