@@ -61,8 +61,8 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./era-project-${{ env.VERSION }}.zip
-          asset_name: era-project-${{ env.VERSION }}.zip
+          asset_path: ./era-project-eng-${{ env.VERSION }}.zip
+          asset_name: era-project-eng-${{ env.VERSION }}.zip
           asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
