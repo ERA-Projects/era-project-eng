@@ -1,0 +1,82 @@
+name: Release Maker
+
+on:
+  #schedule:
+  #  - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch: # Allows manual execution
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get current version
+        id: version
+        run: |
+          VERSION=$(awk -F= '/^Version/{print $2}' ERA_Project.ini | tr -d ' \r')
+          CLEAN_VERSION=$(echo "$VERSION" | tr -d '.')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
+
+      - name: Get latest release
+        id: latest_release
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/ERA-Projects/era-project-eng/releases/latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compare versions
+        id: compare
+        run: |
+          LATEST_VERSION=$(echo '${{ steps.latest_release.outputs.data }}' | jq -r '.tag_name')
+          if [ "$VERSION" != "$LATEST_VERSION" ]; then
+            echo "NEW_VERSION=true" >> $GITHUB_ENV
+          else
+            echo "NEW_VERSION=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create archive
+        if: env.NEW_VERSION == 'true'
+        run: |
+          zip -r era-project-eng-${{ env.VERSION }}.zip . -x ".git*" "some_large_folder/*"
+
+      - name: Create draft release
+        if: env.NEW_VERSION == 'true'
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body: "[Changelog](https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md#version-${{ env.CLEAN_VERSION }})"
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload archive to release
+        if: env.NEW_VERSION == 'true'
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./era-project-${{ env.VERSION }}.zip
+          asset_name: era-project-${{ env.VERSION }}.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish release if successful
+        if: success()
+        run: |
+          gh release edit ${{ env.VERSION }} --draft=false --repo ERA-Projects/era-project-eng
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete draft release if failed
+        if: failure()
+        run: |
+          gh release delete "${{ env.VERSION }}" --yes --repo ERA-Projects/era-project-eng
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
