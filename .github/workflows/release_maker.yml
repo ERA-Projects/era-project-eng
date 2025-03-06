@@ -1,8 +1,8 @@
 name: Release Maker
 
 on:
-  #schedule:
-  #  - cron: '0 * * * *' # Runs every hour
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
   workflow_dispatch: # Allows manual execution
 
 jobs:
