@@ -1,3 +1,25 @@
+### Version 2.164
+
+#### Game Enhancement Mod:
+- Now you can use cheat codes in Hot Seat games.
+
+#### ERA Scripts:
+- Achievements: Fixed the text of Inspector achievement.
+
+#### WoG Scripts:
+- Henchmen:
+	- Fixed a bug that setting a new henchman affecting the stack exp of the remaining troops in the stack.
+	- Fixed not returning correct number of Warlord's Banner when setting a henchman.
+- Map Rules:
+	- Starting hero with 5th level: now game giving experience after all messages shown and works only for active player
+ 
+#### Easy Cheats:
+- Added the management of Open Puzzle Map cheat. You can now enter 'puzzle' to open the puzzle map.
+
+#### Quick Saving Mod:
+- You can now press "S" button to quickly save your game, or Ctrl/Shift/Alt+S to enter the save game dialogue.
+
+
 ### Version 2.163
 
 - hotfix
