@@ -1,3 +1,37 @@
+### Version 2.165
+
+#### ERA:
+- ## update of era.dll kernel without changing the version:
+	- Exported the following functions in era.dll:
+		- procedure LogMemoryState
+		- Appends entry to "log.txt" file in the following form: >> [EventSource]: [Operation] #13#10 [Description]:
+			- function WriteLog (EventSource, Operation, Description: pchar): TInt32Bool;
+			- Example:
+			```
+			WriteLog("SaveGame", "Save monsters section", "Failed to detect monster array size") *)
+			```
+
+#### Game Enhancement Mod:
+- The following plugins have been updated to support ERA memory manager:
+	- "ChooseAttack.dll"
+	- "GameplayEnhancementsPlugin.era"
+
+#### WoG:
+- The following plugins have been updated to support ERA memory manager:
+	- "wog native dialogs.era"
+	- "game bug fixes extended.dll"
+	- "RMG_CustomizeObjectProperties.era"
+	- "ERA_MultilingualSupport.era"
+
+- updated plugin "ERA_MultilingualSupport.era" up to version 1.04:
+	- fixed dialog memory leaking
+- updated plugin "RMG_CustomizeObjectProperties.era" up to version 1.14:
+	- fixed dialog memory leaking
+
+#### other:
+- updated ERA SDK. Path is "/Tools/Era/SDK";
+
+
 ### Version 2.164
 
 #### Game Enhancement Mod:

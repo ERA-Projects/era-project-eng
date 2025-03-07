@@ -291,7 +291,7 @@ ERA_API int32_bool (__stdcall *SaveIni) (const char* FilePath);
  * Installs new hook at specified address. Returns pointer to bridge with original code if any. Optionally specify address of a pointer to write applied patch structure
  * pointer to. It will allow to rollback the patch later. MinCodeSize specifies original code size to be erased (nopped). Use 0 in most cases.
  *
- * In case of bridge cook type calls handler function, when execution reaches specified address. Handler receives THookContext pointer.
+ * In case of bridge hook type calls handler function, when execution reaches specified address. Handler receives THookContext pointer.
  * If it returns true, overwritten commands are executed. Otherwise overwritten commands are skipped.
  * Change Context.RetAddr field to return to specific address after handler finishes execution with FALSE result.
  * The hook bridge code is always thread safe.
@@ -358,6 +358,12 @@ ERA_API static_str (__stdcall *GetProcessGuid) ();
 
 /** Returns IDs of game root dialog and current dialog. The first item in dialog class VMT tables is used as ID */
 ERA_API void (__stdcall *GetGameState) (TGameState* GameState);
+
+/**
+ * Appends entry to "log.txt" file in the following form: >> [EventSource]: [Operation] #13#10 [Description].
+ * Example: WriteLog("SaveGame", "Save monsters section", "Failed to detect monster array size")
+ */
+ERA_API int32_bool (__stdcall *WriteLog) (const char* EventSource, const char* Operation, const char* Description);
 // ===================== END DEBUG AND INFO ===================== //
 
 
@@ -402,8 +408,17 @@ ERA_API void (__stdcall *GlobalRedirectFile) (const char* OldFileName, const cha
  */
 ERA_API static_str (__stdcall *ToStaticStr) (const char* Str);
 
-/** Releases memory, allocated by Era. Such memory blocks are marked with ERA_MEM() in API */
-ERA_API void (__stdcall *MemFree) (const void* buf);
+/** Releases memory block, allocated by Era's memory manager */
+ERA_API void (__stdcall *MemFree) (const void* Buf);
+
+/**
+ * Registers memory consumer (plugin with own memory manager) and returns address of allocated memory counter, which
+ * consumer should atomically increase and decrease in malloc/calloc/realloc/free operations.
+ */
+ERA_API size_t* (__stdcall *RegisterMemoryConsumer) (const char* ConsumerName);
+
+/* Writes memory consumption info to main log file */
+ERA_API void (__stdcall *LogMemoryState) ();
 
 /** Informs Era about moved game array or structure into another location. Specify old array address, old array size and new address */
 ERA_API void (__stdcall *RedirectMemoryBlock) (void* OldAddr, int BlockSize, void* NewAddr);

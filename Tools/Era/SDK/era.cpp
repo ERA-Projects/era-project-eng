@@ -12,7 +12,7 @@ float*    e = (float*)    0xA48F14; // 1..100
 
 HINSTANCE hEra = LoadLibraryA("era.dll");
 HINSTANCE hPlugin = 0;
-TPlugin   Plugin = nullptr;
+TPlugin   plugin = nullptr;
 
 #define ERA_IMPORT(funcName) decltype(funcName) funcName = reinterpret_cast<decltype(funcName)>(GetProcAddress(hEra, #funcName))
 #define ERA_IMPORT_RENAMED(origName, newName) decltype(newName) newName = reinterpret_cast<decltype(newName)>(GetProcAddress(hEra, #origName))
@@ -31,7 +31,6 @@ ERA_IMPORT(FatalError);
 ERA_IMPORT(FindNextObject);
 ERA_IMPORT(FireErmEvent);
 ERA_IMPORT(FireEvent);
-ERA_IMPORT(FormatQuantity);
 ERA_IMPORT(FormatQuantity);
 ERA_IMPORT(FreeAppliedPatch);
 ERA_IMPORT(GenerateDebugInfo);
@@ -57,6 +56,7 @@ ERA_IMPORT(IsCampaign);
 ERA_IMPORT(IsCommanderId);
 ERA_IMPORT(IsPatchOverwritten);
 ERA_IMPORT(LoadImageAsPcx16);
+ERA_IMPORT(LogMemoryState);
 ERA_IMPORT(MemFree);
 ERA_IMPORT(MergeIniWithDefault);
 ERA_IMPORT(NameColor);
@@ -72,6 +72,7 @@ ERA_IMPORT(ReadStrFromIni);
 ERA_IMPORT(RedirectFile);
 ERA_IMPORT(RedirectMemoryBlock);
 ERA_IMPORT(RegisterHandler);
+ERA_IMPORT(RegisterMemoryConsumer);
 ERA_IMPORT(ReloadErm);
 ERA_IMPORT(ReloadLanguageData);
 ERA_IMPORT(ReportPluginVersion);
@@ -95,6 +96,7 @@ ERA_IMPORT(ToStaticStr);
 ERA_IMPORT(trStatic);
 ERA_IMPORT(trTemp);
 ERA_IMPORT(WriteAtCode);
+ERA_IMPORT(WriteLog);
 ERA_IMPORT(WriteSavegameSection);
 ERA_IMPORT(WriteStrToIni);
 ERA_IMPORT_RENAMED(GetVersion, GetEraVersion);
@@ -105,7 +107,23 @@ ERA_IMPORT_RENAMED(tr, _tr);
 std::string GetModuleFileName (HINSTANCE hInstance)
 {
   char buf[256];
-  GetModuleFileNameA(hInstance, buf, sizeof(buf));
+
+  buf[0]             = 0;
+  size_t filePathLen = GetModuleFileNameA(hInstance, buf, sizeof(buf));
+
+  if (filePathLen > 0) {
+    int i = filePathLen - 1;
+
+    while (i && buf[i] != '\\') {
+      i--;
+    }
+
+    if (buf[i] == '\\') {
+      i++;
+    }
+
+    return (char*) &buf[i];
+  }
 
   return buf;
 }
@@ -119,21 +137,21 @@ void ConnectEra (HINSTANCE PluginDllHandle, const char* PluginName)
     finalPluginName = PluginName;
   }
 
-  Plugin = CreatePlugin(finalPluginName.c_str());
+  plugin = CreatePlugin(finalPluginName.c_str());
 
-  if (!Plugin) {
+  if (!plugin) {
     FatalError((std::string("Duplicate registered plugin: ") + GetModuleFileName(PluginDllHandle)).c_str());
   }
 }
 
 void* Hook (void* Addr, THookHandler HandlerFunc, void** AppliedPatch, int MinCodeSize, THookType HookType)
 {
-  return _Hook(Plugin, Addr, HandlerFunc, AppliedPatch, MinCodeSize, HookType);
+  return _Hook(plugin, Addr, HandlerFunc, AppliedPatch, MinCodeSize, HookType);
 }
 
 void* Splice (void* OrigFunc, void* HandlerFunc, int CallingConv, int NumArgs, int* CustomParam, void** AppliedPatch)
 {
-  return _Splice(Plugin, OrigFunc, HandlerFunc, CallingConv, NumArgs, CustomParam, AppliedPatch);
+  return _Splice(plugin, OrigFunc, HandlerFunc, CallingConv, NumArgs, CustomParam, AppliedPatch);
 }
 
 static_str tr (const char* key)
@@ -180,3 +198,101 @@ void SetPcharValue (char *Buf, const char *NewValue, int BufSize)
 }
 
 } // .namespace Era
+
+namespace EraMemory {
+
+void* (__stdcall *_ClientMemAlloc) (volatile size_t* allocatedSize, size_t Size);
+void (__stdcall *_ClientMemFree) (volatile size_t* allocatedSize, const void* Buf);
+void* (__stdcall *_ClientMemRealloc) (volatile size_t* allocatedSize, const void* Buf, size_t NewSize);
+size_t* (__stdcall *RegisterMemoryConsumer) (const char* ConsumerName);
+
+HINSTANCE hEra = nullptr;
+volatile size_t* allocatedMemorySize = nullptr;
+
+HMODULE GetCurrentModuleHandle () {
+  HMODULE result = nullptr;
+
+  GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, reinterpret_cast<LPCSTR>(&GetCurrentModuleHandle), &result);
+
+  return result;
+}
+
+void InitMemoryManager () {
+  if (!hEra) {
+    char pluginLibraryPath[256];
+
+    hEra = LoadLibraryA("era.dll");
+
+    _ClientMemAlloc        = reinterpret_cast<decltype(_ClientMemAlloc)>(GetProcAddress(hEra,        "_ClientMemAlloc"));
+    _ClientMemFree         = reinterpret_cast<decltype(_ClientMemFree)>(GetProcAddress(hEra,         "_ClientMemFree"));
+    _ClientMemRealloc      = reinterpret_cast<decltype(_ClientMemRealloc)>(GetProcAddress(hEra,      "_ClientMemRealloc"));
+    RegisterMemoryConsumer = reinterpret_cast<decltype(RegisterMemoryConsumer)>(GetProcAddress(hEra, "RegisterMemoryConsumer"));
+
+    pluginLibraryPath[0]    = 0;
+    size_t filePathLen      = GetModuleFileNameA(GetCurrentModuleHandle(), pluginLibraryPath, sizeof(pluginLibraryPath));
+    char* pluginLibraryName = pluginLibraryPath;
+
+    if (filePathLen > 0) {
+      int i = filePathLen - 1;
+
+      while (i && pluginLibraryPath[i] != '\\') {
+        i--;
+      }
+
+      if (pluginLibraryPath[i] == '\\') {
+        i++;
+      }
+
+      pluginLibraryName = &pluginLibraryPath[i];
+    }
+
+    allocatedMemorySize = RegisterMemoryConsumer(pluginLibraryName);
+  }
+}
+
+} // .namespace EraMemory
+
+// void* malloc (size_t size) {
+//   EraMemory::InitMemoryManager();
+
+//   return EraMemory::_ClientMemAlloc(EraMemory::allocatedMemorySize, size);
+// }
+
+// void free (void* ptr) {
+//   EraMemory::InitMemoryManager();
+//   EraMemory::_ClientMemFree(EraMemory::allocatedMemorySize, ptr);
+// }
+
+// void* realloc (void* ptr, size_t new_size) {
+//   EraMemory::InitMemoryManager();
+
+//   return EraMemory::_ClientMemRealloc(EraMemory::allocatedMemorySize, ptr, new_size);
+// }
+
+// void* calloc (size_t num, size_t size) {
+//   EraMemory::InitMemoryManager();
+
+//   return EraMemory::_ClientMemAlloc(EraMemory::allocatedMemorySize, num * size);
+// }
+
+void* operator new (size_t size) {
+  EraMemory::InitMemoryManager();
+
+  return EraMemory::_ClientMemAlloc(EraMemory::allocatedMemorySize, size);
+}
+
+void operator delete (void* ptr) noexcept {
+  EraMemory::InitMemoryManager();
+  EraMemory::_ClientMemFree(EraMemory::allocatedMemorySize, ptr);
+}
+
+void* operator new[] (size_t size) {
+  EraMemory::InitMemoryManager();
+
+  return EraMemory::_ClientMemAlloc(EraMemory::allocatedMemorySize, size);
+}
+
+void operator delete[] (void* ptr) noexcept {
+  EraMemory::InitMemoryManager();
+  EraMemory::_ClientMemFree(EraMemory::allocatedMemorySize, ptr);
+}
