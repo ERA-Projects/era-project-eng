@@ -1,3 +1,10 @@
+### Version 2.168
+
+#### WoG:
+- updated plugin "wog native dialogs.era":
+	- removed debug message before opening some dialogs with pictures;
+
+
 ### Version 2.167
 
 #### Game Enhancement Mod:
