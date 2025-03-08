@@ -1,3 +1,11 @@
+### Version 2.167
+
+#### Game Enhancement Mod:
+- updated plugin "ChooseAttack.dll":
+	- removed question about auto battle start
+	- attempt to fix some crashes
+
+
 ### Version 2.166
 
 - hotfix
