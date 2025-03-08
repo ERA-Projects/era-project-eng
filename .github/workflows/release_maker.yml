@@ -8,6 +8,10 @@ on:
 jobs:
   check-version:
     runs-on: ubuntu-latest
+    outputs:
+      NEW_VERSION: ${{ steps.compare.outputs.NEW_VERSION }}
+      VERSION: ${{ steps.version.outputs.VERSION }}
+      CLEAN_VERSION: ${{ steps.version.outputs.CLEAN_VERSION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,6 +23,8 @@ jobs:
           CLEAN_VERSION=$(echo "$VERSION" | tr -d '.')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_OUTPUT
 
       - name: Get latest release
         id: latest_release
@@ -34,49 +40,70 @@ jobs:
           LATEST_VERSION=$(echo '${{ steps.latest_release.outputs.data }}' | jq -r '.tag_name')
           if [ "$VERSION" != "$LATEST_VERSION" ]; then
             echo "NEW_VERSION=true" >> $GITHUB_ENV
+            echo "NEW_VERSION=true" >> $GITHUB_OUTPUT
           else
             echo "NEW_VERSION=false" >> $GITHUB_ENV
+            echo "NEW_VERSION=false" >> $GITHUB_OUTPUT
           fi
 
+  release:
+    needs: check-version
+    if: needs.check-version.outputs.NEW_VERSION == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Create archive
-        if: env.NEW_VERSION == 'true'
         run: |
-          zip -r era-project-eng-${{ env.VERSION }}.zip . -x ".git*" "some_large_folder/*"
+          zip -r era-project-eng-${{ needs.check-version.outputs.VERSION }}.zip . -x ".git*" "some_large_folder/*"
 
       - name: Create draft release
-        if: env.NEW_VERSION == 'true'
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          body: "[Changelog](https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md#version-${{ env.CLEAN_VERSION }})"
+          tag_name: ${{ needs.check-version.outputs.VERSION }}
+          release_name: Release ${{ needs.check-version.outputs.VERSION }}
+          body: "[Changelog](https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md#version-${{ needs.check-version.outputs.CLEAN_VERSION }})"
           draft: true
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload archive to release
-        if: env.NEW_VERSION == 'true'
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./era-project-eng-${{ env.VERSION }}.zip
-          asset_name: era-project-eng-${{ env.VERSION }}.zip
+          asset_path: ./era-project-eng-${{ needs.check-version.outputs.VERSION }}.zip
+          asset_name: era-project-eng-${{ needs.check-version.outputs.VERSION }}.zip
           asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish release if successful
-        if: success()
         run: |
-          gh release edit ${{ env.VERSION }} --draft=false --repo ERA-Projects/era-project-eng
+          gh release edit ${{ needs.check-version.outputs.VERSION }} --draft=false --repo ERA-Projects/era-project-eng
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete draft release if failed
         if: failure()
         run: |
-          gh release delete "${{ env.VERSION }}" --yes --repo ERA-Projects/era-project-eng
+          gh release delete "${{ needs.check-version.outputs.VERSION }}" --yes --repo ERA-Projects/era-project-eng
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  post_changelog:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Send Message to Discord
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
+          webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
+          message: "**The <@&800035036983984160> has been updated to version ${{ needs.check-version.outputs.VERSION }}**\nA big THANK YOU for your donations! They encourage me to work on the Assembly!\n## [Changelog on GitHub](<https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md#version-${{ needs.check-version.outputs.CLEAN_VERSION }}>)\nPlease launch ⁠<#832999696858480670> to get the update"
+          file: "CHANGELOG.md"
