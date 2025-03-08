@@ -105,5 +105,5 @@ jobs:
         with:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
-          message: "**The <@&800035036983984160> has been updated to version ${{ needs.check-version.outputs.VERSION }}**\nA big THANK YOU for your donations! They encourage me to work on the Assembly!\n## [Changelog on GitHub](<https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md#version-${{ needs.check-version.outputs.CLEAN_VERSION }}>)\nPlease launch ⁠<#832999696858480670> to get the update"
+          message: "**The <@&800035036983984160> has been updated to version ${{ needs.check-version.outputs.VERSION }}**\nA big THANK YOU for your donations! They encourage me to work on the Assembly!\n## [Changelog on GitHub](<https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md#version-${{ needs.check-version.outputs.CLEAN_VERSION }}>)\nPlease launch <#832999696858480670> to get the update"
           file: "CHANGELOG.md"
