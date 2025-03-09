@@ -1,3 +1,13 @@
+### Version 2.171
+
+#### WoG Graphics Fix Lite:
+- Updated to version 2.21.0
+
+#### other:
+- updated sources and SDK of the Era kernel;
+- Edited json file names according to the standard;
+
+
 ### Version 2.170
 
 #### HD-Mod:
