@@ -1,13 +1,16 @@
 [![Github Downloads](https://img.shields.io/github/downloads/ERA-Projects/era-project-eng/total)](https://github.com/ERA-Projects/era-project-eng/releases)
 [![ERA Discord Invite](https://img.shields.io/discord/665742159307341827?color=%237289DA&label=chat&logo=discord&logoColor=white)](https://discord.gg/bvfJGZe)
-
-# ERA Project (English version)
-## This repository is used to develop and publish releases of the **English version** of the ERA Project
 > [!IMPORTANT]
 > ### [ERA Project (Russian version) repository](https://github.com/ERA-Projects/era-project-rus)
+# ERA Project (English version)
+## This repository is used to develop and publish releases of the **English version** of the ERA Project
 
+
+> ## [Changelog](https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md)
 
 # Game installation
+> [!NOTE]
+> ## To get the latest version of the project, download it from [RELEASES](https://github.com/ERA-Projects/era-project-eng/releases/latest)
 ## 1. Automatic game installation:
 - Download [Heroes Launcher from here](https://github.com/HeroesLauncher/heroeslauncher/releases) and install **NOT** in the system folder;
 - Select the "**ERA**" tab in the game list;
@@ -55,6 +58,8 @@
 - Run the file ["h3era HD.exe"](h3era%20HD.exe) to start the game;
 
 # Game update
+> [!TIP]
+> ## It is recommended to use [Heroes Launcher](https://github.com/HeroesLauncher/heroeslauncher/releases) to get updates
 ## 1. Automatic game update:
 - Launch the previously installed [Heroes Launcher](https://github.com/HeroesLauncher/heroeslauncher/releases)
 - Click the "Gear" button next to the "Play" button;
@@ -64,7 +69,7 @@
 ## 2. Manual game update:
 - [**Download the latest release**](https://github.com/ERA-Projects/era-project-eng/releases/latest) of this repository;
 - Make sure that there were no deleted files in "Mods" between the installed version and the new one;
-        - If any mod had such files, it is highly recommended to delete the folder of this mod from the folder with the installed game;
+    - If any mod had such files, it is highly recommended to delete the folder of this mod from the folder with the installed game;
 - Unpack the files from the downloaded archive into the folder with the installed game, replacing files whose size or date differs;
 
 # Uninstalling the game
@@ -77,10 +82,3 @@
 
 ## 2. Manually uninstalling the game:
 - Delete the game folder;
-
-> [!NOTE]
-> ## To get the latest version of the project, download it from [RELEASES](https://github.com/ERA-Projects/era-project-eng/releases/latest)
-
-> [!TIP]
-> ## It is recommended to use [Heroes Launcher](https://github.com/HeroesLauncher/heroeslauncher/releases) to get updates
-> ## [Changelog](https://github.com/ERA-Projects/era-project-eng/blob/main/CHANGELOG.md)
