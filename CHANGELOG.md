@@ -1,5 +1,40 @@
 ### Version 2.171
 
+#### WoG:
+- updated the plugin "ERA_MultilingualSupport.era" to version 1.07:
+	- changed the format for displaying localization names;
+	- fixed the address for receiving creature dwellings for localization from json;
+	- fixed incorrect pointers to creature names set from outside;
+- updated the plugin "RMG_CustomizeObjectProperties.era" to version 1.18:
+	- added support for custom rewards for any creature bank:
+		- mithril;
+		- experience;
+		- spell points;
+		- primary parameters;
+		- morale;
+		- luck;
+		- spells (up to 4):
+			- ability to specify the exact index of the spell;
+			- ability to specify parameters for generating spells;
+## more details in the help inside the RMG dialog
+	- Now the plugin allows you to edit the protection and reward of the original creature banks, and not just the added ones;
+	- Now the data entered in the RMG dialog does not require extra clicks for confirmation and changes immediately when entering numbers;
+	- fixed a crash when generating spell scrolls;
+- renamed and reformatted almost all json files of the mod;
+- fixed mixed up portraits of some monsters when playing with hd mod;
+
+#### ERA Scripts:
+- Use of Scrolls, Banners and Artifacts: Fixed not giving proper amount of spell points when dismantling spell scrolls.
+
+#### WoG Scripts:
+- Prevent placing Lost Bottles when the passability isn't ideal (as Lost bottles cannot be visited from above)
+- Fixed banned spells cannot appear in Shrines no matter what combination of wog options.
+- Fixed not possible to ban View Earth from heroes' starting spells.
+- Fixed not possible to ban Barbarian's Axe of Ferocity.
+- Enhanced War Machines I:
+	- Fixed not possible to disable the war machines summoned by Hierophants and Ogre Leaders.
+	- Fixed data sync in multiplayer games.
+	
 #### WoG Graphics Fix Lite:
 - Updated to version 2.21.0
 
