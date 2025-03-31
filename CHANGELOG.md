@@ -1,3 +1,18 @@
+### Version 2.172
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era" to version 1.20:
+	- help dialog message replaced with a full-fledged dialog;
+	- added link to the tool for creating and editing Creature Banks;
+	- improved dialog hints for some objects;
+	- added the ability to limit skills in universities;
+	- added the ability to create magic shrines with a specific spell (type 89/subtype - spell id +1)
+	- fixed crash when trying to display a dialog with rewards for plundering a Creature Bank without original rewards;
+	- fixed crash when generating spells for creature banks;
+- updated plugin "game bug fixes extended.dll":
+	- fixed bug with registering university visits by players;
+
+
 ### Version 2.171
 
 #### WoG:
