@@ -1,3 +1,12 @@
+### Version 2.173
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era" to version 1.21:
+	- Added support for adding up to 4 specific artifacts as a reward to the Creature Bank;
+	- fixed an error with filling the array with random artifacts;
+	- fixed an error reading the key with a chance of upgraded creatures for guards;
+
+
 ### Version 2.172
 
 #### WoG:
