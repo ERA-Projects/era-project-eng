@@ -1,3 +1,15 @@
+### Version 2.174
+
+#### WoG:
+- updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.22:
+	- now after saving the game, the array of custom awards will not be re-created;
+	- fixed display of names and descriptions for some objects;
+	- fixed inability to change object generation limits in the dialog if the entered value is already 0;
+
+#### Game Enhancement Mod:
+- compatibility with other mods has been added to the script for setting new hero sprites in battle
+
+	
 ### Version 2.173
 
 #### WoG:
