@@ -1,3 +1,13 @@
+### Version 2.175
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era" to version 1.23:
+- added the ability to have a modified appearance of the Creature Bank depending on its level;
+
+#### other:
+- updated plugins to support older versions of operating systems;
+
+
 ### Version 2.174
 
 #### WoG:
