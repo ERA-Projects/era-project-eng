@@ -1,3 +1,52 @@
+### Version 2.176
+
+#### ERA:
+	- ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
+- ## update era.dll core to version 3.9.26:
+	- Implemented detailed game context dumping in "exception context.txt" on crash
+	- Fixed bug in hooked Heroes 3 "free" function: WoG static addresses were not excluded from processing, which leaded to corrupted counter of allocated bytes and random crashes.
+
+#### Advanced Classes Mod:
+- Most abilities that reduces/steals creature stats on the battlefield now can only set the Speed to minimum of 3 (instead of 2).
+- Estates Specialists now provides 5% bonus to the gold of Estates each level.
+- Fixed messy Ammo Cart description.
+- Fixed the issue that Fire Mage not attacking with Fire Ball sometimes.
+- Fixed the compatibility between Nobility and 8th Creatures (from Third Upgrade Mod).
+- Fixed the issue of unexpected resistance effect in all the scenarios (thanks to daemon_n and Yuritsuki).
+- Fixed wrong Estates effect for Estates specialists.
+- Temporarily fixed the issue of getting wrong speed by using Hunter class. The solution should be tweaked later.
+- Fixed wrong description of General commander.
+- Eagle Eye can no longer kill an entire stack of creatures (minimum HP is now 1). This prevents potential game freezes when the last enemy stack is eliminated by Eagle Eye.
+- Fixed an issue with spell piercing—it now works correctly against spell-immune targets.
+- Fixed a bug where +350 gold specialists were providing more resources than their speciality description indicated.
+- Fixed multiple issues with the Fire Mage commander class:
+	- They now receive kill counts normally.
+	- They cannot advance to the Ancient class if it is not unlocked in the game.
+	- They no longer skip advancement opportunities to Ancient in certain cases.
+- Booby Trap for Ammo Carts now triggers after the Ammo Cart is destroyed, instead of before.
+
+#### Enhanced Henchmen:
+- Warlord's Banner equipped by a henchman now behaves like commander artifacts on commanders: You can equip or unequip it freely when the henchman is killed. The banner will stay with the henchman even if the hero loses a battle.
+
+#### ERA Scripts
+- Battle Experience: Fixed wrong creature stats after battle replay.
+
+GEM:
+- Fixed a bug where sometimes a hero could appear in a tavern even when already recruited by another player.
+
+#### TrainerX:
+- Added a temporary method of removing Boats for Remove Object feature.
+
+#### WoG Scripts:
+- Estates I&II: Fixed details for Estates specialists
+- Treasure Chest 2: Fixed a bug that occupying the last mine through Treasure Chest 2 might result in not possible to beat a map.
+- Possibly fixed the unknown error when using HE:S commands in scripts.
+- Transfer owner now works once per week for each mine or town. This is to prevent spamming battles.
+- Master of Life no longer upgrades creatures owned by heroes with no owner.
+- Fixed the text description error of Scouting II.
+- Fixed Learning I not showing which primary skill is granted when a hero gains a new level.
+
+
 ### Version 2.175
 
 #### WoG:

@@ -1,9 +1,66 @@
+Version 3.9.26 (04/2025)
+------------------------
+[+] Implemented detailed game context dumping in "exception context.txt" on crash.
+
+  The format is the following:
+
+  > Game context: [Dialog Name] dialog (tag1, tag2...)
+
+  Possible dialog names:
+
+    "Adventure Map", "Adventure Actions", "Adventure Popup", "Combat Settings", "Combat Log", "Combat", "Dialog", "Dimension Door", "Sink Ship,", "Hero", "Hill Fort", "Hero LevelUp", "Kingdom Overview", "Puzzle", "Journal", "Dwelling", "Altar of Sacrifice", "Skeleton Transformer,", "Scenario Info", "Saving", "Spell Book", "Hero Meeting", "Adventure Settings", "Select Town", "Town", "Thieves Guild", "Town Hall", "Mage Guild,", "Leave Creatures", "Garrison", "Blacksmith", "Shipyard / WoG DL", "Building Info", "Tavern", "Fort", "Resource Exchange", "Resource Transfer,", "Buy Artifacts", "Sell Artifacts", "Freelancers Guild", "University", "Monster Info", "World Overview".
+
+  By default singleplayer human turn is assumed. Possible tags:
+
+    - AI turn: on AI turn only
+    - HotSeat: if game type is Hot Seat
+    - Network: for any network game type (TCP, direct connection, lobby, etc)
+    - Host:    if current PC is a host in a network game
+    - Client:  if current PC is a clent in a network game
+    - Combat   if combat takes place
+
+    - AI vs AI:       for full AI combat
+    - AI vs Human:    combat, where AI hero attacked human
+    - Human vs AI:    combat, where human hero attack AI
+    - Human vs Human: combat, where human hero attack human
+
+[-] Fixed bug in hooked Heroes 3 `free` function: WoG static addresses were not excluded from processing, which leaded to corrupted counter of allocated bytes and random crashes.
+
+
+Version 3.9.25 (03/2025)
+------------------------
+[+] Implemented possibility to terminate game process on any ERM error, which may be helpful in case of automatically closing error messages in network games.
+    The possibility is controlled by 'Debug.AbortOnErmError' option.
+
+[+] Moved ERM error description and context to translatable text with `era.debug.erm_error_debug_dump_confirmation` key.
+[+] Added last ERM error tracking. The error is saved to "log.txt" and "erm memory dump.txt".
+[+] Debug dump will be created in case of dialog autoclosing due to timeout (network game, gosolo mode), but no more than once per second.
+[+] Added new option "Debug.ShowMessageOnCrash" to "heroes 3.ini". If set to 0, no default message will be shown on crash.
+
+[+] Added new option "Debug.ExternalCrashHandlerPath" to "heroes 3.ini". Specify path to a program, to be run on game crash. The only argument is a path
+    to game directory. Working directory is also set to game directory, thus crash handler may use relative paths.
+
+[+] Added API functions for third-party memory manager replacement with the one from Era and with additional allocated memory size accounting.
+
+[+] Exported the following functions in era.dll:
+
+  (* Writes memory consumption info to main log file *)
+  procedure LogMemoryState; stdcall;
+
+  (* Appends entry to "log.txt" file in the following form: >> [EventSource]: [Operation] #13#10 [Description].
+     Example: WriteLog("SaveGame", "Save monsters section", "Failed to detect monster array size") *)
+  function WriteLog (EventSource, Operation, Description: pchar): TInt32Bool; stdcall;
+
+[*] Exported `Ask` function will return false if dialog is closed automatically on timeout (in multiplayer or gosolo mode).
+[-] Removed the following functions from era.dll: MemAlloc, MemRealloc.
+
+
 Version 3.9.24 (03/2025)
 ------------------------
 [+] Changed memory manager to FastMM4. The game uses memory manager from Era now and manages separate allocation statistics.
 [+] Implemented detailed game, Era and plugins allocated memory tracking. Memory report is written to "log.txt" on crash or "OnGenerateDebugInfo" event (triggered by F11).
 
-[+] Exported the following function in era.dll:
+[+] Exported the following functions in era.dll:
 
   // Memory functions, which are common for game and Era engine now. They will be used in Era SDK to redirect plugins memory managers to Era memory manager
   function MemAlloc (BufSize: integer): {n} pointer; stdcall;
@@ -14,7 +71,7 @@ Version 3.9.24 (03/2025)
   // consumer should atomically increase and decrease in malloc/calloc/realloc/free operations.
   function RegisterMemoryConsumer (ConsumerName: pchar): pinteger; stdcall;
 
-[+] Improved detection of invalid usage of Era memory buffers from Era API by plugins. Attempts to free result buffers using other memory manager API were ignored previously and will most probably cause crashes now.
+[+] Improved detection of invalid freeing of Era memory buffers from Era API by plugins. Attempts to free result buffers using other memory manager API were ignored previously and will most probably cause crashes now.
 
 [-] Fixed memory leak in LoadPcx8: pcx8 stub image was created on any GetPcx8 request if corresponding png replacement existed and stub was not registered propertly in the game resource tree, which leaded to out-of-memory errors and could lead to savegame corruption.
 
@@ -699,7 +756,6 @@ Version 3.9.12 (06/2024)
   !?FU(OnAfterBattleAfterDataReceived); on attacker side only
   !?FU(OnAfterBattle); on attacker side only
   !?FU(OnAfterBattleUniversal); on attacker side
-
 
 
 [+] Added the following functions to Era Erm Framework:
