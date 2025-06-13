@@ -8,7 +8,6 @@
 
 > [!NOTE]
 > A new tool has been added to the build for reporting game crashes — **Issue Wizard**:
->
 > - Launches automatically after a crash or manually from the "/Tools/Issue Wizard/" folder;
 > - Collects technical information about the issue;
 > - Includes a text field for describing events leading up to the crash;
@@ -26,7 +25,6 @@
 >	"era.[mod_folder_name].notification.name" - to display the notification name;
 >	"era.[mod_folder_name].notification.text" - to display the notification text;
 >	"era.[mod_folder_name].notification.url" - to open an external file or follow an external link when clicking on the notification name;
-
 >	```
 >	- Colored text and display of def images with replacement by PNG are supported;
 >	- Once hidden notification will not be forced to be displayed until its text is changed;
@@ -89,6 +87,7 @@
 - Fixed the text description error of Scouting II.
 - Fixed Learning I not showing which primary skill is granted when a hero gains a new level.
 - Resistance I: You can now set i^wog_216_nonNeutralBattle_enabled^ to TRUE to make Resistance I work in all types of battles.
+
 
 ### Version 2.175
 
