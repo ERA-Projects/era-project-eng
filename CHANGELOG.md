@@ -19,7 +19,7 @@
 #### WoG:
 - updated the "AssemblyMainPLugin.era" plugin to version 1.73 and placed in the "WoG" mod:
 > [!TIP]
-> Added the ability to display notifications in the Main Menu for each mod:
+> ### Added the ability to display notifications in the Main Menu for each mod:
 > - Now mod authors can add their own notifications to the main menu, which can only be controlled by updating their own mod;
 > - To add a notification, you need to add the following json keys, where [mod_folder_name] is the name of the active mod folder:
 >	```
