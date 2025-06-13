@@ -67,6 +67,8 @@
 - Battle Experience: Fixed wrong creature stats after battle replay.
 
 #### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era":
+	- Added mithril displayment into Adventure Map and Kingdom Overview dialogs;
 - Fixed a bug where sometimes a hero could appear in a tavern even when already recruited by another player.
 - Now the retaliation of Ballista and Catapult are completely blocked.
 - Removed the message when successfully recruiting level 1 creatures from their dwellings - thanks to SadnessPower.
@@ -74,6 +76,7 @@
 
 #### TrainerX:
 - Added a temporary method of removing Boats for Remove Object feature.
+- Teleport: Heroes can no longer be teleported to tiles that would clearly disrupt the game.
 
 #### WoG Graphics Fix Lite:
 - Updated to version 2.22.0
@@ -87,6 +90,7 @@
 - Fixed the text description error of Scouting II.
 - Fixed Learning I not showing which primary skill is granted when a hero gains a new level.
 - Resistance I: You can now set i^wog_216_nonNeutralBattle_enabled^ to TRUE to make Resistance I work in all types of battles.
+- Sorcery I: Fixed the crash when right-clicking on a Scholar that gives a spell.
 
 
 ### Version 2.175
