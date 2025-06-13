@@ -6,6 +6,36 @@
 	- Implemented detailed game context dumping in "exception context.txt" on crash
 	- Fixed bug in hooked Heroes 3 "free" function: WoG static addresses were not excluded from processing, which leaded to corrupted counter of allocated bytes and random crashes.
 
+> [!NOTE]
+> A new tool has been added to the build for reporting game crashes — **Issue Wizard**:
+>
+> - Launches automatically after a crash or manually from the "/Tools/Issue Wizard/" folder;
+> - Collects technical information about the issue;
+> - Includes a text field for describing events leading up to the crash;
+> - Allows attaching a save file;
+> - Creates a unique report on the project repository and returns a link to it (the report);
+> - Requires an internet connection to work.
+
+#### WoG:
+- updated the "AssemblyMainPLugin.era" plugin to version 1.73 and placed in the "WoG" mod:
+> [!TIP]
+> Added the ability to display notifications in the Main Menu for each mod:
+> - Now mod authors can add their own notifications to the main menu, which can only be controlled by updating their own mod;
+> - To add a notification, you need to add the following json keys, where [mod_folder_name] is the name of the active mod folder:
+>	```
+>	"era.[mod_folder_name].notification.name" - to display the notification name;
+>	"era.[mod_folder_name].notification.text" - to display the notification text;
+>	"era.[mod_folder_name].notification.url" - to open an external file or follow an external link when clicking on the notification name;
+
+>	```
+>	- Colored text and display of def images with replacement by PNG are supported;
+>	- Once hidden notification will not be forced to be displayed until its text is changed;
+- Now the game build version is tied to the WoG mod;
+- all new elements are displayed only in the main menu dialog;
+
+- updated plugin "RMG_CustomizeObjectProperties.era" without changing the version:
+	- fixed AI behavior for some new objects;
+
 #### Advanced Classes Mod:
 - Most abilities that reduces/steals creature stats on the battlefield now can only set the Speed to minimum of 3 (instead of 2).
 - Estates Specialists now provides 5% bonus to the gold of Estates each level.
@@ -25,17 +55,30 @@
 	- They no longer skip advancement opportunities to Ancient in certain cases.
 - Booby Trap for Ammo Carts now triggers after the Ammo Cart is destroyed, instead of before.
 
+#### Advanced Difficulties Mod:
+- Updated to version 1.042
+	- replaced monster arts from the splash screen with upscaled versions (thanks to Suft - the HD Remastered god)
+	- increased the default growth limit of neutral stack size when the grow beyond 4000 option is activated
+	- slighty reduced the speed and damage scaling of battle commanders, also removed the possibilty that they spawn with active Prayer spell
+	- fixed grow beyond 4000 option for level 0 monsters on the map
+
 #### Enhanced Henchmen:
 - Warlord's Banner equipped by a henchman now behaves like commander artifacts on commanders: You can equip or unequip it freely when the henchman is killed. The banner will stay with the henchman even if the hero loses a battle.
 
 #### ERA Scripts
 - Battle Experience: Fixed wrong creature stats after battle replay.
 
-GEM:
+#### Game Enhancement Mod:
 - Fixed a bug where sometimes a hero could appear in a tavern even when already recruited by another player.
+- Now the retaliation of Ballista and Catapult are completely blocked.
+- Removed the message when successfully recruiting level 1 creatures from their dwellings - thanks to SadnessPower.
+- removed extra plugin and assets;
 
 #### TrainerX:
 - Added a temporary method of removing Boats for Remove Object feature.
+
+#### WoG Graphics Fix Lite:
+- Updated to version 2.22.0
 
 #### WoG Scripts:
 - Estates I&II: Fixed details for Estates specialists
@@ -45,7 +88,7 @@ GEM:
 - Master of Life no longer upgrades creatures owned by heroes with no owner.
 - Fixed the text description error of Scouting II.
 - Fixed Learning I not showing which primary skill is granted when a hero gains a new level.
-
+- Resistance I: You can now set i^wog_216_nonNeutralBattle_enabled^ to TRUE to make Resistance I work in all types of battles.
 
 ### Version 2.175
 
