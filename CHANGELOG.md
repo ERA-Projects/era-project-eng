@@ -1,3 +1,11 @@
+### Version 2.179
+
+#### WoG:
+- updated plugin "AssemblyMainPLugin.era" without changing the version:
+	- small improvements;
+- Added zip archive with packed json files in order to prevent game crash at the start;
+
+	
 ### Version 2.178
 
 #### WoG:
