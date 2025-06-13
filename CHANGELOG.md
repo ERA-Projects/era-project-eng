@@ -1,3 +1,10 @@
+### Version 2.178
+
+#### WoG:
+- updated plugin "AssemblyMainPLugin.era" without changing the version:
+	- fixed rare Main Menu Crash;
+
+
 ### Version 2.177
 
 ## hotfix
