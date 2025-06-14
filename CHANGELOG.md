@@ -1,3 +1,12 @@
+### Version 2.180
+
+- ## update era.dll core without changing the version:
+	- updated debugging tool;
+
+#### other:
+- updated plugins debug files;
+
+
 ### Version 2.179
 
 #### WoG:
@@ -5,7 +14,7 @@
 	- small improvements;
 - Added zip archive with packed json files in order to prevent game crash at the start;
 
-	
+
 ### Version 2.178
 
 #### WoG:
