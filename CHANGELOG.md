@@ -10,6 +10,13 @@
 #### Game Enhancement Mod:
 - now the tooltip about the cost of the surrendering will not be displayed in cases where surrendering is unavailable;
 
+#### other
+> [!NOTE]
+> new tool for sending crash reports - **Issue Wizard** updated to version 1.1:
+> - added more detailed issue title;
+> - increased minimum message length;
+> - minor text formatting fixes;
+
 
 ### Version 2.181
 
