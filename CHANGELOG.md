@@ -1,3 +1,11 @@
+### Version 2.183
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era" to version 1.5.0:
+	- minor fixes with display of mithril in the Kingdom Overview window;
+	- debug file added;
+
+
 ### Version 2.182
 
 #### WoG:
