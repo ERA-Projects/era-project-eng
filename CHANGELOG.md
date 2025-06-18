@@ -1,3 +1,16 @@
+### Version 2.182
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era" to version 1.24:
+	- fixed getting list of new objects for from nested arrays;
+
+#### Advanced Classes Mod:
+- fixed crash in battle at low resolutions of the game window when trying to open the dialog for upgrading the commander's class;
+
+#### Game Enhancement Mod:
+- now the tooltip about the cost of the surrendering will not be displayed in cases where surrendering is unavailable;
+
+
 ### Version 2.181
 
 #### WoG:
