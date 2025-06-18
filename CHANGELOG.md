@@ -1,3 +1,29 @@
+### Version 2.181
+
+#### WoG:
+- updated plugin "RMG_CustomizeObjectProperties.era" without changing the version:
+	- added export function to get object name by type and subtype:
+	```
+	const char* GetObjectName(int type, int subtype);
+	```
+- updated plugin "wog native dialogs.era" without changing the version:
+	- rebuilt with a different set of tools so that antiviruses don't complain;
+
+#### WoG Scripts:
+- Sorcery I: now remote visiting of objects allows interaction with Resource Warehouses;
+- Added function to get the name of objects added by RMG plugin:
+	```
+	!?FU(WOG_GetRealObjectName);
+	!#VA(objType:x) (objSubtype:x) (string:x);
+	```
+- other important fixes;
+
+#### ERA Scripts
+- Capture of mills and gardens:
+	- now the capture mechanics also apply to Resource Warehouses;
+	- the logic of interaction with all objects has been completely rewritten;
+
+
 ### Version 2.180
 
 - ## update era.dll core without changing the version:
