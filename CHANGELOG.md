@@ -1,3 +1,12 @@
+### Version 2.186
+
+#### Advanced Classes Mod:
+- fixed crash in battle at low resolutions of the game window when trying to open the dialog for upgrading the commander's class;
+
+#### other:
+- Mod Manager has been updated to version 0.98.61;
+
+
 ### Version 2.185
 
 #### WoG:
