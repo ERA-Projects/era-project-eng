@@ -1,0 +1,254 @@
+{
+	"lang" :
+	{
+		"code" : "en_US",
+		"name" : "English",
+		"author" : "Aliaksei SyDr Karalenka",
+		"language" : "Language"
+	},
+	"mod_list" :
+	{
+		"mod" : "Mod",
+		"caption" : "Mod list (%s)",
+		"no_game_dir" : "no game dir - select from \"Tools\"",
+		"up" : "Move up",
+		"down" : "Move down",
+		"enable" : "Enable",
+		"disable" : "Disable",
+		"missing" : "%s (missing mod)",
+		"remove" : "Remove",
+		"group" :
+		{
+			"enabled" : "Enabled",
+			"enabled_with_priority" : "Enabled (%+i)",
+			"disabled" : "Without category",
+			"disabled_group" : "%s"
+		},
+		"list_inaccessible" : "Can't delete/write file \"%s\" content\n\nPossible reasons:\n 1) File is \"read-only\"\n 2) Current user doesn't not have enough rights to create/delete this file \n\nOpen directory in explorer?",
+		"plugins" : "Plugins",
+		"homepage" : "Go to webpage",
+		"delete" : "Delete",
+		"delete_confirm" : "Do you really want to delete this mod? \n%s\n\n(The mod will be moved to recycle bin, if it's possible))",
+		"add_new" : "Add new mod(s)",
+		"compatibility" : "Compatibility",
+		"open_dir" : "Open mod directory",
+		"edit_mod" : "Edit mod data",
+		"pack_mod" : "Create self-extracting package",
+		"pack_mod_hint" : "Package will be created in background. You can continue to use MM or even close it. \n\nClose 7z console window to cancel package creation (you need then to delete created file). When 7z window disaapear - it safe to use created file."
+	},
+	"scenarios" : {
+		"caption" : "Presets",
+		"manage" : "Manage",
+		"save" : "Save",
+		"save_menu" : "Save (%s)",
+		"load" : "Load",
+		"delete" : "Delete",
+		"special" : "Special",
+		"new" : "New",
+		"all" : "All",
+		"delete_confirm" : "Do you really want to delete this preset? \n%s\n\n(The preset file will be moved to recycle bin, if it's possible))",
+		"load_options" : {
+			"caption" : "Select load options",
+			"exe" : "Set starting exe to \"%s\"",
+			"wog_settings" : "Set WoG settings to stored in preset",
+			"not_again" : "Don't ask again (you can also hold Shift to show this window)"
+		},
+		"save_options" : {
+			"caption" : "Select save options",
+			"exe" : "Save starting exe to preset",
+			"wog_settings" : "Save WoG settings to preset",
+			"select_file" : "Select file to save",
+			"select_filter" : "JSON files (*.json)"
+		},
+		"import" : {
+			"caption" : "Import",
+			"only_load" : "Only load. Don't save",
+			"not_valid" : "Can't import this preset",
+			"replace" : "Preset with same name already exist. Replace?"
+		},
+		"export" : {
+			"caption" : "Export",
+			"copy" : "Copy",
+			"name" : "Export name"
+		}
+	},
+	"game" : {
+		"caption" : "Game",
+		"launch" : "Launch (%s)",
+		"change" : "Change exe",
+		"wog_options" : "Change WoG options"
+	},
+	"wog_options" : {
+		"caption" : "WoG Options",
+		"loading" : "Please, wait...",
+		"loading_text" : "this will take only few seconds",
+		"bad_data" : "Can't load WoG options data. Check: \r\n\r\n1) Mod list (there should be mod with zsetup00.txt, usually WoG or WoG Revised) \r\n2) You have this mod installed",
+		"save" : "Save",
+		"select_filter" : "DAT files (*.dat)|WOG files (*.wog)|All files (*.*)",
+		"load" : "Load",
+		"default" : "Default",
+		"uncheck" : "Uncheck All",
+		"check" : "Check All",
+		"filter" : "Filter:"
+	},
+	"plugins_list" :
+	{
+		"caption" : "Plugins (%s)",
+		"global" : "Global",
+		"before_wog" : "BeforeWoG",
+		"after_wog" : "AfterWoG",
+		"back" : "Back",
+		"default" : "Default"
+	},
+	"info_group" :
+	{
+		"desc" : "Descripton",
+		"screens" :
+		{
+			"caption" : "Screenshots"
+		},
+		"no_info" : "No description available",
+		"info" :
+		{
+			"caption" : "Information",
+			"mod_caption" : "Mod %s (%s)",
+			"mod_caption_s" : "Mod %s",
+			"version" : "Version: %s",
+			"author" : "Author(s): %s",
+			"link" : "Visit mod <A HREF=\"homepage\">homepage</A>",
+			"category" : "Category: %s"
+		}
+	},
+	"compatibility" :
+	{
+		"part1" : "Mod %s is incompatible with following mods:",
+		"part2" : "Disable these mods to reduce amount of unexpected bugs :)",
+		"launch_anyway" : "Launch anyway?"
+	},
+	"add_new" :
+	{
+		"caption" : "Mod install (%d from %d)",
+		"filter" : "Era II Mods (*.exe; *.rar; *.zip; *.7z)|All (*.*)",
+		"progress" :
+		{
+			"caption" : "Please wait... Unpacking files...",
+			"scanned" : "Scanned (%i/%i)",
+			"found" : "Found %i",
+			"no_mods" : "There is no mod in the specified file. \n\nThe possible reasons are: \n1) You use an out-of-date program version. \n2) You're trying to add not supported mod file (probably not a mod at all)."
+		},
+		"unpacking" : "Please wait... Unpacking files...",
+		"install" : "Install",
+		"reinstall" : "Reinstall",
+		"installed" : "Please wait... Installing...",
+		"dont_install" : "Don't install",
+		"next_mod" : "Next mod",
+		"close" : "Close",
+		"exit" : "Exit",
+		"version_installed" : "Mod is installed (version %s)",
+		"install_package" : "Install package (version %s)"
+	},
+	"settings" : {
+		"game_dir" : {
+			"change" : "Change game directory",
+			"caption" : "Select game directory",
+			"incorrect_dir" : "This directory doesn't look like Era II directory (no \"h3era.exe\" file here).\nDo you still want to use this dir?\n\nIn any case, you always can change dir later (menu \"Tools\" -> \"Change game directory\")"
+		},
+		"game_exe" : {
+			"show_all" : "Show all"
+		},
+		"menu" : {
+			"caption" : "Tools",
+			"settings" : "Settings"
+		},
+		"auto_update" : {
+			"group" : "Program updates",
+			"label" : "Update program:",
+			"day" : "Every day",
+			"week" : "Every week",
+			"month" : "Every month",
+			"never" : "Never",
+			"auto" : "Install updates automatically"
+		},
+		"list_load_options" : {
+			"group" : "Preset load options",
+			"exe" : "Set starting exe to selected in preset",
+			"wog_settings" : "Set wog settings to stored in preset",
+			"dont_ask" : "Don't ask. Use these settings"
+		}
+	},
+	"update" : {
+		"caption" : "Check for program updates",
+		"current_version" : "Installed version: %s",
+		"available_versions" : "Available to download:",
+		"wait" : "wait...",
+		"cancel" : "Cancel",
+		"update_group" : "Selected update",
+		"download_and_install" : "Download update and install automatically",
+		"only_download" : "Only download",
+		"change_dir" : "Change",
+		"select_dir" : "Select directory",
+		"start" : "Start",
+		"close" : "Close",
+		"cant_check" : "Can't check program update. Open link in browser?",
+		"cant_download" : "Can't download program update. Open link in browser?",
+		"info_invalid" : "invalid format...",
+		"new_version_available" : "New program version available. Do you want to download it?",
+		"progress" : {
+			"caption" : "Installing update...",
+			"unpack" : "Unpacking files...",
+			"copy" : "Just a little bit more"
+		}
+	},
+	"mod_edit" :
+	{
+		"caption" : "Mod edit",
+		"save" : "Save",
+		"cancel" : "Cancel",
+		"group_caption" :
+		{
+			"caption" : "Caption and description",
+			"language" : "Language:",
+			"caption_label" : "Caption:",
+			"description_file" : "Description file:",
+			"description_short" : "Short description:",			
+			"description_short_from_file" : "From file"
+		},
+		"group_other" :
+		{
+			"caption" : "Other",
+			"mod_version" : "Mod version:",
+			"author" : "Author:",
+			"homepage" : "Homepage:",
+			"icon" : "Icon:",
+			"priority" : "Priority:",
+			"category" : "Category:"
+		},
+		"group_compatibility" :
+		{
+			"caption" : "Compatibility",
+			"class" : "Compatibility class:",
+			"all" : "compatible with all mods",
+			"default" : "incompatible with \"none\" mods",
+			"none" : "incompatible with \"none\" and \"default\" mods",
+			"exclusions" : "Exclusions:",
+			"mod" : "Mod caption/id",
+			"compatible" : "Compatible",
+			"yes" : "Yes",
+			"no" : "No"
+		}
+	},
+	"category" :
+	{
+		"gameplay" : "Gameplay",
+		"graphics" : "Graphics",
+		"scenarios" : "Scenarios",
+		"cheats" : "Cheats",
+		"interface" : "Interface",
+		"towns" : "Towns",
+		"other" : "Other",
+		"platforms" : "Platforms",
+		"personal mods": "My personal mods",
+		"utilities" : "Utilities",
+		"localization": "Localization"
+	}
+}

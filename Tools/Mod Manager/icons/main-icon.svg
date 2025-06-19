@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">
+	<polygon points="224 64 256 128 240 192 256 256 192 224 128 256 64 240 0 256 32 192 0 128 16 64 0 0 64 32 128 0 192 16 256 0" fill="url(#1)" />
+	<radialGradient id="1">
+		<stop stop-color="yellow" stop-opacity="1" offset="0.1" />
+		<stop stop-color="red" stop-opacity="1" offset="0.2" />
+		<stop stop-color="blue" stop-opacity="1" offset="0.6" />
+		<stop stop-color="black" stop-opacity="1" offset="0.8" />
+	</radialGradient>
+</svg>
