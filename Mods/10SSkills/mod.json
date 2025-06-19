@@ -19,7 +19,7 @@
 		"file": "icon.ico",
 		"index": 0
 	},
-	"mod_version": "0.0",
+	"mod_version": "1.0",
 	"priority": 0,
 	"compatibility": {
 		"class": "default",

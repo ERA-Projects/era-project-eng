@@ -32,7 +32,7 @@
   "issue.updated": "Rapport mis à jour avec succès.\nVous pouvez le consulter ici :",
   "text.link": "lien vers le rapport",
   "text.minimum": "Nombre minimum de caractères dans la description :",
-  "text.greeting": "Le jeu s’est arrêté de manière inattendue !",
+  "text.greeting": "Unfortunately, the game has crashed😢<br>Astrologers proclaim the sending of a report🧙‍",
   "text.already": "Vous avez déjà envoyé ce rapport",
   "text.close": "L’application sera fermée dans ",
   "text.comment": "Vous pouvez ajouter votre propre commentaire à ce problème."

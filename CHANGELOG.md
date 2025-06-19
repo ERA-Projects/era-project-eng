@@ -1,3 +1,25 @@
+### Version 2.184
+
+#### other:
+
+> [!IMPORTANT]
+> ## the new Mod Manager is now used by default:
+> - major mods have been added to the compatibility list for automatic conflict resolution (launch the Mod Manager and click the "Sort" button in the bottom-left corner);
+
+> [!NOTE]
+> the crash report tool — **Issue Wizard** — has been updated to version 1.2:
+> - improved program design;
+> - more detailed issue description added;
+> - minor text formatting fixes;
+
+#### WoG:
+- updated plugin "Game bug fixes extended.dll":
+  - fixed a bug preventing a hero from casting flying spells again on the same day if the spell's power exceeds the current effect;
+  - fixed Uland incorrectly having the Advanced Wisdom skill;
+  - fixed sound loading for Fairy Dragons' spellcasting;
+  - fixed missing "Splash Attack" flag for Dracoliches.
+
+
 ### Version 2.183
 
 #### Game Enhancement Mod:

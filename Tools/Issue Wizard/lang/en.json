@@ -3,7 +3,7 @@
 	"name": "English",
 	"select.file": "Select File",
 	"select.extension": "GM files ",
-	"attach.default": "Attach Save File (optionally)",
+	"attach.default": "Attach Save File (recommended)",
 	"attach.attached": "Selected File: ",
 	"attach.innactive": "Unavailable to attach save",
 	"attach.failed": "Failed to upload file!",
@@ -32,8 +32,9 @@
 	"issue.updated": "Report successfully updated.\nYou can see it here:",
 	"text.link": "link to the Report",
 	"text.minimum": "Minimum number of characters of text to send a description:",
-	"text.greeting": "The game crashed!",
+	"text.greeting": "Unfortunately, the game has crashed😢<br>Astrologers proclaim the sending of a report🧙‍",
 	"text.already": "You already reported that Report",
 	"text.close": "Application will be closed in ",
-	"text.comment": "You can add own commentary about that problem."
+	"text.comment": "You can add own commentary about that problem.",
+	"text.information":"To find and fix the issue, a detailed description of the actions taken before the game crash is necessary. The more detailed, the better.\nA relevant  save file is even more helpful in identifying the problem."
 }
