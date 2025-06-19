@@ -1,3 +1,10 @@
+### Version 2.185
+
+#### WoG:
+- updated plugin "Game bug fixes extended.dll":
+	- now when casting targeted attack spells by monsters, the magic modifier from the hero-owner is taken into account;
+
+
 ### Version 2.184
 
 #### other:
