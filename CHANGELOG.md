@@ -1,3 +1,13 @@
+### Version 2.188
+
+#### ERA Scripts:
+- Capture of mills and gardens: added player flags for Mithril Warehouses;
+
+#### WoG Graphics Fix Lite:
+- removed unnecessary texts with objects;
+- optimized archives with graphics;
+
+
 ### Version 2.187
 
 #### WoG:
