@@ -4,6 +4,9 @@
 - updated plugin "AssemblyMainPLugin.era" to version 1.74:
 	- now notifications in the main menu are translated without restarting the game/menu;
 
+#### Game Enhancement Mod:
+- removed unnecessary code for managing creature hiring dialogues;
+
 
 ### Version 2.186
 
