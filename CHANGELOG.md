@@ -1,3 +1,10 @@
+### Version 2.187
+
+#### WoG:
+- updated plugin "AssemblyMainPLugin.era" to version 1.74:
+	- now notifications in the main menu are translated without restarting the game/menu;
+
+
 ### Version 2.186
 
 #### Advanced Classes Mod:
