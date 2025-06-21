@@ -36,5 +36,5 @@
 	"text.already": "You already reported that Report",
 	"text.close": "Application will be closed in ",
 	"text.comment": "You can add own commentary about that problem.",
-	"text.information":"To find and fix the issue, a detailed description of the actions taken before the game crash is necessary. The more detailed, the better.\nA relevant  save file is even more helpful in identifying the problem."
+	"text.information":"To find and fix the issue, a detailed description of the actions taken before the game crash is necessary. The more detailed, the better.\nA relevant save file is even more helpful in identifying the problem."
 }
