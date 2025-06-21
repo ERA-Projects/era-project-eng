@@ -1,3 +1,20 @@
+### Version 2.189
+
+#### WoG:
+- updated plugin "AssemblyMainPlugin.era" to version 1.75:
+  - each mod can now add up to 5 notifications to the main menu. The mod folder name must be in lowercase. Keys:
+	```"era.[mod_folder_name].notification.[index].name" - display name
+	"era.[mod_folder_name].notification.[index].text" - notification text
+	"era.[mod_folder_name].notification.[index].url" - link to a website or local file to open
+	```
+	- improved localization and integration with the notification panel;
+	- added a notification about known issues;
+
+#### Game Enhancement Mod:
+- updated plugin "ArchBugFixes.era":
+  - fixed an issue where level 1 creatures could be obtained infinitely from their dwellings on the Adventure Map;
+
+
 ### Version 2.188
 
 #### ERA Scripts:
