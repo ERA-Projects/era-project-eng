@@ -1,3 +1,11 @@
+### Version 2.190
+
+#### WoG:
+- updated plugin "wog native dialogs.era" without version change:
+  - fixed a crash when starting the game and opening the WoG Options save settings dialog;
+  - other fixes;
+
+
 ### Version 2.189
 
 #### WoG:
