@@ -1,3 +1,11 @@
+### Version 2.191
+
+#### WoG:
+- updated some plugins to support older OS;
+
+#### Other:
+- SD Mod Manager (@SyDr) updated to version 0.98.67
+
 ### Version 2.190
 
 #### WoG:
@@ -48,7 +56,7 @@
 #### Advanced Classes Mod:
 - fixed crash in battle at low resolutions of the game window when trying to open the dialog for upgrading the commander's class;
 
-#### other:
+#### Other:
 - Mod Manager has been updated to version 0.98.61;
 
 
@@ -61,7 +69,7 @@
 
 ### Version 2.184
 
-#### other:
+#### Other:
 
 > [!IMPORTANT]
 > ## the new Mod Manager is now used by default:
@@ -101,7 +109,7 @@
 #### Game Enhancement Mod:
 - now the tooltip about the cost of the surrendering will not be displayed in cases where surrendering is unavailable;
 
-#### other
+#### Other:
 > [!NOTE]
 > new tool for sending crash reports - **Issue Wizard** updated to version 1.1:
 > - added more detailed issue title;
@@ -140,7 +148,7 @@
 - ## update era.dll core without changing the version:
 	- updated debugging tool;
 
-#### other:
+#### Other:
 - updated plugins debug files;
 
 
@@ -265,7 +273,7 @@
 - updated plugin "RMG_CustomizeObjectProperties.era" to version 1.23:
 - added the ability to have a modified appearance of the Creature Bank depending on its level;
 
-#### other:
+#### Other:
 - updated plugins to support older versions of operating systems;
 
 
@@ -345,7 +353,7 @@
 #### WoG Graphics Fix Lite:
 - Updated to version 2.21.0
 
-#### other:
+#### Other:
 - updated sources and SDK of the Era kernel;
 - Edited json file names according to the standard;
 
@@ -411,7 +419,7 @@
 - updated plugin "RMG_CustomizeObjectProperties.era" up to version 1.14:
 	- fixed dialog memory leaking
 
-#### other:
+#### Other:
 - updated ERA SDK. Path is "/Tools/Era/SDK";
 
 
