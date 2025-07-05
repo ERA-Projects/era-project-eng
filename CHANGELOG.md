@@ -1,3 +1,20 @@
+### Version 2.192
+
+> [!NOTE]
+> the crash report tool — **Issue Wizard** — has been updated to version 1.3:
+> - improved program design;
+> - added the ability to attach all necessary debug files (Recommended);
+> - improved algorithm for collecting unique error information;
+> - added display of the list of plugins and game resolution;
+> - reduced the amount of information stored on the disk;
+> - fixed the inability to receive information about outdated reports;
+> - minor corrections to text formatting;
+
+#### WoG:
+- updated some plugins to decouple from runtime libraries;
+- minor fixes and improvements;
+
+
 ### Version 2.191
 
 #### WoG:
