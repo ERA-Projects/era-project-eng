@@ -14,6 +14,9 @@
 - updated some plugins to decouple from runtime libraries;
 - minor fixes and improvements;
 
+#### Other:
+- SD Mod Manager - added standard profiles with lists of ERA Project mods;
+
 
 ### Version 2.191
 
