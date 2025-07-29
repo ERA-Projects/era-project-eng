@@ -39,6 +39,10 @@
 > int (__stdcall *MainMenu_SetDialogButtonText)(const char *name, const char *text); // changes the displayed text of the button. If the button is currently drawn, the text will change on the screen
 > ```
 > - the header for this API is located at "Tools/Era/SDK/MainMenuAPI.hpp";
+> - the following buttons have been added to the main menu:
+	> - Hide the button menu;
+	> - Show system options;
+	> - Show the WoG-Options menu (can be changed and saved)
 
 - ### plugin "ERA_MultilingualSupport.era" updated to version 2.0:
 	- Now the names of folders for languages are based on the "iso-639-1" format;
