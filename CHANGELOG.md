@@ -1,3 +1,101 @@
+### Version 2.193
+
+#### HD Mod:
+- Updated to version 5.5 R71;
+
+#### WoG:
+> [!NOTE]
+> added a new plugin "Interface_MainMenuAPI.era", allowing you to add your own buttons to the main menu using:
+> - API for creating and managing buttons in the main menu;
+> - allows you to add buttons to the general list of stylized buttons in different dialogs of the main menu, which are specified via the id bit set:
+> ```cpp
+> enum eMenuList : int
+> {
+>     MAIN = 0x1, // main menu
+>     NEW_GAME = 0x2, // submenu for selecting a new game
+>     LOAD_GAME = 0x4, // submenu for loading a game
+>     CAMPAIGN = 0x8, // campaign submenu
+>     ALL = 0xF // all menus at once
+> };
+> ```
+> - button registration is performed by the "MainMenu_RegisterWidget" function via a unique widget name
+> ```cpp
+> struct MenuWidgetInfo
+> {
+>     const char *name = nullptr; // unique widget name
+>     const char *text = nullptr; // button display text
+>     eMenuList menuList = eMenuList::MAIN; // set of menus in which to display the button
+>     void (*processMessage)(void *msg); // main processing procedure
+> };
+> ```
+> > - button registration is performed by the "MainMenu_RegisterWidget" function via a unique widget name
+> ```cpp
+> int (__stdcall *MainMenu_RegisterWidget)(const MenuWidgetInfo &info);
+> ```
+> - the following functions allow you to manage already registered widgets:
+> ```cpp
+> H3DlgCaptionButton *(__stdcall *MainMenu_GetDialogButton)(const char *name); // returns a pointer to the button created in the current dialog
+> int (__stdcall *MainMenu_GetDialogButtonId)(const char *name); // returns the id of the button created in the current dialog
+> int (__stdcall *MainMenu_SetDialogButtonText)(const char *name, const char *text); // changes the displayed text of the button. If the button is currently drawn, the text will change on the screen
+> ```
+> - the header for this API is located at "Tools/Era/SDK/MainMenuAPI.hpp";
+
+- ### plugin "ERA_MultilingualSupport.era" updated to version 2.0:
+	- Now the names of folders for languages are based on the "iso-639-1" format;
+	- to add your own language, simply specify the locale name in the json key:
+	```
+	"era.locale.list.[locale_name].name":string,
+	```
+	- it is also possible to specify an alternative locale name, for this a key is used, but then the alternative name must have its own json key in the "name" field:
+	```
+	"era.locale.list.[locale_name].alternative":string,
+	"era.locale.list.[alternative_name].name":string,
+	```
+	- the language selection dialog has been rewritten and the main launch button has been moved;
+	- the ability to change the language from the system settings menu has been removed;
+	- added the ability to translate text from the following txt files using json keys:
+		- HeroBios.txt
+		- HeroSpec.txt
+		- Dwelling.txt
+		- Since these files are read when the game is launched, after changing the language in the game, it will need to be restarted so that the new text (if it exists) is written to the game's memory over the names from the txt files;
+		- The keys for translating strings are as follows
+			- for Heroes, name, biography, and specialization text can be replaced:
+			```
+			"era.heroes.[hero_id].name": string,
+			"era.heroes.[hero_id].biography": string,
+			"era.heroes.[hero_id].specialty.short": string,
+			"era.heroes.[hero_id].specialty.full": string,
+			"era.heroes.[hero_id].specialty.description": string,
+			```
+			- for city dwellings, names and descriptions can be replaced. Index "-1" is used for a random town:
+			```
+			"era.towns.[town_type].dwellings.[dwelling_id].name": string,
+			"era.towns.[town_type].dwellings.[dwelling_id].description": string,
+			```
+	- added the ability to export the following data to separate json files in the "Runtime/Exports/" subfolder via a separate "Export text" button in the language selection dialog:
+		- names and descriptions of creatures;
+		- names, biographies and specializations of heroes;
+		- names of creature dwellings on the Adventure Map and in cities;
+		- names and auxiliary texts of creature banks;
+		- names, descriptions and text when selecting artifacts;
+		- names of adventure map objects;
+
+- The names and descriptions of creatures have been brought to a common form for greater information content;
+- names and descriptions of creatures in json format have been added for English and Russian;
+- fixed placement of creatures in the Nativity Scene;
+- updated plugin "game bug fixes extended.dll":
+	- fixed display of cursor shadow for the "Force Field" spell for the defender hero;
+
+#### WoG Scripts:
+- fixed function for checking the admissibility of a building for construction in the city;
+
+#### Game Enhancement Mod:
+- minor function fixes;
+
+#### ERA Scripts:
+- removed unnecessary and non-working fixes;
+- file optimization;
+
 ### Version 2.192
 
 > [!NOTE]
