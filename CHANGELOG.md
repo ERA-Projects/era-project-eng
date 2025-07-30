@@ -1,3 +1,14 @@
+### Version 2.194
+
+#### WoG:
+- updated the plugin "Interface_MainMenuAPI.era" to version 1.1:
+	- fixed incorrect display of the System Options and WoG Options menu in the main menu when playing a video;
+	- fixed incorrect background when hiding buttons after opening the main menu after starting a map;
+	- added comments to the API plugin header file;
+- updated the plugin "wog native dialogs.era" without changing the version:
+	- fixed the game window breaking after opening the hero meeting dialog in the city window;
+
+
 ### Version 2.193
 
 #### HD Mod:
