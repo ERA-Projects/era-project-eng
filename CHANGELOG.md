@@ -1,3 +1,11 @@
+### Version 2.195
+
+#### WoG:
+- plugin "ERA_MultilingualSupport.era" updated to version 2.1:
+	- fixed impossibility to translate monster names in plural using json keys;
+	- optimized text size for "Export text" button in language selection dialog;
+
+
 ### Version 2.194
 
 #### WoG:
