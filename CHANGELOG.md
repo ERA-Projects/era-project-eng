@@ -1,7 +1,12 @@
 ### Version 2.196
 
 #### WoG:
-- removed extra locale names/files;
+- updated the "AssemblyMainPLugin.era" plugin to version 1.77:
+	- the system cursor is no longer displayed when hovering over the notification button;
+- updated the "Interface_MainMenuAPI.era" plugin to version 1.2:
+	- now the system options dialog opened via the button in the main menu does not display images for unused dialog buttons;
+- the text of additional buttons in the main menu has been brought to a single format;
+- unnecessary/incorrect localization files have been removed;
 
 
 ### Version 2.195
