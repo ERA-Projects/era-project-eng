@@ -1,3 +1,9 @@
+### Version 2.196
+
+#### WoG:
+- removed extra locale names/files;
+
+
 ### Version 2.195
 
 #### WoG:
