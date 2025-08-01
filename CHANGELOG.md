@@ -1,3 +1,11 @@
+### Version 2.197
+
+#### WoG:
+- updated the "Interface_MainMenuAPI.era" plugin to version 1.3:
+	- now the button for hiding the additional buttons menu is not displayed when this menu is placed outside the background of the main menu;
+	- the position and names of some buttons have been changed;
+
+
 ### Version 2.196
 
 #### WoG:
