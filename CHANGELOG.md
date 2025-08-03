@@ -1,3 +1,17 @@
+### Version 2.198
+
+#### WoG:
+- updated the "AssemblyMainPLugin.era" plugin to version 1.78:
+	- The notification panel now correctly displays the notification text;
+	- The frame around the mod text has been changed;
+
+#### Human AI:
+- Updated to version 1.17;
+
+#### WoG Scripts:
+- minor text corrections;
+
+
 ### Version 2.197
 
 #### WoG:
