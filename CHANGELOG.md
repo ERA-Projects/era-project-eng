@@ -1,3 +1,9 @@
+### Version 2.199
+
+#### WoG:
+- updated the "AssemblyMainPLugin.era" plugin to version 1.79:
+	- minor fixes;
+
 ### Version 2.198
 
 #### WoG:
