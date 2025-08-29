@@ -22,6 +22,8 @@ MM will try to load data from deprecated fields if data is not present in expect
   "description" : lng,
   "author" : "SyDr",
   "homepage" : "https://...",
+  "support" : "https://...",
+  "support" : [ "you", "can", "include", "multiple", "entries", "too" ],
   "icon" : "icon.png",
   "version" : "1.0",
   "category" : "gameplay",

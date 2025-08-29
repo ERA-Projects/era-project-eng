@@ -2,7 +2,7 @@
 	"Unexpected error occurred" : "Произошла непредвиденная ошибка",
 	"OK" : "ОК",
 	"Error details" : "Детали ошибки",
-	"Internal error happened (only if you didn't wanted to to get exactly this result). Please, make report, describing your actions and include following information:" : "Произошла внутренняя необработанная ошибка (если только вы не добивались именно этого результата). Пожалуйста, сообщите о ней, описав ваши действия и включив в сообщение следующую информацию:",
+	"Internal error happened (only if you didn't wanted to to get exactly this result). Please, make report, describing your actions and include following information:" : "Произошла внутренная необработаная ошибка (если только вы не добивались именно этого результата). Пожалуйста, сообщите о ней, описав ваши действия и включив в сообщение следующую информацию:",
 	"Change managed directory" : "Сменить управляемый каталог",
 	"Allows selecting other directory for management" : "Позволяет выбрать другой каталог для управления",
 	"Language" : "Language (Язык)",
@@ -79,7 +79,7 @@
 	"Mod %s required by %s, but incompatible with (%s)" : "Мод %s нужен для %s, но не совместим с (%s)",
 	"Mod %s incompatible with %s, but required by (%s)" : "Мод %s несовместим с %s, но нужен для (%s)",
 	"No mods from (%s) can be placed above each other, %s placed at the top" : "Ни один из модов (%s) не может быть помещён выше остальных, %s был помещён вверх списка",
-	"Select mod pairs to potentially remove from result" : "Выбор модов для потенциального уменьшения объёма результата",
+	"Select mod pairs to potentially remove from result" : "Выбор модов для потеницального уменьшения объёма результата",
 	"'%s' already exists, overwrite?" : "'%s' уже существует, перезаписать?",
 	"Plugins" : "Плагины",
 	"Plugin" : "Плагин",
@@ -123,6 +123,7 @@
 	"Managed" : "Управляемые",
 	"Column" : "Столбец",
 	"Configure view" : "Настроить отображение",
+	"Configure" : "Настроить",
 	"Show managed mods" : "Показать управляемые моды",
 	"as a flat list" : "плоским списком",
 	"as a group" : "группой",
@@ -152,6 +153,7 @@
 	"Download" : "Загрузить",
 	"Another copy of program is running. Running more than one copy may result in incorrect data/configuration management. Do you want to run program anyway?" : "Другая копия программы уже запущена. Запуск более одной копии может привести к неправильном управлению модами/конфигурации. Запустить всё равно?",
 	"Interface size (mod list + some buttons):" : "Размер интерфейса (список модов и некоторые кнопки):",
+	"Show labels for buttons in list view:" : "Показывать подписи для кнопок в списке модов:",
 	"Mod description:" : "Описание модов:",
 
 	"update_mode" : {
@@ -169,6 +171,10 @@
 	"interface_size" : {
 		"big" : "большой",
 		"standard" : "стандартный"
+	},
+	"interface_label" : {
+		"show" : "показывать",
+		"dont_show" : "не показывать"
 	},
 	"category" : {
 		"gameplay" : "Геймплей",

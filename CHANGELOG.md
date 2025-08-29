@@ -1,3 +1,78 @@
+### Version 2.200
+
+#### WoG:
+- updated plugin "Interface_MainMenuAPI.era" to version 1.4:
+	- now the called function of the widget processing procedure has a fixed calling convention (__fastcall) and return type int:
+	```
+	int (__fastcall * customProc)(void *msg);
+	```
+- updated plugin "wog native dialogs.era":
+	- fixed display of commander's power stone messages after their selection;
+	- fixed response check for input dialogs of the "Sphinx" type;
+	- fixed display of battle rounds at the start of a battle without a tactical phase;
+	- now visiting mithril works as with the original refreshes the screen;
+	- now the text of the message about the army reduction, caused by the Conflux commander (Astral Spirit) is written directly to the battle log, and the message about the army return is removed;
+- updated plugin "game bug fixes extended.dll":
+	- fixed numerous bugs with non-updated maximum points of hero movement and a number of shortcomings in calculating the length of the path;
+	- added accounting for the reset of the effects of Stables when calculating the required number of days of travel;
+	- now changing the radius of the hero's scouting opens the map in a timely manner;
+	- fixing the SoD bug: resetting the number of sirens visited after the battle;
+	- fixed incorrect construction of the hero's route;
+	- fixed excessive redrawing of the "Move hero" button;
+	- fixed a bug with cloning monsters when reaching the monster limit.
+	- changing the balance of forts on hills: the cost of improvement is calculated based on the level of the upgraded monster, not the current one;
+	- fixing the calculation of gold for the Beast after the battle;
+	- adjusting the parameters of the Commander with the Ring of Power (Slavas's Ring);
+	- Commanders no longer summon war machines in creature Banks (WoG bug);
+	- The formula for summoning dragons using the "Dragon Heart" artifact has been replaced;
+	- Incorrect deletion of disappearing objects from the game's memory has been fixed;
+	- SoD bug has been fixed: AI thought that the death cloud only does not affect the undead creatures.
+	- The presence of poison now prevents you from casting Spell Dispell;
+	- Shackles of War now only work in battles between two heroes (run);
+	- The speed of quick battles has been significantly increased (previously the game "waited" for the animation of any action to play)
+	- Fixed the triggering of the fire shield on a corpse;
+	- Fixed the active side of the battle during a counterattack in close combat;
+	## The logic of Positive and Negative Luck has been rewritten:
+		- Support for "Negative Luck" has been implemented, reducing the final damage by exactly 2 times;
+		- Triggered Positive or Negative Luck now changes damage to all targets of the strike, and not just one;
+		- Triggered "Positive luck" in battle now increases damage exactly 2 times, and does not add +100% to only the base damage;
+		- now the Hourglass of the Evil Hour neutralizes Positive luck only;
+		- Fixed the lack of display of the Hourglass of the Evil Hour influence in the list of hero luck modifiers and the AI's assessment of some luck-changing objects
+
+#### Game Enhancement Mod:
+- Added display of primary skills bonuses for artifacts when viewing its description;
+- Added the ability to manage the following options in the GEM settings menu:
+	- Display of the bonus of primary skills for artifacts;
+	- Display of parts for combined artifacts;
+- Updated the formula for calculating movement on the next turn and moved to the plugin;
+- Moved a significant amount of code from scripts to the plugins;
+- When viewing tooltips about objects, heroes are no longer displayed on "Alt";
+
+#### ERA ERM Framework:
+- the following functions have been added:
+	- Getting the current name of the hero portrait (small and large):
+	```
+	!?FU(GetHeroPortraitName);
+	!#VA(heroId:x) (small:x) (large:x);
+	```
+	- Centering the custom DL dialog at the cursor;
+	```
+	!?FU(DL_CenterAtMouse);
+	!#VA(dlgId:x);
+	```
+
+#### TrainerX:
+- fixed a crash when transferring commander artifacts to heroes;
+
+#### WoG Scripts:
+- War Machines III: numerous displaying of the current number of combat vehicles have been added to the hero and meeting window;
+- Enhanced Commanders: Fixed a bug that disabled subtype 6 chests;
+- Mithril: Fixed the time it takes to add mithril to the player's treasury;
+
+#### ERA Scripts:
+- Capturing Mills and Gardens: Fixed the lack of shadows and incorrect flag positions for Resource Warehouses;
+
+
 ### Version 2.199
 
 #### WoG:
@@ -10,7 +85,7 @@
 - updated the "AssemblyMainPLugin.era" plugin to version 1.78:
 	- The notification panel now correctly displays the notification text;
 	- The frame around the mod text has been changed;
-
+{~cphx.def:0:0 valign=top}
 #### Human AI:
 - Updated to version 1.17;
 

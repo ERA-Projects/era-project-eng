@@ -37,6 +37,11 @@
 		"big" : "big",
 		"standard" : "standard"
 	},
+	"interface_label" : {
+		"show" : "show",
+		"dont_show" : "don't show"
+	},
+
 	"mod_description_control" : {
 		"try_to_use_webview2" : "try to use WebView2",
 		"use_wxhtml_control" : "use wxHtmlWindow (default)",
