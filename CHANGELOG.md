@@ -1,3 +1,18 @@
+### Version 2.201
+
+#### Game Enhancement Mod:
+- artifact tooltips are now enabled by default;
+
+#### WoG Scripts:
+- Enhanced Commander Artifacts: Added support for displaying artifact tooltips;
+
+#### TrainerX:
+- Added support for displaying artifact tooltips;
+
+#### Other:
+- SD Mod Manager (@SyDr) updated to version 0.98.67
+
+
 ### Version 2.200
 
 #### WoG:
