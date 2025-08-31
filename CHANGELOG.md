@@ -1,3 +1,18 @@
+### Version 2.204
+
+#### WoG:
+- updated plugin "game bug fixes extended.dll":
+	- added fix for double damage for Ballista shots and "Double Damage" skill like Death Knights;
+	- limited number of crypts per zone for random maps to 5;
+
+#### Game Enhancement Mod:
+- updated plugin "GameplayEnhancementsPlugin.era" to version 1.6.1:
+	- minor fix for artifact tooltip;
+
+#### Random Wallpaper Mod:
+- Added new logo with game name;
+
+
 ### Version 2.203
 
 - hotfix
