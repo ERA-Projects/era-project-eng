@@ -1,3 +1,35 @@
+### Version 2.205
+
+#### WoG:
+- updated plugin "game bug fixes extended.dll":
+	- fixed pikemen spawning in refugee camps;
+	- now in player's towns if there is a fort there will always be 2 levels of creatures built;
+	- now heroes always have 3 units of creatures at the start;
+	- fixed infinite loop when calculating army value for exchanging creatures in the AI ​​army;
+	- now AI will always receive artifacts and experience for a defeated enemy;
+	- improved negative luck code;
+	- fixed display of unexplored monoliths and underworld gates when casting View Earth/Air;
+	- fixed saving of extra berserk round and defense on unit;
+	- blocked ability to cast Dimension Door in inaccessible zones and to the same position where the hero is;
+	- fixed possibility of vampirism when attacking clones;
+	- sacrificed Phoenixes are no longer resurrected;
+	- daemonic resurrection now places a sacrifice flag on the killed unit;
+- updated "wog native dialogs.era" plugin:
+	- View Earth and View Air effects are now saved until the end of the player's turn, information is available through the View World screen;
+- updated "RMG_CustomizeObjectProperties.era" plugin to version 1.26:
+	- rewritten logic for adding Extenders for future support of plugin modularity;
+	- improved function for getting object names;
+	- API update;
+- updated "Interface_MainMenuAPI.era" plugin to version 1.5:
+	- hotkeys [1;0] are now available for the first ten buttons;
+- corrected description of Arch Devils;
+
+#### Game Enhancement Mod:
+- updated the "GameplayEnhancementsPlugin.era" plugin to version 1.6.2:
+	- the mechanics of the hint for the cost of moving heroes to objects on the map have been improved and transferred to the plugin;
+- removed the StartArmyAllSlots binary, since the logic has been moved to the "WoG" mod;
+
+
 ### Version 2.204
 
 #### WoG:
