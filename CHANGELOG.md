@@ -1,3 +1,19 @@
+### Version 2.206
+
+#### WoG:
+- updated the "AssemblyMainPLugin.era" plugin to version 1.81:
+	- now the notification panel is hidden when viewing "Credits";
+	- fixed the incorrect display of the colored strip under the notification name if the text is too long;
+- updated the "game bug fixes extended.dll" plugin:
+	- now when hovering over monsters with the "Vision" spell, their exact number is shown in the status bar;
+- updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.27:
+	- fixed the inoperability of new objects;
+
+#### Game Enhancement Mod:
+- updated the "GameplayEnhancementsPlugin.era" plugin to version 1.6.3:
+	- fixed a crash from the game when viewing information about artifacts after a meeting of two heroes;
+
+
 ### Version 2.205
 
 #### WoG:
