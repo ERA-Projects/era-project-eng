@@ -1,3 +1,12 @@
+### Version 2.207
+
+#### Game Enhancement Mod:
+- добавлена заглушка "StartArmyAllSlots.bin" для избежания вылета на старте игры;
+
+#### Other:
+- removed extra files;
+
+
 ### Version 2.206
 
 #### WoG:
