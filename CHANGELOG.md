@@ -1,3 +1,13 @@
+### Version 2.208
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+	- Fixed lycanthropy vulnerability check for commanders and gods;
+	- Optimized lycanthropy mechanics in quick combat;
+	- Removed immunity to fire magic from Ghosts and Messengers of all elements;
+- Corrected the name and description of the "Ghosts" unit;
+
+
 ### Version 2.207
 
 #### Game Enhancement Mod:
