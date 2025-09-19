@@ -1,3 +1,17 @@
+### Version 2.210
+
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.28:
+	- added functionality of the plugin without HD Mod;
+	- Fixed duplicate creature banks in the object settings dialog;
+	- Artifacts that are part of collections can no longer be quest objects on random maps;
+- Minor localization fixes;
+
+#### Game Enhancement Mod:
+- Removed duplicate code for old fixes and changes;
+
+
 ### Version 2.209
 
 - hotfix
