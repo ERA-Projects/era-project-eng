@@ -1,5 +1,12 @@
-### Version 2.210
+### Version 2.211
 
+#### Other:
+- SD Mod Manager (@SyDr) updated to version 0.98.69:
+	- Added compatibility with Heroes Launcher v1.2.0;
+	- Added a "Create new mod" option in the "Tools" tab;
+
+
+### Version 2.210
 
 #### WoG:
 - Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.28:
@@ -121,7 +128,7 @@
 - Added support for displaying artifact tooltips;
 
 #### Other:
-- SD Mod Manager (@SyDr) updated to version 0.98.67
+- SD Mod Manager (@SyDr) updated to version 0.98.67;
 
 
 ### Version 2.200

@@ -2,21 +2,8 @@
 mod.json file structure
 ---------------------------
 
-#### Notes
-Any section, defined as `"section": lng` means that section is defined as following instead (to reduce boilerplate)
-```
-"section": {
-  "en" : "value",
-  "ru" : "value",
-  "<code>" : "value"
-}
-```
-MM will try to load entry for current language first. If it's not possible - english will be used instead. 
-All paths are relative to mod directory.
-MM will try to load data from deprecated fields if data is not present in expected format.
-
-## Structure
-```
+# Structure
+```json
 {
   "name" : lng,
   "description" : lng,
@@ -32,11 +19,41 @@ MM will try to load data from deprecated fields if data is not present in expect
     "load_after" : [ "WoG", "Test2" ],
     "incompatible" : [ "Test3" ]
   }
+}
 ```
-### Category
+
+## Notes
+Any section, defined as `"section": lng` means that section is defined as following instead (to reduce boilerplate)
+```
+"section": {
+  "en" : "value",
+  "ru" : "value",
+  "<code>" : "value"
+}
+```
+MM will try to load entry for current language first. If it's not possible - english will be used instead. 
+All paths are relative to mod directory.
+MM will try to load data from deprecated fields if data is not present in expected format.
+
+### name
+Displayed name of the mod.
+
+### description
+Name of the file with mod description (displayed at the right side in main window. You can use .md files too.
+
+### author
+Author[s] of the mod.
+
+### homepage
+Homepage for the mod. Available from mod context menu in the main view.
+
+### support
+Either single link or an array of links. Displayed in the main view when clicked on ♥ icon.
+
+### category
 See files in "lng" directory for list of available values.
 
-### Compatibility
+### compatibility
 When looking for a some file, Era II will start from mod with greatest priority. I will refer to load order - exact opposite thing. For example if i say `Mod 2` loaded after `Mod 1` this means that `Mod 2` will have greater priority, and game will took files from it instead of `Mod 1` where it possible. Don't be confused :).
 
 `incompatible` lists mods, with which game cannot be loaded or this action will not make any sense in combination with this mod.  

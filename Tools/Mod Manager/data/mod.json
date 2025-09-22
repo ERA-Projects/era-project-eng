@@ -1,0 +1,20 @@
+{
+  "name": {
+    "en": "",
+    "ru": ""
+  },
+  "description": {
+    "en": "readme.txt",
+    "ru": "readme_ru.txt"
+  },
+  "author": "Your name",
+  "homepage": "http://wforum.heroes35.net/",
+  "icon": "icon.png",
+  "version": "1.0",
+  "compatibility": {
+    "requires" : [ "WoG" ],
+    "load_after" : [ "WoG" ],
+    "incompatible" : [ ]
+  },
+  "category": "gameplay"
+}
