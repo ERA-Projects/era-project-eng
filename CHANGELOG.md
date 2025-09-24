@@ -1,3 +1,12 @@
+### Version 2.212
+
+#### ERA ERM Framework:
+- Fixed constants for hero class indices;
+
+#### WoG Graphics Fix Lite:
+- Fixed the passability mask for the "Town Gate" object;
+
+
 ### Version 2.211
 
 #### Other:
