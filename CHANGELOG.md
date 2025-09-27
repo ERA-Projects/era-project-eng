@@ -1,3 +1,9 @@
+### Version 2.213
+
+#### WoG Scripts:
+- Sorcery I: Fixed several objects setup corruption caused by remote visit;
+
+
 ### Version 2.212
 
 #### ERA ERM Framework:
