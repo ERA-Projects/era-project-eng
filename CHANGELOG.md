@@ -1,3 +1,15 @@
+### Version 2.214
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+	- Fixed a crash when attacking creatures in melee combat with the "ERA+" mod active;
+
+#### TrainerX:
+- Fixed recalculation of hero movement points after closing a dialogue;
+
+#### WoG Graphics Fix Lite:
+- Mod updated to version 2.23.0;
+
 ### Version 2.213
 
 #### WoG Scripts:
