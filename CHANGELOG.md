@@ -1,3 +1,17 @@
+### Version 2.216
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - Added even better compatibility with the "Typhon" plugin;
+    - Fixed creatures gaining experience outside of battle (for example, the "start heroes at level 5" option);
+    - Fixed creatures not being able to gain experience if the hero's level reached the maximum for the map;
+
+#### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.6.4:
+    - In "Hot-Seat" mode, added interface elements are now correctly colored in the human player's color (even before a turn is accepted);
+- Re-enabled the display of a message about a hero reaching the maximum level. This message will only appear once for each hero.
+
+
 ### Version 2.215
 
 #### ERA ERM Framework:
