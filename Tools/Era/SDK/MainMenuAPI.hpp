@@ -10,17 +10,19 @@ namespace mainmenu
 class H3DlgCaptionButton;
 
 /**
- * @enum eMenuList
+ * @enum eMenuFlags
  * @brief Specifies the menu context where a widget should appear
  * @details Uses bit flags to allow combining multiple menu contexts
  */
-enum eMenuList : INT
+enum eMenuFlags : INT
 {
     MAIN = 0x1,      ///< Main menu screen
     NEW_GAME = 0x2,  ///< New game menu
     LOAD_GAME = 0x4, ///< Load game menu
     CAMPAIGN = 0x8,  ///< Campaign selection menu
-    ALL = 0xF        ///< All menu screens (combination of all flags)
+    ALL = 0xF,        ///< All menu screens (combination of all flags)
+	ON_TOP = 0x10,   ///< Widget should appear on top of other UI elements
+	AT_BOTTOM = 0x20 ///< Widget should appear at the bottom of other UI elements
 };
 /**
  * @struct MenuWidgetInfo
@@ -30,8 +32,8 @@ struct MenuWidgetInfo
 {
     const char *name = nullptr;           ///< Unique identifier for the widget
     const char *text = nullptr;           ///< Display text of the widget
-    eMenuList menuList = eMenuList::MAIN; ///< Menu context(s) where the widget should appear
-    void (*onClick)(void *msg);           ///< Callback function triggered when widget is clicked
+    eMenuFlags menuList = eMenuFlags::MAIN; ///< Menu context(s) where the widget should appear
+    int (__fastcall * customProc)(void *msg);           ///< Callback function triggered when widget is clicked
 };
 
 /**

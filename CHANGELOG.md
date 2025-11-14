@@ -1,3 +1,29 @@
+### Version 2.217
+
+#### WoG:
+- Updated "wog native dialogs.era" plugin:
+    - Fixed memory leaks and crashes in dialogs with dynamic font changes;
+    - Added "Esc" hotkey to close the WoG options menu;
+- Updated "Interface_MainMenuAPI.era" plugin to version 1.6:
+    - Added the ability to easily sort added buttons:
+    ```
+    Added 2 flags for widgets:
+    ON_TOP - to display the widget closer to the top of the list;
+    AT_BOTTOM - to display widgets closer to the bottom of the list;
+    ```
+    - Updated API for the relative directory "Tools/Era/SDK/MainMenuAPI.hpp";
+    - Minor fixes;
+- Updated the "Assembly_MainPlugin.era" plugin to version 1.82:
+    - Added support for the new API;
+    - The "Notifications" button in the main menu is now displayed as low as possible;
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.29:
+    - Added support for the new API;
+    - The "Generation Settings" button in the main menu is now displayed as low as possible and only in the "Singleplayer" menu;
+- Updated the "ERA_MultilingualSupport.era" plugin to version 2.3:
+    - Added support for the new API;
+    - The "Language" button in the main menu is now displayed as high as possible;
+
+
 ### Version 2.216
 
 #### WoG:
