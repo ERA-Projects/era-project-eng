@@ -1,3 +1,10 @@
+Version 3.9.27 (11/2025)
+------------------------
+[-] Fixed a desynchronization bug in PvP network combat that occurred when one client’s CPU supported SSE 4.2 while the other did not. The two systems were using different CRC‑32 hashing algorithms, which caused mismatched state updates. The patch normalises the hashing routine and updates the exported `Hash32` function so that it produces identical results on all platforms regardless of CPU capabilities.
+
+[-] Fixed text truncation in multiline text dialogs.
+
+
 Version 3.9.26 (04/2025)
 ------------------------
 [+] Implemented detailed game context dumping in "exception context.txt" on crash.

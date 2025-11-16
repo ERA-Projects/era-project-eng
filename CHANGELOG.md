@@ -1,3 +1,22 @@
+### Version 2.218
+
+#### ERA:
+    - ATTENTION! examples of using all innovations are in the file "/Help/Era manual/era iii changelog.txt" or just click on ERA version in the game main menu;
+- ## update era.dll core to version 3.9.27:
+    - Fixed a desynchronization bug in PvP network combat that occurred when one client’s CPU supported SSE 4.2 while the other did not. The two systems were using different CRC‑32 hashing algorithms, which caused mismatched state updates. The patch normalises the hashing routine and updates the exported `Hash32` function so that it produces identical results on all platforms regardless of CPU capabilities.
+    - Fixed text truncation in multiline text dialogs.
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - Fixed a crash during AI morale calculations in an army with the Angel Alliance;
+
+#### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.0:
+    - Added additional building construction status icons to the Adventure Map and City View windows:
+        - All built — yellow checkmark;
+        - Buildings available for construction, but not enough money — crossed-out gold coins;
+        - Buildings available and sufficient resources — hidden icon;
+        - Controlled via the "gem_plugin.building_hints.enable" json key;
 ### Version 2.217
 
 #### WoG:
