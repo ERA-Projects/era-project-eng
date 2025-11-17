@@ -1,3 +1,11 @@
+### Version 2.220
+
+#### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.1:
+    - Fixed the tooltip disappearing when building construction in cities is complete after the hero movement is complete;
+    - Disabled the tooltip display during AI turns to avoid rendering bugs;
+
+
 ### Version 2.219
 
 #### WoG:
