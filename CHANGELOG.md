@@ -1,3 +1,13 @@
+### Version 2.219
+
+#### WoG:
+- Updated the "wog native dialogs.era" plugin:
+    - The active hero window can now be opened in Black Market and Artifact Merchant dialogs;
+
+#### WoG Scripts:
+- Monster Week: A relevant image is now displayed when a new week begins;
+
+
 ### Version 2.218
 
 #### ERA:
