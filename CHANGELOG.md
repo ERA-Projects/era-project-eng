@@ -1,3 +1,9 @@
+### Version 2.221
+
+#### Game Enhancement Mod:
+- Removed the "1" symbol from the top icon in the town list;
+
+
 ### Version 2.220
 
 #### Game Enhancement Mod:
