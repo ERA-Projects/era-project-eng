@@ -1,3 +1,11 @@
+### Version 2.223
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.29:
+    - Fixed an issue with generating new objects;
+- Fixed the player color for the destroyed Village Hall;
+
+
 ### Version 2.222
 
 #### WoG:
