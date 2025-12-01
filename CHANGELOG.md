@@ -1,3 +1,10 @@
+### Version 2.224
+
+#### WoG:
+- Updated the "Interface_MainMenuAPI.era" plugin to version 1.7:
+    - Fixed flickering of the main menu interface buttons
+
+
 ### Version 2.223
 
 #### WoG:
