@@ -1,3 +1,15 @@
+### Version 2.222
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - Shadows are now drawn on the Adventure Map for objects with the "flat" property;
+    - The Village Hall will now appear on the Adventure Map when destroying buildings in towns without forts;
+
+### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.2:
+    - Added a construction tip to the right-click town preview dialog and to the town screen itself;
+
+
 ### Version 2.221
 
 #### Game Enhancement Mod:
