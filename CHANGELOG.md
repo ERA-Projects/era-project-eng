@@ -1,3 +1,12 @@
+### Version 2.225
+
+#### WoG:
+- Updated the "Interface_MainMenuAPI.era" plugin to version 1.8:
+    - New main menu interface buttons are now hidden when opening the "Credits" and "High Score" menus;
+- Updated the "ERA_MultilingualSupport.era" plugin to version 2.4:
+    - Added compatibility with plugins that change the number of heroes;
+
+
 ### Version 2.224
 
 #### WoG:
