@@ -1,5 +1,18 @@
-### Version 2.225
+### Version 2.226
 
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+- The resource cheat now also adds 100 mithril;
+
+#### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.3:
+Fixed the method for updating mithril information;
+
+#### WoG Scripts:
+- Improved Commanders: Fixed the display of the resource selection message when picking up Power Stones;
+
+
+### Version 2.225
 #### WoG:
 - Updated the "Interface_MainMenuAPI.era" plugin to version 1.8:
     - New main menu interface buttons are now hidden when opening the "Credits" and "High Score" menus;
