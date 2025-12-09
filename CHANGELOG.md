@@ -1,3 +1,18 @@
+### Version 2.227
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.31:
+    - All available defs for the corresponding types and subtypes are now displayed in the Generation Settings dialog;
+    - Fixed the logic for creating lists for generating objects;
+    - Improved performance;
+
+#### WoG Scripts:
+- WoGification:
+    - Objects placed by scripts will now match the terrain they are placed on;
+    - Fixed the placement of the "Random Monster" object instead of the "Book of Spells" artifact;
+- Mithril Upgrades: Corrected the description for the Monolith upgrade text;
+
+
 ### Version 2.226
 
 #### WoG:
