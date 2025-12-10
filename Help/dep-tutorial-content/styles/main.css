@@ -1,0 +1,61 @@
+body {
+    font-family: 'Liberation Serif', serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #333;
+}
+
+.title {
+    font-size: 28pt;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.subtitle {
+    font-size: 24pt;
+    color: #666;
+    text-align: left;
+    margin: 10px 0;
+}
+
+p {
+    font-size: 12pt;
+    color: #000;
+    margin: 10px 0;
+}
+
+a {
+    color: #000080;
+    text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}

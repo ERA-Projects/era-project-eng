@@ -1,7 +1,21 @@
-### Version 2.227
+### Version 2.228
 
 #### WoG:
 - Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.31:
+    - Added the "Sanctuary" object to the Generation Settings dialog;
+    - Fixed Snow Market generation (now uses the normal Market's object counter);
+
+#### WoG Scripts:
+- Minor object replacement fixes;
+
+#### Other:
+- Updated the DEP disabling manual (Help/DEP_tutorial.html);
+
+
+### Version 2.227
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.30:
     - All available defs for the corresponding types and subtypes are now displayed in the Generation Settings dialog;
     - Fixed the logic for creating lists for generating objects;
     - Improved performance;
