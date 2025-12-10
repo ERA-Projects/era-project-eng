@@ -8,6 +8,16 @@
 #### WoG Scripts:
 - Minor object replacement fixes;
 
+#### ERA ERM Framework:
+- Added a new function "!?FU(DL_SetPlayerColor)" to set the correct player color for custom dialogues (DL):
+    ```
+    !?FU(DL_SetPlayerColor);
+    ; Set a proper dlg background frame color. Call DL:N before trying to use this function.
+
+    !#VA(dlgId:x); DL dialogue ID;
+    !#VA(playerId:x); Optional. ID of the player whose color to set. By default, the color is set to the player interacting with the dialogue;
+    ```
+
 #### Other:
 - Updated the DEP disabling manual (Help/DEP_tutorial.html);
 
