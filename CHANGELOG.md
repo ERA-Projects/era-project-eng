@@ -1,4 +1,4 @@
-### Version 2.229 RC
+### Version 2.229
 
 #### ERA Scripts:
 - Land Navigation: script rewritten, movement point calculation corrected;
