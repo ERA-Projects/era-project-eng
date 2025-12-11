@@ -1,3 +1,12 @@
+### Version 2.229 RC
+
+#### ERA Scripts:
+- Land Navigation: script rewritten, movement point calculation corrected;
+
+#### TrainerX:
+- corrected recalculation of hero movement points after closing a dialogue;
+
+
 ### Version 2.228
 
 #### WoG:
