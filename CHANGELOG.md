@@ -1,3 +1,19 @@
+### Version 2.230
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - Fixed Creature Experience overflow when joining or moving units;
+    - Fixed an incorrect experience calculation formula when moving a hero to a city garrison;
+
+#### Game Enhancement Mod:
+- Removed "gem_crexpo_fix.erm" script
+## It is recommended to start a new game or press F12 after loading an old one.
+
+#### Other:
+- Optimized pac files for some mods;
+- Removed unused files.
+
+
 ### Version 2.229
 
 #### ERA Scripts:
