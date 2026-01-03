@@ -1,3 +1,17 @@
+### Version 2.232
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.32:
+    - Fixed the display of artifact names and descriptions;
+
+#### ERA Scripts:
+- Backpack Artifacts: Fixed the functionality of gold-producing artifacts;
+
+
+### Version 2.231
+
+- hotfix
+
 ### Version 2.230
 
 #### WoG:
