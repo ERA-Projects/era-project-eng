@@ -1,3 +1,23 @@
+### Version 2.233
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - Fixed the persistence of the cheat code for constructing all buildings after exiting the game;
+    - Fixed the inability to resurrect Golden Dragons (and other units) with the "Sacrifice" spell due to immunity to the "Resurrection" spell (the default 4th level spell);
+- Added the "Mercenary Guild" object to the random map object generation list;
+
+#### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.4:
+    - Display of available buildings now supports building indices higher than 43 (support for new buildings from the "new_towns.era" plugin);
+    - Minor map scrolling fixes;
+
+#### ERA Scripts:
+- Maximum Secondary Skills: Fixed the hero's secondary skills resetting when using certain plugins and mods when reloading the map;
+
+#### ERA ERM Framework:
+- Added a new function "!?FU(Battle_RedrawGridShadow);" that corrects the rendering of unit movement ranges in battle if their speed has been changed;
+
+
 ### Version 2.232
 
 #### WoG:
