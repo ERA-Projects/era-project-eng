@@ -1,50 +1,262 @@
 {
-	"main_frame" : {
-		"revert" : "Reset",
-		"apply" : "Apply",
-		"unsaved_changes" : "Some changes are unsaved. Do you want to apply them now?",
-		"unsaved_changes_caption" : "Unsaved changes"
-	},
-	"category" : {
-		"gameplay" : "Gameplay",
-		"graphics" : "Graphics",
-		"scenarios" : "Scenarios",
-		"cheats" : "Cheats",
-		"interface" : "Interface",
-		"towns" : "Towns",
-		"other" : "Other",
-		"platforms" : "Platforms",
-		"personal mods" : "My personal mods",
-		"utilities" : "Utilities",
-		"localization" : "Localization",
-		"mapeditor" : "Map editor"
-	},
-	"conflicts" : {
-		"caption" : "Choose conflict resolve mode",
-		"automatic" : "Automatic",
-		"automatic_note" : "Automatically resolve mod conflicts when you enable or disable any mod",
-		"manual" : "Manual",
-		"manual_note" : "Don't resolve conflicts automatically"
-	},
-	"update_mode" : {
-		"manual" : "only manual",
-		"on_every_launch" : "on every launch (once every hour)",
-		"once_per_day" : "once per day",
-		"once_per_week" : "once per week",
-		"once_per_month" : "once per month"
-	},
-	"interface_size" : {
-		"big" : "big",
-		"standard" : "standard"
-	},
-	"interface_label" : {
-		"show" : "show",
-		"dont_show" : "don't show"
-	},
-
-	"mod_description_control" : {
-		"try_to_use_webview2" : "try to use WebView2",
-		"use_wxhtml_control" : "use wxHtmlWindow (default)",
-		"use_plain_text_control" : "use plain text"
-	}
+  "category": {
+    "gameplay": "Gameplay",
+    "graphics": "Graphics",
+    "scenarios": "Scenarios",
+    "cheats": "Cheats",
+    "interface": "Interface",
+    "towns": "Towns",
+    "other": "Other",
+    "platforms": "Platforms",
+    "personal mods": "My personal mods",
+    "utilities": "Utilities",
+    "localization": "Localization",
+    "mapeditor": "Map editor"
+  },
+  "column": {
+    "priority": "Priority",
+    "name": "Mod",
+    "category": "Category",
+    "support": "Support",
+    "author": "Author",
+    "version": "Version",
+    "directory": "Directory",
+    "path": "Path",
+    "plugins": "Plugins",
+    "plugin": "Plugin",
+    "index": "Index",
+    "without_category": "Without category",
+    "load_order": "Load order",
+    "status": "Status",
+    "active": "Active",
+    "managed": "Managed",
+    "column": "Column",
+    "screenshot": "Screenshot",
+    "results": "Results",
+    "archived": "Archived"
+  },
+  "dialog": {
+    "label": {
+      "mod": "Mod",
+      "profile_name": "Profile name:",
+      "enter_profile_name": "Enter profile name",
+      "delete_profile": "Delete profile \"%s\"?",
+      "selected": "Selected:",
+      "profile": "Profile",
+      "preview": "Preview",
+      "categories": "Categories:",
+      "explorer": "Explorer",
+      "recent": "Recent",
+      "options": "Options",
+      "filter": "Filter"
+    },
+    "cancel": "Cancel",
+    "export_preset": {
+      "caption": "Export",
+      "options": "Export options",
+      "save_exe_option": "Save selected executable"
+    },
+    "filter": {
+      "json": "json files (*.json)|*json"
+    },
+    "import_preset": {
+      "caption": "Import",
+      "options": "Import options",
+      "name": "Import with name:",
+      "apply_now": "Apply immediately",
+      "no_option": "Select option",
+      "save_and_apply": "Save and apply",
+      "save_only": "Save only",
+      "apply_only": "Apply only"
+    },
+    "settings": {
+      "update_mode": {
+        "manual": "only manual",
+        "on_every_launch": "on every launch (once every hour)",
+        "once_per_day": "once per day",
+        "once_per_week": "once per week",
+        "once_per_month": "once per month",
+        "label": "Check for program updates:"
+      },
+      "mod_description_control": {
+        "label": "Mod description:",
+        "try_to_use_webview2": "try to use WebView2",
+        "use_wxhtml_control": "use wxHtmlWindow (default)",
+        "use_plain_text_control": "use plain text"
+      },
+      "interface_size": {
+        "label": "Interface size (mod list + some buttons):",
+        "big": "big",
+        "standard": "standard"
+      },
+      "interface_label": {
+        "label": "Show labels for buttons in list view:",
+        "show": "show",
+        "dont_show": "don't show"
+      },
+      "program_options": "Program options",
+      "caption": "Program settings",
+      "configure_main_view": {
+        "caption": "Configure view",
+        "column": "Column",
+        "managed_mods": "Show managed mods",
+        "archived_mods": "Show archived mods",
+        "managed_mods_value": {
+          "as_flat_list": "as a flat list",
+          "as_group": "as a group"
+        },
+        "archived_mods_value": {
+          "as_flat_list": "as a flat list",
+          "as_single_group": "as a single group",
+          "as_individual_groups": "grouped by category"
+        }
+      },
+      "conflict_resolve_mode": {
+        "label": "Resolve mods conflicts:",
+        "automatic": "automatically (on enable/disable)",
+        "manual": "manually (by clicking on \"Sort\" button)"
+      },
+      "platform_options": "Platform settings",
+      "warn_about_conflicts_mode": {
+        "label": "On conflicts:",
+        "only_inform": "show notification only",
+        "warn_before_enabling": "show warning before enabling",
+        "do_nothing": "do nothing"
+      }
+    },
+    "edit_mod": {
+      "caption": "Edit mod",
+      "docs": "Docs"
+    },
+    "button": {
+      "open_directory": "Open folder",
+      "reload_from_disk": "Reload from disk",
+      "copy": "Copy",
+      "save_to_file": "Save to file",
+      "close": "Close",
+      "paste": "Paste",
+      "load_from_file": "Load from file",
+      "download": "Download",
+      "open_page": "Open page",
+      "load": "Load",
+      "save": "Save",
+      "rename": "Rename",
+      "delete": "Delete",
+      "save_as": "Save as",
+      "configure": "Configure",
+      "move_up": "Move Up",
+      "move_down": "Move Down",
+      "enable": "Enable",
+      "sort": "Sort",
+      "open_homepage": "Go to homepage",
+      "archive": "Archive",
+      "edit": "Edit",
+      "screenshots": "Screenshots",
+      "remove_from_list": "Remove from list",
+      "accept": "Accept",
+      "add_to_favs": "Add to favorites",
+      "remove_from_favs": "Remove from favorites",
+      "ok": "OK",
+      "continue": "Continue",
+      "disable": "Disable"
+    },
+    "error": {
+      "caption": "Unexpected error occurred",
+      "prompt": "Internal error happened (only if you didn't wanted to to get exactly this result). Please, make report, describing your actions and include following information:",
+      "details": "Error details"
+    },
+    "main_frame": {
+      "page_mods": "Mods",
+      "page_profiles": "Profiles",
+      "about_description": "A mod manager for ERA platform",
+      "menu": {
+        "game": {
+          "launch_tip": "Launch game with selected executable",
+          "launch": "Launch (%s)",
+          "change_selected": "Change executable for launch",
+          "label": "Game"
+        },
+        "tools": {
+          "change_managed_directory": "Change managed directory",
+          "change_managed_directory_tip": "Allows selecting other directory for management",
+          "reload_data": "Reload data from disk",
+          "settings": "Settings",
+          "settings_tip": "Change program settings",
+          "label": "Tools",
+          "language": "Language",
+          "language_tip": "Allows selecting other language for program"
+        },
+        "about": {
+          "check_update": "Check for updates",
+          "check_update_tip": "Check for program updates",
+          "about": "About"
+        },
+        "mod": {
+          "create_new": "Create new mod",
+          "list_files": "List active mod files",
+          "label": "Mod",
+          "open_directory": "Open mods folder"
+        }
+      },
+      "new_mod_prompt": "Enter new mod name",
+      "new_mod_prompt_label": "Create"
+    },
+    "select_game_directory": {
+      "caption": "Select game directory for management"
+    },
+    "select_executable": {
+      "caption": "Select executable"
+    },
+    "mod_file_list": {
+      "caption": "Mod file list",
+      "include_game_files": "Include game files",
+      "include_not_overridden": "and include not overridden",
+      "skip_not_overriden": "Skip non overridden files",
+      "include_from_root": "Include files from root directory"
+    }
+  },
+  "message": {
+    "notification": {
+      "copied": "Copied",
+      "saved": "Saved",
+      "copied_from_clipboard": "Copied from clipboard",
+      "loaded_from_file": "Loaded from file",
+      "automatic_resolve_mode_enabled": "Automatic mod conflict resolve mode selected",
+      "new_version_available": "New program version is available",
+      "cannot_check_for_update": "Cannot check for program update",
+      "you_have_latest_version": "You have latest program version"
+    },
+    "error": {
+      "cannot_open_clipboard": "Cannot open clipboard",
+      "operation_exception_details": "Error happened during execution of operation. Details:\n\n%s",
+      "directory_already_exist": "Directory already exist",
+      "path_not_exists": "Selected path (%s) doesn't exists, please choose suitable one"
+    },
+    "warning": {
+      "profile_already_exists": "Profile \"%s\" already exists.",
+      "no_mods_can_be_placed_above_each_other": "No mods from (%s) can be placed above each other, %s placed at the top"
+    },
+    "info": {
+      "virtual_mod": "This mod is virtual, there is no corresponding directory on disk",
+      "profile_loaded": "Profile \"%s\" loaded.",
+      "exe_not_selected": "not selected",
+      "dont_show_again": "Don't show this message again",
+      "incompatible_mods": "Mod \"%s\" is incompatible with \"%s\"",
+      "mods_were_disabled": "The following mod(s) were disabled: %s"
+    },
+    "question": {
+      "overwrite_existing_file": "'%s' already exists, overwrite?",
+      "delete_mod": "Are you sure want to delete mod \"%s\"?\n\nIt will be deleted to recycle bin, if possible.",
+      "copy_already_running": "Another copy of program is running. Running more than one copy may result in incorrect data/configuration management. Do you want to run program anyway?",
+      "warn_about_conflicts_before_enabling": "Mod \"%s\" is incompatible with \"%s\". Continue?",
+      "warn_about_conflicts_before_enabling_sort": "Mod(s) \"%s\" would be disabled. Continue?"
+    },
+    "status": {
+      "displayed_and_hidden": ", displayed: %d, hidden: %d",
+      "mod_count": "Mods: %d",
+      "ok": "OK",
+      "all_mods_hidden": ", all hidden (check filter)",
+      "no_description_available": "No description available"
+    }
+  }
 }

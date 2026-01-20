@@ -1,3 +1,23 @@
+### Version 2.234
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - added the ability to disable the ban on adding war machines by commanders in creature banks via the key
+    ```
+    "gbfe.disable_fix.npc.creature_banks_war_machines": bool
+    ```
+
+#### Other:
+- The new Mod Manager (@SyDr) has been updated to version 0.98.73, and the executable file name has been changed to "Mod Manager.exe":
+    - Fixed some bugs;
+    - Reduced .exe file size;
+    - Updated language files (English now also includes keys, not just a small list of categories);
+    - Added some minor features;
+    - Added an option to warn or inform after the fact which mods have been (or will be) disabled during auto-sorting (disabled by default);
+    - Same as above, but with sorting disabled, it will only show directly incompatible mods;
+    - Removed automatic update checking in the portable version;
+
+
 ### Version 2.233
 
 #### WoG:
