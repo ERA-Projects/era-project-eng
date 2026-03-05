@@ -1,3 +1,18 @@
+### Version 2.236
+
+#### Advanced Classes Mod:
+- File optimization;
+- Localization fixes;
+
+#### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.5:
+    - Updated the hint displaying the number of taverns providing information in the Thieves Guild dialogue:
+        - Added support for calling through the HD Mod with the "G" key;
+        - Added localization;
+        - Fixed the position and size of the hint;
+- Minor translation fixes;
+
+
 ### Version 2.235
 
 #### WoG:
