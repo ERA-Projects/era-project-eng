@@ -1,3 +1,15 @@
+### Version 2.237
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.4.1:
+    - Partial preparation for splitting the plugin into multiple versions;
+    - Improved plugin performance;
+    - Fixed an issue where AI players would get stuck when visiting Creature Banks;
+    - Restored functionality of custom Universities and some other new objects;
+    - Improved the generation algorithm for Creature Dwellings with 4 creatures (type 20);
+    - In the RMG Settings Dialog, objects are now displayed from the "zobjcts.txt" file, rather than the "zaobjts.txt" file.
+
+
 ### Version 2.236
 
 #### Advanced Classes Mod:
