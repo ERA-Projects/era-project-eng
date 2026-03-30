@@ -1,0 +1,73 @@
+name: Smart Release Cleanup
+
+on:
+  schedule:
+    # Запуск в 00:00 каждого 1-го числа месяца
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # Оставляем возможность запустить вручную
+
+jobs:
+  cleanup-releases:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Обязательно для удаления
+
+    steps:
+      - name: Analyze and Delete "Quick-Fix" Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "### Загрузка данных и начало анализа... ###"
+          
+          # 1. Получаем JSON всех опубликованных релизов
+          RELEASES_JSON=$(gh api --paginate repos/${{ github.repository }}/releases \
+            --jq '[.[] | select(.draft == false) | {id: .id, tag: .tag_name, created: .created_at}]')
+
+          COUNT=$(echo "$RELEASES_JSON" | jq 'length')
+          
+          if [ "$COUNT" -le 10 ]; then
+            echo "В репозитории $COUNT релизов. Очистка не требуется (минимум 10 последних всегда сохраняются)."
+            exit 0
+          fi
+
+          echo "Анализируем релизы старше 10 последних..."
+
+          # 2. Выделяем ID тех, кто прожил < 7 дней и находится за пределами ТОП-10
+          DELETE_IDS=$(echo "$RELEASES_JSON" | jq -r '
+            .[0:10] as $protected |
+            .[10:] as $old_ones |
+            range(0; $old_ones | length) as $i |
+            $old_ones[$i] as $curr |
+            (if $i == 0 then $protected[-1] else $old_ones[$i-1] end) as $next |
+            
+            ((($next.created | fromdateiso8601) - ($curr.created | fromdateiso8601)) / 86400) as $days |
+            
+            if $days < 7 then $curr.id else empty end
+          ')
+
+          if [ -z "$DELETE_IDS" ]; then
+            echo "Все старые релизы прошли проверку на стабильность. Удалять нечего."
+            exit 0
+          fi
+
+          # 3. Цикл удаления
+          for ID in $DELETE_IDS; do
+            # Получаем тег для красивого лога
+            TAG=$(echo "$RELEASES_JSON" | jq -r ".[] | select(.id == $ID) | .tag")
+            
+            echo "Удаление релиза: $TAG (ID: $ID)..."
+            gh api \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              /repos/${{ github.repository }}/releases/$ID
+          done
+
+          echo "--------------------------------------------------------"
+          echo "Очистка завершена. Проверьте раздел Releases в вашем репозитории."
+
+      - name: Final Summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "### Текущий список релизов после очистки: ###"
+          gh api --paginate repos/${{ github.repository }}/releases --jq '.[] | .tag_name'
