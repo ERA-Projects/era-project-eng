@@ -1,3 +1,26 @@
+### Version 2.238
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    ## Through extensive research and painstaking work, support for consistent and correct RNG (Random Number Generator) operation in battles has been added to the game:
+        - Now the results of "quick battle" and "auto battle" are always identical unless time-based scripts (VR:T) are involved in the battle;
+        - Now damage and ability triggers are always repeated when the sequence of actions is followed;
+        - Improved RNG performance;
+        - Prepared the platform to handle simultaneous animations of all creatures;
+    - Now, when an attack is completely blocked, the damage received text is not written in the battle log;
+- Updated the "wog native dialogs.era" plugin:
+    - Receiving troops from the Inferno Commander (Succubus) skill no longer displays an excessive message about charming units. The text has been moved directly to the army joining dialog;
+    - The "quick battle" mechanics, activated by pressing "Q," have been changed. Heroes' mana is no longer drained during the battle, and the original option to disable magic is now enabled;
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.4.2:
+    - Fixed previews of large objects in the settings dialog;
+- Fixed graphics for the "Mage's Colosseum" object;
+
+#### WoG Scripts:
+- Enhanced War Machines III: the display of the current number of vehicles in the hero meeting window when transferring them has been fixed;
+- Fixed event looping caused by incorrect RNG management;
+- Minor fixes;
+
+
 ### Version 2.237
 
 #### WoG:
