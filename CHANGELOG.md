@@ -1,3 +1,10 @@
+### Version 2.239
+
+#### Game Enhancement Mod:
+- Removed the reduction in hero scouting radius from the "April Fools' Day joke":
+    ## PRESS "F12" TO APPLY CHANGES TO A GAME THAT'S ALREADY STARTED!
+
+
 ### Version 2.238
 
 #### WoG:
