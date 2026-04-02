@@ -1,3 +1,13 @@
+### Version 2.240
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.5.0:
+    - Improved data loading from JSON files for Creature Banks;
+    - Optimized AI behavior when calculating Creature Bank values ​​for Creature Banks;
+    - Added support for "victory" messages for Creature Banks;
+    - Fixed a bug with creature rewards for Creature Banks if data was missing.
+
+
 ### Version 2.239
 
 #### Game Enhancement Mod:
