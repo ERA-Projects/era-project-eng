@@ -1,3 +1,13 @@
+### Version 2.242
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.5.2:
+    - Fixed a rare bug with an incorrect Creature Bank index;
+
+#### WoG Graphics Fix Lite:
+- Updated PNG graphics;
+
+
 ### Version 2.241
 
 #### WoG:
