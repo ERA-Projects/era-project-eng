@@ -1,3 +1,12 @@
+### Version 2.241
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.5.1:
+    - Fixed a crash when attempting to claim a reward for winning a Crypt/Abandoned Ship/Shipwreck;
+    - Fixed receiving custom rewards;
+    - plugin stability has been improved;
+
+
 ### Version 2.240
 
 #### WoG:
