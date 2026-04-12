@@ -1,3 +1,10 @@
+### Version 2.243
+
+#### WoG:
+## - Added official main menu background for HoMM 3 ERA:
+    - Artist: Rizzon;
+
+
 ### Version 2.242
 
 #### WoG:
