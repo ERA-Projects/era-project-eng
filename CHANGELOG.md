@@ -1,3 +1,22 @@
+### Version 2.244
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - The "Berserk" spell cast as a result of a retaliatory strike or shot will no longer reset at the end of its duration to avoid losing its effect;
+    - Creature specialists now grant a bonus not only to the upgraded version of their creatures, but also to any subsequent upgrade (cyclical check);
+    - Minor fix to wall attack logic for creatures that don't have this flag by default, but were added by mods;
+- new wallpapers are now packed in a pac file, allowing them to be replaced by other mods;
+
+#### Game Enhancement Mod:
+- "Gameplay_GameplayEnhancementsPlugin.era" to version 1.8.2:
+    - Rewritten code for displaying mithril;
+    - Mithril is now visible in all dialogs that display the resource panel;
+    - Changed the display type for resources above 1 million;
+    - Fixed the tooltip when hovering over resources;
+    - Fixed the tooltip displaying the path length when pressing the "ALT" key;
+- Minor script optimizations;
+
+
 ### Version 2.243
 
 #### WoG:
