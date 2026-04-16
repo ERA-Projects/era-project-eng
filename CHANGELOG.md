@@ -1,4 +1,19 @@
-### Version pre-2.245
+### Version 2.245
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - The AI ​​player now correctly uses the "Cavalry Bonus" ability acquired through creature experience, commander skills, or third-party plugins that use the "int IsChampion()" function in their logic;
+
+#### ERA Scripts:
+- Returned the old "Additional Upgrades" option to page 6:
+    - This option now only adds missing upgrades from a similar script in the "WoG Scripts" mod;
+    - Automatically upgraded creatures will no longer be assigned to any faction; use option 821 "Non-Neutrals" located nearby;
+    - This option no longer works if the maximum number of creatures has been changed;
+- Non-Neutrals: This option no longer works if the maximum number of creatures has been changed;
+- Third Class: Fixed a click error;
+- The order of options has been slightly changed:
+    - The "Non-Neutrals" option has been moved to page 6;
+    - The "Battle Experience" option has been moved to page 7;
 
 #### Other:
 - Sublime Text updated to version 4200;
