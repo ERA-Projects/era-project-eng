@@ -10,7 +10,7 @@
     - Automatically upgraded creatures will no longer be assigned to any faction; use option 821 "Non-Neutrals" located nearby;
     - This option no longer works if the maximum number of creatures has been changed;
 - Non-Neutrals: This option no longer works if the maximum number of creatures has been changed;
-- Third Class: Fixed a click error;
+- Third Class: fixed the error when clicking on an empty skill in the hero level-up window;
 - The order of options has been slightly changed:
     - The "Non-Neutrals" option has been moved to page 6;
     - The "Battle Experience" option has been moved to page 7;
