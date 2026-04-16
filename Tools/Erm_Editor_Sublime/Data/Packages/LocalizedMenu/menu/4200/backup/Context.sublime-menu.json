@@ -1,0 +1,95 @@
+[
+    {
+        "command": "open_context_url"
+    }, 
+    {
+        "command": "goto_definition", 
+        "caption": "Goto Definition"
+    }, 
+    {
+        "id": "diff", 
+        "caption": "-"
+    }, 
+    {
+        "command": "toggle_inline_diff"
+    }, 
+    {
+        "command": "revert_hunk", 
+        "caption": "Revert Diff Hunk"
+    }, 
+    {
+        "id": "clipboard", 
+        "caption": "-"
+    }, 
+    {
+        "command": "cut"
+    }, 
+    {
+        "command": "copy"
+    }, 
+    {
+        "command": "paste"
+    }, 
+    {
+        "id": "selection", 
+        "caption": "-"
+    }, 
+    {
+        "command": "select_all"
+    }, 
+    {
+        "id": "repo_commands", 
+        "caption": "-"
+    }, 
+    {
+        "command": "sublime_merge_open_repo", 
+        "caption": "Open Git Repository…"
+    }, 
+    {
+        "command": "sublime_merge_file_history", 
+        "caption": "File History…"
+    }, 
+    {
+        "command": "sublime_merge_line_history", 
+        "caption": "Line History…"
+    }, 
+    {
+        "command": "sublime_merge_blame_file", 
+        "caption": "Blame File…"
+    }, 
+    {
+        "id": "file", 
+        "caption": "-"
+    }, 
+    {
+        "command": "open_in_browser", 
+        "caption": "Open in Browser"
+    }, 
+    {
+        "caption": "Open Containing Folder…", 
+        "command": "open_dir", 
+        "args": {
+            "file": "$file_name", 
+            "dir": "$file_path"
+        }
+    }, 
+    {
+        "command": "copy_path", 
+        "caption": "Copy File Path"
+    }, 
+    {
+        "command": "reveal_in_side_bar", 
+        "caption": "Reveal in Side Bar"
+    }, 
+    {
+        "caption": "Reopen File as Image", 
+        "command": "force_reopen_as", 
+        "args": {
+            "type": "image"
+        }
+    }, 
+    {
+        "id": "end", 
+        "caption": "-"
+    }
+]

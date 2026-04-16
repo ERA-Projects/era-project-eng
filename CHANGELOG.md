@@ -1,3 +1,9 @@
+### Version pre-2.245
+
+#### Other:
+- Sublime Text updated to version 4200;
+
+
 ### Version 2.244
 
 #### WoG:

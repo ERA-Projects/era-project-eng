@@ -1,0 +1,114 @@
+[
+    {
+        "args": {
+            "dirs": []
+        }, 
+        "command": "new_file_at", 
+        "caption": "New File"
+    }, 
+    {
+        "args": {
+            "paths": []
+        }, 
+        "command": "rename_path", 
+        "caption": "Rename…"
+    }, 
+    {
+        "args": {
+            "files": [], 
+            "prompt": false
+        }, 
+        "command": "delete_file", 
+        "caption": "Delete File"
+    }, 
+    {
+        "args": {
+            "dirs": []
+        }, 
+        "command": "open_folder", 
+        "caption": "Open Folder…"
+    }, 
+    {
+        "args": {
+            "files": []
+        }, 
+        "command": "open_containing_folder", 
+        "caption": "Open Containing Folder…"
+    }, 
+    {
+        "args": {
+            "paths": []
+        }, 
+        "command": "copy_path_sidebar", 
+        "caption": "Copy Path"
+    }, 
+    {
+        "args": {
+            "dirs": []
+        }, 
+        "command": "reveal_link_source", 
+        "caption": "Reveal Link Source"
+    }, 
+    {
+        "id": "repo_commands", 
+        "caption": "-"
+    }, 
+    {
+        "args": {
+            "paths": []
+        }, 
+        "command": "sublime_merge_open_repo", 
+        "caption": "Open Git Repository…"
+    }, 
+    {
+        "args": {
+            "files": []
+        }, 
+        "command": "sublime_merge_file_history", 
+        "caption": "File History…"
+    }, 
+    {
+        "args": {
+            "paths": []
+        }, 
+        "command": "sublime_merge_folder_history", 
+        "caption": "Folder History…"
+    }, 
+    {
+        "args": {
+            "files": []
+        }, 
+        "command": "sublime_merge_blame_file", 
+        "caption": "Blame File…"
+    }, 
+    {
+        "id": "folder_commands", 
+        "caption": "-"
+    }, 
+    {
+        "args": {
+            "dirs": []
+        }, 
+        "command": "new_folder", 
+        "caption": "New Folder…"
+    }, 
+    {
+        "args": {
+            "prompt": true, 
+            "dirs": []
+        }, 
+        "command": "delete_folder", 
+        "caption": "Delete Folder"
+    }, 
+    {
+        "args": {
+            "dirs": []
+        }, 
+        "command": "find_in_folder", 
+        "caption": "Find in Folder…"
+    }, 
+    {
+        "id": "end", 
+        "caption": "-"
+    }
+]

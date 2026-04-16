@@ -1,0 +1,109 @@
+[
+    {
+        "caption": "Indent Using Spaces", 
+        "checkbox": true, 
+        "command": "toggle_setting", 
+        "args": {
+            "setting": "translate_tabs_to_spaces"
+        }
+    }, 
+    {
+        "caption": "-"
+    }, 
+    {
+        "caption": "Tab Width: 1", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 1, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "Tab Width: 2", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 2, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "Tab Width: 3", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 3, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "Tab Width: 4", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 4, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "Tab Width: 5", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 5, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "Tab Width: 6", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 6, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "Tab Width: 7", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 7, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "Tab Width: 8", 
+        "checkbox": true, 
+        "command": "set_setting", 
+        "args": {
+            "value": 8, 
+            "setting": "tab_size"
+        }
+    }, 
+    {
+        "caption": "-"
+    }, 
+    {
+        "command": "detect_indentation", 
+        "caption": "Guess Settings From Buffer"
+    }, 
+    {
+        "caption": "-"
+    }, 
+    {
+        "args": {
+            "set_translate_tabs": true
+        }, 
+        "command": "expand_tabs", 
+        "caption": "Convert Indentation to Spaces"
+    }, 
+    {
+        "args": {
+            "set_translate_tabs": true
+        }, 
+        "command": "unexpand_tabs", 
+        "caption": "Convert Indentation to Tabs"
+    }
+]

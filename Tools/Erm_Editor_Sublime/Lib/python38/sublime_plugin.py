@@ -17,8 +17,7 @@ import sublime_api
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from sublime_types import Value
-
+    from sublime_types import Value, Event
 
 api_ready = False
 
@@ -1183,10 +1182,12 @@ class CommandInputHandler:
         """
         return ""
 
-    def validate(self, text: str) -> bool:
+    def validate(self, text: str, event: Optional[Event] = None) -> bool:
         """
         Called whenever the user presses enter in the text entry box.
         Return :py:`False` to disallow the current value.
+
+        :param event: Only passed when `want_event` returns ``True``.
         """
         return True
 
@@ -1196,10 +1197,12 @@ class CommandInputHandler:
         backspace or escape.
         """
 
-    def confirm(self, text: str):
+    def confirm(self, text: str, event: Optional[Event] = None):
         """
         Called when the input is accepted, after the user has pressed enter and
         the text has been validated.
+
+        :param event: Only passed when `want_event` returns ``True``.
         """
 
     def next_input(self, args) -> Optional[CommandInputHandler]:

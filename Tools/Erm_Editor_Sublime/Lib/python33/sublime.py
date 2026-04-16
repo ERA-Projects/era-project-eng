@@ -749,14 +749,25 @@ class Window():
         sublime_api.window_set_layout(self.window_id, layout)
 
     def create_output_panel(self, name, unlisted=False):
-        return View(sublime_api.window_create_output_panel(self.window_id, name, unlisted))
+        return View(sublime_api.window_create_output_panel(self.window_id, name, unlisted, None)[0])
 
     def find_output_panel(self, name):
-        view_id = sublime_api.window_find_output_panel(self.window_id, name)
+        view_id, _ = sublime_api.window_find_output_panel(self.window_id, name)
         return View(view_id) if view_id else None
 
     def destroy_output_panel(self, name):
         sublime_api.window_destroy_output_panel(self.window_id, name)
+
+    def create_io_panel(self, name, on_input, unlisted=False):
+        output_view_id, input_view_id = sublime_api.window_create_output_panel(self.window_id, name, unlisted, on_input)
+        return View(output_view_id), View(input_view_id)
+
+    def find_io_panel(self, name):
+        output_view_id, input_view_id = sublime_api.window_find_output_panel(self.window_id, name)
+        return (
+            View(output_view_id) if output_view_id else None,
+            View(input_view_id) if input_view_id else None,
+        )
 
     def active_panel(self):
         name = sublime_api.window_active_panel(self.window_id)
@@ -1120,6 +1131,15 @@ class Selection():
 
     def contains(self, region):
         return sublime_api.view_selection_contains(self.view_id, region.a, region.b)
+
+    def has_empty_region(self):
+        return sublime_api.view_selection_has_empty_region(self.view_id)
+
+    def has_non_empty_region(self):
+        return sublime_api.view_selection_has_non_empty_region(self.view_id)
+
+    def has_multiple_non_empty_regions(self):
+        return sublime_api.view_selection_has_multiple_non_empty_regions(self.view_id)
 
 
 def make_sheet(sheet_id):

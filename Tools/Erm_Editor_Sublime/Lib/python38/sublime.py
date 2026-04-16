@@ -10,7 +10,7 @@ import json
 import sys
 import io
 import enum
-from typing import Callable, Optional, Any, Iterator, Iterable, Literal, TYPE_CHECKING
+from typing import Callable, Optional, Any, Iterator, Iterable, Literal, Tuple, TYPE_CHECKING
 
 import sublime_api
 
@@ -1696,15 +1696,15 @@ class Window:
 
     def create_output_panel(self, name: str, unlisted=False) -> View:
         """
-        Find the view associated with the named output panel, creating it if
+        Find the `View` associated with the named output panel, creating it if
         required. The output panel can be shown by running the ``show_panel``
         window command, with the ``panel`` argument set to the name with
         an ``"output."`` prefix.
 
-        The optional ``unlisted`` parameter is a boolean to control if the output
-        panel should be listed in the panel switcher.
+        :param name: The name of the output panel.
+        :param unlisted: Control if the output panel should be listed in the panel switcher.
         """
-        return View(sublime_api.window_create_output_panel(self.window_id, name, unlisted))
+        return View(sublime_api.window_create_output_panel(self.window_id, name, unlisted, None)[0])
 
     def find_output_panel(self, name: str) -> Optional[View]:
         """
@@ -1712,7 +1712,7 @@ class Window:
             The `View` associated with the named output panel, or ``None`` if
             the output panel does not exist.
         """
-        view_id = sublime_api.window_find_output_panel(self.window_id, name)
+        view_id, _ = sublime_api.window_find_output_panel(self.window_id, name)
         return View(view_id) if view_id else None
 
     def destroy_output_panel(self, name: str):
@@ -1720,6 +1720,39 @@ class Window:
         Destroy the named output panel, hiding it if currently open.
         """
         sublime_api.window_destroy_output_panel(self.window_id, name)
+
+    def create_io_panel(self, name: str, on_input: Callable[[str], None], unlisted=False) -> Tuple[View, View]:
+        """
+        Just like `create_output_panel`, find the view(s) associated with the
+        named output panel, creating it if required. The output panel will
+        additionally be configured with an input box. The panel can be shown by
+        running the ``show_panel`` window command, with the ``panel`` argument
+        set to the name with an ``"output."`` prefix.
+
+        :param name: The name of the output panel.
+        :param on_input: Called with any text submitted from the input box.
+        :param unlisted:
+            Control if the output panel should be listed in the panel switcher.
+
+        :returns:
+            A ``tuple`` containing the `View` for the output and another `View`
+            for the input.
+        """
+        output_view_id, input_view_id = sublime_api.window_create_output_panel(self.window_id, name, unlisted, on_input)
+        return View(output_view_id), View(input_view_id)
+
+    def find_io_panel(self, name: str) -> Tuple[Optional[View], Optional[View]]:
+        """
+        :returns:
+            The output `View` associated with the named output panel and if the
+            output panel has an input box it also returns its `View`; or ``
+            (None, None)`` if the output panel does not exist.
+        """
+        output_view_id, input_view_id = sublime_api.window_find_output_panel(self.window_id, name)
+        return (
+            View(output_view_id) if output_view_id else None,
+            View(input_view_id) if input_view_id else None,
+        )
 
     def active_panel(self) -> Optional[str]:
         """
@@ -2346,6 +2379,30 @@ class Selection:
     def contains(self, region: Region) -> bool:
         """ :returns: Whether the provided region is contained within the selection. """
         return sublime_api.view_selection_contains(self.view_id, region.a, region.b)
+
+    def has_empty_region(self) -> bool:
+        """
+        :returns: Whether the selection has an empty region
+
+        .. since:: 4193
+        """
+        return sublime_api.view_selection_has_empty_region(self.view_id)
+
+    def has_non_empty_region(self) -> bool:
+        """
+        :returns: Whether the selection has an non-empty region
+
+        .. since:: 4193
+        """
+        return sublime_api.view_selection_has_non_empty_region(self.view_id)
+
+    def has_multiple_non_empty_regions(self) -> bool:
+        """
+        :returns: Whether the selection has more than one non-empty region
+
+        .. since:: 4193
+        """
+        return sublime_api.view_selection_has_multiple_non_empty_regions(self.view_id)
 
 
 def make_sheet(sheet_id):

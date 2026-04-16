@@ -1,0 +1,52 @@
+[
+    {
+        "command": "clear_location", 
+        "caption": "Clear"
+    }, 
+    {
+        "command": "add_directory", 
+        "caption": "Add Folder"
+    }, 
+    {
+        "caption": "Add Include Filter", 
+        "command": "add_where_snippet", 
+        "args": {
+            "snippet": "*.${0:txt}"
+        }
+    }, 
+    {
+        "caption": "Add Exclude Filter", 
+        "command": "add_where_snippet", 
+        "args": {
+            "snippet": "-*.${0:txt}"
+        }
+    }, 
+    {
+        "caption": "Add Project Filters", 
+        "command": "add_where_snippet", 
+        "args": {
+            "snippet": "<project filters>"
+        }
+    }, 
+    {
+        "caption": "Add Open Folders", 
+        "command": "add_where_snippet", 
+        "args": {
+            "snippet": "<open folders>"
+        }
+    }, 
+    {
+        "caption": "Add Open Files", 
+        "command": "add_where_snippet", 
+        "args": {
+            "snippet": "<open files>"
+        }
+    }, 
+    {
+        "caption": "Add Current File", 
+        "command": "add_where_snippet", 
+        "args": {
+            "snippet": "<current file>"
+        }
+    }
+]

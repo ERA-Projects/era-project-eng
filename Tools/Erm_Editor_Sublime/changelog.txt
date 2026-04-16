@@ -59,6 +59,60 @@ html.dark tt {
 <h1>Stable Channel Changelog</h1>
 
 <article class="current">
+<h2>Build 4200</h2>
+<div class="release-date">21 May 2025</div>
+
+<p>We're planning on making some changes to the supported plugin Python versions.<br>See the <a href="https://www.sublimetext.com/blog/articles/sublime-text-4200">Blog post</a> for more details.</p>
+
+<h3>New Features and Improvements</h3>
+<ul class="topic">
+    <li>Sidebar can now be moved to the right side using the <tt>"sidebar_on_right"</tt> setting</li>
+    <li>Build systems can now optionally have an input box by using <tt>"interactive": true</tt></li>
+    <li>Added <tt>"disable_plugin_host_3.3"</tt> setting. This causes all plugins to run under 3.8</li>
+    <li>Rewritten syntax highlighting for SQL, ActionScript, Diff, Bash and Graphviz thanks to <a href="https://github.com/jrappen">jrappen</a>, <a href="https://github.com/michaelblyons">michaelblyons</a>, <a href="https://github.com/keith-hall">keith-hall</a> and <a href="https://github.com/deathaxe">deathaxe</a></li>
+    <li>Added Zsh and TOML syntax highlighting thanks to <a href="https://github.com/deathaxe">deathaxe</a></li>
+    <li>Various syntax highlighting improvements</li>
+    <li>Improved git status performance</li>
+    <li>Significantly improved performance when editing with many selections</li>
+    <li>Commands passed via the command line are now delayed until files and plugins have loaded</li>
+    <li>Built-in color schemes now specially highlight string mapping keys</li>
+    <li>Improved behavior of copy/cut with multiple empty selections</li>
+    <li>Tab translation is now disabled when reading from stdin</li>
+    <li>Improved handling of saving files in non-existent directories</li>
+    <li>Added <tt>"default_font_size"</tt> setting</li>
+    <li>Added <tt>"reload_file_in_background"</tt> setting</li>
+    <li>Added <tt>"set_unsaved_view_name_for_syntax"</tt> setting</li>
+    <li>Allow variable expansion in a syntax's <tt>first_line_match</tt> regex</li>
+    <li>API: Added <tt>Window.create_io_panel</tt> and <tt>Window.find_io_panel</tt></li>
+    <li>API: Added <tt>Selection.has_empty_region</tt>, <tt>Selection.has_non_empty_region</tt> and <tt>Selection.has_multiple_non_empty_regions</tt></li>
+</ul>
+
+<h3>Fixes</h3>
+<ul class="topic">
+    <li>Fixed <tt>wrap_lines</tt> command not understanding newer ruler settings</li>
+    <li>Fixed bookmarks not toggling at EOF</li>
+    <li>Fixed an issue with click event handling on the scroll bar</li>
+    <li>Fixed build system errors not having the correct <tt>PATH</tt></li>
+    <li>Fixed index crawler leaking shared memory in special cases</li>
+    <li>Fixed local transformed symbols having the wrong region</li>
+    <li>Fixed <tt>find_under_expand</tt> edge case</li>
+    <li>Fixed uneven indent guide rendering with fractional dpi scaling</li>
+    <li>Fixed certain minimap settings incorrectly affecting text rendering</li>
+</ul>
+</article>
+
+<article>
+<h2>Build 4192</h2>
+<div class="release-date">20 Jan 2025</div>
+<ul>
+    <li>Fixed tab not working when tab completion is disabled and there is no matching snippet</li>
+    <li>Fixed find field not expanding with multi-line search queries</li>
+    <li>Fixed a scroll position tracking issue</li>
+    <li>Windows: Fixed an issue with timer accuracy</li>
+</ul>
+</article>
+
+<article>
 <h2>Build 4189</h2>
 <div class="release-date">20 Dec 2024</div>
 <ul>
