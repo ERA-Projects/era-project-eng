@@ -1,3 +1,22 @@
+### Version 2.246
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - Completely rewritten the functionality and logic of non-damaging spells implemented by WoG creatures and Creature Experience: after an attack, the calculations for which were performed before the attack itself:
+        - Now, the relevance of a spell and the ability to cast it are calculated after the action is performed;
+        - In-game logic is now used to check immunities to cast spells, allowing you to control their casting through third-party plugins and scripts;
+        - It is now possible to cast multiple spells after an attack, issued by the "99" ability, and not just 1 (previously only the last one in the list worked);
+        - The experience ability "No-damage spell after attack" is now available for Hell Steeds and Sorceresses;
+    - Magog attacks (area attacks with a fireball) now trigger the "OnAfterShoot" trigger (a solution for Liches' death cloud attack will be implemented later);
+    - Improved automatic spell casting in combat:
+        - Both automatic and quick combat now honor the in-game "spell casting" auto-battle option for human players, correcting the inconsistency between quick and automatic combat when spellcasting is available;
+- Updated the "wog native dialogs.era" plugin:
+    - Minor fixes for compatibility with the latest changes;
+
+#### Game Enhancement Mod:
+- Changed the battle type selection script to be compatible with the latest changes;
+
+
 ### Version 2.245
 
 #### WoG:
