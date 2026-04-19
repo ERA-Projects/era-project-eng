@@ -1,3 +1,10 @@
+### Version 2.247
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - Temporarily disabled the latest change to support Magog shots due to script incompatibility;
+
+
 ### Version 2.246
 
 #### WoG:
