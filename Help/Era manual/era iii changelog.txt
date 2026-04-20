@@ -1,3 +1,19 @@
+Version 3.9.29 (04/2026)
+------------------------
+[+] Extended SN:F syntax with possibility to call arbitrary plugin or dll functions: SN:F^plugin_name:function_name^/...
+
+  If plugin name is provided without a dot, ".era" and ".dll" are tested one by one. Otherwise the name is used as is. The result is cached.
+
+  Example:
+
+  SN:F^era:ShowMessage^/^Hello, world!^; even 'era.dll' itself can be called this way, though it's recommended to skip dll name at all in this case
+
+
+Version 3.9.28 (03/2026)
+------------------------
+[-] Fixed original game bug: real time timer handling relied on computer being active less than 23 days (timeGetTime math overflow).
+
+
 Version 3.9.27 (11/2025)
 ------------------------
 [-] Fixed a desynchronization bug in PvP network combat that occurred when one client’s CPU supported SSE 4.2 while the other did not. The two systems were using different CRC‑32 hashing algorithms, which caused mismatched state updates. The patch normalises the hashing routine and updates the exported `Hash32` function so that it produces identical results on all platforms regardless of CPU capabilities.

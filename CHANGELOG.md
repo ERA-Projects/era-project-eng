@@ -1,3 +1,39 @@
+### Version 2.248
+
+#### ERA:
+    - ATTENTION! Examples of how to use all the new features can be found in the file "/Help/Era manual/era iii changelog.txt" or simply click on the ERA version in the game's main menu;
+- ## era.dll core update to version 3.9.29:
+    - Extended SN:F syntax with the ability to call arbitrary plugin or DLL functions: `SN:F^plugin_name:function_name^/...`.
+    If the plugin name is specified without a period, the ".era" and ".dll" extensions are checked in turn. Otherwise, the name is used unchanged. The result is cached.
+    Example:
+    ```
+    SN:F^era:ShowMessage^/^Hello, world!^;
+    ```
+    Even the 'era.dll' file itself can be called this way, although in this case it is recommended not to specify the DLL file name at all.
+    - Fixed a bug in the original game: Real-time timer processing depended on whether the computer had been active for less than 23 days (overflow in the timeGetTime function).
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - Fixed a game freeze when checking for upgraded creature versions for some creature-specialist heroes;
+    - Fixed an incorrect detection of the Creature Experience ability owner when attempting to cast a spell after an attack;
+
+#### Game Enhancement Mod:
+- "Gameplay_GameplayEnhancementsPlugin.era" before version 1.8.3:
+    - the new building construction status tooltip is no longer displayed when right-clicking on enemy towns (but retains this effect with the maximum effect of the "Vision" spell);
+    - the new building construction status tooltip now also works in the "Kingdom Overview";
+
+#### ERA Scripts:
+- the "AI Behavior Fix" option has been removed due to its inoperability;
+
+#### Other:
+- SD Mod Manager (@SyDr) updated to version 0.98.75:
+    - Fixed problem where compatibility info was not loaded for archived mods
+    - Sending mod to archive would also disable dependent mods
+    - Updated MSVC toolset to v145
+    - English would be loaded if selected language cannot be loaded
+    - When sorting mod names would be compared without case
+
+
 ### Version 2.247
 
 #### WoG:
@@ -1054,7 +1090,7 @@
     ```
 - other important fixes;
 
-#### ERA Scripts
+#### ERA Scripts:
 - Capture of mills and gardens:
     - now the capture mechanics also apply to Resource Warehouses;
     - the logic of interaction with all objects has been completely rewritten;
@@ -1154,7 +1190,7 @@
 #### Enhanced Henchmen:
 - Warlord's Banner equipped by a henchman now behaves like commander artifacts on commanders: You can equip or unequip it freely when the henchman is killed. The banner will stay with the henchman even if the hero loses a battle.
 
-#### ERA Scripts
+#### ERA Scripts:
 - Battle Experience: Fixed wrong creature stats after battle replay.
 
 #### Game Enhancement Mod:
