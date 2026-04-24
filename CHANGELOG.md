@@ -1,3 +1,20 @@
+### Версия 2.249
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - Fixed the "Join Neutral Army Units" ability when fighting between two players. Additionally, a desynchronization issue that could occur in such battles has been fixed;
+    - Fixed the display of units in all basic game dialogs if their number exceeds 99999;
+- Removed resource panels added to WoG that were used without the HD Mod;
+
+#### WoG Scripts:
+- Fixed the placement of the "Random Monster" object when replacing some objects with others;
+- Minor script optimization;
+
+#### Game Enhancement Mod:
+- Updated the mod description;
+- Removed outdated files;
+
+
 ### Version 2.248
 
 #### ERA:
