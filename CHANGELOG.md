@@ -1,3 +1,40 @@
+### Version 2.250
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - Now, starting hero setup and purchasing heroes immediately adjusts their army XP;
+    - For AI players, fixed the issue of AI XP loss and corruption in the following cases:
+        - When visiting a town;
+        - When purchasing creatures in a town;
+        - When exchanging an army with a town;
+        - When exchanging an army with another hero;
+        - When exchanging an army with a garrison;
+        - When purchasing creatures outside a town;
+        - When purchasing a hero;
+        - When receiving creatures as a reward;
+        - When joining creatures on the map;
+    - The War Fanatics' double-shot ability has been restored;
+- Updated "wog native dialogs.era" plugin:
+    - In the Creature XP preview dialog, the "Space" hotkey is now disabled for the "View Upgraded Creature" button;
+
+#### ERA ERM Framework:
+- Added initialization of some values ​​to global variables to simplify interaction with scripts:
+    ```
+    i^maxArtifacId^: Stores the index of the last available artifact;
+    i^maxHeroId^: Stores the index of the last available hero;
+    i^maxMonsterId^: Stores the index of the last available monster;
+    ```
+
+#### WoG Graphics Fix Lite:
+- Updated graphics to the original mod version 2.25.1;
+
+#### TrainerX:
+- Fixed a bug when opening another player's hero window if the current player already has the maximum number of heroes;
+
+#### Game Enhancement Mod:
+- Optimized old code;
+
+
 ### Версия 2.249
 
 #### WoG:
@@ -229,10 +266,10 @@
     - Total value of Necromancy power is now available to see in the bonus list.
     - Added the Warmachine Efficiency to 4 artifacts, improving their usefullness.
     - Added script to calculate gametime duration for each player
-    - Casting spells will now override effect of previous same applied spells with current spell modifier strength. Applying correct spell effests now.
+    - Casting spells will now override effect of previous same applied spells with current spell modifier strength. Applying correct spell effects now.
 
     - All commander artifact scaling halved. Example: previously you would gain +1%HP for each battle, now you need two battles.
-    - All commander artifacts can be unqeuipped without loosing the counter. Commander can also die and bonuses wont vanish. (QoL improvement ;-))
+    - All commander artifacts can be unequipped without loosing the counter. Commander can also die and bonuses wont vanish. (QoL improvement ;-))
     - Increased power of Summoner Heroes (free cast at level 25) and increased spell trainer effectiveness
     - Increased Necromant Commander scaling when raising undeads
     - Reduced Fighter commander damage scaling with kill count, to bring it more in line with other classes. 
@@ -341,7 +378,7 @@
 #### WoG:
 - Updated "game bug fixes extended.dll" plugin:
     - Fixed Creature Experience overflow when joining or moving units;
-    - Fixed an incorrect experience calculation formula when moving a hero to a city garrison;
+    - Fixed an incorrect experience calculation formula when moving a hero to a town garrison;
 
 #### Game Enhancement Mod:
 - Removed "gem_crexpo_fix.erm" script
@@ -488,7 +525,7 @@
 
 #### Game Enhancement Mod:
 - Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.0:
-    - Added additional building construction status icons to the Adventure Map and City View windows:
+    - Added additional building construction status icons to the Adventure Map and Town View windows:
         - All built — yellow checkmark;
         - Buildings available for construction, but not enough money — crossed-out gold coins;
         - Buildings available and sufficient resources — hidden icon;
@@ -843,7 +880,7 @@
     - fixed incorrect background when hiding buttons after opening the main menu after starting a map;
     - added comments to the API plugin header file;
 - updated the plugin "wog native dialogs.era" without changing the version:
-    - fixed the game window breaking after opening the hero meeting dialog in the city window;
+    - fixed the game window breaking after opening the hero meeting dialog in the town window;
 
 
 ### Version 2.193
@@ -919,7 +956,7 @@
             "era.heroes.[hero_id].specialty.full": string,
             "era.heroes.[hero_id].specialty.description": string,
             ```
-            - for city dwellings, names and descriptions can be replaced. Index "-1" is used for a random town:
+            - for town dwellings, names and descriptions can be replaced. Index "-1" is used for a random town:
             ```
             "era.towns.[town_type].dwellings.[dwelling_id].name": string,
             "era.towns.[town_type].dwellings.[dwelling_id].description": string,
@@ -939,7 +976,7 @@
     - fixed display of cursor shadow for the "Force Field" spell for the defender hero;
 
 #### WoG Scripts:
-- fixed function for checking the admissibility of a building for construction in the city;
+- fixed function for checking the admissibility of a building for construction in the town;
 
 #### Game Enhancement Mod:
 - minor function fixes;
@@ -2208,7 +2245,7 @@
 - Added combat log for the Ammo Cart Trap.
 - Fixed display of gold return dialog for the First Aid Tent for a hero who lost the battle.
 - Fixed bug: creature spells did not work with Amethyst enabled.
-- Changed the trigger area of the "Nobility" skill. Now only clicking on the city or building screen activates this ability.
+- Changed the trigger area of the "Nobility" skill. Now only clicking on the town or building screen activates this ability.
 
 #### ERA Scripts:
 - Town Treasuries: Optimised the dialogue of looting.
