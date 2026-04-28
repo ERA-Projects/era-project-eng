@@ -1,3 +1,18 @@
+### Version 2.251
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - Added the "King 1" flag to the "Gorynych" unit, increasing attack against this unit if the attacker is under the effect of the "Slayer" spell;
+
+#### WoG Scripts:
+- "Neutral Towns and Creature Banks Population Growth" option: Fixed the check for a special flag when increasing Creature Bank security and rewards;
+
+#### Other:
+- SD Mod Manager updated to version 0.98.77:
+    - Pressing F5 also reloaded mod description files;
+    - Windows 7 support restored;
+
+
 ### Version 2.250
 
 #### WoG:
