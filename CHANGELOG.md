@@ -1,3 +1,22 @@
+### Version 2.252
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - For AI players, the loss and corruption of creature experience when upgrading units in the town has been fixed;
+    - For AI players, the loss and corruption of creature experience when upgrading units in the Hill Fort has been fixed;
+    - The Commander no longer places ballistas for heroes defending within town walls (original game mechanics);
+- The "RMG_CustomizeObjectProperties.era" plugin has been updated to version 1.5.3:
+    - The ability to set the base value of an object for "Creature Dwellings" has been added (previously it was dependent on the AI ​​value of the creatures living there). Here's how to set the base value for the Cloud Temple without relying on the AI ​​value of the Giants living there:
+    ```
+    "RMG.objectGeneration.17.44.value": 1234
+    ```
+    - The object generation dialog is now accessible without HD-Mod (but requires the button in the main menu);
+    - Generation of Keymaster's Tents and Border Guards is now disabled by default;
+
+#### WoG Scripts:
+- The "Automatic Upgrade of Level 7 Creatures" map rule: the greatly inflated XP amount for an upgraded units has been fixed.
+
+
 ### Version 2.251
 
 #### WoG:
