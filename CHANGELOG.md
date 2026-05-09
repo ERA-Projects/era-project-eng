@@ -1,3 +1,11 @@
+### Version 2.253
+
+#### WoG:
+- Updated "game bug fixes extended.dll" plugin:
+    - Fixed a bug where creature experience was incorrectly calculated when calling the HE:C and EX:C ERM commands;
+    - Fixed a bug where the "Cavalry Bonus" skill target was incorrectly determined for subsequent functions when calculated by the AI ​​player;
+
+
 ### Version 2.252
 
 #### WoG:
