@@ -1,9 +1,12 @@
 name: Release Maker
 
 on:
-  schedule:
-    - cron: '55 * * * *' # Runs every hour
-  workflow_dispatch: # Allows manual execution
+  push:
+      branches:
+        - main
+      paths:
+        - 'ERA_Project.ini' # Запуск только при изменении этого файла
+  workflow_dispatch: # Оставляем ручной запуск на всякий случай
 
 jobs:
   check-version:
@@ -21,28 +24,24 @@ jobs:
         run: |
           VERSION=$(awk -F= '/^Version/{print $2}' ERA_Project.ini | tr -d ' \r')
           CLEAN_VERSION=$(echo "$VERSION" | tr -d '.')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_OUTPUT
 
       - name: Get latest release
         id: latest_release
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/ERA-Projects/era-project-eng/releases/latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Используем gh cli для получения последнего тега, это быстрее и надежнее
+          LATEST_TAG=$(gh release view --repo ${{ github.repository }} --json tagName --jq '.tagName' || echo "0.0.0")
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
       - name: Compare versions
         id: compare
         run: |
-          LATEST_VERSION=$(echo '${{ steps.latest_release.outputs.data }}' | jq -r '.tag_name')
-          if [ "$VERSION" != "$LATEST_VERSION" ]; then
-            echo "NEW_VERSION=true" >> $GITHUB_ENV
+          if [ "${{ steps.version.outputs.VERSION }}" != "$LATEST_TAG" ]; then
             echo "NEW_VERSION=true" >> $GITHUB_OUTPUT
           else
-            echo "NEW_VERSION=false" >> $GITHUB_ENV
             echo "NEW_VERSION=false" >> $GITHUB_OUTPUT
           fi
 
