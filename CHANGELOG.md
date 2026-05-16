@@ -1,3 +1,13 @@
+### Version 2.254
+
+#### WoG:
+- Updated the "game bug fixes extended.dll" plugin:
+    - Fixed the function for calculating creature experience when adjusting rank;
+
+#### TrainerX:
+- Fixed a crash that occurred when attempting to display the description of a spell scroll;
+
+
 ### Version 2.253
 
 #### WoG:
