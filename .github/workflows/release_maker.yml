@@ -5,8 +5,8 @@ on:
       branches:
         - main
       paths:
-        - 'ERA_Project.ini' # Запуск только при изменении этого файла
-  workflow_dispatch: # Оставляем ручной запуск на всякий случай
+        - 'ERA_Project.ini' # Run only when this file is changed
+  workflow_dispatch: # Leave manual startup just in case
 
 jobs:
   check-version:
@@ -110,11 +110,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Wait for server update
-        # 1200 секунд = ровно 20 минут. Если нужно 30 минут, измените на 1800
         run: |
-          echo "Ожидаем 20 минут, пока файлы синхронизируются с сервером..."
+          echo "Waiting 20 minutes for files to sync with the server..."
           sleep 1200
-          echo "Время вышло. Отправляем уведомление."
+          echo "Time's up. Sending a notification."
 
       - name: Send Message to Discord
         uses: appleboy/discord-action@master
