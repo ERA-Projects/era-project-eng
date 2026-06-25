@@ -2,7 +2,6 @@ WoG
 Era Erm Framework
 Easy Cheats
 BattleQueue
-BattleSpeed
 Spells Description
 Unleashed Editor
 Game Enhancement Mod
@@ -14,4 +13,3 @@ ERA Scripts Eng
 AMER_HumanAI
 Enhanced Henchmen
 Random wallpaper
-XXL

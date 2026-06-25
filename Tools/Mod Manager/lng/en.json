@@ -101,6 +101,8 @@
         "column": "Column",
         "managed_mods": "Show managed mods",
         "archived_mods": "Show archived mods",
+        "use_legacy_archiving": "Use legacy mod disabling",
+        "use_legacy_archiving_hint": "When option enabled, MM will send mods into archive, instead of disabling them.\n\n(this bring classic program behavior, when disabling mod results in it's loss of priority in list)",
         "managed_mods_value": {
           "as_flat_list": "as a flat list",
           "as_group": "as a group"

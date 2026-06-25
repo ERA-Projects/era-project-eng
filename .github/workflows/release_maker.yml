@@ -109,6 +109,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Wait for server update
+        # 1200 секунд = ровно 20 минут. Если нужно 30 минут, измените на 1800
+        run: |
+          echo "Ожидаем 20 минут, пока файлы синхронизируются с сервером..."
+          sleep 1200
+          echo "Время вышло. Отправляем уведомление."
+
       - name: Send Message to Discord
         uses: appleboy/discord-action@master
         with:

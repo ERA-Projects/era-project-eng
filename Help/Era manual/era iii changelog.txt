@@ -1,3 +1,21 @@
+Version 3.9.30 (05/2026)
+------------------------
+[+] Added boolean option to heroes3.ini: "Text.OldClosingBracketOpt". It enables old-style buggy text rendering behavior, where "}" character used to close all opened tags. It will be removed (unsupported) in Era 4+. Example: "{This is {a gold {message} and this is a white text part".
+
+[+] Added new integer option to heroes3.ini: "CodePage". If set, it specifies custom code page (encoding) to be used for decoding UTF-8 language json files. By default system code page is used. Example: 1251 for Windows-1251 (Cyrillic).
+
+[+] Added the following exported functions to era.dll:
+
+  (* Returns current language/locale string. The buffer must be freed by calling Era.MemFree *)
+  function GetLanguage: {O} pchar; stdcall;
+
+  (* Changes code page (encoding) used to decode UTF-8 strings in language json files *)
+  function SetCodePage (NewCodePage: cardinal): TInt32Bool; stdcall;
+
+  (* Returns current code page (encoding), used to decode UTF-8 strings in language json files *)
+  function GetCodePage: cardinal; stdcall;
+
+
 Version 3.9.29 (04/2026)
 ------------------------
 [+] Extended SN:F syntax with possibility to call arbitrary plugin or dll functions: SN:F^plugin_name:function_name^/...

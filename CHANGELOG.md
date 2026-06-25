@@ -1,3 +1,179 @@
+### Version 2.255
+
+#### ERA:
+    - ATTENTION! Examples of how to use all the new features can be found in the file "/Help/Era manual/era iii changelog.txt" or simply click on the ERA version in the game's main menu;
+- ## era.dll core update to version 3.9.30:
+    - Added boolean option to heroes3.ini: "Text.OldClosingBracketOpt". It enables old-style buggy text rendering behaviour, where "}" character used to close all opened tags. It will be removed (unsupported) in Era 4+. Example:
+    ```
+    "{This is {a gold {message} and this is a white text part".
+    ```
+    - Added new integer option to heroes3.ini: "CodePage". If set, it specifies custom code page (encoding) to be used for decoding UTF-8 language json files. By default system code page is used. Example: 1251 for Windows-1251 (Cyrillic).
+    - Added the following exported functions to era.dll:
+        - Returns current language/locale string. The buffer must be freed by calling Era.MemFree:
+        ```
+        function GetLanguage: {O} pchar; stdcall;
+        ```
+        - Changes code page (encoding) used to decode UTF-8 strings in language json files:
+        ```
+        function SetCodePage (NewCodePage: cardinal): TInt32Bool; stdcall;
+        ```
+        - Returns current code page (encoding), used to decode UTF-8 strings in language json files:
+        ```
+        function GetCodePage: cardinal; stdcall;
+        ```
+    - Fixed an issue with incorrect reading of INI files, where a string could be empty;
+- Updated the eramap.dll core (for the map editor);
+    - "eramap.dll" now supports almost all the same exported functions as era.dll;
+    - The map editor now reads the JSON language from the "heroes3.ini" file;
+    - Added SDKs: "Tools/Era/SDK/eramap.h" and "Tools/Era/SDK/eramap.cpp";
+
+#### WoG:
+- ## Added a completely new plugin for game settings "ERA_SystemOptionsExtension.era":
+    - Adds a unified window for all settings, replacing the original "system options" and "battle options" windows (the dialog size is preserved down to the pixel, so access to the main buttons won't affect muscle memory);
+    - New options in the settings dialog:
+        - Enable/disable smooth scrolling on the Adventure Map;
+        - Enable/disable the creature battle queue (cannot be changed in battle);
+        - Enable/disable background sounds for objects (looped ones);
+        - Enable/disable autosave;
+        - Enable/disable alternative mechanics and click sounds;
+        - Switch the default quick battle type;
+        - Enable/disable and manage creature health bars in battle;
+        - Extended range of animation speeds in battle;
+        - The dialog also allows you to:
+        - exit to any game menu from battle (yes, even load);
+        - view WoG options at any time during the game;
+        - change the game language (this will not change the text for all game data without restarting);
+        - manage the settings of other mods (if the authors add them, yes, yes);
+    - provides the following exported functions:
+        - Registers a callback button for an ERM function in the "Other Settings" section. The first argument is the unique key (string) of your button, the second is the button name in the dialog (a JSON key is supported), the third is the description on the right mouse button (a JSON key is supported), and the fourth is the ID of the ERM function being called. This can be either a number or your named function. You can also use this function to change your button at any time:
+        ```cpp
+        int (__stdcall *RegisterErmCallbackButton)( const char *tag, const char *name, const char *description, int ermFunctionId);
+        ```
+        - removes your (or another) button from the dialog during the game if, for some reason, you no longer need it there;
+        ```cpp
+        int* (__stdcall *UnregisterErmCallbackButton)(const char *tag);
+        ```
+- ## added new plugin "XXL.era" (@JackSlatter):
+    - rewritten plugin to support high-resolution maps;
+    - a huge number of improvements and fixes for the map selection screen and random map generation;
+    - added XXL templates for random map generation;
+- ## Added a completely new plugin for the MAP EDITOR "EraEditor_JsonOverrides.dll":
+    - Replaces strings in some .txt files with JSON values ​​(currently only works with artifacts);
+    - Removes the requirement that the text file with the artifact list always be a specific size (the "artraits.txt" file can now be removed from mods);
+    - Allows you to completely change the values ​​for artifacts with the following keys:
+    ```
+    "era.artifacts.%d.name":                    string,
+    "era.artifacts.%d.cost":                    int,
+    "era.artifacts.%d.position":                int,
+    "era.artifacts.%d.type":                    int,
+    "era.artifacts.%d.description":             string,
+    "era.artifacts.%d.comboArtifactId":         int,
+    "era.artifacts.%d.partOfComboArtifactId":   int,
+    "era.artifacts.%d.disabled":                bool,
+    "era.artifacts.%d.hasSpell":                bool
+    ```
+- ## The "ERA_MultilingualSupport.era" plugin has been split into two separate plugins:
+    - "ERA_LocaleManager.era" - published immediately with the version 3.0:
+        - Allows you to select the language for reading JSON keys;
+        - Now also changes the encoding (ERA 3.9.30), allowing you to display the correct characters for the selected language if the game mode is not set to "UTF-8";
+        - Now allows you to export text from the game to the "/Runtime/Exports/[locale_name]/" subfolder
+        - Provides the following exported functions:
+        - Calls the language selection dialog at the specified coordinates with a specific style:
+        ```cpp
+        void (__stdcall *CallLocaleSelectionDlg)( int x, int y, int styleIndex);
+        ```
+        - Returns the current display name for the language selector (the return value goes to the game's text buffer, so no memory clearing is required);
+        ```cpp
+        char* (__stdcall *GetDisplayedName)();
+        ```
+    - "ERA_JsonOverrides.era" - published with version 1.0:
+        - replaces strings in some TXT files with JSON values;
+        - Allows you to completely change the values ​​for artifacts with the following keys:
+        ```
+        "era.artifacts.%d.name":                    string,
+        "era.artifacts.%d.cost":                    int,
+        "era.artifacts.%d.position":                int,
+        "era.artifacts.%d.type":                    int,
+        "era.artifacts.%d.description":             string,
+        "era.artifacts.%d.comboArtifactId":         int,
+        "era.artifacts.%d.partOfComboArtifactId":   int,
+        "era.artifacts.%d.disabled":                bool,
+        "era.artifacts.%d.hasSpell":                bool,
+        "era.artifacts.%d.event":                   string
+        ```
+- Updated the "game bug fixes extended.dll" plugin:
+    - Removed extra characters from the random map name that were added when generating it with HD-Mod enabled;
+    - Fixed witchcraft in auto-battle, even if the "witchcraft in auto-battle" setting was displayed as disabled;
+    - Fixed the display of player settings when viewing maps;
+    - Fixed the effect of changing music in battle on the random number generator in battle;
+    - Fixed the effect of the "wait" animation on the random number generator in battle;
+    - Fixed the effect of viewing dialogue with War Machines on the random number generator in battle;
+    - Added a fix for AI behavior set via ERM on large maps;
+    - Added a fix for AI behavior in battles against AI;
+- Updated the "wog native dialogs.era" plugin:
+    - Now the animation plays in the creature information window even when calling it with the right mouse button;
+    - An animation now plays in the creature's dwelling preview window;
+    - Holding down keyboard keys no longer causes the interface buttons to loop when they are bound;
+    - The "mouse click" sound when clicking on commander skills upon leveling up has been removed;
+- The "Interface_MainMenuAPI.era" plugin has been updated to version 1.10:
+    - Fixed an issue with disabling basic add-on buttons via JSON;
+- Some files have been optimized and renamed:
+    - "era_main_menu_panel.pac" -> "era_InterfaceAssets.pac";
+    - "rmg_settings_dlg.pac" -> "era_InterfaceAssets.pac";
+    - The "wog_lang.zip" archive has been updated to the latest version;
+    - the order of keys in json files containing creature names has been corrected;
+
+#### Advanced Classes Mod:
+- mod updated to version 1.1:
+    - Fire Mage kill count is now back to 30% chance with attack and not on kill stack anymore (was steamrolling to fast under some conditions);
+    - Corrected Fire Mage description;
+    - Slightly lowered Eagle Eye spell acquire chance on early levels (-10% chance);
+    - Fixed show Diplo stats in hero screen when clicking on skill, if skill was 9th or 10th;
+    - Fixed show Necro select popup in hero screen when clicking on skill, if skill was 9th or 10th;
+    - Bonus List (hero) in combat now shows only with CTRL+LMB or CTRL+RMB;
+    - Recoded Aura of Command, Avender Commander Aura, General Aura Commander, made them better configurable in erm file and extended default range (code from Yuritsuki, thanks!);
+    - temporarily disabled Master Dispel effect in combat, because it can mess up speed values for all players;
+
+#### Game Enhancement Mod:
+- Mod settings have now been moved to the new game settings dialog;
+- The following mechanics have been removed from the mod, as their logic has been moved to the new "ERA_SystemOptionsExtension.era" plugin:
+    - Battle type switching;
+    - Smooth map scrolling;
+    - Display unit health bars in battle;
+    - All settings buttons have been removed from the Adventure Map interface;
+- The size and position of the "Next Hero" button has been restored;
+- Removed a fix that changed the AI ​​value of creatures at the start of a map;
+- Removed error messages when calling functions related to dialog elements if the element's id was less than zero.
+
+#### WoG Scripts:
+- Enhanced War Machines III: Fixed the current vehicle count display position;
+- Monster Week: Improved the monster type selection algorithm;
+- Witch Commander's Huts: Fixed the skill display image;
+- Other fixes;
+
+#### ERA Scripts:
+- "Hero Limit" option: Fixed the ability for AI players to purchase heroes above the limit;
+- "Achievements" option: fixed the border color for pop-up dialogs;
+- "Zombie-flesheaters" option: added compatibility with mods that add creatures;
+- The "view hero in the tavern with right-click without collapsing the window" mechanic has been disabled due to inconvenience;
+
+#### WoG Graphics Fix Lite:
+- Graphics updated to the original mod's version 2.26.0;
+
+#### XXL:
+- The mod has been removed, as its logic has been moved to the new "XXL.era" plugin in the "WoG" mod.
+
+#### BattleSpeed:
+- This mod has been removed, as its logic has been moved to the new "ERA_SystemOptionsExtension.era" plugin in the "WoG" mod.
+
+#### Other:
+- SD Mod Manager updated to version 0.98.79:
+    - Open mods folder would open mods folder instead of opening managed folder;
+    - Added option (local for platform) "Use legacy mod disabling". Using this option will remove "Disabled" state for mods (i.e. MM has Enabled/Disabled/Archived, old MM had Enabled and Archived only (and Archived was named Disabled), but new names Enabled/Archived stays as is);
+    - Fixed problem with loading presets created before fold_case for mod ids was introduced;
+- Updated the Era core source and SDK.
+
+
 ### Version 2.254
 
 #### WoG:
@@ -87,7 +263,7 @@
 - Optimized old code;
 
 
-### Версия 2.249
+### Version 2.249
 
 #### WoG:
 - Updated the "game bug fixes extended.dll" plugin:
@@ -534,7 +710,7 @@
     - Shadows are now drawn on the Adventure Map for objects with the "flat" property;
     - The Village Hall will now appear on the Adventure Map when destroying buildings in towns without forts;
 
-### Game Enhancement Mod:
+#### Game Enhancement Mod:
 - Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.7.2:
     - Added a construction tip to the right-click town preview dialog and to the town screen itself;
 
@@ -708,7 +884,7 @@
 ### Version 2.207
 
 #### Game Enhancement Mod:
-- добавлена заглушка "StartArmyAllSlots.bin" для избежания вылета на старте игры;
+- Added a placeholder "StartArmyAllSlots.bin" to avoid a crash at the start of the game;
 
 #### Other:
 - removed extra files;
@@ -869,7 +1045,7 @@
 - fixed a crash when transferring commander artifacts to heroes;
 
 #### WoG Scripts:
-- War Machines III: numerous displaying of the current number of combat vehicles have been added to the hero and meeting window;
+- Enhanced War Machines III: numerous displaying of the current number of combat vehicles have been added to the hero and meeting window;
 - Enhanced Commanders: Fixed a bug that disabled subtype 6 chests;
 - Mithril: Fixed the time it takes to add mithril to the player's treasury;
 
@@ -2313,7 +2489,7 @@
 
 ### Version 2.130
 
-### WoG:
+#### WoG:
 - Updated plugin "RMG_CustomizeObjectProperties.era":
     - Added ability to reset settings for each map object separately to the dialog of generation objects;
     - Added ability to enter exact generation seed to create a specific random map to the menu of creating a random map;
@@ -2337,7 +2513,7 @@
 
 ### Version 2.129
 
-### WoG:
+#### WoG:
 - Updated plugin "RMG_CustomizeObjectProperties.era":
     - Gazebo now has cost picture;
     - Fixed endless loop sound;
@@ -2345,7 +2521,7 @@
 
 ### Version 2.128
 
-### WoG:
+#### WoG:
 - Updated plugin "RMG_CustomizeObjectProperties.era":
     - Fixed WoG-objects generation;
 
@@ -2360,7 +2536,7 @@
     - Fixed uneven tooltips on objects;
 - For Armour specialists under level 868, the max physical damage reduction from Armour is set to 96%.
 
-### WoG:
+#### WoG:
 - Updated plugin "RMG_CustomizeObjectProperties.era":
     - Added support for the object "Coliseum of Mages";
     - Added support for the object "Gazebo";
@@ -2377,7 +2553,7 @@
 
 ### Version 2.126
 
-### WoG:
+#### WoG:
 - added missed crystal warehouse properties;
 
 
@@ -2391,7 +2567,7 @@
 - updated plugin "GameplayEnhancementsPlugin.era":
     - fixed uneven tooltips on objects;
 
-### WoG:
+#### WoG:
 - updated plugin "RMG_CustomizeObjectProperties.era":
 - added support for the object "Mithril Warehouse" - graphics by @Grossmaestro;
 - corrected the description in the dialog;
@@ -2399,7 +2575,7 @@
 
 ### Version 2.124
 
-### WoG:
+#### WoG:
 ## Added a new major plugin "RMG_CustomizeObjectProperties.era":
 > [!NOTE]
 > Random Map Generator (hereinafter RMG)
@@ -2605,7 +2781,7 @@
 
 ### Version 2.115
 
-#### WOG:
+#### WoG:
 - Removed debug message that appeared when opening dialogs
 
 
@@ -2614,7 +2790,7 @@
 #### Game Enhancement Mod:
 - Fixed messing up creature stats with stack exp after battle replay when the stack was killed with Summoned flag. This fixed the stats of Metamorphs and probably some 3rd party scripts.
 
-#### WOG:
+#### WoG:
 - some plugins have been rewritten to improve game stability
 
 #### WoG Graphics Fix Lite:
@@ -2774,7 +2950,7 @@
 #### WoG Graphics Fix Lite:
 - fixed gogs/hellhounds small portraits (they were mismatched previously)
 
-### WoG Scripts:
+#### WoG Scripts:
 - ##  "Week of Monsters" option is temporary disabled;
 - Standardise the interaction of secondary skills (Estates II, Scouting I/III). Now they are activated by left-clicking on secondary skill icons from hero screen. They cannot be activated when it's not on the player's turn/the hero does not belongs to the player.
     - When enabling both Scouting I and Scouting III, the customization dialogue of Scouting I would be activated by right-clicking on the Scouting icon. (as the left-clicking dialog is occupied by Scouting III).
@@ -3184,9 +3360,9 @@
 #### WoG Scripts:
 - Fixed the logic for updating creature banks;
 - Enhanced monsters: fixed speed of Archdevils;
-- Improved War Machines III: Fixed healing of enemy units;
+- Enhanced War Machines III: Fixed healing of enemy units;
 
-####Other:
+#### Other:
 - Renamed triggers "OnAdvMapTileHint" to "OnAdventureMapTileHint";
 - TrainerX/Enhanced Henchmen mods now also support multilingualism;
 
@@ -3203,7 +3379,7 @@
 
 ### Version 2.98
 
-#### Other
+#### Other:
 - missing files restored;
 
 ### Version 2.97
@@ -3254,8 +3430,8 @@
 - Added New Creature Banks refill support;
 
 #### Other:
-- Добавлены файлы предпросмотра кампаний Клинка Армагеддона;
-- Небольшие правки описаний;
+- Added preview files for Armageddon's Blade campaigns;
+- Minor description edits;
 
 
 ### Version 2.969
@@ -3392,15 +3568,15 @@ It fixed the not showing correct spell point in the battle [problem](https://dis
 - The max kill count for commander is now at 9999 (visual change)
 - AI now can also advance their class set stats with each victory (if they mange to loot one from human. They do not drop class sets due to &1000 condition);
 
-### Game Enhancement Mod:
+#### Game Enhancement Mod:
 - Fixed messing the first acting unit when the speed of two stacks are the same;
 - rewritten GetTime function;
 - updated version check function;
 
-### WoG:
+#### WoG:
 - added locale list for the future change locale dlg;
 
-### WoG Scripts:
+#### WoG Scripts:
 - Attacking in melee war machines fix removed cause it is already represented in the plugin;
 - Enhanced War Machines III: Fixed possible to heal hostile stacks
 - Fishing well: small init message fix;
@@ -3504,7 +3680,7 @@ Note: Since now Display Events relies on erm hook to work, loading TrainerX duri
 - Fixed possible erm error when checking hero screen from TrainerX main dialog.
 - God mode can now be used when there is no hero for changing map visions and resources.
 
-#### WOG:
+#### WoG:
 - Fixed Dwellings of Efreeti and Pit lords switching around in zlagport.def
 
 #### WoG Fix Lite:
