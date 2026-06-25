@@ -1,5 +1,13 @@
 ### Version 2.256
 
+#### WoG:
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.0.2:
+    - Aligned menu items horizontally;
+    - Updated translations;
+- Updated the "XXL.era" plugin:
+    - Fixed a crash when entering a cheat to open/hide the entire map;
+- Added sounds for visiting the "Sphinx" wog object and some wog creature banks;
+
 #### Advanced Classes Mod:
 - mod updated to version 1.11:
     - Fixed luck behaviour in combat and description
