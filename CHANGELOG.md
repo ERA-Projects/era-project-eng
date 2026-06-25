@@ -1,3 +1,16 @@
+### Version 2.256
+
+#### Advanced Classes Mod:
+- mod updated to version 1.11:
+    - Fixed luck behaviour in combat and description
+    - Slightly lowered the max amount of joiners from Diplo skill;
+    - Leader Commander now shows scaling of Aura effect in description;
+    - Secondary Skill Ballistics now reduced the distance of range penalty for shooters. -3 at GM;
+    - Secondary Skill Leadership: removed extra damage after Morale proc;
+    - Secondary Skill Leadership: allows mixing more units of foreign alignments in the army. +3 at GM;
+    - Adventurer Perk Plunder: Now in 50% of cases refunds movement and in other 50% cases increases picked up resources;
+
+
 ### Version 2.255
 
 #### ERA:
@@ -58,9 +71,9 @@
     - a huge number of improvements and fixes for the map selection screen and random map generation;
     - added XXL templates for random map generation;
 - ## Added a completely new plugin for the MAP EDITOR "EraEditor_JsonOverrides.dll":
-    - Replaces strings in some .txt files with JSON values ​​(currently only works with artifacts);
+    - Replaces strings in some .txt files with JSON values (currently only works with artifacts);
     - Removes the requirement that the text file with the artifact list always be a specific size (the "artraits.txt" file can now be removed from mods);
-    - Allows you to completely change the values ​​for artifacts with the following keys:
+    - Allows you to completely change the values for artifacts with the following keys:
     ```
     "era.artifacts.%d.name":                    string,
     "era.artifacts.%d.cost":                    int,
@@ -88,7 +101,7 @@
         ```
     - "ERA_JsonOverrides.era" - published with version 1.0:
         - replaces strings in some TXT files with JSON values;
-        - Allows you to completely change the values ​​for artifacts with the following keys:
+        - Allows you to completely change the values for artifacts with the following keys:
         ```
         "era.artifacts.%d.name":                    string,
         "era.artifacts.%d.cost":                    int,
@@ -142,7 +155,7 @@
     - Display unit health bars in battle;
     - All settings buttons have been removed from the Adventure Map interface;
 - The size and position of the "Next Hero" button has been restored;
-- Removed a fix that changed the AI ​​value of creatures at the start of a map;
+- Removed a fix that changed the AI value of creatures at the start of a map;
 - Removed error messages when calling functions related to dialog elements if the element's id was less than zero.
 
 #### WoG Scripts:
@@ -189,7 +202,7 @@
 #### WoG:
 - Updated "game bug fixes extended.dll" plugin:
     - Fixed a bug where creature experience was incorrectly calculated when calling the HE:C and EX:C ERM commands;
-    - Fixed a bug where the "Cavalry Bonus" skill target was incorrectly determined for subsequent functions when calculated by the AI ​​player;
+    - Fixed a bug where the "Cavalry Bonus" skill target was incorrectly determined for subsequent functions when calculated by the AI player;
 
 
 ### Version 2.252
@@ -200,7 +213,7 @@
     - For AI players, the loss and corruption of creature experience when upgrading units in the Hill Fort has been fixed;
     - The Commander no longer places ballistas for heroes defending within town walls (original game mechanics);
 - The "RMG_CustomizeObjectProperties.era" plugin has been updated to version 1.5.3:
-    - The ability to set the base value of an object for "Creature Dwellings" has been added (previously it was dependent on the AI ​​value of the creatures living there). Here's how to set the base value for the Cloud Temple without relying on the AI ​​value of the Giants living there:
+    - The ability to set the base value of an object for "Creature Dwellings" has been added (previously it was dependent on the AI value of the creatures living there). Here's how to set the base value for the Cloud Temple without relying on the AI value of the Giants living there:
     ```
     "RMG.objectGeneration.17.44.value": 1234
     ```
@@ -246,7 +259,7 @@
     - In the Creature XP preview dialog, the "Space" hotkey is now disabled for the "View Upgraded Creature" button;
 
 #### ERA ERM Framework:
-- Added initialization of some values ​​to global variables to simplify interaction with scripts:
+- Added initialization of some values to global variables to simplify interaction with scripts:
     ```
     i^maxArtifacId^: Stores the index of the last available artifact;
     i^maxHeroId^: Stores the index of the last available hero;
@@ -346,7 +359,7 @@
 
 #### WoG:
 - Updated the "game bug fixes extended.dll" plugin:
-    - The AI ​​player now correctly uses the "Cavalry Bonus" ability acquired through creature experience, commander skills, or third-party plugins that use the "int IsChampion()" function in their logic;
+    - The AI player now correctly uses the "Cavalry Bonus" ability acquired through creature experience, commander skills, or third-party plugins that use the "int IsChampion()" function in their logic;
 
 #### ERA Scripts:
 - Returned the old "Additional Upgrades" option to page 6:
@@ -413,7 +426,7 @@
 #### WoG:
 - Updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.5.0:
     - Improved data loading from JSON files for Creature Banks;
-    - Optimized AI behavior when calculating Creature Bank values ​​for Creature Banks;
+    - Optimized AI behavior when calculating Creature Bank values for Creature Banks;
     - Added support for "victory" messages for Creature Banks;
     - Fixed a bug with creature rewards for Creature Banks if data was missing.
 
@@ -913,7 +926,7 @@
     - fixed pikemen spawning in refugee camps;
     - now in player's towns if there is a fort there will always be 2 levels of creatures built;
     - now heroes always have 3 units of creatures at the start;
-    - fixed infinite loop when calculating army value for exchanging creatures in the AI ​​army;
+    - fixed infinite loop when calculating army value for exchanging creatures in the AI army;
     - now AI will always receive artifacts and experience for a defeated enemy;
     - improved negative luck code;
     - fixed display of unexplored monoliths and underworld gates when casting View Earth/Air;
@@ -1847,7 +1860,7 @@
 - Added limits to the number of WoG objects generated by the RMG;
 
 #### Game Enhancement Mod:
-- Replaced the Creature Stack Experience ability "Fireball" for Magogs and Nightmares with "Curse" (since the AI ​​does not know about this ability).
+- Replaced the Creature Stack Experience ability "Fireball" for Magogs and Nightmares with "Curse" (since the AI does not know about this ability).
 
 #### ERA Scripts:
 - Third class: fixed discrepancy in the number of secondary skills.
