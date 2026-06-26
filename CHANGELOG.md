@@ -1,3 +1,15 @@
+### Version 2.257
+
+#### WoG:
+- translation updated;
+
+#### WoG Scripts:
+- "Quick Battle Settings" option (233) removed;
+
+#### Game Enhancement Mod:
+- obsolete scripts removed;
+
+
 ### Version 2.256
 
 #### WoG:
