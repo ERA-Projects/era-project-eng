@@ -1,3 +1,14 @@
+### Version 2.258
+
+#### WoG:
+- The "RMG_CustomizeObjectProperties.era" plugin has been updated to version 1.5.3:
+    - added the ability to add and change ambient sounds for decorative objects;
+    - fixed AI logic for visiting some new objects;
+
+#### Unleashed Editor:
+- disabled update check;
+
+
 ### Version 2.257
 
 #### WoG:
