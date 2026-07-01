@@ -1,3 +1,5 @@
+### Version 2.260
+
 #### WoG:
 - Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.0.3:
     - The number of registered callback buttons for ERM functions is now not limited to 3 (three). A slider for scrolling them has been added;
