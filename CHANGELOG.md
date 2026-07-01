@@ -1,3 +1,15 @@
+### Version 2.259
+
+#### WoG:
+- updated translation;
+
+#### WoG Scripts:
+- fixed crash when viewing WoG options;
+
+#### Game Enhancement Mod:
+- removed phantom message when right-clicking on the Adventure Map;
+
+
 ### Version 2.258
 
 #### WoG:
