@@ -1,3 +1,14 @@
+#### WoG:
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.0.3:
+    - The number of registered callback buttons for ERM functions is now not limited to 3 (three). A slider for scrolling them has been added;
+    - Fixed a visual error when rendering a 10-element switch;
+    - Added exported functions for externally managing the state of new settings. The key names are stored in the "heroes3.ini" and "default heroes3.ini" files in the "[Settings.Extra]" section:
+    ```
+    int (__stdcall *GetOptionValue)( const char *key);
+    int (__stdcall *SetOptionValue)( const char *key, int value);
+    ```
+
+
 ### Version 2.259
 
 #### WoG:
