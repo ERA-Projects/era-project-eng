@@ -1,3 +1,12 @@
+### Version 2.262
+
+#### WoG:
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.0.4:
+    - Fixed an issue where the battle grid settings would not immediately change;
+    - Fixed an issue where the selected Quick Battle mode was incorrectly saved;
+    - Fixed ignoring Quick Battle settings;
+
+
 ### Version 2.261
 
 #### WoG:
