@@ -1,3 +1,16 @@
+### Version 2.261
+
+#### WoG:
+- Updated the "EraEditor_JsonOverrides.dll" plugin to version 1.1:
+    - Added localization support for standard Adventure Map objects;
+    - Added localization support for Creature Banks;
+
+#### Game Enhancement Mod:
+#### ERA Scripts:
+#### WoG Scripts:
+- fixed check for HD-Mod presence;
+
+
 ### Version 2.260
 
 #### WoG:
