@@ -1,3 +1,13 @@
+### Version 2.263
+
+#### WoG:
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.1.0:
+    - Changed graphics for multiple-choice settings;
+
+#### ERA Scripts:
+- "Zombie-flesheaters" option: temporarily disabled compatibility with mods that add creatures;
+
+
 ### Version 2.262
 
 #### WoG:
