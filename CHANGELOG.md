@@ -1,3 +1,16 @@
+### Version 2.265
+
+#### ERA:
+    - ATTENTION! Examples of how to use all the new features can be found in the file "/Help/Era manual/era iii changelog.txt" or simply click on the ERA version in the game's main menu;
+- ## era.dll core update without changing the version (3.9.30):
+    - plugins can now read JSON file values ​​at initialization, not just after the "OnAfterWog" event;
+
+#### WoG:
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.2.1:
+    - Closing the dialog is now possible with the same hotkey as opening it: "O";
+    - Minor fixes;
+
+
 ### Version 2.264
 
 #### WoG:
