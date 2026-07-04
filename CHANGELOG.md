@@ -1,3 +1,40 @@
+### Version 2.264
+
+#### WoG:
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.2.0:
+    - Additional ERM buttons for dialog are now displayed in the order they were added;
+    - Fixed a critical error in the dialog creation logic that could lead to memory leaks when closing the battle window;
+    - Pressing the "Restart" button during a battle no longer closes the dialog (if needed, I'll do the same for the Adventure Map);
+- Updated the "ERA_JsonOverrides.era" plugin to version 1.1.0:
+    - Rewritten the algorithm for handling JSON keys;
+    - Added support for initializing spell data with the following keys:
+    ```
+    "era.spells.%d.type":                    int,
+    "era.spells.%d.soundName":               string,
+    "era.spells.%d.animationIndex":          int,
+    "era.spells.%d.flags":                   int,
+    "era.spells.%d.name":                    string,
+    "era.spells.%d.shortName":               string,
+    "era.spells.%d.level":                   int,
+    "era.spells.%d.school":                  int,
+    "era.spells.%d.spEffect":                int,
+    "era.spells.%d.manaCost":                int[4],
+    "era.spells.%d.baseValue":               int[4],
+    "era.spells.%d.chanceToGet":             int[9],
+    "era.spells.%d.aiValue":                 int[4],
+    "era.spells.%d.description":             string[4]
+    ```
+    - Fixed incorrect initialization of some artifact parameters;
+
+#### Advanced Classes Mod:
+- Added the missing "Combat_BallisticsIncreasesShootingRange.dll" plugin, which increases the range of the straight arrow from the "Ballistics" skill;
+- Added the missing "Combat_LeadershipDecreasesFactionsNum.dll" plugin, which virtually reduces the number of factions in the army of a hero with the "Leadership" skill;
+
+#### ERA Scripts:
+- "Additional Upgrades" option: no longer disabled if third-party mods add creatures;
+- "Non-Neutrals" option: no longer disabled if third-party mods add creatures;
+
+
 ### Version 2.263
 
 #### WoG:
