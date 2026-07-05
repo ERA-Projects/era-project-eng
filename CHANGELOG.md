@@ -1,3 +1,30 @@
+### Version 2.266
+
+#### WoG:
+- The "ERA_SystemOptionsExtension.era" plugin has been updated to version 1.3.0:
+    - Scrolling through elements now starts with the first functional button, not the second;
+    - Allows registering and deleting buttons via plugins:
+        - Registers a callback button for a function without arguments (__cdecl* callback) in the "Other Settings" section. The first argument is the unique key (string) of your button, the second is the button's name in the dialog (JSON keys are supported), the third is the description on the right mouse button (JSON keys are supported), and the fourth is the ID of the ERM function being called. This can be either a number or your named function. You can also use this function to change your button at any time:
+        ```cpp
+        int (__stdcall *RegisterPluginCallbackButton)( const char *tag, const char *name, const char *description, void (__cdecl*callback)());
+        ```
+        - removes your (or another) button from the dialog during the game if, for some reason, you no longer need it there;
+        ```cpp
+        int* (__stdcall *UnregisterPluginCallbackButton)(const char *tag);
+        ```
+> [!NOTE]
+> - Buttons added via plugins are not automatically removed when leaving the map;
+
+#### Advanced Classes Mod:
+- Help information updated;
+
+#### Game Enhancement Mod:
+- minor fixes;
+
+#### WoG Scripts:
+- "Disable Script Messages" added to the new system options dialog;
+
+
 ### Version 2.265
 
 #### ERA:
