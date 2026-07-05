@@ -105,15 +105,12 @@ jobs:
   post_changelog:
     needs: release
     runs-on: ubuntu-latest
+    # THIS HOOKS THE 20-MINUTE TIMER WITHOUT CONSUMING MACHINE MINUTES 
+    enviromnent: discord-delay-zone
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Wait for server update
-        run: |
-          echo "Waiting 20 minutes for files to sync with the server..."
-          sleep 1200
-          echo "Time's up. Sending a notification."
 
       - name: Send Message to Discord
         uses: appleboy/discord-action@master
