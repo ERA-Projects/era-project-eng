@@ -106,7 +106,7 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     # THIS HOOKS THE 20-MINUTE TIMER WITHOUT CONSUMING MACHINE MINUTES 
-    enviromnent: discord-delay-zone
+    environment: discord-delay-zone
     
     steps:
       - name: Checkout Repository
