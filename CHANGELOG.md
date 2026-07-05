@@ -1,3 +1,22 @@
+### Version 2.267
+
+#### WoG Scripts:
+- Fixed failing to disable power stones when the option is unchecked in some cases; 
+
+#### Enhanced Henchmen:
+- Fixed Centaur cannot get Shooting even if reaching the needed rank;
+
+#### ERA Scripts:
+- Zombie-Flesheater: Restored for external mod compatibility;
+
+#### Other:
+- SD Mod Manager updated to version 0.98.81:
+    - Added zhCN translation (thanks to author: Archer30).
+    - Improved legacy mapping for language codes (see .json in lng, let me know if need more than one);
+    - Can load translated docs info (from mod.json<.LngCode>.md file);
+    - Used fold case for loading information about files in mods (i.e. EraPlugins and eraplugins are the same folder for this feature now);
+
+
 ### Version 2.266
 
 #### WoG:

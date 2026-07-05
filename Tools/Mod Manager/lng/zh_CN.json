@@ -1,0 +1,264 @@
+{
+  "category": {
+    "gameplay": "游戏性",
+    "graphics": "图像",
+    "scenarios": "地图",
+    "cheats": "作弊",
+    "interface": "界面",
+    "towns": "城镇",
+    "other": "其他",
+    "platforms": "平台",
+    "personal mods": "个人Mod",
+    "utilities": "实用工具",
+    "localization": "语言",
+    "mapeditor": "地图编辑器"
+  },
+  "column": {
+    "priority": "优先级",
+    "name": "Mod",
+    "category": "类别",
+    "support": "支持",
+    "author": "作者",
+    "version": "版本",
+    "directory": "目录",
+    "path": "路径",
+    "plugins": "插件",
+    "plugin": "插件",
+    "index": "索引",
+    "without_category": "未分类",
+    "load_order": "加载顺序",
+    "status": "状态",
+    "active": "已启用",
+    "managed": "已管理",
+    "column": "列",
+    "screenshot": "截图",
+    "results": "结果",
+    "archived": "已归档"
+  },
+  "dialog": {
+    "label": {
+      "mod": "Mod",
+      "profile_name": "配置名称：",
+      "enter_profile_name": "输入配置名称",
+      "delete_profile": "删除配置 \"%s\"？",
+      "selected": "已选择：",
+      "profile": "配置",
+      "preview": "预览",
+      "categories": "类别：",
+      "explorer": "资源管理器",
+      "recent": "最近",
+      "options": "选项",
+      "filter": "筛选"
+    },
+    "cancel": "取消",
+    "export_preset": {
+      "caption": "导出",
+      "options": "导出选项",
+      "save_exe_option": "保存所选启动程序"
+    },
+    "filter": {
+      "json": "json文件 (*.json)|*json"
+    },
+    "import_preset": {
+      "caption": "导入",
+      "options": "导入选项",
+      "name": "导入为：",
+      "apply_now": "立即应用",
+      "no_option": "选择选项",
+      "save_and_apply": "保存并应用",
+      "save_only": "仅保存",
+      "apply_only": "仅应用"
+    },
+    "settings": {
+      "update_mode": {
+        "manual": "仅手动",
+        "on_every_launch": "每次启动时（每小时一次）",
+        "once_per_day": "每天一次",
+        "once_per_week": "每周一次",
+        "once_per_month": "每月一次",
+        "label": "检查程序更新："
+      },
+      "mod_description_control": {
+        "label": "Mod说明：",
+        "try_to_use_webview2": "尝试使用WebView2",
+        "use_wxhtml_control": "使用wxHtmlWindow（默认）",
+        "use_plain_text_control": "使用纯文本"
+      },
+      "interface_size": {
+        "label": "界面大小（Mod列表和部分按钮）：",
+        "big": "大",
+        "standard": "标准"
+      },
+      "interface_label": {
+        "label": "在列表视图中显示按钮文字：",
+        "show": "显示",
+        "dont_show": "不显示"
+      },
+      "program_options": "程序选项",
+      "caption": "程序设置",
+      "configure_main_view": {
+        "caption": "配置视图",
+        "column": "列",
+        "managed_mods": "显示已管理Mod",
+        "archived_mods": "显示已归档Mod",
+        "use_legacy_archiving": "使用旧版禁用方式",
+        "use_legacy_archiving_hint": "启用此选项后，管理器会将Mod移入归档，而不是直接禁用。\n\n（这会恢复经典行为：禁用Mod后，它会失去在列表中的优先级）",
+        "managed_mods_value": {
+          "as_flat_list": "显示为平铺列表",
+          "as_group": "显示为分组"
+        },
+        "archived_mods_value": {
+          "as_flat_list": "显示为平铺列表",
+          "as_single_group": "显示为单个分组",
+          "as_individual_groups": "按类别分组"
+        }
+      },
+      "conflict_resolve_mode": {
+        "label": "解决Mod冲突：",
+        "automatic": "自动（启用/禁用时）",
+        "manual": "手动（点击“排序”按钮）"
+      },
+      "platform_options": "平台设置",
+      "warn_about_conflicts_mode": {
+        "label": "发生冲突时：",
+        "only_inform": "仅显示通知",
+        "warn_before_enabling": "启用前显示警告",
+        "do_nothing": "不执行操作"
+      }
+    },
+    "edit_mod": {
+      "caption": "编辑Mod",
+      "docs": "说明"
+    },
+    "button": {
+      "open_directory": "打开文件夹",
+      "reload_from_disk": "从磁盘重新加载",
+      "copy": "复制",
+      "save_to_file": "保存到文件",
+      "close": "关闭",
+      "paste": "粘贴",
+      "load_from_file": "从文件加载",
+      "download": "下载",
+      "open_page": "打开页面",
+      "load": "加载",
+      "save": "保存",
+      "rename": "重命名",
+      "delete": "删除",
+      "save_as": "另存为",
+      "configure": "配置",
+      "move_up": "上移",
+      "move_down": "下移",
+      "enable": "启用",
+      "sort": "排序",
+      "open_homepage": "访问主页",
+      "archive": "归档",
+      "edit": "编辑",
+      "screenshots": "截图",
+      "remove_from_list": "从列表中移除",
+      "accept": "接受",
+      "add_to_favs": "添加到收藏",
+      "remove_from_favs": "从收藏移除",
+      "ok": "关闭",
+      "continue": "继续",
+      "disable": "禁用"
+    },
+    "error": {
+      "caption": "发生意外错误",
+      "prompt": "发生内部错误（除非这正是你想得到的结果）。请提交报告，描述你的操作并附上以下信息：",
+      "details": "错误详情"
+    },
+    "main_frame": {
+      "page_mods": "Mod",
+      "page_profiles": "配置",
+      "about_description": "ERA平台的Mod管理器",
+      "menu": {
+        "game": {
+          "launch_tip": "使用所选启动程序启动游戏",
+          "launch": "启动（%s）",
+          "change_selected": "更改启动程序",
+          "label": "游戏"
+        },
+        "tools": {
+          "change_managed_directory": "更改管理目录",
+          "change_managed_directory_tip": "允许选择其他目录进行管理",
+          "reload_data": "从磁盘重新加载数据",
+          "settings": "设置",
+          "settings_tip": "更改程序设置",
+          "label": "工具",
+          "language": "语言",
+          "language_tip": "允许选择程序语言"
+        },
+        "about": {
+          "check_update": "检查更新",
+          "check_update_tip": "检查程序更新",
+          "about": "关于"
+        },
+        "mod": {
+          "create_new": "创建新Mod",
+          "list_files": "列出已启用Mod文件",
+          "label": "Mod",
+          "open_directory": "打开Mods文件夹"
+        }
+      },
+      "new_mod_prompt": "输入新Mod名称",
+      "new_mod_prompt_label": "创建"
+    },
+    "select_game_directory": {
+      "caption": "选择要管理的游戏目录"
+    },
+    "select_executable": {
+      "caption": "选择启动程序"
+    },
+    "mod_file_list": {
+      "caption": "Mod文件列表",
+      "include_game_files": "包含游戏文件",
+      "include_not_overridden": "并包含未被覆盖的文件",
+      "skip_not_overriden": "跳过未覆盖文件",
+      "include_from_root": "包含根目录文件"
+    }
+  },
+  "message": {
+    "notification": {
+      "copied": "已复制",
+      "saved": "已保存",
+      "copied_from_clipboard": "已从剪贴板复制",
+      "loaded_from_file": "已从文件加载",
+      "automatic_resolve_mode_enabled": "已选择自动解决Mod冲突模式",
+      "new_version_available": "有新的程序版本可用",
+      "cannot_check_for_update": "无法检查程序更新",
+      "you_have_latest_version": "当前已是最新版本"
+    },
+    "error": {
+      "cannot_open_clipboard": "无法打开剪贴板",
+      "operation_exception_details": "执行操作时发生错误。详情：\n\n%s",
+      "directory_already_exist": "目录已存在",
+      "path_not_exists": "所选路径（%s）不存在，请选择合适的路径"
+    },
+    "warning": {
+      "profile_already_exists": "配置 \"%s\"已存在。",
+      "no_mods_can_be_placed_above_each_other": "来自（%s）的Mod无法相互置于上方，%s已放到顶部"
+    },
+    "info": {
+      "virtual_mod": "这是一个虚拟Mod，磁盘上没有对应目录",
+      "profile_loaded": "配置 \"%s\"已加载。",
+      "exe_not_selected": "未选择",
+      "dont_show_again": "不再显示此消息",
+      "incompatible_mods": "Mod \"%s\"与 \"%s\"不兼容",
+      "mods_were_disabled": "以下Mod已被禁用：%s"
+    },
+    "question": {
+      "overwrite_existing_file": "'%s' 已存在，是否覆盖？",
+      "delete_mod": "确定要删除Mod \"%s\"吗？\n\n如果可行，它会被移入回收站。",
+      "copy_already_running": "程序的另一个副本正在运行。运行多个副本可能导致数据或配置管理出错。仍要继续运行吗？",
+      "warn_about_conflicts_before_enabling": "Mod \"%s\"与 \"%s\"不兼容。继续？",
+      "warn_about_conflicts_before_enabling_sort": "Mod \"%s\"将被禁用。继续？"
+    },
+    "status": {
+      "displayed_and_hidden": "，显示：%d，隐藏：%d",
+      "mod_count": "Mod：%d",
+      "ok": "正常",
+      "all_mods_hidden": "，全部隐藏（请检查筛选条件）",
+      "no_description_available": "没有可用说明"
+    }
+  }
+}

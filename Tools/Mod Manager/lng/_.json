@@ -1,10 +1,17 @@
-[
-    {
-        "code": "en",
-        "name": "English"
-    },
-    {
-        "code": "ru",
-        "name": "Русский"
-    }
-]
+{
+  "en": {
+    "name": "English",
+    "legacy_code": "en_US",
+    "author": "SyDr"
+  },
+  "ru": {
+    "name": "Русский",
+    "legacy_code": "ru_RU",
+    "author": "SyDr"
+  },
+  "zh_CN": {
+    "name": "中文",
+    "legacy_code": "Cn_Simp",
+    "author": "Archer30"
+  }
+}
