@@ -1,3 +1,46 @@
+### Version 2.268
+
+#### ERA:
+    - ATTENTION! Examples of how to use all the new features can be found in the "/Help/Era manual/era iii changelog.txt" file or simply click on the ERA version in the game's main menu;
+- ## era.dll core update without changing the version (3.9.30):
+    - fixed double firing of the "OnBattleRegeneratePhase" trigger;
+    - fixed a bug that caused the "Frenzy" spell to last forever;
+
+#### WoG:
+- updated the "RMG_CustomizeObjectProperties.era" plugin to version 1.6.0:
+    - the settings dialog now displays the number, type, and town of units for Creature Dwellings;
+    - the settings dialog now displays the number and type of units for Creature Banks;
+    - Added controls for the following objects to the settings dialog:
+        - Sacrificial Altar;
+        - Flotsam;
+        - Shipwreck Survivor;
+        - Sea Chest;
+    - Added the following keys for Creature Banks:
+        Reveal a map area to a specified radius after looting:
+        ```
+        "RMG.objectGeneration.16.13.states.0.revealRadius": int
+        ```
+        Display text when visiting a Creature Bank that has already been looted:
+        ```
+        "RMG.objectGeneration.16.13.text.plundered": string
+        ```
+    - The "Full Randomization" option no longer overwrites the player's selected map generation settings;
+    - Fixed the algorithm for replacing object properties with different mods (previously, the object from the lowest-priority mod worked);
+    - Fixed the generation algorithm for 4-unit Creature Dwellings (type 20);
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.3.1:
+    - Fixed a potential stack corruption issue when calling functions from third-party plugins;
+- Updated the "game bug fixes extended.dll" plugin:
+    - now unit specialization also recursively affects the minimum speed of units when calculating the hero's max movement points;
+    - Fixed the luck calculation error when opening the creature information dialog;
+    - Added text files that fully anglicize the game;
+
+#### ERA ERM Framework:
+- The function ``!?FU(BattleStack_MakeActive);`` now triggers the Regeneration Phase;
+
+#### Game Enhancement Mod:
+- Removed deprecated functions;
+
+
 ### Version 2.267
 
 #### WoG Scripts:
