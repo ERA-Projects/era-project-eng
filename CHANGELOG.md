@@ -1,3 +1,19 @@
+### Version 2.269
+
+#### WoG:
+- Added Spanish to the language selection dialog;
+- Updated the "game bug fixes extended.dll" plugin:
+    - Heroes now immediately learn spells in town after using the "Town Portal" spell;
+    - Heroes now automatically exchange spells (using the "Scholar" skill logic) when a town teaches one of them;
+    - Disabled spell casting tracking for AI in theoretical battles;
+    - Fixed a crash when opening creature dialogue in battle.
+
+#### Other:
+- SD Mod Manager updated to version 0.98.83:
+    - Fixed mod name display;
+    - Moved the category settings button to the lower left corner;
+
+
 ### Version 2.268
 
 #### ERA:
