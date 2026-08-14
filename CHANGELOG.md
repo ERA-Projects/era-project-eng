@@ -1,3 +1,11 @@
+### Version 2.271
+
+#### WoG:
+- Updated the "ERA_SystemOptionsExtension.era" plugin to version 1.4.2:
+    - Fixed restoring quick battle settings;
+    - Fixed the ability to "restart" the map and "load the game" during a battle against a remote human player;
+
+
 ### Version 2.270
 
 #### ERA:
