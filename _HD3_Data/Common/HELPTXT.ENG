@@ -1,0 +1,868 @@
+Rollover Text	Right-Click Text	
+Note: Do not change the headings in this file, they are used to detect problems		
+Main Menu		
+	"{New Game}
+
+Start a new game."	
+	"{Load Game}
+
+Load a saved game."	
+	"{High Scores}
+
+View the legendary Heroes of Might and Magic."	
+	"{Credits}
+
+View HotA & original game credits."	
+	"{Quit}
+
+Return to Windows."	
+		
+New Game	New Game	
+	"{Single Scenario}
+
+Play a single scenario."	
+	"{Campaign}
+
+Play a campaign."	
+	"{Multiplayer}
+
+Play a multiplayer single scenario."	
+	"{Tutorial}
+
+Play a tutorial scenario teaching the basics needed to play Heroes III."	
+	"{Back}
+
+Return to the previous screen."	
+		
+Single Scenario Selection	Single Scenario Selection	
+		
+SCENARIO_BACKGROUND 	Choose a scenario	
+ADVANCED_BACKGROUND 	Set advanced options	
+Background for random map menu	Customize and create a random map	
+SCENARIO_NAME 	Scenario Name	
+Description Title	Displays scenario briefing	
+Description text	Displays scenario briefing	
+EASY 	"{Difficulty Level: Pawn}
+
+The player starts with a large advantage in resources, and the computer plays poorly.
+
+Victory score multiplier: 80%."	
+NORMAL 	"{Difficulty Level: Knight}
+
+The player starts with a moderate advantage in resources, and the computer plays reasonably well.
+
+Victory score multiplier: 100%."	
+HARD 	"{Difficulty Level: Rook}
+
+The player and the computer start with the same resources, and the computer plays to the best of its ability.
+
+Victory score multiplier: 130%."	
+EXPERT 	"{Difficulty Level: Queen}
+
+The player starts with a handicap in resources, and the computer plays to the best of its ability.
+
+Victory score multiplier: 160%."	
+IMPOSSIBLE 	"{Difficulty Level: King}
+
+The player starts with no resources, and the computer plays to the best of its ability.
+
+Victory score multiplier: 200%."	
+ALLY_FLAG1 	This is your color	
+ALLY_FLAG2 	This color is allied with you	
+ALLY_FLAG3 	This color is allied with you	
+ALLY_FLAG4 	This color is allied with you	
+ALLY_FLAG5 	This color is allied with you	
+ALLY_FLAG6 	This color is allied with you	
+ALLY_FLAG7 	This color is allied with you	
+ALLY_FLAG8 	This color is allied with you	
+ENEMY_FLAG1 	This color is your enemy	
+ENEMY_FLAG2 	This color is your enemy	
+ENEMY_FLAG3 	This color is your enemy	
+ENEMY_FLAG4 	This color is your enemy	
+ENEMY_FLAG5 	This color is your enemy	
+ENEMY_FLAG6 	This color is your enemy	
+ENEMY_FLAG7 	This color is your enemy	
+ENEMY_FLAG8 	This color is your enemy	
+SCENARIO_OPTIONS 	View/hide scenario list	
+ADVANCED_OPTIONS 	View/hide advanced options	
+random map button	Play a randomly created map	
+CHAT_DESC 	Toggle between Scenario Description and Chat Window	
+MAP_DIFFICULTY 	Selecting a difficulty level allows you to modify the overall difficulty of the gameplay	
+RATING 	Displays a victory score multiplier based on the selected difficulty level	
+MAP_SIZE 	Map rating indicates how hard is it to complete the scenario: Easy, Normal, Hard, Expert or Impossible	
+VICTORY_CONDITION 	Victory Conditions for the current scenario	
+LOSS_CONDITION 	Loss Conditions for the current scenario	
+SMALL_FILTER 	View all small maps	
+MEDIUM_FILTER 	View all medium maps	
+LARGE_FILTER 	View all large maps	
+EXTRALARGE_FILTER 	View all extra large maps	
+ALL_FILTER 	View all maps	
+SCENARIO_NAME_1 	SCENARIO_NAME_1 	
+SCENARIO_NAME_2 	SCENARIO_NAME_2 	
+SCENARIO_NAME_3 	SCENARIO_NAME_3 	
+SCENARIO_NAME_4 	SCENARIO_NAME_4 	
+SCENARIO_NAME_5 	SCENARIO_NAME_5 	
+SCENARIO_NAME_6 	SCENARIO_NAME_6 	
+SCENARIO_NAME_7 	SCENARIO_NAME_7 	
+SCENARIO_NAME_8 	SCENARIO_NAME_8 	
+SCENARIO_NAME_9 	SCENARIO_NAME_9 	
+SCENARIO_NAME_10 	SCENARIO_NAME_10 	
+SCENARIO_NAME_11 	SCENARIO_NAME_11 	
+SCENARIO_NAME_12 	SCENARIO_NAME_12 	
+SCENARIO_NAME_13 	SCENARIO_NAME_13 	
+SCENARIO_NAME_14 	SCENARIO_NAME_14 	
+SCENARIO_NAME_15 	SCENARIO_NAME_15 	
+SCENARIO_NAME_16 	SCENARIO_NAME_16 	
+SCENARIO_NAME_17 	SCENARIO_NAME_17 	
+SCENARIO_NAME_18 	SCENARIO_NAME_18 	
+ENTRY_SCENARIO_NAME_1 	ENTRY_SCENARIO_NAME_1 	
+ENTRY_SCENARIO_NAME_2 	ENTRY_SCENARIO_NAME_2 	
+ENTRY_SCENARIO_NAME_3 	ENTRY_SCENARIO_NAME_3 	
+ENTRY_SCENARIO_NAME_4 	ENTRY_SCENARIO_NAME_4 	
+ENTRY_SCENARIO_NAME_5 	ENTRY_SCENARIO_NAME_5 	
+ENTRY_SCENARIO_NAME_6 	ENTRY_SCENARIO_NAME_6 	
+ENTRY_SCENARIO_NAME_7 	ENTRY_SCENARIO_NAME_7 	
+ENTRY_SCENARIO_NAME_8 	ENTRY_SCENARIO_NAME_8 	
+ENTRY_SCENARIO_NAME_9 	ENTRY_SCENARIO_NAME_9 	
+ENTRY_SCENARIO_NAME_10 	ENTRY_SCENARIO_NAME_10 	
+ENTRY_SCENARIO_NAME_11 	ENTRY_SCENARIO_NAME_11 	
+ENTRY_SCENARIO_NAME_12 	ENTRY_SCENARIO_NAME_12 	
+ENTRY_SCENARIO_NAME_13 	ENTRY_SCENARIO_NAME_13 	
+ENTRY_SCENARIO_NAME_14 	ENTRY_SCENARIO_NAME_14 	
+ENTRY_SCENARIO_NAME_15 	ENTRY_SCENARIO_NAME_15 	
+ENTRY_SCENARIO_NAME_16 	ENTRY_SCENARIO_NAME_16 	
+ENTRY_SCENARIO_NAME_17 	ENTRY_SCENARIO_NAME_17 	
+ENTRY_SCENARIO_NAME_18 	ENTRY_SCENARIO_NAME_18 	
+TURN_DURATION 	Turn Duration	
+CHAT_TEXT 	Chat Messages	
+CHAT_ENTRY 	CHAT_ENTRY 	
+CHAT_PLUG 	CHAT_PLUG 	
+CHAT_PLAYER 	Players	
+CHAT_PLAYER_SLIDER,	CHAT_PLAYER_SLIDER,	
+ROLLOVER 	ROLLOVER 	
+NEXT 	Save the currently selected game	
+BEGIN 	Start the selected scenario	
+BACK 	BACK 	
+SSEXIT 	"Close this window
+(no action taken)"	
+WHICHMAP 	"Current Map Size
+(Small, Medium, Large, Extra Large, Huge, Extra Huge, Giant)"	
+SORT_NUMBER 	Sorts maps by number of players	
+SORT_SIZE 	Sorts maps by size of maps	
+k_sort_version	Sort maps by map version	
+SORT_ALPHA 	Sorts maps alphabetically by name	
+SORT_VICTORY 	Sorts maps by victory conditions	
+SORT_LOSS 	Sorts maps by loss conditions	
+BRIEFING 	BRIEFING 	
+SSHERO 	SSHERO 	
+GOLDPIC 	GOLDPIC 	
+HUMAN_CPU1 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HUMAN_CPU2 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HUMAN_CPU3 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HUMAN_CPU4 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HUMAN_CPU5 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HUMAN_CPU6 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HUMAN_CPU7 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HUMAN_CPU8 	Human or CPU means that this color can be played by a human or the computer.  CPU only means that only the computer can control this color.	
+HANDICAP1 	Allows you to handicap this player by diminishing their starting resources	
+HANDICAP2 	Allows you to handicap this player by diminishing their starting resources	
+HANDICAP3 	Allows you to handicap this player by diminishing their starting resources	
+HANDICAP4 	Allows you to handicap this player by diminishing their starting resources	
+HANDICAP5 	Allows you to handicap this player by diminishing their starting resources	
+HANDICAP6 	Allows you to handicap this player by diminishing their starting resources	
+HANDICAP7 	Allows you to handicap this player by diminishing their starting resources	
+HANDICAP8 	Allows you to handicap this player by diminishing their starting resources	
+TOWN_LEFT1 	Allows you to choose a starting town type	
+TOWN_LEFT2 	Allows you to choose a starting town type	
+TOWN_LEFT3 	Allows you to choose a starting town type	
+TOWN_LEFT4 	Allows you to choose a starting town type	
+TOWN_LEFT5 	Allows you to choose a starting town type	
+TOWN_LEFT6 	Allows you to choose a starting town type	
+TOWN_LEFT7 	Allows you to choose a starting town type	
+TOWN_LEFT8 	Allows you to choose a starting town type	
+TOWN_RITE1 	Allows you to choose a starting town type	
+TOWN_RITE2 	Allows you to choose a starting town type	
+TOWN_RITE3 	Allows you to choose a starting town type	
+TOWN_RITE4 	Allows you to choose a starting town type	
+TOWN_RITE5 	Allows you to choose a starting town type	
+TOWN_RITE6 	Allows you to choose a starting town type	
+TOWN_RITE7 	Allows you to choose a starting town type	
+TOWN_RITE8 	Allows you to choose a starting town type	
+HERO_LEFT1 	Allows you to choose a starting hero based on your town type	
+HERO_LEFT2 	Allows you to choose a starting hero based on your town type	
+HERO_LEFT3 	Allows you to choose a starting hero based on your town type	
+HERO_LEFT4 	Allows you to choose a starting hero based on your town type	
+HERO_LEFT5 	Allows you to choose a starting hero based on your town type	
+HERO_LEFT6 	Allows you to choose a starting hero based on your town type	
+HERO_LEFT7 	Allows you to choose a starting hero based on your town type	
+HERO_LEFT8 	Allows you to choose a starting hero based on your town type	
+HERO_RITE1 	Allows you to choose a starting hero based on your town type	
+HERO_RITE2 	Allows you to choose a starting hero based on your town type	
+HERO_RITE3 	Allows you to choose a starting hero based on your town type	
+HERO_RITE4 	Allows you to choose a starting hero based on your town type	
+HERO_RITE5 	Allows you to choose a starting hero based on your town type	
+HERO_RITE6 	Allows you to choose a starting hero based on your town type	
+HERO_RITE7 	Allows you to choose a starting hero based on your town type	
+HERO_RITE8 	Allows you to choose a starting hero based on your town type	
+RES_LEFT1 	Allows you to choose a starting bonus for your hero	
+RES_LEFT2 	Allows you to choose a starting bonus for your hero	
+RES_LEFT3 	Allows you to choose a starting bonus for your hero	
+RES_LEFT4 	Allows you to choose a starting bonus for your hero	
+RES_LEFT5 	Allows you to choose a starting bonus for your hero	
+RES_LEFT6 	Allows you to choose a starting bonus for your hero	
+RES_LEFT7 	Allows you to choose a starting bonus for your hero	
+RES_LEFT8 	Allows you to choose a starting bonus for your hero	
+RES_RITE1 	Allows you to choose a starting bonus for your hero	
+RES_RITE2 	Allows you to choose a starting bonus for your hero	
+RES_RITE3 	Allows you to choose a starting bonus for your hero	
+RES_RITE4 	Allows you to choose a starting bonus for your hero	
+RES_RITE5 	Allows you to choose a starting bonus for your hero	
+RES_RITE6 	Allows you to choose a starting bonus for your hero	
+RES_RITE7 	Allows you to choose a starting bonus for your hero	
+RES_RITE8 	Allows you to choose a starting bonus for your hero	
+HERO_SETTING_1 	Click here to play this color	
+HERO_SETTING_2 	Click here to play this color	
+HERO_SETTING_3 	Click here to play this color	
+HERO_SETTING_4 	Click here to play this color	
+HERO_SETTING_5 	Click here to play this color	
+HERO_SETTING_6 	Click here to play this color	
+HERO_SETTING_7 	Click here to play this color	
+HERO_SETTING_8 	Click here to play this color	
+TOWN_SETTING_1 	TOWN_SETTING_1 	
+TOWN_SETTING_2 	TOWN_SETTING_2 	
+TOWN_SETTING_3 	TOWN_SETTING_3 	
+TOWN_SETTING_4 	TOWN_SETTING_4 	
+TOWN_SETTING_5 	TOWN_SETTING_5 	
+TOWN_SETTING_6 	TOWN_SETTING_6 	
+TOWN_SETTING_7 	TOWN_SETTING_7 	
+TOWN_SETTING_8 	TOWN_SETTING_8 	
+const_create_map,		
+const_map_size_label,	Select a map size	
+const_small_map,	Create a small map	
+const_medium_map,	Create a medium map	
+const_large_map,	Create a large map	
+const_huge_map,	Create an extra large map	
+const_map_levels,	Select single or two level map	
+const_human_positions_label,	Select number of human-playable positions	
+const_1_human,	Create 1 human player	
+const_2_humans,	Create 2 human players	
+const_3_humans,	Create 3 human players	
+const_4_humans,	Create 4 human players	
+const_5_humans,	Create 5 human players	
+const_6_humans,	Create 6 human players	
+const_7_humans,	Create 7 human players	
+const_8_humans,	Create 8 human players	
+const_random_humans,	Create 1-8 human players	
+const_human_teams_label,	Select the number of teams for human-playable positions	
+const_no_human_teams,	No teams	
+const_1_human_team,	Create 1 human team	
+const_2_human_teams,	Create 2 human teams	
+const_3_human_teams,	Create 3 human teams	
+const_4_human_teams,	Create 4 human teams	
+const_5_human_teams,	Create 5 human teams	
+const_6_human_teams,	Create 6 human teams	
+const_7_human_teams,	Create 7 human teams	
+const_random_human_teams,	Create a random number of human teams	
+const_computer_positions_label,	Select the number of computer-only positions	
+const_no_computers,	Create no computer players	
+const_1_computer,	Create 1 computer position	
+const_2_computers,	Create 2 computer positions	
+const_3_computers,	Create 3 computer positions	
+const_4_computers,	Create 4 computer positions	
+const_5_computers,	Create 5 computer positions	
+const_6_computers,	Create 6 computer positions	
+const_7_computers,	Create 7 computer positions	
+const_random_computers,	Create a random number of computer positions	
+const_computer_teams_label,	Select the number of computer teams	
+const_no_computer_teams,	No computer teams	
+const_1_computer_team,	Create 1 computer team	
+const_2_computer_teams,	Create 2 computer teams	
+const_3_computer_teams,	Create 3 computer teams	
+const_4_computer_teams,	Create 4 computer teams	
+const_5_computer_teams,	Create 5 computer teams	
+const_6_computer_teams,	Create 6 computer teams	
+const_random_computer_teams,	Create a random number of computer teams	
+const_water_label,	Select the amount of water on the map	
+const_no_water,	Minimum or no water	
+const_normal_water,	Create a continent surrounded by water	
+const_islands,	Create many small land masses created by water	
+const_random_water,	Choose random amounts of water	
+const_monster_strength_label,	Select the relative strength of guardian monsters	
+const_weak_monsters,	Make monsters weaker than normal	
+const_normal_monsters,	Normal strength guardians	
+const_strong_monsters,	Create strong guardians	
+const_random_monsters,	Choose a random overall strength for guardian monsters	
+const_show_saved_random_maps,	Show recently generated random maps	
+SLIDER_CHATWINDOW 	Scroll through chat text	
+SLIDER_FILEMENU 	Scroll through scenario or save game list	
+SLIDER_DURATION 	Allows you to change player turn duration	
+PLAYER_HANDICAP_HEADER_ID,	"{Player Name / Handicap Type}
+
+Each potential slot a human player can occupy is marked with an adjacent banner.  Click the banner to change position.  You may also click inside the name field to change your player name.
+
+Each player may be 'handicapped' by clicking the 'handicap' button.  There are three settings: No Handicap, Mild Handicap, and Severe Handicap.  Mild and Severe diminish a player's starting resources.
+"	
+TURN_DURATION_HEADER_ID,	"{Player Turn Duration}
+
+Using the slider, you may set 'soft' player turn durations.  By 'soft', a timer counts down a player's turn when not in combat.  When in combat, the timer is paused.
+
+Turn durations are 1, 2, 4, 6, 8, 10, 15, 20, 25, and 30 minutes.
+'Unlimited' is the default setting.
+"	
+STARTING_TOWN_HEADER_ID,	"{Starting Town}
+
+Each player may, or may not, start with a town.  Choices may be Random, Castle, Rampart, Tower, Inferno, Necropolis, Dungeon, Stronghold, and Fortress.
+
+When you do not start with a town, these settings may be used to help choose the alignment of a potential starting hero.
+"	
+STARTING_TOWN_HEADER_W_CONFLUX_ID,	"{Starting Town}
+
+Each player may, or may not, start with a town.  Choices may be Random, Castle, Rampart, Tower, Inferno, Necropolis, Dungeon, Stronghold, Fortress, Conflux, Cove and Factory.
+
+When you do not start with a town, these settings may be used to help choose the alignment of a potential starting hero.
+"	
+STARTING_HERO_HEADER_ID,	"{Starting Hero}
+
+Each player may, or may not, start with a Hero.  At times, this option may be locked, or absent.  At other times, you may cycle through up to sixteen different hero choices.  If the Starting Town option is enabled, you can change the hero classes for a different set of hero choices.
+
+To see a hero's name, class, and specialty, right click the hero's portrait.
+"	
+STARTING_BONUS_HEADER_ID,	"{Starting Bonus}
+
+With a Starting Bonus, you may choose a random artifact, 500-1000 gold, or 5-10 wood and ore.
+"	
+		
+Multiplayer Selection	Multiplayer Selection	
+		
+Online Service	"{Online Service}
+
+Allows you to play over an Online Service"	
+Hot Seat	"{Hot Seat}
+
+Allows multiple people to play different players on the same computer"	
+IPX	"{IPX}
+
+Allows multiple people to play on their own computers across a local area network"	
+TCP/IP	"{TCP/IP}
+
+Allows multiple people to play on their own computers across a local area network or via the internet"	
+Modem	"{Modem}
+
+Allows two people to connect via modem"	
+Direct Connect	"{Direct Connect}
+
+Allows two people to connect via a direct serial connection"	
+Host a Game	"{Host Game}
+
+Allows you to set up and create the game that others will join"	
+Join a Game	"{Join Game}
+
+Displays a list of available games for you to join"	
+Search for a Game	"{Search for Game}
+
+Allows you to enter a specific IP address to connect to"	
+GAMENAME 1	GAMENAME 1	
+GAMENAME 2	GAMENAME 2	
+GAMENAME 3	GAMENAME 3	
+GAMENAME 4	GAMENAME 4	
+GAMENAME 5	GAMENAME 5	
+GAMENAME 6	GAMENAME 6	
+GAMENAME 7	GAMENAME 7	
+GAMENAME 8	GAMENAME 8	
+GAMENAME 9	GAMENAME 9	
+GAMENAME 10	GAMENAME 10	
+GAMENAME 11	GAMENAME 11	
+GAMENAME 12	GAMENAME 12	
+Scroll through available games	Scroll through available games	
+		
+Cancel	Return to previous menu	
+		
+Adventure Map Window		
+World Map	This is a zoomed out view of the world.  Clicking anywhere in this window will center the adventure map on that location, or you can drag the outline box to scroll the adventure map.	
+Status Window	"{Status Window}
+
+This window provides information on the status of your hero or kingdom, and shows the date.  Left click here to cycle through these windows."	
+Kingdom Overview	"{Kingdom Overview}
+
+Displays an overview of your Kingdom's towns and heroes"	
+Surface/Underworld View	"{Surface/Underworld View}
+
+Switches the adventure map between map levels"	
+Quest Log	"{Quest Log}
+
+Displays a list of all current quests"	
+Sleep/Wake Hero	"{Sleep/Wake Hero}
+
+Sleeps the selected hero or wakes a sleeping hero.  Any sleeping heroes will be ignored by the Next Hero button."	
+Move Hero	"{Move Hero}
+
+Moves the current hero along its selected path"	
+Cast Spell	"{Cast Spell}
+
+Cast a non-combat spell"	
+Adventure Options	"{Adventure Options}
+
+Allows you to dig for the Grail, view the current Grail Puzzle, World Map, or Scenario Briefing.  In multiplayer games you will also be allowed to view your opponents' last turn."	
+System Options	"{System Options}
+
+Allows you to view and change the current game options"	
+Next Hero	"{Next Hero}
+
+Selects the next hero with remaining movement points.  Any sleeping heroes will be ignored."	
+End Turn	"{End Turn}
+
+Ends the current turn"	
+Scroll Hero List	"{Scroll Hero List}
+
+Scroll up through available heroes"	
+Scroll Hero List	"{Scroll Hero List}
+
+Scroll down through available heroes"	
+Hero Portrait	"{Hero Portrait}
+
+Click once to select this hero and center the adventure map on their location.  Click again to enter and view the Hero Screen."	
+Scroll Town List	"{Scroll Town List}
+
+Scroll up through available towns"	
+Scroll Town List	"{Scroll Town List}
+
+Scroll down through available towns"	
+Town Portrait	"{Town Portrait}
+
+Click once to select this town and center the adventure map on its location.  Click again to enter and view the Town Screen."	
+Gold	Amount of gold in treasury	
+Wood	Your total available wood	
+Mercury	Your total available mercury	
+Ore	Your total available ore	
+Sulfur	Your total available sulfur	
+Crystal	Your total available crystal	
+Gems	Your total available gems	
+Date	"{Date}
+
+Current Month, Week, and Day"	
+ROLLOVER	ROLLOVER	
+		
+System Options	System Options	
+Main Menu	"{Main Menu}
+
+Abandon game and return to the main menu"	
+Load Game	"{Load Game}
+
+Load a saved game"	
+Save Game	"{Save Game}
+
+Save the current game"	
+Restart Scenario	"{Restart Scenario}
+
+Restart the current scenario"	
+Quit to Desktop	"{Quit to Desktop}
+
+Quit Heroes of Might and Magic III"	
+Return	"{Return to Game}
+
+Return to the Adventure Map!"	
+MUSIC_VOLUME_0_ID,	Turn off music	
+MUSIC_VOLUME_1_ID,	Set music volume to 1	
+MUSIC_VOLUME_2_ID,	Set music volume to 2	
+MUSIC_VOLUME_3_ID,	Set music volume to 3	
+MUSIC_VOLUME_4_ID,	Set music volume to 4	
+MUSIC_VOLUME_5_ID,	Set music volume to 5	
+MUSIC_VOLUME_6_ID,	Set music volume to 6	
+MUSIC_VOLUME_7_ID,	Set music volume to 7	
+MUSIC_VOLUME_8_ID,	Set music volume to 8	
+MUSIC_VOLUME_9_ID,	Set music volume to 9	
+EFFECTS_VOLUME_0_ID,	Turn off sound effects	
+EFFECTS_VOLUME_1_ID,	Set sound effects volume to 1	
+EFFECTS_VOLUME_2_ID,	Set sound effects volume to 2	
+EFFECTS_VOLUME_3_ID,	Set sound effects volume to 3	
+EFFECTS_VOLUME_4_ID,	Set sound effects volume to 4	
+EFFECTS_VOLUME_5_ID,	Set sound effects volume to 5	
+EFFECTS_VOLUME_6_ID,	Set sound effects volume to 6	
+EFFECTS_VOLUME_7_ID,	Set sound effects volume to 7	
+EFFECTS_VOLUME_8_ID,	Set sound effects volume to 8	
+EFFECTS_VOLUME_9_ID,	Set sound effects volume to 9	
+MUSIC_TYPE_NONE_ID,	MUSIC_TYPE_NONE_ID,	
+MUSIC_TYPE_CD_ID,	MUSIC_TYPE_CD_ID,	
+MUSIC_TYPE_MIDI_ID,	MUSIC_TYPE_MIDI_ID,	
+HERO_SPEED_WALK_ID,	"Set hero speed to walk
+(slowest)"	
+HERO_SPEED_CANTER_ID,	Set hero speed to canter	
+HERO_SPEED_GALLOP_ID,	Set hero speed to gallop	
+HERO_SPEED_JUMP_ID,	"Set hero speed to jump
+(no animation - fastest)"	
+AI_SPEED_CANTER_ID,	"Set enemy hero speed to canter
+(slowest)"	
+AI_SPEED_GALLOP_ID,	Set enemy hero speed to gallop	
+AI_SPEED_JUMP_ID,	"Set enemy hero speed to jump
+(no animation - fastest)"	
+AI_SPEED_NONE_ID,	Do not show enemy movement	
+WINDOW_SCROLL_SLOW,	Set map scroll speed to slow	
+WINDOW_SCROLL_MEDIUM,	Set map scroll speed to medium	
+WINDOW_SCROLL_FAST,	Set map scroll speed to fast	
+SHOW_PATH_ID,	"{Show Move Path}
+
+When checked, will display a hero's movement path without moving the hero."	
+MOVE_REMINDER_ID,	"{Show Hero Reminder}
+
+When a player has any heroes with movement points remaining, they will asked to confirm an End Turn order."	
+QUICK_COMBAT_ID,	"{Quick Combat}
+
+This option allows the computer to handle all combat calculations, and the player will only be shown the Combat Results screen."	
+VIDEO_SUBTITLES_ID,	"{Video Subtitles}
+
+This option will display subtitles on any of the animated cutscenes."	
+VIDEO_QUALITY_LOW	"{Low Quality Video}
+
+This option is reccommended for slower computers which have difficulty running the videos at full screen."	
+VIDEO_QUALITY_HIGH	"{High Quality Video}
+
+Faster machines can handle more data, and this this option allows those machines to view the videos at their highest quality."	
+TOWN_OUTLINES_ID,	"{Town Outlines}
+
+In the town screen, any accessible building will display an outline when the mouse cursor is placed over it."	
+ANIMATE_SPELLBOOK_ID,	"{Animate Spell Book}
+
+Shows page turning animation in the spell book."	
+		
+Adventure Options		
+View World	"{View World}
+
+See a bird's eye view of the world"	
+View Puzzle	"{View Puzzle}
+
+See the map of the buried object"	
+View Scenario Info	"{View Scenario Info}
+
+View information about the current scenario"	
+Dig	"{Dig}
+
+Search the area for the buried Grail"	
+Replay Opponent Turn	"{Replay Opponent Turn}
+
+Replays events since your last turn"	
+ROLLOVER	ROLLOVER	
+Okay	"{Okay}
+
+Return to the Adventure Map"	
+		
+Combat Window	Combat Window	
+Surrender	"{Surrender}
+
+Offer to surrender to your enemy.  Your hero must pay to leave combat, but may be immediately recruited at a tavern along with any troops and artifacts currently in his possession."	
+Retreat	"{Retreat}
+
+Your hero will flee the combat, but may be immediately recruited at a tavern along with any artifacts currently in his possession."	
+Combat Options	"{Combat Options}
+
+Allows you to view or change the current combat options"	
+Auto Combat	"{Auto Combat}
+
+Allows the computer to conduct the combat for you.  Click anywhere during auto combat to take control of your own troops.  You will be given control on your next unit's move phase."	
+	Combat text appears in this window	
+	Scroll through text displayed during combat	
+Cast Spell	"{Cast Spell}
+
+Opens your hero's spell book, allowing you to cast a spell"	
+Wait	"{Wait}
+
+Delay this unit's turn until after all troops have had the opportunity to move"	
+Defend	"{Defend}
+
+Increases this unit's defense value by sacrificing its move this turn"	
+Phase Wait	Phase Wait	
+End Tactics Phase	"{End Tactics Phase}
+
+Ends the Tactics Phase and commences combat."	
+		
+Combat Options	Combat Options	
+Return to Battle	"{Return to Battle}
+
+Exit combat options"	
+Restore Default Values	"{Default}
+
+Restores combat option default values"	
+MUSIC_VOLUME_0_ID,	Turn off music	
+MUSIC_VOLUME_1_ID,	Set music volume to 1	
+MUSIC_VOLUME_2_ID,	Set music volume to 2	
+MUSIC_VOLUME_3_ID,	Set music volume to 3	
+MUSIC_VOLUME_4_ID,	Set music volume to 4	
+MUSIC_VOLUME_5_ID,	Set music volume to 5	
+MUSIC_VOLUME_6_ID,	Set music volume to 6	
+MUSIC_VOLUME_7_ID,	Set music volume to 7	
+MUSIC_VOLUME_8_ID,	Set music volume to 8	
+MUSIC_VOLUME_9_ID,	Set music volume to 9	
+EFFECTS_VOLUME_0_ID,	Turn off sound effects	
+EFFECTS_VOLUME_1_ID,	Set sound effects volume to 1	
+EFFECTS_VOLUME_2_ID,	Set sound effects volume to 2	
+EFFECTS_VOLUME_3_ID,	Set sound effects volume to 3	
+EFFECTS_VOLUME_4_ID,	Set sound effects volume to 4	
+EFFECTS_VOLUME_5_ID,	Set sound effects volume to 5	
+EFFECTS_VOLUME_6_ID,	Set sound effects volume to 6	
+EFFECTS_VOLUME_7_ID,	Set sound effects volume to 7	
+EFFECTS_VOLUME_8_ID,	Set sound effects volume to 8	
+EFFECTS_VOLUME_9_ID,	Set sound effects volume to 9	
+MUSIC_TYPE_NONE_ID,	MUSIC_TYPE_NONE_ID,	
+MUSIC_TYPE_CD_ID,	MUSIC_TYPE_CD_ID,	
+MUSIC_TYPE_MIDI_ID,	MUSIC_TYPE_MIDI_ID,	
+AUTO_CREATURES_ID,	"{Creatures}
+
+Gives control of your units to auto combat"	
+AUTO_SPELLS_ID,	"{Spells}
+
+During auto combat your hero will cast spells"	
+AUTO_CATAPULT_ID,	"{Catapult}
+
+When laying siege to an enemy's castle, your catapult troops will decide which part of the fortifications to target.  If your Ballistics skill is high enough, you will be able to direct the catapult's fire yourself.
+
+If your hero has the Ballistics skill, this option will give that control to the computer during auto combat."	
+AUTO_BALLISTA_ID,	"{Artillery}
+
+During combat, your artillery troops will decide which enemy units to target.  If your Artillery skill is high enough, you will be able to direct the artillery's fire yourself.
+
+If your hero has the Artillery skill, this option will give that control to the computer during auto combat."	
+AUTO_FIRST_AID_TENT_ID,	"{First Aid Tent}
+
+During combat, your first aid troops will choose who needs to be healed.  If your First Aid skill is high enough, you will be able to direct the first aid tent yourself.
+
+If your hero has the First Aid skill, this option will give that control to the computer during auto combat."	
+ANIMATION_SPEED_0_ID,	Set animation speed to slow	
+ANIMATION_SPEED_1_ID,	Set animation speed to medium	
+ANIMATION_SPEED_2_ID,	Set animation speed to fast	
+CREATURE_INFO_STATS_ID,	"{All Statistics}
+
+Right clicking on a unit will display all statistics about the unit, including any spells that are currently in effect."	
+CREATURE_INFO_SPELLS_ID,	"{Spells Only}
+
+Right clicking on a unit will only display any spells that are currently affecting the unit."	
+VIEW_HEX_ID,	"{View Hex Grid}
+
+Displays a hex grid over the battlefield."	
+MOVEMENT_SHADOW_ID,	"{Movement Shadow}
+
+Displays a shadow on the battlefield which shows where a unit can currently move to."	
+SHADOW_CURSOR_ID,	"{Cursor Shadow}
+
+Places a hex shadow under the mouse cursor."	
+ANIMATE_SPELLBOOK_ID,	"{Animate Spell Book}
+
+Shows page turning animation in the spell book."	
+		
+View Army	View Army	
+Creature Name	Creature Name	
+Number of creatures	Number of creatures in the unit	
+Attack skill	Attack skill	
+Defense skill	Defense skill	
+Shots remaining	Number of shots remaining	
+Damage per attack	Damage per attack	
+Hit points	Hit points	
+Hit points remaining	Hit points remaining	
+Speed	Speed	
+Morale	Morale	
+Luck	Luck	
+Spells affecting the army	Spells affecting the army	
+Dismiss unit	"{Dismiss Unit}
+
+Dismisses the current unit from your army"	
+Upgrade unit	"{Upgrade Unit}
+
+Upgrades the current unit"	
+Okay	"{Okay}
+
+Return to previous window"	
+		
+Spell Book	Spell Book	
+Previous Page	Turn to the previous page	
+Next Page	Turn to the next page	
+Adventure Map Spells	Turn to view adventure map spells	
+Combat Spells	Turn to view combat spells	
+Air Spells	Turn to view Air spells	
+Fire Spells	Turn to view Fire spells	
+Water Spells	Turn to view Water spells	
+Earth Spells	Turn to view Earth spells	
+All Spells	Show all spell schools	
+Spell Points	Hero's remaining spell points	
+Exit	Close the Spell Book	
+		
+CampaignBrief	CampaignBrief	
+		
+CAMPAIGN_NAME	CAMPAIGN_NAME	
+CAMPAIGN_DESCRIPTION	CAMPAIGN_DESCRIPTION	
+MAP_NAME	MAP_NAME	
+MAP_DESCRIPTION	MAP_DESCRIPTION	
+HERO_FACE	HERO_FACE	
+Change Hero	Click to change your starting hero	
+Change Hero	Click to change your starting hero	
+Artifact Bonus	Choose to start with an artifact	
+Gold Bonus	Choose to start with extra gold	
+Resource Bonus	Choose to start with extra resources	
+Restart	"{Restart}
+
+Restart the current campaign"	
+View Campaign Intro	"{View Campaign Intro}
+
+Show the intro movie for this campaign"	
+ALLY_FLAG1_ID	This is your color	
+ALLY_FLAG2_ID	This color is allied with you	
+ALLY_FLAG3_ID	This color is allied with you	
+ALLY_FLAG4_ID	This color is allied with you	
+ALLY_FLAG5_ID	This color is allied with you	
+ALLY_FLAG6_ID	This color is allied with you	
+ALLY_FLAG7_ID	This color is allied with you	
+ALLY_FLAG8_ID	This color is allied with you	
+ENEMY_FLAG1_ID	This color is your enemy	
+ENEMY_FLAG2_ID	This color is your enemy	
+ENEMY_FLAG3_ID	This color is your enemy	
+ENEMY_FLAG4_ID	This color is your enemy	
+ENEMY_FLAG5_ID	This color is your enemy	
+ENEMY_FLAG6_ID	This color is your enemy	
+ENEMY_FLAG7_ID	This color is your enemy	
+ENEMY_FLAG8_ID	This color is your enemy	
+WHICHMAP_ID	This is the size of the Map you're about to play	
+MAP_AREA_1	MAP_AREA_1	
+MAP_AREA_2	MAP_AREA_2	
+MAP_AREA_3	MAP_AREA_3	
+MAP_AREA_4	MAP_AREA_4	
+MAP_AREA_5	MAP_AREA_5	
+MAP_AREA_6	MAP_AREA_6	
+MAP_AREA_7	MAP_AREA_7	
+MAP_AREA_8	MAP_AREA_8	
+MAP_AREA_9	MAP_AREA_9	
+MAP_AREA_10	MAP_AREA_10	
+MAP_AREA_11	MAP_AREA_11	
+MAP_AREA_12	MAP_AREA_12	
+MAP_AREA_13	MAP_AREA_13	
+MAP_AREA_14	MAP_AREA_14	
+MAP_AREA_15	MAP_AREA_15	
+MAP_AREA_16	MAP_AREA_16	
+MAP_AREA_17	MAP_AREA_17	
+MAP_AREA_18	MAP_AREA_18	
+MAP_AREA_19	MAP_AREA_19	
+MAP_AREA_20	MAP_AREA_20	
+MAP_AREA_21	MAP_AREA_21	
+MAP_AREA_22	MAP_AREA_22	
+MAP_AREA_23	MAP_AREA_23	
+MAP_AREA_24	MAP_AREA_24	
+MAP_AREA_25	MAP_AREA_25	
+MAP_AREA_26	MAP_AREA_26	
+MAP_AREA_27	MAP_AREA_27	
+MAP_AREA_28	MAP_AREA_28	
+MAP_AREA_29	MAP_AREA_29	
+MAP_AREA_30	MAP_AREA_30	
+MAP_AREA_31	MAP_AREA_31	
+MAP_AREA_32	MAP_AREA_32	
+		
+CampaignWindow	CampaignWindow	
+		
+Long Live the Queen	Long Live the Queen	
+Liberation	Liberation	
+Spoils of War	Spoils of War	
+Song for the Father	Song for the Father	
+Dungeons and Devils	Dungeons and Devils	
+Long Live the King	Long Live the King	
+Seeds of Discontent	Seeds of Discontent	
+Armageddon's Blade	Armageddon's Blade	
+Dragon's Blood	Dragon's Blood	
+Dragon Slayer	Dragon Slayer	
+Festival of Life	Festival of Life	
+Foolhardy Waywardness	Foolhardy Waywardness	
+Playing With Fire	Playing With Fire	
+Hack and Slash	Hack and Slash	
+Birth of a Barbarian	Birth of a Barbarian	
+New Beginning	New Beginning	
+Elixir of Life	Elixir of Life	
+Rise of the Necromancer	Rise of the Necromancer	
+Unholy Alliance	Unholy Alliance	
+Spectre of Power	Spectre of Power	
+		
+		
+ROLLOVER	ROLLOVER	
+		
+Recruit	Recruit	
+Maximum		
+Recruit		
+Cancel		
+		
+Multiplayer	Multiplayer	
+Check Box	Click this to enable/disable name	
+Enter Player Name	Enter Player Name	
+OK		
+Back		
+Enter Session Name		
+Enter Password		
+Session Name		
+Enter IP Address		
+		
+Sacrifice Window	Sacrifice Window	
+Exit (nothing will be sacrificed).	Leave the Altar.  All items currently on the Altar will be returned to you.	
+Currently held artifact		
+Place all artifacts in backpack on altar	Move items in your hero's backpack on to the Altar.	
+Place all artifacts on the altar	Move all artifacts, both equipped and in your hero's backpack, on to the Altar.	
+Sacrifice creatures	Switch to Sacrifice Creatures.  Only available for Evil and Neutral heroes.	
+Number of creatures / Experience value		
+Currently selected creatures		
+Number of creatures / Experience value		
+Number of creatures to sacrifice		
+Set number of creatures to sacrifice		
+Sacrifice maximum number of creatures	Move the maximum number of creatures on to the Altar.	
+Sacrifice all creatures in your hero's army	Move all but one creature on to the Altar.	
+Sacrifice artifacts	Switch to Sacrifice Artifacts screen.  Only available for Good and Neutral heroes.	
+Number of creatures / Experience value		
+Place artifact to sacrifice here		
+Experience value of artifact		
+Sacrifice artifacts currently on the altar	Sacrifice anything currently on the Altar, and gain experience.	
+Sacrifice creatures currently on the altar	Sacrifice anything currently on the Altar, and gain experience.	
+	Search through backpack	
+	Search through backpack	
+		
+Skeleton Transformer	Skeleton Transformer	
+Place all creatures in the transformer	Move all creatures into the transformer	
+Change creatures in the transformer into undead	Change creatures in the Transformer into undead	
+Exit transfomer	Leave the transformer.  No more creatures will become undead	
+		
+Trade Window	Trade Window	
+Trade		
+Maximum		
+Give resources to another player		
+Buy artifacts		
+Sell creatures		
+Exit		
+		
+Give Resource Window	Give Resource Window	
+Trade		
+Maximum		
+Trade Resources		
+Buy artifacts		
+Exit		
+		
+Buy Artifact Window	Buy Artifact Window	
+Trade		
+Trade resources		
+Give resources to another player		
+Sell artifacts		
+Exit		
+		
+Sell Artifact Window	Sell Artifact Window	
+Trade		
+Trade resources		
+Give resources to another player		
+Buy artifacts		
+Exit		
+		
+Sell Creature Window	Sell Creature Window	
+Trade		
+Maximum		
+Trade Resources		
+Give resources to another player		
+Exit		
+		
+University Window	University Window	
+Cancel	Return to skill selection	
+Leave the university	Leave the university	
+	Learn %s %s for %d gold.	
+Not used...  filthy bug.		
+Insert all data before this line. Do not alter or delete this line.		
+		
+		
+		
+		
+		

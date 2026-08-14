@@ -20,9 +20,9 @@ enum eMenuFlags : INT
     NEW_GAME = 0x2,  ///< New game menu
     LOAD_GAME = 0x4, ///< Load game menu
     CAMPAIGN = 0x8,  ///< Campaign selection menu
-    ALL = 0xF,        ///< All menu screens (combination of all flags)
-	ON_TOP = 0x10,   ///< Widget should appear on top of other UI elements
-	AT_BOTTOM = 0x20 ///< Widget should appear at the bottom of other UI elements
+    ALL = 0xF,       ///< All menu screens (combination of all flags)
+    ON_TOP = 0x10,   ///< Widget should appear on top of other UI elements
+    AT_BOTTOM = 0x20 ///< Widget should appear at the bottom of other UI elements
 };
 /**
  * @struct MenuWidgetInfo
@@ -30,10 +30,10 @@ enum eMenuFlags : INT
  */
 struct MenuWidgetInfo
 {
-    const char *name = nullptr;           ///< Unique identifier for the widget
-    const char *text = nullptr;           ///< Display text of the widget
+    const char *name = nullptr;             ///< Unique identifier for the widget
+    const char *text = nullptr;             ///< Display text of the widget :: supports ERA localization keys
     eMenuFlags menuList = eMenuFlags::MAIN; ///< Menu context(s) where the widget should appear
-    int (__fastcall * customProc)(void *msg);           ///< Callback function triggered when widget is clicked
+    int(__fastcall *customProc)(void *msg); ///< Callback function triggered when widget is clicked
 };
 
 /**
@@ -86,10 +86,11 @@ static constexpr LPCSTR _PLUGIN_NAME = "Interface_MainMenuAPI.era";
     inline returnType name(argTypes)                                                                                   \
     {                                                                                                                  \
         HINSTANCE hApi = LoadLibraryA(_PLUGIN_NAME);                                                                   \
-        if (auto func = reinterpret_cast<T##name>(GetProcAddress(hApi, #name)))                                        \
-        {                                                                                                              \
+        if (!hApi)                                                                                                     \
+            return 0;                                                                                                  \
+        auto func = reinterpret_cast<T##name>(GetProcAddress(hApi, #name));                                            \
+        if (func)                                                                                                      \
             return func(argNames);                                                                                     \
-        }                                                                                                              \
         return 0;                                                                                                      \
     }
 
@@ -101,11 +102,11 @@ DECLARE_PLUGIN_FUNC(MainMenu_GetDialogButtonId, int, const char *name, name)
 inline BOOL MainMenu_SetDialogButtonText(const char *name, const char *text)
 {
     HINSTANCE hApi = LoadLibraryA(_PLUGIN_NAME);
-    if (auto func =
-            reinterpret_cast<TMainMenu_SetDialogButtonText>(GetProcAddress(hApi, "MainMenu_SetDialogButtonText")))
-    {
+    if (!hApi)
+        return 0;
+    auto func = reinterpret_cast<TMainMenu_SetDialogButtonText>(GetProcAddress(hApi, "MainMenu_SetDialogButtonText"));
+    if (func)
         return func(name, text);
-    }
     return 0;
 }
 

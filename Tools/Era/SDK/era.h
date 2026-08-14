@@ -120,12 +120,25 @@ struct TMultiPurposeDlgSetup
 	char* InputFieldLabel;   // If specified, user will be able to enter arbitrary text in input field
 	char* ButtonsGroupLabel; // If specified, right buttons group will be displayed
 	char* InputBuf;          // OUT. Field to write a pointer to a temporary buffer with user input. Copy this text to safe location immediately
-	int        SelectedItem;      // OUT. Field to write selected item index to (0-3 for buttons, -1 for Cancel)
+	int   SelectedItem;      // OUT. Field to write selected item index to (0-3 for buttons, -1 for Cancel)
 	char* ImagePaths[4];     // All paths are relative to game root directory or custom absolute paths
 	char* ImageHints[4];
 	char* ButtonTexts[4];
 	char* ButtonHints[4];
 	int32_bool ShowCancelBtn;
+};
+
+// Fix DisplayComplexDialog to overload the last argument
+union TComplexDialogOpts
+{
+	struct
+	{
+		unsigned closeTimeoutMsec : 16;
+		unsigned msgType : 4;   //  (1 - ok, 2 - question, 4 - popup, etc), 0 is treated as 1.
+		unsigned alignment : 4; // text alignment + 1.
+		unsigned internal : 8;  // H3 string internal purposes (0 mostly).
+	};
+	int32_t value = 0;			// 0 by default, which means no timeout, type 1, left alignment, internal 0
 };
 
 
@@ -507,6 +520,12 @@ ERA_API int (__stdcall *FormatQuantity) (int value, char* buffer, int BufSize, i
 /** Converts integer to string, separating each three digit group by "era.locale.thousand_separator" character. */
 ERA_API int (__stdcall *DecorateInt) (int value, char* buffer, int IgnoreSmallNumbers);
 // ===================== END UTILITIES ===================== //
+
+
+// ======================= SYSTEM ======================= //
+/** Restarts the current game process; Returns false on failure */
+ERA_API int32_bool (__stdcall* RestartCurrentProcess)();
+// ===================== END SYSTEM ===================== //
 
 #pragma pack(pop)
 }

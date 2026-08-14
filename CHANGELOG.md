@@ -1,3 +1,110 @@
+### Version 2.270
+
+#### ERA:
+    - ATTENTION! Examples of how to use all the new features can be found in the "/Help/Era manual/era iii changelog.txt" file, or simply click on the ERA version in the game's main menu;
+- ## era.dll core updated to version 3.9.31:
+    - Added the exported function `int (__stdcall* RestartCurrentProcess)()`, allowing you to immediately restart the game client. Returns "FALSE" on failure;
+    - Added support for the new HD-Mod tweak <Graphics.NewTrue32>, which sets a 32-bit palette for sprites. Added in HD Mod 5.7 R40 (currently disabled by default);
+    - Fixed a bug with frozen attack animations on the adventure map and a battle flag.
+
+#### WoG:
+- Updated the "wog native dialogs.era" plugin:
+    - Added a search box by option name, number, and description to the WoG options menu:
+        - Changed the dialog style to improve readability;
+        - Added a search box in the lower left corner, allowing you to instantly find suitable options by name, number, or description text;
+        - Clicking on a suitable candidate instantly switches to the option, temporarily highlighting it;
+    - Significantly improved the game's native messages:
+        - You can now display any def, not just the specified types (0 to 36), by specifying its name directly in the ERM code (for plugins, simply pass the string address or a pointer to it):
+        ```
+        !!IF:Q2/^zmark1.def^/0/1/^text^;
+        ```
+        - You can now animate any def by specifying a frame number of "-1" (also works with original types from 0 to 36):
+        ```
+        !!IF:Q2/^zmgc01.def^/-1/1/^text^;
+        ```
+        - You can now display any image (pcx) by specifying its name directly in the ERM code (for plugins, simply pass the string address or pointer to it). If the image is of type Pcx16, pass "16" as the second argument:
+        ```
+        !!IF:Q2/^HPL000KN.PCX^/0/(PIC_TYPE_ART)/1/1/^text^;
+        ```
+        - It is now possible to display any EXTERNAL image (bmp/jpg/png/pcx/pcx16) by specifying its LOCAL name directly in the ERM code (for plugins, simply pass a string address or pointer to it). The second argument must specify the name of the external file (a relative path also works). The image will be of type Pcx16:
+        ```
+        !!IF:Q2/^myExtraPic.pcx^/^_HD3_Data\Common\close16.bmp^/1/^text^;
+        ```
+        - An exported function has been added that allows you to set the text for the next dialog to be displayed. This works for any in-game dialog (0-8 images). After the dialog is displayed, the text is deleted:
+        `int (__stdcall* PrepareMessageBoxText)(char** textsBelow,char** rightClickHints, int size);`
+    - Numeric bonus/penalty display added to the morale and luck icons;
+    - A new message type (11) has been added that displays context in the status bar for a specified time:
+        - Accepts the same arguments as MessageBox (IF:Q);
+        - Text and up to two images are supported;
+        - Displays for 5 seconds (5000 ms);
+        - The last pair of arguments can be used to specify the duration and force a re-creation of the dialog;
+    - Commander Stone of Might interaction dialogs have been replaced with the original ones, removing the dependency on the "lib1.res/bmp" directory;
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 2.0.0-alfa:
+    - The plugin now connects modules to form a unified system, allowing content to be added independently of major changes;
+    - The following plugins have now been added as plug-ins:
+        - "Objects_WoGObjectsExtender.era" - responsible for generating WoG objects;
+        - "Objects_CreatureBanksExtender.era" - responsible for adding, extending, managing, and generating Creature Banks;
+        - "Objects_CommonHotaObjectsPack.era" - responsible for adding and generating some basic HotA objects;
+    - Added the SDK to the relative path "Tools\Era\SDK\ObjectExtenderAPI.hpp";
+- Updated the "ERA_JsonOverrides.era" plugin to version 1.2.0. Added support for replacing city-related names:
+    - Replacing the name and description of standard buildings in cities:
+    ```
+    "era.towns.buildings.[building_id].name": string,
+    "era.towns.buildings.[building_id].description": string
+    ```
+    - Replacing the name and description of unique buildings in cities:
+    ```
+    "era.towns.[town_type].buildings.[building_id].name": string,
+    "era.towns.[town_type].buildings.[building_id].description": string
+    ```
+    - Replacing the names of city types and random city names on the map:
+    ```
+    "era.towns.[town_type].name": string,
+    "era.towns.[town_type].names.[index]": string
+    ```
+- Updated the "Assembly_MainPlugin.era" plugin to version 1.9.0:
+    - Added a fix for compatibility with the new HD-mod version;
+    - functionality restored on Windows XP;
+- "ERA_LocaleManager.era" plugin updated to version 3.1.0:
+    - now when changing the language in the main menu, the game automatically restarts;
+
+#### HD Mod:
+- Updated to version 5.7 R40;
+
+#### Game Enhancement Mod:
+- Updated the "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.9.1:
+    - Fixed the movement point calculation logic when plotting a path;
+- Rewritten the "BattleSave.dll" plugin:
+    - Fixed incorrect hero positions and appearance when saving the game when attacking while flying or unloading from a boat;
+
+#### TrainerX:
+- Added the ability to view object passability to the "F6" key (similar to the map editor);
+
+#### ERA ERM Framework:
+- Added the function `!?FU(AdvMap_SetInfoPanelText);`, which instantly displays text in the status bar (but it's better to use !!IF:M0/11/^text^, since both the font and centering are different):
+```
+!?FU(AdvMap_SetInfoPanelText);
+!#VA(text:x) (timeToDisplay:x);
+```
+- Added the function `!?FU(AdvMap_SetInfoPanelDef);`, which instantly displays any def and its frame (however, rare visual glitches are possible when selecting multiple resources. I again recommend using
+```
+!?FU(AdvMap_SetInfoPanelDef);
+!#VA(text:x) (defName:x) (defFrameId:x) (timeToDisplay:x);
+```
+- Added the function `!?FU(PrepareMessageBoxText);`, which sets the text for the next displayed message. The arguments are paired to set the text under the image and on the right mouse button;
+```
+!?FU(PrepareMessageBoxText);
+!#VA(text[16]:x);
+```
+
+#### ERA Scripts:
+- Achievements: preparing to change achievement notifications;
+
+#### Other:
+- Updated APIs relative directory "Tools/Era/SDK/";
+- plugin functionality has been restored on Windows XP;
+
+
 ### Version 2.269
 
 #### WoG:

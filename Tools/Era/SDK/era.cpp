@@ -81,6 +81,7 @@ ERA_IMPORT(RegisterMemoryConsumer);
 ERA_IMPORT(ReloadErm);
 ERA_IMPORT(ReloadLanguageData);
 ERA_IMPORT(ReportPluginVersion);
+ERA_IMPORT(RestartCurrentProcess);
 ERA_IMPORT(RollbackAppliedPatch);
 ERA_IMPORT(SaveIni);
 ERA_IMPORT(SetAssocVarIntValue);
