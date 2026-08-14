@@ -1,3 +1,10 @@
+### Version 2.272
+
+#### WoG:
+- Updated "wog native dialogs.era" plugin:
+    - Fixed a crash when displaying custom image types in dialog boxes above 36, but the maximum value is now set to 100;
+
+
 ### Version 2.271
 
 #### WoG:
