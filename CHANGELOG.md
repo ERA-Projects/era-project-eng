@@ -1,3 +1,17 @@
+### Version 2.273
+
+#### WoG:
+- updated the "game bug fixes extended.dll" plugin:
+    - all "Resistances" granted by Creature Traits are now considered innate, allowing them to be ignored by the "Sphere of Vulnerability" artifact - @SadnessPower;
+- updated the "ERA_LocaleManager.era" plugin to version 3.1.1:
+- fixed the code page for the Vietnamese language;
+- updated the "RMG_CustomizeObjectProperties.era" plugin to version 2.0.1:
+    - fixed a crash occurring when attempting to generate a map containing objects with negative type or subtype values;
+- updated the "XXL.era" plugin:
+    - fixed an issue where map size settings would randomly reset; 
+    - only supported templates and their settings are now available for interaction;
+
+
 ### Version 2.272
 
 #### WoG:
