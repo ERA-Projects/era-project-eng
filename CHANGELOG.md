@@ -1,3 +1,18 @@
+### Version 2.274
+
+#### WoG:
+- updated the "ERA_JsonOverrides.era" plugin to version 1.2.1:
+    - fixed text replacement for the "Resource Silo" building;
+
+#### Game Enhancement Mod:
+- updated the "prima.dll" plugin:
+    - fixed an issue where negative values ​​for hero primary stats were occasionally read; 
+    - fixed an issue allowing heroes to have Power and Knowledge values ​​lower than 1;
+
+#### ERA Scripts:
+- completely replaced all strings from .ert files with JSON values;
+
+
 ### Version 2.273
 
 #### WoG:
