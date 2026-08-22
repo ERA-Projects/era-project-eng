@@ -8,7 +8,7 @@ Game Enhancement Mod
 WoG Scripts
 WoG Fix Lite
 TrainerX
-ERA Scripts Eng
+ERA Scripts
 10SSkills
 AMER_HumanAI
 Enhanced Henchmen

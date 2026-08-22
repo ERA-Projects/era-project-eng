@@ -12,7 +12,7 @@
 	},
 	"BattleHeroes": {
 		"incompatible": [
-			"ERA Scripts Rus",
+			"ERA Scripts",
 			"WoG Scripts",
 			"WoG Scripts Rus"
 		]
@@ -61,7 +61,7 @@
 			"Advanced Classes Mod"
 		]
 	},
-	"ERA Scripts Rus": {
+	"ERA Scripts": {
 		"load_after": [
 			"WoG Scripts",
 			"WoG Scripts Rus",
@@ -96,8 +96,7 @@
 			"ResOunD",
 			"Advanced Classes Mod",
 			"WoG Scripts",
-			"ERA Scripts Rus",
-			"ERA Scripts Eng",
+			"ERA Scripts",
 			"ERA+"
 		]
 	},

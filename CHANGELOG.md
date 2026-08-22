@@ -1,3 +1,21 @@
+### Version 2.275
+
+## ATTENTION. The "Era Scripts Eng" mod folder has been renamed, so you must re-enable this mod in the Mod Manager;
+
+#### WoG:
+- updated the "wog native dialogs.era" plugin:
+    - translation is now available for WoG options added via "zsetup01.txt" and ".ers" files; 
+    - simply specifying the key name in the line is enough to trigger the replacement;
+- all WoG option text has been converted to JSON format;
+
+#### WoG Scripts:
+- all WoG option text has been converted to JSON format;
+
+#### ERA Scripts:
+- the Russian and English versions of the mod have been merged into a single version to facilitate localization;
+- all WoG option text has been converted to JSON format;
+
+
 ### Version 2.274
 
 #### WoG:
