@@ -1,3 +1,9 @@
+### Version 2.276
+
+#### WoG:
+- the "XXL.era" plugin has been updated: the display of random map templates has been fixed;
+
+
 ### Version 2.275
 
 ## ATTENTION. The "Era Scripts Eng" mod folder has been renamed, so you must re-enable this mod in the Mod Manager;
