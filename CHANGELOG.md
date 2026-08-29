@@ -1,3 +1,28 @@
+### Version 2.277
+
+#### WoG:
+- added the "Extended Object Limits.era" plugin, allowing play on maps with an increased standard number of Adventure Map objects;
+- updated "game bug fixes extended.dll" plugin:
+    - added AI behavior fixes from the SoD_SP plugin; 
+    - fixed Necromancy strength for virtual AI battles (SoD_SP);
+- updated "RMG_CustomizeObjectProperties.era" plugin to version 2.1.0:
+    - all objects in the generation settings dialog are now centered and uniform in size;
+- updated "XXL.era" plugin: fixed the display of settings for random map templates;
+- updated the "wog native dialogs.era" plugin:
+    - changed the WoG options menu style; 
+    - fixed an issue preventing the game from starting on some systems;
+- updated the "Interface_MainMenuAPI.era" plugin to version 1.11:
+    - added support for button styles that depend on the Main Menu's neutral background;
+
+#### Game Enhancement Mod:
+- updated "Gameplay_GameplayEnhancementsPlugin.era" plugin to version 1.10.0:
+    - improved the algorithm for displaying object tooltips (triggered by "ALT"); 
+    - fixed the display of construction status checkmarks for towns on the Adventure Map when fewer than 7 towns are displayed;
+    - fixed incorrect calculation of tooltip background size; 
+    - removed unused code; 
+    - fixed a rare "Map Drawing Error" that occurred at map startup;
+
+
 ### Version 2.276
 
 #### WoG:
