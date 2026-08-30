@@ -1,3 +1,9 @@
+### Version 2.278
+
+#### WoG:
+- temporary removed the "Extended Object Limits.era" plugin;
+
+
 ### Version 2.277
 
 #### WoG:
