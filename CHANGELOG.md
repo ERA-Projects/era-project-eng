@@ -1,3 +1,35 @@
+### Version 2.279
+
+#### WoG:
+- updated "RMG_CustomizeObjectProperties.era" plugin to version 2.1.1:
+    - fixed a rare crash during "Water Mill" object generation; 
+    - fixed a rare crash during spell generation; 
+    - improved initialization of new object sounds;
+- updated "ERA_SystemOptionsExtension.era" plugin to version 1.4.3:
+    - enabled changing the state of new options from external scripts/plugins:
+    ```
+    int (__stdcall *GetOptionValue)( const char *key); 
+    int (__stdcall *SetOptionValue)( const char *key, int value); 
+    ```
+    - improved the battle unit health bar settings dialog; 
+    - fixed game loading logic from the battle screen;
+- updated "XXL.era" plugin:
+    - fixed settings saving for certain random map templates;
+
+#### Game Enhancement Mod:
+- updated "prima.dll" plugin:
+- fixed a rare bug regarding game startup with heroes having maximum Primary Stats;
+
+#### ERA ERM Framework:
+- added initialization of certain values ​​into global variables to simplify script interaction:
+    ```
+    i^maxSpellId^: stores the index of the last available spell for the spellbook; 
+    ```
+
+#### Quick Saving Mod:
+- fixed file naming when saving the game via the mod;
+
+
 ### Version 2.278
 
 #### WoG:
