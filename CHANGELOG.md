@@ -1,3 +1,38 @@
+### Version 2.280
+
+#### WoG:
+- updated the "Assembly_MainPlugin.era" plugin to version 1.10.0:
+    - added automatic renaming of mod entries in `Mods/list.txt` when mod folders are renamed, followed by a game restart;
+    - the new-version indicator now blinks when an update is available;
+- updated the "RMG_CustomizeObjectProperties.era" plugin to version 2.2.0:
+    - the object-generation settings dialog is now split into categories: general map objects, learning objects, income and resources, Creature Banks, creature dwellings, prisons and quests, WoG objects, treasures and Pandora's Boxes;
+    - added separate configuration for Pandora's Box variants (creatures, gold, experience, and spells), including a list of available spells;
+    - added separate configuration for prison variants;
+    - expanded dialog-page support for objects registered through the object extender API;
+- updated the "Objects_CommonHotaObjectsPack.era", "Objects_CreatureBanksExtender.era", and "Objects_WoGObjectsExtender.era" plugins to work with the updated object-generation dialog category API;
+- updated the "ERA_LocaleManager.era" plugin to version 3.1.2:
+    - improved saving of exported JSON files with correct Windows line endings;
+- removed the obsolete `AfterWoG/no prisons on random maps` patches, as prison variant support is now built into the object-generation settings;
+
+#### Advanced Classes Mod:
+- updated to version 1.12:
+    - fixed a possible crash when viewing an artifact description on the hero screen;
+    - fixed the wrong third-upgrade creature name for hero specializations;
+    - fixed the wrong commander spell icon for the Brute commander;
+    - the mod now loads after "WoG Graphic fix";
+- fixed the display of combination-artifact parts without duplicated descriptions;
+
+#### Game Enhancement Mod:
+- fixed combination-artifact part descriptions when Advanced Classes Mod is enabled;
+
+#### TrainerX:
+- fixed the display of the magic-school label and icon in the interface;
+- Shift-clicking the Telescope or a hero portrait now hides the entire map only for the selected player;
+
+#### WoG Scripts:
+- fixed the hero's mana being set to 0 on round two of battles with new Creature Banks;
+
+
 ### Version 2.279
 
 #### WoG:
