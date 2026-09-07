@@ -1,11 +1,12 @@
 #pragma once
+#include <type_traits>
+
 using namespace h3;
 namespace extender
 {
 constexpr const char *RMGPluginName = "RMG_CustomizeObjectProperties.era";
 constexpr const char *RMGPluginPath = "EraPlugins/RMG_CustomizeObjectProperties.era";
 class ObjectExtender;
-typedef int(__stdcall *TRegisterObjectExtender)(ObjectExtender *);
 typedef const char *(__stdcall *TGetObjectName)(const int, const int);
 
 constexpr int WOG_OBJECT_TYPE = eObject::PYRAMID;
@@ -25,6 +26,7 @@ struct UniqueObjectType
 };
 enum eRmgDlgObjectPage
 {
+    ePageUnknown = -1,
     ePageCommon,
     ePageLearning,
     ePageIncome,
@@ -50,6 +52,8 @@ struct UniqueObjectInfo
     UniqueObjectType uniqueObjectType;
     // size_t size = sizeof(UniqueObjectInfo);
     INT aiScoutingWeight = -1;
+    // The dialog page can be assigned later, after the object has been registered.
+    eRmgDlgObjectPage page = ePageUnknown;
 
   public:
     // H3String GetStringMessage(LPCSTR key) const
@@ -74,6 +78,46 @@ struct UniqueObjectInfo
     //     return GetStringMessage(FormatKey::cannotVisit);
     // }
 };
+static_assert(std::is_standard_layout<UniqueObjectInfo>::value &&
+                  std::is_trivially_copyable<UniqueObjectInfo>::value,
+              "UniqueObjectInfo must remain a trivially copyable append-only ABI record");
+using UniqueObjectInfoPtr = UniqueObjectInfo *;
+
+// Registration is a C ABI boundary. The host must not derive an element count
+// from sizeof(UniqueObjectInfo), because an extender may have been built with an
+// older or newer version of this header.
+enum eObjectInfoStorageFlags : UINT32
+{
+    OBJECT_INFO_CONTIGUOUS = 0,
+    OBJECT_INFO_POINTERS = 1
+};
+
+#pragma pack(push, 4)
+struct ObjectExtenderObjectInfoView
+{
+    UINT32 structSize = sizeof(ObjectExtenderObjectInfoView);
+    const void *objectInfos = nullptr;
+    UINT32 objectInfoCount = 0;
+    UINT32 objectInfoSize = sizeof(UniqueObjectInfo);
+    UINT32 objectInfoStride = sizeof(UniqueObjectInfoPtr);
+    UINT32 flags = OBJECT_INFO_POINTERS;
+};
+
+typedef int(__stdcall *TGetObjectExtenderObjectInfos)(void *, ObjectExtenderObjectInfoView *);
+
+struct ObjectExtenderRegistration
+{
+    static constexpr UINT32 API_VERSION = 2;
+
+    UINT32 structSize = sizeof(ObjectExtenderRegistration);
+    UINT32 apiVersion = API_VERSION;
+    ObjectExtender *extender = nullptr;
+    void *objectInfosContext = nullptr;
+    TGetObjectExtenderObjectInfos getObjectInfos = nullptr;
+};
+#pragma pack(pop)
+
+typedef int(__stdcall *TRegisterObjectExtenderEx)(const ObjectExtenderRegistration *);
 struct RMGObjectProperties
 {
     constexpr static int DATA_SIZE = 5;
@@ -145,9 +189,41 @@ inline const char *GetObjectName(const H3MapItem *mapItem)
 class ObjectExtender
 {
   protected:
-    H3Vector<UniqueObjectInfo> objectSubtypesInfo;
+    // Keep the records outside of H3Vector. This keeps their addresses stable when
+    // the vector grows and allows UniqueObjectInfo to be extended without changing
+    // the layout of the vector itself.
+    H3Vector<UniqueObjectInfoPtr> objectSubtypesInfo;
     BOOL m_isInited = FALSE;
     PatcherInstance *_pi = nullptr;
+
+  protected:
+    void ReleaseObjectSubtypesInfo() noexcept
+    {
+        H3ObjectAllocator<UniqueObjectInfo> allocator;
+        for (auto *info : objectSubtypesInfo)
+        {
+            if (info)
+            {
+                allocator.destroy(info);
+                allocator.deallocate(info);
+            }
+        }
+        objectSubtypesInfo.RemoveAll();
+    }
+
+  private:
+    static int __stdcall ProvideObjectInfos(void *context, ObjectExtenderObjectInfoView *view) noexcept
+    {
+        if (!context || !view)
+            return FALSE;
+
+        ObjectExtender *extender = static_cast<ObjectExtender *>(context);
+        const auto &objects = extender->GetObjectSubtypesInfo();
+        *view = ObjectExtenderObjectInfoView{};
+        view->objectInfos = objects.begin();
+        view->objectInfoCount = objects.Size();
+        return TRUE;
+    }
 
   public:
     ObjectExtender(PatcherInstance *_pi) : _pi(_pi) {};
@@ -161,7 +237,10 @@ class ObjectExtender
         _pi = this->_pi;
     }
     ObjectExtender(UniqueObjectInfo &info, PatcherInstance *_pi = nullptr);
-    virtual ~ObjectExtender() {};
+    virtual ~ObjectExtender()
+    {
+        ReleaseObjectSubtypesInfo();
+    };
 
   protected:
     virtual void CreatePatches()
@@ -212,21 +291,41 @@ class ObjectExtender
     }
 
   public:
-    inline const H3Vector<UniqueObjectInfo> &GetObjectSubtypesInfo() const noexcept
+    inline H3Vector<UniqueObjectInfoPtr> &GetObjectSubtypesInfo() noexcept
+    {
+        return objectSubtypesInfo;
+    }
+
+    inline const H3Vector<UniqueObjectInfoPtr> &GetObjectSubtypesInfo() const noexcept
     {
         return objectSubtypesInfo;
     }
 
   public:
-    void AddUniqueObjectInfo(const int type, const int subtype = -1, const int aiScouting = -1) noexcept
+    void AddUniqueObjectInfo(const int type, const int subtype = -1, const int aiScouting = -1,
+                             const eRmgDlgObjectPage page = ePageUnknown) noexcept
     {
         UniqueObjectInfo info{(INT16)type, (INT16)subtype, aiScouting};
+        info.page = page;
         AddUniqueObjectInfo(info);
     }
-    void AddUniqueObjectInfo(UniqueObjectInfo &info) noexcept
+    void AddUniqueObjectInfo(const UniqueObjectInfo &info) noexcept
     {
         if (info.uniqueObjectType.type >= 0 && info.uniqueObjectType.type < 252)
-            objectSubtypesInfo += info;
+        {
+            H3ObjectAllocator<UniqueObjectInfo> allocator;
+            UniqueObjectInfo *storedInfo = allocator.allocate(1);
+            if (!storedInfo)
+                return;
+
+            allocator.construct(storedInfo, info);
+
+            if (!objectSubtypesInfo.Add(storedInfo))
+            {
+                allocator.destroy(storedInfo);
+                allocator.deallocate(storedInfo);
+            }
+        }
     }
 
     BOOL Register() noexcept
@@ -262,9 +361,19 @@ class ObjectExtender
 
         if (HMODULE pl = GetRMGPluginModule())
         {
-            static TRegisterObjectExtender f = TRegisterObjectExtender(GetProcAddress(pl, "RegisterObjectExtender"));
-            if (f)
-                return f(extender);
+            // The extended entry point describes the foreign vector explicitly.
+            // The host copies the records during this synchronous call, so the
+            // descriptor itself may live on the stack.
+            static TRegisterObjectExtenderEx registerEx =
+                TRegisterObjectExtenderEx(GetProcAddress(pl, "RegisterObjectExtenderEx"));
+            if (registerEx)
+            {
+                ObjectExtenderRegistration registration;
+                registration.extender = extender;
+                registration.objectInfosContext = extender;
+                registration.getObjectInfos = ProvideObjectInfos;
+                return registerEx(&registration);
+            }
         }
         return NULL;
     }

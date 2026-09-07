@@ -1,3 +1,20 @@
+### Version 2.281
+
+#### HD Mod:
+- Updated to version 5.8 R14;
+
+#### WoG:
+- updated the "RMG_CustomizeObjectProperties.era" plugin to version 2.3.0:
+    - object-extender registration now uses the versioned `RegisterObjectExtenderEx` API with a callback and explicit record size, stride, and storage format;
+    - added safe handling of extenders built with different `UniqueObjectInfo` structure versions, as well as records added after initial registration;
+    - added validation of registration data, memory ranges, and duplicate extender registrations;
+    - Wagon objects are now displayed under General map objects instead of Treasures;
+- updated the "Objects_CommonHotaObjectsPack.era", "Objects_CreatureBanksExtender.era", and "Objects_WoGObjectsExtender.era" plugins for the new object-extender API;
+
+#### Other:
+- updated the object-extender API SDK in `Tools/Era/SDK/ObjectExtenderAPI.hpp`;
+
+
 ### Version 2.280
 
 #### WoG:
