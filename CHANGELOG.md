@@ -1,3 +1,22 @@
+### Version 2.282
+
+#### WoG:
+- Updated the "RMG_CustomizeObjectProperties.era" plugin to version 2.3.1:
+    - Severely limited the number of prisons on random maps;
+    - Fixed a crash when regenerating random maps;
+    - Restored the functionality of the "Full randomization of object generation settings" button;
+
+#### ERA ERM Framework:
+- Added a new function for instantly removing obstacles on the battlefield:
+```
+!?FU(Battle_RemoveObstacle);
+!#VA(pos:x);
+```
+
+#### WoG Scripts:
+- "Death Chamber" object: Obstacles on the battlefield now disappear instantly;
+
+
 ### Version 2.281
 
 #### HD Mod:
