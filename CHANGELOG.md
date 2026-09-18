@@ -1,3 +1,14 @@
+### Version 2.283
+
+#### Mixed Neutrals:
+- added configurable battle stack counts and presets
+
+#### Advanced Difficulties Mod:
+- Updated to version 1.043:
+    - improved neutral creature bonus settings; 
+    - fixes for neutral creature bonuses;
+
+
 ### Version 2.282
 
 #### WoG:
