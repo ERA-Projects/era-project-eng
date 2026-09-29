@@ -1,3 +1,23 @@
+### Version 2.285
+
+#### WoG:
+- main menu graphics updated;
+
+#### WoG Scripts:
+- "WoGification" mechanism tweaked;
+- Metamorphs: script texts moved to JSON format;
+
+#### ERA ERM Framework:
+- added function `!?FU(EndTurn);`, allowing the current player's turn to be ended instantly;
+
+#### Other:
+> [!NOTE]
+> the crash report tool — **Issue Wizard** — has been updated to version 1.4:
+> - added the ability to add to comments;
+> - attaching save files is now required when submitting a report;
+> - text localization fixes;
+
+
 ### Version 2.284
 
 - hotfix

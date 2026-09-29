@@ -35,5 +35,6 @@
   "text.greeting": "게임이 충돌했습니다!",
   "text.already": "이미 이 리포트를 제출했습니다",
   "text.close": "애플리케이션이 다음에 종료됩니다 ",
-  "text.comment": "이 문제에 대한 추가 댓글을 작성할 수 있습니다."
+  "text.comment": "이 문제에 대한 추가 댓글을 작성할 수 있습니다.",
+  "attach.save.default": "저장 파일 첨부 (필수)"
 }

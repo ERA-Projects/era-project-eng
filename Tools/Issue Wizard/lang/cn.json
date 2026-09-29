@@ -35,5 +35,6 @@
   "text.greeting": "游戏崩溃了！",
   "text.already": "您已上传过此报告",
   "text.close": "应用将在 此 后 关闭 ",
-  "text.comment": "您可以添加对此问题的评论。"
+  "text.comment": "您可以添加对此问题的评论。",
+  "attach.save.default": "附加存档文件（必需）"
 }

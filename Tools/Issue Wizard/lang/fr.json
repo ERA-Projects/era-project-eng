@@ -35,5 +35,6 @@
   "text.greeting": "Unfortunately, the game has crashed😢<br>Astrologers proclaim the sending of a report🧙‍",
   "text.already": "Vous avez déjà envoyé ce rapport",
   "text.close": "L’application sera fermée dans ",
-  "text.comment": "Vous pouvez ajouter votre propre commentaire à ce problème."
+  "text.comment": "Vous pouvez ajouter votre propre commentaire à ce problème.",
+  "attach.save.default": "Joindre une sauvegarde (obligatoire)"
 }

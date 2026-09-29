@@ -3,7 +3,7 @@
   "name": "Deutsch",
   "select.file": "Datei auswählen",
   "select.extension": "GM-Dateien",
-  "attach.save.default": "Speicherdatei anhängen (empfohlen)",
+  "attach.save.default": "Spielstand anhängen (erforderlich)",
   "attach.save.attached": "Ausgewählte Speicherdatei: ",
   "attach.save.innactive": "Speicher kann nicht angehängt werden",
   "attach.save.failed": "Speicherdatei-Upload fehlgeschlagen!",

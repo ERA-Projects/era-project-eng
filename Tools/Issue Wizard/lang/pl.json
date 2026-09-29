@@ -35,5 +35,6 @@
   "text.greeting": "Gra uległa awarii!",
   "text.already": "Już wysłałeś ten raport",
   "text.close": "Aplikacja zostanie zamknięta za ",
-  "text.comment": "Możesz dodać własny komentarz do tego problemu."
+  "text.comment": "Możesz dodać własny komentarz do tego problemu.",
+  "attach.save.default": "Dołącz zapis gry (wymagany)"
 }
