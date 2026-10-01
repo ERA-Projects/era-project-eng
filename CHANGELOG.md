@@ -3,6 +3,9 @@
 #### WoG:
 - updated graphics for random map editor objects;
 
+#### Game Enhancement Mod:
+- fixed the pre-battle save timing in the "BattleSave.dll" plugin;
+
 #### ERA ERM Framework:
 - variable name fixes;
 
