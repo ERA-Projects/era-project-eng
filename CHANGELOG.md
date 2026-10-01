@@ -1,3 +1,12 @@
+### Version 2.287
+
+#### WoG:
+- updated graphics for random map editor objects;
+
+#### ERA ERM Framework:
+- variable name fixes;
+
+
 ### Version 2.286
 
 - hotfix
