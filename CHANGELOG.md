@@ -1,3 +1,46 @@
+### Version 2.288
+
+#### ERA:
+- updated to version "3.9.31-port":
+    - migrated the core to a modern Delphi compiler;
+    - fixed operation under Wine;
+    - fixed "W" variable behavior with a nonstandard number of heroes;
+
+#### WoG:
+- added the "Interface_EnhancedCreatureInformation.era" plugin:
+    - added settings for enhanced creature dialogs in battles, armies, and recruitment;
+    - added options to show creature and commander skills, plus an expanded battle panel with creature stats and active spell effects;
+- removed the separate "numeric creature stats.era" plugin;
+- updated the "RMG_CustomizeObjectProperties.era" plugin:
+    - added support for additional two-way monolith networks;
+    - added configurable object-generation limits by type and subtype for the map and zones;
+    - improved saving of generation settings;
+- updated the "ERA_SystemOptionsExtension.era" plugin:
+    - improved saving of options through the standard game configuration;
+    - added quick battle completion with Q through Quick Combat, restoring the battle settings afterward;
+- updated the "ERA_JsonOverrides.era", "EraEditor_JsonOverrides.dll", and "ERA_LocaleManager.era" plugins:
+    - improved JSON text overrides, refreshing overrides after language data reloads, locale selection, and text export;
+- updated the "Assembly_MainPlugin.era" and "Interface_MainMenuAPI.era" plugins:
+    - fixed main-menu plugin loading and improved online version checks and update notifications;
+- updated the "wog native dialogs.era" plugin:
+    - added scrolling through secondary skills in the NPC dialog;
+
+#### Game Enhancement Mod:
+- added "Interface_ArtifactsQuickSwitching.era", replacing the separate "Hero_Artifacts_Dlg.dll" plugin;
+- removed "NPC_Skills_Scrolling.dll"; commander-skill scrolling is now included in "wog native dialogs.era";
+- removed the obsolete "new_battle_interface_dlg.dll" plugin;
+- updated "Gameplay_GameplayEnhancementPlugin.era" to version 1.12.0:
+    - improved artifact and adventure-map hints, interface behavior, and resource panels;
+    - fixed Mithril display in Creature Banks;
+
+#### ERA Scripts:
+- fixed achievement notification dialogs to show the correct achievement rank;
+- now achievements for collecting resources and chests should not cause the game to freeze;
+
+#### HD Mod:
+- updated to version 5.8 R20;
+
+
 ### Version 2.287
 
 #### WoG:
