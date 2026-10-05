@@ -105,11 +105,12 @@ struct TGameState
 
 
 /**
- * Loads Era library and imports necessary functions. Must be called as soon as possible.
+ * Loads the editor runtime and imports its API after the process signature check.
  * @param PluginDllHandle DLL module handle, which is passed to DLLMain entry as the first parameter.
  * @param PluginName      Plugin name or nullptr to use DLL file name. If you use patcher_x86 by Baratorch, specify the same name, as in CreateInstance call.
  */
-void ConnectEra (HINSTANCE PluginDllHandle, const char* PluginName = nullptr);
+bool IsMapEditor() noexcept;
+bool ConnectEra (HINSTANCE PluginDllHandle, const char* PluginName = nullptr);
 
 /** Creates new plugin API instance for particular DLL plugin. Pass real dll name with extension. Returns plugin instance or NULL is plugin is already created */
 ERA_API TPlugin (__stdcall *CreatePlugin) (const char* Name);

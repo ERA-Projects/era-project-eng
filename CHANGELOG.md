@@ -1,3 +1,17 @@
+### Version 2.289
+
+#### WoG:
+- updated the "Interface_EnhancedCreatureInformation.era" plugin:
+    - fixed the creature description widget;
+    - fixed the creation of active Stack Experience skill icons;
+
+#### Advanced Classes Mod:
+- reworked the generation of text regarding commanders' combat skills, fixing a game crash that occurred when attempting to open a creature's dialog during battle;
+
+#### Other:
+- updated plugins API SDK in `Tools/Era/SDK/` folder;
+
+
 ### Version 2.288
 
 #### ERA:

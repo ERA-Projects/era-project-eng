@@ -75,8 +75,25 @@ typedef BOOL(__stdcall *TMainMenu_SetDialogButtonText)(const char *name, const c
 static constexpr LPCSTR _PLUGIN_NAME = "Interface_MainMenuAPI.era";
 
 /**
+ * @brief Finds the API module or loads it on the first successful call
+ * @details Call on the game thread, outside DllMain. Keep the module for the
+ * process lifetime: the API installs game hooks without an unload procedure.
+ */
+inline HMODULE GetMainMenuApiModule()
+{
+    static HMODULE module = nullptr;
+    if (!module)
+    {
+        module = GetModuleHandleA(_PLUGIN_NAME);
+        if (!module)
+            module = LoadLibraryA(_PLUGIN_NAME);
+    }
+    return module;
+}
+
+/**
  * @brief Helper macro for declaring plugin functions
- * @details Creates an inline function that dynamically loads and calls the corresponding function from the plugin DLL
+ * @details Resolves and calls a function from the API module, loading it if necessary
  * @param name Name of the function to declare
  * @param returnType Return type of the function
  * @param argTypes Type of the function arguments
@@ -85,7 +102,7 @@ static constexpr LPCSTR _PLUGIN_NAME = "Interface_MainMenuAPI.era";
 #define DECLARE_PLUGIN_FUNC(name, returnType, argTypes, argNames)                                                      \
     inline returnType name(argTypes)                                                                                   \
     {                                                                                                                  \
-        HINSTANCE hApi = LoadLibraryA(_PLUGIN_NAME);                                                                   \
+        HINSTANCE hApi = GetMainMenuApiModule();                                                                      \
         if (!hApi)                                                                                                     \
             return 0;                                                                                                  \
         auto func = reinterpret_cast<T##name>(GetProcAddress(hApi, #name));                                            \
@@ -101,7 +118,7 @@ DECLARE_PLUGIN_FUNC(MainMenu_GetDialogButtonId, int, const char *name, name)
 
 inline BOOL MainMenu_SetDialogButtonText(const char *name, const char *text)
 {
-    HINSTANCE hApi = LoadLibraryA(_PLUGIN_NAME);
+    HINSTANCE hApi = GetMainMenuApiModule();
     if (!hApi)
         return 0;
     auto func = reinterpret_cast<TMainMenu_SetDialogButtonText>(GetProcAddress(hApi, "MainMenu_SetDialogButtonText"));
