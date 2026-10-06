@@ -3,6 +3,7 @@
 #### WoG:
 - updated the "ERA_SystemOptionsExtension.era" plugin to version 1.6.1:
     - the battle animation speed setting now also affects the animation speed of creature summoning spells;
+- added missing graphic resources;
 
 
 ### Version 2.290
