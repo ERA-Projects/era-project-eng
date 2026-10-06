@@ -1,3 +1,16 @@
+### Version 2.290
+
+#### WoG:
+- updated the "Interface_EnhancedCreatureInformation.era" plugin:
+    - added the ability to toggle the display of inactive creature skills via the settings dialog; 
+    - added a gold border for active creature skills to clearly indicate their presence; 
+    - added the display of the equipped Commander's Banner alongside Creature Experience skills; 
+    - added the display of current health and unit losses to the in-battle monster information panel;
+
+#### Advanced Classes Mod:
+- fixed an ERM error occurring at map startup;
+
+
 ### Version 2.289
 
 #### WoG:
