@@ -1,3 +1,10 @@
+### Version 2.293
+
+#### WoG:
+- updated the "game bug fixes extended.dll" plugin:
+    - fixed an incompatibility with the "amethyst" plugin that caused the game to crash at the end of any battle;
+
+
 ### Version 2.292
 
 #### WoG:
