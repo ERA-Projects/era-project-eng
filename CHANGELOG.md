@@ -1,3 +1,32 @@
+### Version 2.292
+
+#### WoG:
+- added the "Combat_BattleReplay.era" plugin, rewritten from the previous implementation:
+    - restores heroes, armies, the town garrison, and players' gold before a replay;
+    - resets replay state correctly after leaving a battle or loading a game;
+- updated the "ERA_SystemOptionsExtension.era" plugin to version 1.7.0:
+    - added the "Save Before Battle" option, which creates a BATTLE! save before a confirmed battle started by your hero on your turn;
+- updated the "Interface_EnhancedCreatureInformation.era" plugin:
+    - fixed resource cleanup in the creature information panel;
+- updated the "game bug fixes extended.dll" plugin:
+    - added a dependency on the combat animation speed setting for creature summoning animations; 
+    - rewrote the combat sound playback engine:
+        - fixed music transitions when entering and exiting combat;
+        - combat no longer starts with a delay when music is enabled; 
+        - it is no longer necessary to wait for the sound at the start of combat to begin interacting with the game (previously fixed only in HD-mod); 
+        - fixed the issue where the same music would play when replaying a battle;
+- updated the "Interface_EnhancedCreatureInformation.era" plugin:
+    - added display of the "Warlord's Banner" status and hint among active skills; 
+    - improved the icon generation algorithm and the positioning of displayed skill icons;
+- main menu graphics updated;
+
+#### Game Enhancement Mod:
+- updated the "Gameplay_GameplayEnhancementPlugin.era" plugin to version 1.12.1:
+    - fixed clipping of Adventure Map hints;
+- removed the separate "BattleReplay.era" and "BattleSave.dll" plugins; their features are now provided by the WoG plugins;
+- unused code removed;
+
+
 ### Version 2.291
 
 #### WoG:
