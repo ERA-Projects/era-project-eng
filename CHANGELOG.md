@@ -1,3 +1,16 @@
+### Version 2.294
+
+#### WoG:
+- "ERA_SystemOptionsExtension.era" plugin updated to version 1.7.1:
+    - fixed an issue where the "save before battle" option was not working;
+
+#### Game Enhancement Mod:
+- minor fixes to the "Spell Research" mechanic;
+
+#### Random Wallpaper Mod:
+- mod plugins updated to the latest versions;
+
+
 ### Version 2.293
 
 #### WoG:
