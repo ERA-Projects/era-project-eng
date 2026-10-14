@@ -1,3 +1,23 @@
+### Version 2.295
+
+#### WoG:
+- "ERA_SystemOptionsExtension.era" plugin updated to version 1.8.0:
+    - pre-battle save mechanics rewritten; 
+    - battle type selection mechanics rewritten;
+- "wog native dialogs.era" plugin updated:
+    - added skill selection via keys 1–6 for the commander level-up dialog;
+
+#### Game Enhancement Mod:
+- "Gameplay_GameplayEnhancementPlugin.era" plugin updated to version 1.13.1:
+    - fixed mechanics for options dependent on the current player;
+- mod settings window rewritten;
+- unused settings removed;
+- scripts optimized;
+
+#### ERA ERM Framework:
+- new constants added;
+
+
 ### Version 2.294
 
 #### WoG:
