@@ -1,3 +1,24 @@
+### Version 2.296
+
+#### WoG:
+- The "ERA_SystemOptionsExtension.era" plugin has been updated to version 1.8.1:
+    - Fixed an issue where spells could not be cast after replaying a battle with the "auto-battle without magic" setting enabled. 
+    - Fixed a bug that allowed the quick-battle prompt to appear during a human-vs-human battle.
+- The "Objects_CreatureBanksExtender" plugin has been updated:
+    - Fixed a rare game crash that occurred when attempting to place an object on the Adventure Map.
+
+#### Game Enhancement Mod:
+- The "Gameplay_GameplayEnhancementPlugin.era" plugin has been updated to version 1.13.3:
+    - Added a button to the hero level-up window that allows the dialog to close automatically when gaining more than 3 levels in a row.
+- Fixed a game crash that occurred when attempting to open the creature info dialog after previewing its upgrade cost in a town (using the "A" key).
+
+#### ERA Scripts:
+- "Experience for releasing monsters" option: An experience tooltip is now displayed in the status window.
+
+#### Other:
+- Added a dependency on the "ERA ERM Framework" mod for all script-based mods.
+
+
 ### Version 2.295
 
 #### WoG:
