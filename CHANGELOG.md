@@ -1,3 +1,7 @@
+### Version 2.297
+
+- hotfix
+
 ### Version 2.296
 
 #### WoG:
