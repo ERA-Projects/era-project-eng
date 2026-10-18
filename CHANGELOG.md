@@ -1,3 +1,19 @@
+### Version 2.298
+
+#### Advanced Difficulties Mod:
+- Updated to version 1.1:
+    - Now Progressive Difficulty Day cannot be set before payday. Changed Dif Mod ingame notification.
+    - reworked the neutral difficulty window: options are grouped by theme, labels are aligned and the six main settings have separate modifier checkboxes
+    - added Battle Experience from 10% to 200% in 10% steps (default 100%). The checkbox applies the same setting to AI heroes. Learning is included; chests, quests and scripted rewards are unchanged
+    - replaced Static Buff with Neutral Start Bonus, levels 0-10: +1 Attack, +1 Defense and +5% HP per level from the first battle. The checkbox gives the same bonus to AI armies
+    - Neutral Stack Size now has an Insane II setting with 50% more additional troops than Insane. AI starting troop compensation is only applied when the corresponding checkbox is enabled
+    - added the option to apply Neutral Stack Size to creature banks. The additional creatures are distributed among the existing guard stacks, including Perry/TUM bank templates
+    - speed from Neutral Scaling Bonus is now optional. Hard/Extreme: +1 from week 13; Insane: +1 from week 9; Insane I/II: +1 from week 9 and +2 total from week 25
+    - added Ace to Neutral Exp Gain: neutral creatures start at rank 10 from day 1. The checkbox applies the selected experience progression to AI armies as a minimum in battle, preserving higher experience and normal experience gain
+    - Growth Beyond 4000 now has four adjustable limits. Stage 2 keeps the previous limits; stages 1, 3 and 4 use 50%, 150% and 200%. Disabling the option keeps the selected stage
+    - Battle Reward now includes the Neutral Start Bonus and reduced battle experience. Its current chance is shown after relevant setting changes, only while Battle Reward is enabled
+
+
 ### Version 2.297
 
 - hotfix
