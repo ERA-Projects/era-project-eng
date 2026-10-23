@@ -1,3 +1,9 @@
+### Version 2.299
+
+#### ERA:
+- a stable version of the era.dll kernel, 3.9.31, has been restored;
+
+
 ### Version 2.298
 
 #### Advanced Difficulties Mod:
