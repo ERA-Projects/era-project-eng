@@ -4,7 +4,7 @@
 namespace system_options
 {
 constexpr const char *PLUGIN_NAME = "ERA_SystemOptionsExtension.era";
-constexpr const char *SETTINGS_FILE = "Runtime/era_system_options.ini";
+constexpr const char *SETTINGS_FILE = "heroes3.ini";
 
 enum SetResult : int
 {

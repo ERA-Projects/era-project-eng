@@ -1,3 +1,225 @@
+## ⚠️ Compatibility warning for mod authors — ERA Project 3.0.0
+
+**ERA Project 3.0.0 is in active development. All WoG objects and WoG scripts are being rewritten for this release. Mod authors who rely on them will soon need to adapt their mods to the new implementations.**
+
+### Version 2.300
+
+#### WoG — ERA Runtime Services
+
+- Added `ERA_RuntimeServices.era` 1.0.0-rc1, a shared plugin for ERM and C++ mods. The new services cover object ownership and map rendering, turn replay, geometry-aware replacement, graphics, text overrides and configuration export.
+- The ERM exports use undecorated names and `__stdcall`. With ERA 3.9.29 or later, call them as `SN:F^ERA_RuntimeServices:ExportName^/...` and read the result from `v1`. C++ declarations are in `headers/EraPluginsAPI/ErmFunctionsAPI.h`.
+
+| API | What mods can do |
+| --- | --- |
+| `Erm_RegisterObjectType`, `Erm_GetObjectOwner`, `Erm_SetObjectOwner`, `Erm_SetObjectOwnerAndSync` | Register a type or subtype and assign a player or neutral owner at the object's entrance. Use subtype `-1` to cover all subtypes. Ownership can recolor flag pixels already present in a DEF and can be shown on the regular and HD minimaps. The synchronized setter sends the change to other ERA clients. Ownership is saved with the map. Register types again on each new or loaded map. |
+| `Erm_RegisterReplayEvent`, `Erm_RegisterReplayEventArgs` | Record a custom ERM action alongside the native turn log. Supply a redo function and an optional undo function. The first export records four integers and the second copies up to 16. Ownership changes are recorded automatically and replay uses temporary ownership values. |
+| `Erm_GetObjectReplacementApiVersion`, `Erm_GetObjectGeometry`, `Erm_FindObjectReplacement`, `Erm_FindObjectReplacements`, `Erm_ReplaceObject` | Read an object's footprint, look up one or several compatible target prototypes and replace the object at its entrance. Different DEF sizes and offsets are allowed when all blocked cells and entrances match. Placement checks terrain, approaches and neighboring entrances. Replacement API v1 is for local games. |
+| `Erm_AddSpecialTerrainsEx`, `Erm_PlaceSpecialTerrain`, `Erm_PlaceSmallestSpecialTerrain` | Generate flat special terrains on a specified map level, place a passable underlay by its DEF's bottom-right coordinate or select the smallest compatible underlay centered on a cell. The centered variant performs a local operation and leaves multiplayer distribution to the calling script. |
+| `Erm_SetTerrainMinimapPaletteIndices` | Choose the tileset palette indices for normal and blocked cells of a terrain. Pass `-1` for a native color. Hero and object markers retain priority. |
+| `Erm_OrderGarrisonSites` | Order eligible coordinate triples by seeded sampling across map sectors and levels. The caller still checks and places garrisons. |
+| `Erm_ReadJsonInt`, `Erm_ReadJsonIntArray` | Read signed integers from the active ERA JSON, with a scalar fallback value or a size query followed by a write into the caller's array. Invalid array elements prevent a partial write. |
+| `Erm_SetObjectGlow`, `Erm_SetObjectGlowEnabled`, `Erm_GetObjectGlowEnabled`, `Erm_SetObjectGlowProfiling`, `Erm_GetObjectGlowProfile` | Register types for the unvisited-object particle effect, enable or query the effect and inspect its profiling data. Glow is off by default and must be enabled explicitly through the API. |
+
+- C++ clients discover shared tables through Patcher variables and check the API version and structure size. `ERA.Services.Graphics.v1` (also available through `Erm_GetGraphicsApi`) provides game-resource loading, cached runtime DEF frames and palette-aware rendering. `ERA.Services.TextOverrides.v1` binds localized text to native table entries and reapplies it on language reload. `ERA.Services.ConfigExport` lets plugins supply typed fields while Runtime Services builds, filters and serializes JSON snapshots. The graphics service signals readiness with `OnGraphicsResourcesReady` and exposes an `isReady()` check for clients that connect later.
+- The ownership API is used by ERA Scripts option 879. Local ownership changes and the turn replay history are saved separately. On the minimap, ownership follows occupied cells and the actual entrance, including when graphics overlap or a hero stands at the entrance.
+- [ERM and C++ API documentation](https://github.com/daemon1995/h3era_plugins/tree/63b169c6cf44e0c29088dfa2ac98659a85700baf/ERA_RuntimeServices)
+
+#### WoG — random maps and object extension
+
+- Updated `RMG_CustomizeObjectProperties.era` to 2.6.0. It now owns map selection and random-map menus, including H (180), XH (216) and G (252) sizes, size filters, template search and alliance setup. Available sizes follow the selected template's limits, including surface, underground and island constraints.
+- The new town and hero selector uses paged portraits and supports right-click previews. The local player or host can choose starting heroes for computer players where map rules allow it. The selector respects fixed heroes, banned heroes and heroes already assigned to other players. An optional checkbox remembers town, hero and starting bonus for local random games using the existing `Runtime/PluginSettings/MapSelection.ini`. It starts off when there is no saved setting.
+- Update `XXL.era` together with RMG. XXL now handles the adventure-map minimap and WoG route fixes. Without HD Mod, large maps gain a scaled minimap, working viewport frame and mouse navigation. WoG line storage and pathfinding for AI and roaming monsters support maps up to 252 × 252.
+- Map and zone limits now work with the engine's generation counters. In `RMG.objectGeneration`, `<type>.map` sets the combined map cap for the type. A global or type-level `zone` supplies a default per subtype. Subtype settings and the user's INI can override individual limits. A zero limit disables generation for the affected entry. The settings dialog saves changes through a temporary file and keeps the previous INI and active settings if saving fails.
+- RMG counts spell scrolls by spell level and Pandora's Box reward variants by their own keys. Seer's Huts and prisons use the native generator. Combined-artifact components are excluded from random Seer's Hut quests. Two WoG Dragon Utopia DEF variants were added to the object definitions.
+- Mods can set `RMG.objectGeneration.<type>.sound.loop` or override it per subtype. Use a game WAV resource name, or an empty string to silence that object type or subtype.
+
+| RMG API | What mods can do |
+| --- | --- |
+| `ERA.Services.ObjectExtenders.v2`, `RegisterObjectExtenderEx`, `RegisterObjectVisitObserver` | Register C++ handlers for generation, object hints, visits and related callbacks. An exact type/subtype handler takes precedence over a type-wide fallback. Register extenders before the host finishes loading object definitions. |
+| `ERA.Services.ObjectDefinitions.v1`, `GetObjectSubtypeCount` | Read the merged object definitions in the game or map editor through the same C++ contract. The subtype count is the highest loaded subtype plus one, including gaps. Several DEFs for one subtype count as one subtype. |
+| `RMG_GetObjectTypeLimits`, `RMG_SetObjectTypeLimits` | Read or change combined type limits for the active generation pass. |
+| `RMG_GetObjectLimitsByKey`, `RMG_SetObjectLimitsByKey`, `RMG_GetObjectInfoByKey` | Query settings or change limits for a subtype or Pandora variant. The subtype's map limit remains bounded by the type limit. Limit changes apply to the current map generation and the API is available while its limit tables are active. |
+| `RMG_GetWogificationApiVersion`, `RMG_Wogify*` | Query and apply configuration for ERM-driven wogification, including replacement rules and counters, creature and artifact filters, and scroll handling. The separate wogification settings dialog is disabled in this build. |
+
+- `Objects_CommonHotaObjectsPack.era` and `Objects_CreatureBanksExtender.era` use the shared extender dispatch. The creature bank plugin contributes definitions, guard and reward states and configured extra rewards to JSON export.
+- [RMG API and configuration documentation](https://github.com/daemon1995/h3era_plugins/tree/63b169c6cf44e0c29088dfa2ac98659a85700baf/RMG_CustomizeObjectProperties)
+
+#### WoG — dwellings, JSON export and map editor
+
+- Added the standalone `ERA_DwellingsExtender.era`. It owns extended dwelling gameplay for type 17 (one creature) and type 20 (up to four creatures). Existing dwelling JSON and saves retain their format. RMG still handles random generation and provides dwelling information in its own dialogs.
+- In `RMG.objectGeneration.<type>.<subtype>`, set `creatures.0` through `.3`, a localized `name`, and a Kingdom Overview portrait. Use `frame` for an existing picture or `image` with an optional `imageFrame` for a separate PCX or DEF. Runtime Services assigns and draws the new portraits in memory. The subtype must have a loaded object definition. Creature ID `0` is valid and `-1` disables a slot.
+- Dwelling plugins can use `ERA.Services.DwellingData.v1` and the `GetDwellingExportInfo` export for a read-only snapshot. `InitializeDwellings` lets RMG pass the final bounds after object definitions are merged. RMG retains its export adapter for older clients.
+- Replaced `EraEditor_JsonOverrides.dll` with `EraEditor_ObjectsExtender.dll`. The map editor now uses a single plugin for JSON object prototypes, names and descriptions across types 0–231, including extended dwelling name tables and artifact overrides. Game and editor share definition keys and merge rules. Artifact IDs can be extended within the editor's configured mask storage.
+- Updated `ERA_JsonOverrides.era` to 1.3.0. Hero starting data now supports `era.heroes.<id>.sskills.<slot>.type` and `.level`, `armyType.<slot>`, `creatureAmount.<slot>.lowAmount` and `.highAmount`, along with starting spell, spellbook and portraits. The same schema is used for reading and exporting hero data.
+- Updated `ERA_LocaleManager.era` to 3.2.0. The language menu opens the export dialog in translation mode, and **Export configuration** in the main menu opens it in full mode. Plugins can open either through `ERA.Services.ConfigExportUi.v1`. Categories are supplied by providers and support independent Original/Mods and Text/Data filters, live counts, and optional combined text/data output.
+- Export can include map objects, dwellings, creature banks, heroes, artifacts and spells with their supported fields, plus text for creatures, towns/buildings and secondary skills. Object definitions are grouped by type/subtype, retaining DEF variants without counting them twice. By default, RMG export omits inherited settings where no override is needed. UTF-8 JSON is written to `Runtime/Exports/<language>/`, `Runtime/Exports/Data/` or `Runtime/Exports/Combined/<language>/` and uses the same keys as the game and editor readers.
+- [JSON services and export documentation](https://github.com/daemon1995/h3era_plugins/blob/63b169c6cf44e0c29088dfa2ac98659a85700baf/ERA_RuntimeServices/Docs/CONFIG_SERVICES.md)
+
+#### ERA SDK
+
+- Both language editions include C++ headers in `Tools/Era/SDK/EraPluginsAPI/` for Runtime Services, graphics, JSON export and its dialog, the object catalog, RMG extenders and limits, dwelling data, text overrides and wogification rules. Runtime Services declarations include `Erm_AddSpecialTerrainsEx`.
+- The SDK includes the matching Win32 H3API with Patcher support and the shared object headers. `ObjectExtenderAPI.hpp` can still be included from the SDK root. `SystemOptionsAPI.h` now points to `heroes3.ini`.
+- The base SDK omits `HelpDialogAPI.hpp`. The header for the optional Help Dialog plugin remains available in the plugin source repository. [Plugin API setup and example](Tools/Era/SDK/PluginAPIs.md)
+
+#### WoG — main menu and mod notifications
+
+- Updated `Interface_MainMenuAPI.era` to 2.3.0. One plugin now handles the menu background, optional logos, video positioning, the extra-button panel and JSON mod notifications.
+- The features of `Interface_MainMenuLogo.era`, `Interface_MainMenuGraphics.era` and `Graphics_MainMenuVideoPositioning.era` are included in MainMenuAPI. Remove or disable those separate plugins to avoid duplicate hooks.
+- Updated `Assembly_MainPlugin.era` to 1.14.1. It continues to display assembly versions and check for updates; the notification panel and its JSON loading, input handling, language reload and cleanup now belong to MainMenuAPI. Update both plugins together: an older Assembly plugin would create a second notification panel.
+- Fixed link-hover cursor flickering. MainMenuAPI and Assembly combine cursor requests and apply the result once after the menu hook chain, in either hook order. Repeated events over the same link keep the hand cursor.
+- Mod notifications now work without Assembly and when all assembly-version labels are disabled. Existing notification JSON, translations, graphic resources and hidden-message history remain compatible.
+- Improved cooperation with HD Mod. The background is fitted using the artwork's actual dimensions and the available game window. Unused space retains HD Mod's texture. The campaign-set selector uses the same layout and rendering as the main and new/load menus.
+- Menu buttons and the New Game/Load Game titles with PNG replacements use a snapshot of the actual background. The plugin composites each frame over the clean background so hover animation leaves no trails. Existing `era.png_backs` entries identify the images. Menu drawing uses the actual item positions, and the rendering hooks are released when the last supported menu closes.
+- The background and extra-button panel use consistent layout bounds. The button panel is placed to the right when there is enough room; otherwise it is placed inside the menu area. Fixed its background remaining hidden after the panel was shown again, and guarded visibility changes when no panel was created.
+- MainMenuAPI initializes even when no other plugin has registered buttons. Assembly handles both main-menu creation/cleanup paths and uses the same boolean interpretation for `redraw_always`. Fixed copying an assembly version containing `%` characters.
+- Heroes Launcher detection was moved with notifications, but its call is commented out. The panel no longer checks AppData to automatically add the Launcher recommendation. The existing JSON text can remain installed; `era.notifications.panel.launcher_path` currently has no effect on this disabled check.
+
+##### Assembly version block
+
+Assembly 1.14.1 displays `Assembly | v1.23 | v1.25` as a single row of native text widgets in smalfont, with a transparent background and distinct free IDs. The row sits at the bottom-right of the fitted menu picture, with ERA at the bottom-left. The latest version is steady green. The installed version turns red when an update is available and is green otherwise. Menu redraw restores the background behind changed text.
+
+Localized captions are under `gem_plugin.main_menu.assembly_version`. `title` defaults to `Assembly`, and `installed_format` and `latest_format` default to `v%s`. Retain `%s`. A leading v/V in a version tag is removed before applying `v%s`. Language reload updates the captions without changing geometry.
+
+Geometry is fixed in code: old block `width`, `title_width`, `row_height`, `x`, `y` and per-version `x`/`y` keys are ignored. Existing `display_version`, `custom_text` and version-source settings remain supported. Disabled version columns are omitted; when both are disabled, the title is omitted. The ERA format setting remains separate. MainMenuAPI image bounds exclude the surrounding canvas, frame and HD texture; the native menu dialog is the fallback if its background renderer is disabled or MainMenuAPI is absent.
+
+The installed version comes from `[Assembly] Version` in `ERA_Project.ini`, with a nonempty `current_version.custom_version` taking priority. Registry access has been removed. Custom display text does not change the comparison. The shipped JSON drops `read_registry`, per-version `x`, `y`, `font`, `length_in_px`, old installed/latest `format`, online `check_online`/`remote_file`, and block geometry keys. Online request parameters come from `[GitHub]` in `ERA_Project.ini`.
+
+##### Main-menu JSON: placement and defaults
+
+Place JSON in a mod's `Lang/` directory; put translated captions in the corresponding language subdirectory, for example `Lang/ru/`. Settings use `era.main_menu`. In the tables below, append each key to this prefix: `background.width` means `era.main_menu.background.width`. Dotted names describe nested JSON objects, as in the example below.
+
+Switches accept `true`/`false` or numeric `1`/`0`. Missing keys use the defaults below; invalid boolean/integer values use the corresponding fallback. All sizes and coordinates are in pixels. Restart the game after changing startup settings, including logo assets, enabled flags or video positioning. Caption language changes are handled through ERA's language reload; this does not rebuild the set of buttons or notification entries.
+
+| Key below `era.main_menu` | Default | Usage |
+| --- | --- | --- |
+| `background.enabled` | `true` | Draw the loaded `Gamselbk.pcx` using its actual size and the bounds below. `false` leaves background rendering to the game/HD Mod. This PCX is the background, separate from the optional logo. |
+| `background.width`, `background.height` | `0`, `0` | Width and height of the inner area for the picture. Each zero or negative dimension independently uses the corresponding PCX dimension. Positive values set the desired area; the available window limits it. |
+| `background.frame.enabled` | `false` | Draw an HD-style frame outside the configured background area. Four pixels per side are reserved so that it fits in the window. Applies while custom background rendering is enabled. |
+| `widgets.frame.enabled` | `true` | Draw the same HD-style frame around the extra-button panel. Independent of the background frame; does not control the notification panel's own decoration. |
+| `widgets.visibility_toggle.enabled` | `true` | Add the hide-panel button where it is needed. It is omitted when it would be the only button, or when the panel is placed outside the background. |
+| `widgets.system_options.enabled` | `false` | Add the System Options button. |
+| `widgets.wog_options.enabled` | `true` | Add the WoG Options button. |
+| `widgets.visibility_toggle.text`, `widgets.system_options.text`, `widgets.wog_options.text` | English captions | Localized captions for those buttons. These keys do not change their registration names in the C++ API. |
+| `logos.main.enabled`, `logos.scenario.enabled` | `false`, `false` | Enable the additional PCX logo. `main` covers the main/new/load/campaign menus; `scenario` covers scenario selection. |
+| `logos.main.asset`, `logos.scenario.asset` | empty string | PCX resource name. A logo requires both `enabled: true` and a nonempty asset name. |
+| `logos.main.x`, `logos.main.y`; `logos.scenario.x`, `logos.scenario.y` | `23`, `23` for each logo | Logo position relative to its dialog, not the whole game window. |
+| `logos.main.item_id`, `logos.scenario.item_id` | `666`, `666` | Dialog item identifiers, limited to 1..32767. Choose an ID unused by other items in the same dialog. |
+| `rendering.redraw_always` | `false` | Redraw the main-menu logo, assembly-version labels and visible notifications during menu callbacks. Useful for animated-menu compatibility; does not select a background size. |
+| `video.position.enabled` | `true` | Enable the former VideoPositioning compatibility adjustment. It applies to menu video 33 only when the relevant video patch is present and the window is at least 808 pixels wide or 608 pixels high. It does not turn video playback on. |
+| `video.position.x`, `video.position.y` | `0`, `0` | Coordinates passed to video opening when that compatibility adjustment applies. Independent of PCX/logo positions. |
+
+The picture is centered and fitted proportionally inside its area. With automatic dimensions it keeps its native size if it already fits, and is reduced if necessary. Explicit dimensions can also enlarge it proportionally. The background frame surrounds the configured area, which may be wider than the picture. Both HD-style frames use HD Mod's `hd_fr_*.bmp` resources.
+
+Example: a roughly 16:9 area with both frames enabled:
+
+```json
+{
+  "era": {
+    "main_menu": {
+      "background": {
+        "enabled": true,
+        "width": 1067,
+        "height": 600,
+        "frame": { "enabled": true }
+      },
+      "widgets": { "frame": { "enabled": true } }
+    }
+  }
+}
+```
+
+An 800x600 PCX in this area stays 800x600 if the window has enough room: HD texture fills the unused sides. To show artwork in 16:9, supply a PCX with those proportions. A larger PCX is reduced proportionally to fit the available area. Changing the bounds does not change the game's resolution or redraw the native menu buttons at new positions.
+
+##### Migration from old menu keys
+
+Old menu aliases are no longer read. Move the values to the new keys; do not leave only the old entries in your mod's JSON.
+
+| Old key/pattern | New key/pattern |
+| --- | --- |
+| `nmmi.menu_info.main.*` | `era.main_menu.logos.main.*` |
+| `nmmi.menu_info.select_scenario.*` | `era.main_menu.logos.scenario.*` |
+| Logo fields `enable`, `pcx_name` | `enabled`, `asset`; `x`, `y`, `item_id` retain their names |
+| `nmmi.menu_info.main.always_draw` | `era.main_menu.rendering.redraw_always` |
+| `era.api.main_menu.widgets.hide.create` | `era.main_menu.widgets.visibility_toggle.enabled` |
+| `era.api.main_menu.widgets.hide.text_hide` | `era.main_menu.widgets.visibility_toggle.text` |
+| `era.api.main_menu.widgets.system_options.create` | `era.main_menu.widgets.system_options.enabled` |
+| `era.api.main_menu.widgets.wog_options.create` | `era.main_menu.widgets.wog_options.enabled` |
+| `era.api.main_menu.widgets.{system_options,wog_options}.text` | `era.main_menu.widgets.{system_options,wog_options}.text` |
+
+The old `hide.text_show` key is unused and removed. The temporary `background.widescreen.enabled` test switch is removed; use the PCX dimensions or `background.width`/`height`. The former video plugin had no active JSON settings: `era.acredit_pos` is not an alias for `video.position`. The C++ widget API retains its DLL filename, four exported functions and existing widget registration names. Assembly-version settings under `gem_plugin.main_menu` remain separate and are not renamed to `era.main_menu`.
+
+##### Adding notifications through JSON
+
+No C++ registration is needed. MainMenuAPI reads notifications for active mods using the mod's folder name in lowercase, including spaces: `era.<mod folder>.notification`. The JSON filename is arbitrary; the nested keys identify the mod. Put common text in `Lang/` and translations under `Lang/<language>/`, keeping the same keys.
+
+A single notification uses `name` (heading), `text` (nonempty message) and optional `url` (web address or local file path):
+
+```json
+{
+  "era": {
+    "my mod": {
+      "notification": {
+        "name": "My mod: changes",
+        "text": "Description of the changes.\nSecond line.",
+        "url": "mods\\my mod\\readme.txt"
+      }
+    }
+  }
+}
+```
+
+Replace `my mod` with the actual active mod folder name. Multiple notifications use objects `"0"`, `"1"`, ... `"4"` inside `notification`, each with its own `name`, `text` and optional `url`. Number from zero without gaps. The first missing `.text` key ends enumeration; an empty text is skipped. There are at most five numbered notifications per mod. A nonempty unnumbered `notification.text` takes precedence over all numbered entries. Additions/removals are picked up when the main menu is recreated; language reload updates entries already created.
+
+Click a notification heading with a `url` to open it after confirmation. Local paths may point into the game directory; escape backslashes as `\\` in JSON. Hide/Hide All preserves hidden state in `runtime/era/main_menu_notifications.ini`, keyed by the message text's hash. Changing the text makes the message eligible to appear again on the next menu creation; changing only the heading or URL does not. Clicking the Notifications button can temporarily show hidden messages again without clearing their saved hidden state. Notifications with identical text share the same hidden-state key, even across mods.
+
+Existing panel keys remain unchanged:
+
+| Key | Usage |
+| --- | --- |
+| `era.notifications.panel.button` | Notifications-button caption; retain `%d` for the total message count, including hidden messages. |
+| `era.notifications.panel.title` | Panel heading. |
+| `era.notifications.panel.hide_one`, `era.notifications.panel.hide_all` | Hide and Hide All captions. |
+| `era.notifications.user.open_web_page`, `era.notifications.user.open_external_file` | Opening-confirmation messages; retain `%s` for the URL/file path. |
+| `era.notifications.panel.launcher_path` | Retained for the temporarily disabled Heroes Launcher check; currently does not trigger a check or add a message. |
+
+The notification keys above are not moved under `era.main_menu`. Existing `era_notifications.json` translations and `ntf_*.def` graphic resources continue to be used.
+
+
+#### WoG — combat and native dialogs
+
+- `Interface_EnhancedCreatureInformation.era` now reads the size of the extended spell table from the game. The creature dialog and combat preview can show effects from spell extenders, including their icon, name, description and remaining duration.
+- Combat health bars update with the hit, defense or death animation. Damage is kept in a separate display value until the animation reaches the point where the loss should be shown. Battle Queue continues to use the existing BattleQueue mod.
+- `wog native dialogs.era` adds automatic level-up handling for heroes and commanders when several levels are pending. The AI selects the remaining upgrades after the player opts in. The separate instant mode that hides all remaining dialogs is disabled. Dropping an artifact or placing it on the map also refreshes the movement route.
+- `game bug fixes extended.dll` fixes duplicate music during battle transitions, backward movement for two-hex creatures, and redraw of the custom town hint bar.
+
+#### Game Enhancement Mod
+
+- Updated `Gameplay_GameplayEnhancementPlugin.era` to 1.14.4. The town **Upgrade all** button now shows the total cost for confirmation. Hold `A` and click a stack or an army area to upgrade that selection. The old `fast upgrade stacks in town.dll` and its disabled copy in WoG were removed.
+- The town-upgrade exports return the number of upgraded stacks, `0` if nothing changed and `-1` for an invalid or unavailable operation. In both calls, `townId = -1` selects the open town. `armyMask` is `1` for the garrison, `2` for the visiting hero and `3` for both.
+
+| Export | Usage |
+| --- | --- |
+| `GEM_UpgradeTownCreatures(townId, armyMask, upgradeSkeletons)` | Upgrade the selected armies without a confirmation dialog. The third argument controls whether skeleton transformations are allowed. |
+| `GEM_UpgradeTownSelection(townId, armyMask, slot, confirm)` | Upgrade an entire selection (`slot = -1`) or one stack (`0–6`, one army only). The optional confirmation applies to whole-army selections. |
+
+- The native upgrade module uses `gem_plugin.modules.town_upgrades`. ERM handles the town button, keyboard input and hints. C++ validates the selection, calculates costs and applies the upgrades.
+- Mods can provide map DEFs for individual heroes or hero classes under `gem_plugin.map_item_view.54` and town fort/citadel DEFs under `gem_plugin.map_item_view.98`. GEM supplies default graphics for these settings. The GEM help JSON now ships in English and Russian.
+- Spell Research handles the extended spell list and uses the localized spell name in the confirmation dialog.
+- C++ plugins can call the GEM artifact description through `GEM.ArtifactDescription.Api.1` in Patcher memory. The `show` callback accepts a hero, an artifact and the target equipment slot. Pass `-1` when the slot is unknown.
+
+#### ERA Scripts
+
+- Reworked option 879, **Capture Mills and Gardens**, to use Runtime Services for ownership, multiplayer synchronization, flag coloring, minimap marks and turn replay. The option covers Water Wheels, Windmills, Mystical Gardens and Warehouses. The script still controls capture and rewards.
+- Corrected option 795, **Night Scouting**, including the encounter between two groups of creatures and the outcomes of the Syndicate encounter. Text now uses the correct singular or plural creature names for each outcome.
+
+#### Other mods
+
+- **Advanced Classes Mod** now uses `era.heroes` for starting hero data. The old `gem.heroesStartingParameters` file layout has been migrated to the JSON Overrides keys for skills, starting spells, spellbooks and starting armies.
+- **Random wallpaper** replaces all existing main-menu backgrounds with images for 16:9 layouts and adds `mm_bg_15.pcx` and `mm_bg_16.pcx` to the rotation. The mod uses MainMenuAPI for the logo. Its separate `Interface_MainMenuLogo.era` was removed.
+- **WoG Fix Lite** updated to 2.30.0 with updated graphics archives for objects, towns and creatures, plus updated editor object definitions. WoG's graphics archives were also refreshed and loose legacy `Lib1.res` bitmap resources were removed.
+- **TrainerX** avoids rerunning `GetMaxSpellId` when rebuilding the spell panel and uses the already initialized spell limit.
+
+
 ### Version 2.299
 
 #### ERA:
