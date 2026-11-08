@@ -2,6 +2,36 @@
 
 **ERA Project 3.0.0 is in active development. All WoG objects and WoG scripts are being rewritten for this release. Mod authors who rely on them will soon need to adapt their mods to the new implementations.**
 
+### Version 2.301
+
+#### WoG — main menu, video and notifications
+
+- Updated `Interface_MainMenuAPI.era` to 2.3.1 and `Assembly_MainPlugin.era` to 1.14.2. Main-menu controls, logos, notifications and assembly-version labels are restored over BIK/SMK video before each affected screen region is presented.
+- Fixed video erasing added buttons, notification text and scrollbars. The button-panel background is drawn around the video area, while its controls are drawn over the video. Opening a modal dialog suspends menu restoration until that dialog closes.
+- PNG menu buttons and the New Game/Load Game headings now blend their transparent pixels with the current video frame. Hover and pressed states use a clean frame, preventing accumulated transparency, button trails and patches of the static wallpaper over the video.
+- Improved video restoration during pauses, delayed playback and transitions between menu pages, including the campaign-set selector. A full menu redraw restores the cached video image before drawing the controls. Assembly-version text changes request a redraw that clears the previous lettering.
+- Buttons registered through `MainMenu_RegisterWidget`, and other visible controls added by plugins after the native menu constructor, participate in automatic video restoration. The obsolete `era.main_menu.rendering.redraw_always` setting has been removed. Video restoration works independently of `era.main_menu.video.position.enabled`.
+- The Notifications button now consistently shows the total number of loaded messages, including hidden messages, and reopens the full list. The panel's page counter switches to a smaller font when needed. After a language change, the panel rebuilds its background and layout on the next full menu redraw, then restores its visible state.
+- [MainMenuAPI rendering and configuration documentation](https://github.com/daemon1995/h3era_plugins/blob/bc4594cfb70087dca2a7efa8b884fd7e33ed9887/Interface_MainMenuAPI/README.md)
+
+#### WoG — combat interface
+
+- Updated `ERA_SystemOptionsExtension.era` to 1.10.1. The creature-information setting now explicitly offers **Do Not Show**, **All Statistics** and **Only Spells**. Mods can select the same modes through `SetOptionValue("Combat.CreatureInfo", value)`, using `0`, `1` and `2` respectively.
+- Added **Progressive HP Colour** to the Health Bar settings. Full health is green, remaining health above 25% is yellow, and 25% or less is red. The lost-health segment uses a dark gradient. This mode starts off by default, and enabling it locks the manual colour and saturation controls.
+- The health-bar preview now animates the remaining HP in progressive mode. Reset restores the checkboxes, sliders, hotkey and label position together. The selection is saved as `progressiveColor` in `[Settings.Extra.CombatStackHealthBar]` in `heroes3.ini`.
+- Health-bar drawing and damage-display hooks are activated for the visible battle dialog and released when it closes. Displayed HP is reset between actions and attempts, including replays and quick or hidden battles.
+- Updated `Interface_EnhancedCreatureInformation.era`. The compact **Only Spells** panel now uses the same twelve spell slots as the full statistics panel, replacing the three large native icons. Both modes show the active effects and their durations from the extended spell table.
+
+#### WoG — random-map generator
+
+- Updated `RMG_CustomizeObjectProperties.era` to 2.6.1. Fixed initialization of object records when generators arrive in descending or sparse subtype order. Every newly allocated entry receives its correct type and subtype, fixing the dwelling list in the RMG settings dialog.
+
+#### Main-menu configuration
+
+- Base menu settings and PNG replacement entries are now collected in `Mods/WoG/lang/main menu.json`, replacing `LegendMenu.json` and the base `lang/era_api.json`. Menu controls use `era.main_menu.widgets`, background settings use `era.main_menu.background`, and PNG entries use `era.png_backs`.
+- The supplied configuration enables the background frame and leaves the video-position override disabled. **Random wallpaper** uses the current logo settings and drops the obsolete per-logo `always_draw` fields.
+
+
 ### Version 2.300
 
 #### WoG — ERA Runtime Services
