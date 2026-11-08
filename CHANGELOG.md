@@ -2,6 +2,24 @@
 
 **ERA Project 3.0.0 is in active development. All WoG objects and WoG scripts are being rewritten for this release. Mod authors who rely on them will soon need to adapt their mods to the new implementations.**
 
+### Version 2.302
+
+#### WoG — main menu and widescreen backgrounds
+
+- Updated `Interface_MainMenuAPI.era` to 2.3.2 and included a rebuilt `Assembly_MainPlugin.era` 1.14.2.
+- Reworked the backing layer for custom menu backgrounds. Unused areas now receive a clean grey dialog texture, removing remnants of HD Mod's saved 800 × 600 frame around fitted widescreen pictures.
+- With `era.main_menu.background.frame.enabled`, the HD-style frame is drawn around both the game window and the configured background area. Coincident frames are drawn once.
+- Full menu redraws now compose the background and controls before presenting the completed screen. Intermediate refreshes, including notification auto-opening, are deferred until composition finishes, reducing visible drawing stages.
+- Corrected the credits background for fitted menu pictures and HD Mod's menu position. The initial credits strip and scrolling-text backing now use the same prepared background at the actual dialog coordinates. This also accounts for the installed `credits_unlink.dll`.
+- High Scores now has a frame aligned to its actual dialog and a clean surrounding background when a custom menu picture differs from 800 × 600.
+- Improved placement of the panel containing buttons registered through `MainMenu_RegisterWidget`. It first uses free space to the right of the configured background area, then the picture's right margin or space after the native menu buttons. The left-hand placement is used when the right side cannot accommodate the panel. Narrow right-hand panels use scroll arrows.
+- [MainMenuAPI layout and rendering documentation](https://github.com/daemon1995/h3era_plugins/blob/0f74845163da21a588dfb0ee758850c888791717/Interface_MainMenuAPI/README.md)
+
+#### WoG — combat fixes
+
+- Updated `game bug fixes extended.dll`. Fixed the ammunition check that caused the First Aid Tent to skip healing. Empty-ammunition turn skipping now applies to shooting war machines, allowing the tent to take its healing turn.
+
+
 ### Version 2.301
 
 #### WoG — main menu, video and notifications
