@@ -1,3 +1,11 @@
+### Version 2.304
+
+#### WOG:
+- `RMG_CustomizeObjectProperties.era` updated to 2.6.2:
+    - added asset validation for properties being added via JSON files;
+- removed object properties that lacked assets (which caused crashes during map generation);
+
+
 ### Version 2.303
 
 - hotfix
