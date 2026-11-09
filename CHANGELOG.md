@@ -1,3 +1,8 @@
+### Version 2.303
+
+- hotfix
+
+
 ## ⚠️ Compatibility warning for mod authors — ERA Project 3.0.0
 
 **ERA Project 3.0.0 is in active development. All WoG objects and WoG scripts are being rewritten for this release. Mod authors who rely on them will soon need to adapt their mods to the new implementations.**
